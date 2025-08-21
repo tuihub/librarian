@@ -34,44 +34,44 @@ type StoreAppQuery struct {
 }
 
 // Where adds a new predicate for the StoreAppQuery builder.
-func (saq *StoreAppQuery) Where(ps ...predicate.StoreApp) *StoreAppQuery {
-	saq.predicates = append(saq.predicates, ps...)
-	return saq
+func (_q *StoreAppQuery) Where(ps ...predicate.StoreApp) *StoreAppQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (saq *StoreAppQuery) Limit(limit int) *StoreAppQuery {
-	saq.ctx.Limit = &limit
-	return saq
+func (_q *StoreAppQuery) Limit(limit int) *StoreAppQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (saq *StoreAppQuery) Offset(offset int) *StoreAppQuery {
-	saq.ctx.Offset = &offset
-	return saq
+func (_q *StoreAppQuery) Offset(offset int) *StoreAppQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (saq *StoreAppQuery) Unique(unique bool) *StoreAppQuery {
-	saq.ctx.Unique = &unique
-	return saq
+func (_q *StoreAppQuery) Unique(unique bool) *StoreAppQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (saq *StoreAppQuery) Order(o ...storeapp.OrderOption) *StoreAppQuery {
-	saq.order = append(saq.order, o...)
-	return saq
+func (_q *StoreAppQuery) Order(o ...storeapp.OrderOption) *StoreAppQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryAppBinary chains the current query on the "app_binary" edge.
-func (saq *StoreAppQuery) QueryAppBinary() *SentinelAppBinaryQuery {
-	query := (&SentinelAppBinaryClient{config: saq.config}).Query()
+func (_q *StoreAppQuery) QueryAppBinary() *SentinelAppBinaryQuery {
+	query := (&SentinelAppBinaryClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := saq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := saq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -80,20 +80,20 @@ func (saq *StoreAppQuery) QueryAppBinary() *SentinelAppBinaryQuery {
 			sqlgraph.To(sentinelappbinary.Table, sentinelappbinary.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, storeapp.AppBinaryTable, storeapp.AppBinaryPrimaryKey...),
 		)
-		fromU = sqlgraph.SetNeighbors(saq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryStoreAppBinary chains the current query on the "store_app_binary" edge.
-func (saq *StoreAppQuery) QueryStoreAppBinary() *StoreAppBinaryQuery {
-	query := (&StoreAppBinaryClient{config: saq.config}).Query()
+func (_q *StoreAppQuery) QueryStoreAppBinary() *StoreAppBinaryQuery {
+	query := (&StoreAppBinaryClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := saq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := saq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -102,7 +102,7 @@ func (saq *StoreAppQuery) QueryStoreAppBinary() *StoreAppBinaryQuery {
 			sqlgraph.To(storeappbinary.Table, storeappbinary.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, storeapp.StoreAppBinaryTable, storeapp.StoreAppBinaryColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(saq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -110,8 +110,8 @@ func (saq *StoreAppQuery) QueryStoreAppBinary() *StoreAppBinaryQuery {
 
 // First returns the first StoreApp entity from the query.
 // Returns a *NotFoundError when no StoreApp was found.
-func (saq *StoreAppQuery) First(ctx context.Context) (*StoreApp, error) {
-	nodes, err := saq.Limit(1).All(setContextOp(ctx, saq.ctx, ent.OpQueryFirst))
+func (_q *StoreAppQuery) First(ctx context.Context) (*StoreApp, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func (saq *StoreAppQuery) First(ctx context.Context) (*StoreApp, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (saq *StoreAppQuery) FirstX(ctx context.Context) *StoreApp {
-	node, err := saq.First(ctx)
+func (_q *StoreAppQuery) FirstX(ctx context.Context) *StoreApp {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,9 +132,9 @@ func (saq *StoreAppQuery) FirstX(ctx context.Context) *StoreApp {
 
 // FirstID returns the first StoreApp ID from the query.
 // Returns a *NotFoundError when no StoreApp ID was found.
-func (saq *StoreAppQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *StoreAppQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = saq.Limit(1).IDs(setContextOp(ctx, saq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -145,8 +145,8 @@ func (saq *StoreAppQuery) FirstID(ctx context.Context) (id model.InternalID, err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (saq *StoreAppQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := saq.FirstID(ctx)
+func (_q *StoreAppQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -156,8 +156,8 @@ func (saq *StoreAppQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Only returns a single StoreApp entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one StoreApp entity is found.
 // Returns a *NotFoundError when no StoreApp entities are found.
-func (saq *StoreAppQuery) Only(ctx context.Context) (*StoreApp, error) {
-	nodes, err := saq.Limit(2).All(setContextOp(ctx, saq.ctx, ent.OpQueryOnly))
+func (_q *StoreAppQuery) Only(ctx context.Context) (*StoreApp, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +172,8 @@ func (saq *StoreAppQuery) Only(ctx context.Context) (*StoreApp, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (saq *StoreAppQuery) OnlyX(ctx context.Context) *StoreApp {
-	node, err := saq.Only(ctx)
+func (_q *StoreAppQuery) OnlyX(ctx context.Context) *StoreApp {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -183,9 +183,9 @@ func (saq *StoreAppQuery) OnlyX(ctx context.Context) *StoreApp {
 // OnlyID is like Only, but returns the only StoreApp ID in the query.
 // Returns a *NotSingularError when more than one StoreApp ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (saq *StoreAppQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *StoreAppQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = saq.Limit(2).IDs(setContextOp(ctx, saq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -200,8 +200,8 @@ func (saq *StoreAppQuery) OnlyID(ctx context.Context) (id model.InternalID, err 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (saq *StoreAppQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := saq.OnlyID(ctx)
+func (_q *StoreAppQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -209,18 +209,18 @@ func (saq *StoreAppQuery) OnlyIDX(ctx context.Context) model.InternalID {
 }
 
 // All executes the query and returns a list of StoreApps.
-func (saq *StoreAppQuery) All(ctx context.Context) ([]*StoreApp, error) {
-	ctx = setContextOp(ctx, saq.ctx, ent.OpQueryAll)
-	if err := saq.prepareQuery(ctx); err != nil {
+func (_q *StoreAppQuery) All(ctx context.Context) ([]*StoreApp, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*StoreApp, *StoreAppQuery]()
-	return withInterceptors[[]*StoreApp](ctx, saq, qr, saq.inters)
+	return withInterceptors[[]*StoreApp](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (saq *StoreAppQuery) AllX(ctx context.Context) []*StoreApp {
-	nodes, err := saq.All(ctx)
+func (_q *StoreAppQuery) AllX(ctx context.Context) []*StoreApp {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -228,20 +228,20 @@ func (saq *StoreAppQuery) AllX(ctx context.Context) []*StoreApp {
 }
 
 // IDs executes the query and returns a list of StoreApp IDs.
-func (saq *StoreAppQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if saq.ctx.Unique == nil && saq.path != nil {
-		saq.Unique(true)
+func (_q *StoreAppQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, saq.ctx, ent.OpQueryIDs)
-	if err = saq.Select(storeapp.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(storeapp.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (saq *StoreAppQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := saq.IDs(ctx)
+func (_q *StoreAppQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -249,17 +249,17 @@ func (saq *StoreAppQuery) IDsX(ctx context.Context) []model.InternalID {
 }
 
 // Count returns the count of the given query.
-func (saq *StoreAppQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, saq.ctx, ent.OpQueryCount)
-	if err := saq.prepareQuery(ctx); err != nil {
+func (_q *StoreAppQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, saq, querierCount[*StoreAppQuery](), saq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*StoreAppQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (saq *StoreAppQuery) CountX(ctx context.Context) int {
-	count, err := saq.Count(ctx)
+func (_q *StoreAppQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,9 +267,9 @@ func (saq *StoreAppQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (saq *StoreAppQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, saq.ctx, ent.OpQueryExist)
-	switch _, err := saq.FirstID(ctx); {
+func (_q *StoreAppQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -280,8 +280,8 @@ func (saq *StoreAppQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (saq *StoreAppQuery) ExistX(ctx context.Context) bool {
-	exist, err := saq.Exist(ctx)
+func (_q *StoreAppQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -290,44 +290,44 @@ func (saq *StoreAppQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the StoreAppQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (saq *StoreAppQuery) Clone() *StoreAppQuery {
-	if saq == nil {
+func (_q *StoreAppQuery) Clone() *StoreAppQuery {
+	if _q == nil {
 		return nil
 	}
 	return &StoreAppQuery{
-		config:             saq.config,
-		ctx:                saq.ctx.Clone(),
-		order:              append([]storeapp.OrderOption{}, saq.order...),
-		inters:             append([]Interceptor{}, saq.inters...),
-		predicates:         append([]predicate.StoreApp{}, saq.predicates...),
-		withAppBinary:      saq.withAppBinary.Clone(),
-		withStoreAppBinary: saq.withStoreAppBinary.Clone(),
+		config:             _q.config,
+		ctx:                _q.ctx.Clone(),
+		order:              append([]storeapp.OrderOption{}, _q.order...),
+		inters:             append([]Interceptor{}, _q.inters...),
+		predicates:         append([]predicate.StoreApp{}, _q.predicates...),
+		withAppBinary:      _q.withAppBinary.Clone(),
+		withStoreAppBinary: _q.withStoreAppBinary.Clone(),
 		// clone intermediate query.
-		sql:  saq.sql.Clone(),
-		path: saq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithAppBinary tells the query-builder to eager-load the nodes that are connected to
 // the "app_binary" edge. The optional arguments are used to configure the query builder of the edge.
-func (saq *StoreAppQuery) WithAppBinary(opts ...func(*SentinelAppBinaryQuery)) *StoreAppQuery {
-	query := (&SentinelAppBinaryClient{config: saq.config}).Query()
+func (_q *StoreAppQuery) WithAppBinary(opts ...func(*SentinelAppBinaryQuery)) *StoreAppQuery {
+	query := (&SentinelAppBinaryClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	saq.withAppBinary = query
-	return saq
+	_q.withAppBinary = query
+	return _q
 }
 
 // WithStoreAppBinary tells the query-builder to eager-load the nodes that are connected to
 // the "store_app_binary" edge. The optional arguments are used to configure the query builder of the edge.
-func (saq *StoreAppQuery) WithStoreAppBinary(opts ...func(*StoreAppBinaryQuery)) *StoreAppQuery {
-	query := (&StoreAppBinaryClient{config: saq.config}).Query()
+func (_q *StoreAppQuery) WithStoreAppBinary(opts ...func(*StoreAppBinaryQuery)) *StoreAppQuery {
+	query := (&StoreAppBinaryClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	saq.withStoreAppBinary = query
-	return saq
+	_q.withStoreAppBinary = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -344,10 +344,10 @@ func (saq *StoreAppQuery) WithStoreAppBinary(opts ...func(*StoreAppBinaryQuery))
 //		GroupBy(storeapp.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (saq *StoreAppQuery) GroupBy(field string, fields ...string) *StoreAppGroupBy {
-	saq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &StoreAppGroupBy{build: saq}
-	grbuild.flds = &saq.ctx.Fields
+func (_q *StoreAppQuery) GroupBy(field string, fields ...string) *StoreAppGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &StoreAppGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = storeapp.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -365,59 +365,59 @@ func (saq *StoreAppQuery) GroupBy(field string, fields ...string) *StoreAppGroup
 //	client.StoreApp.Query().
 //		Select(storeapp.FieldName).
 //		Scan(ctx, &v)
-func (saq *StoreAppQuery) Select(fields ...string) *StoreAppSelect {
-	saq.ctx.Fields = append(saq.ctx.Fields, fields...)
-	sbuild := &StoreAppSelect{StoreAppQuery: saq}
+func (_q *StoreAppQuery) Select(fields ...string) *StoreAppSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &StoreAppSelect{StoreAppQuery: _q}
 	sbuild.label = storeapp.Label
-	sbuild.flds, sbuild.scan = &saq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a StoreAppSelect configured with the given aggregations.
-func (saq *StoreAppQuery) Aggregate(fns ...AggregateFunc) *StoreAppSelect {
-	return saq.Select().Aggregate(fns...)
+func (_q *StoreAppQuery) Aggregate(fns ...AggregateFunc) *StoreAppSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (saq *StoreAppQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range saq.inters {
+func (_q *StoreAppQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, saq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range saq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !storeapp.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if saq.path != nil {
-		prev, err := saq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		saq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (saq *StoreAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*StoreApp, error) {
+func (_q *StoreAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*StoreApp, error) {
 	var (
 		nodes       = []*StoreApp{}
-		_spec       = saq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			saq.withAppBinary != nil,
-			saq.withStoreAppBinary != nil,
+			_q.withAppBinary != nil,
+			_q.withStoreAppBinary != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*StoreApp).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &StoreApp{config: saq.config}
+		node := &StoreApp{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -425,21 +425,21 @@ func (saq *StoreAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*St
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, saq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := saq.withAppBinary; query != nil {
-		if err := saq.loadAppBinary(ctx, query, nodes,
+	if query := _q.withAppBinary; query != nil {
+		if err := _q.loadAppBinary(ctx, query, nodes,
 			func(n *StoreApp) { n.Edges.AppBinary = []*SentinelAppBinary{} },
 			func(n *StoreApp, e *SentinelAppBinary) { n.Edges.AppBinary = append(n.Edges.AppBinary, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := saq.withStoreAppBinary; query != nil {
-		if err := saq.loadStoreAppBinary(ctx, query, nodes,
+	if query := _q.withStoreAppBinary; query != nil {
+		if err := _q.loadStoreAppBinary(ctx, query, nodes,
 			func(n *StoreApp) { n.Edges.StoreAppBinary = []*StoreAppBinary{} },
 			func(n *StoreApp, e *StoreAppBinary) { n.Edges.StoreAppBinary = append(n.Edges.StoreAppBinary, e) }); err != nil {
 			return nil, err
@@ -448,7 +448,7 @@ func (saq *StoreAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*St
 	return nodes, nil
 }
 
-func (saq *StoreAppQuery) loadAppBinary(ctx context.Context, query *SentinelAppBinaryQuery, nodes []*StoreApp, init func(*StoreApp), assign func(*StoreApp, *SentinelAppBinary)) error {
+func (_q *StoreAppQuery) loadAppBinary(ctx context.Context, query *SentinelAppBinaryQuery, nodes []*StoreApp, init func(*StoreApp), assign func(*StoreApp, *SentinelAppBinary)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[model.InternalID]*StoreApp)
 	nids := make(map[model.InternalID]map[*StoreApp]struct{})
@@ -509,7 +509,7 @@ func (saq *StoreAppQuery) loadAppBinary(ctx context.Context, query *SentinelAppB
 	}
 	return nil
 }
-func (saq *StoreAppQuery) loadStoreAppBinary(ctx context.Context, query *StoreAppBinaryQuery, nodes []*StoreApp, init func(*StoreApp), assign func(*StoreApp, *StoreAppBinary)) error {
+func (_q *StoreAppQuery) loadStoreAppBinary(ctx context.Context, query *StoreAppBinaryQuery, nodes []*StoreApp, init func(*StoreApp), assign func(*StoreApp, *StoreAppBinary)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*StoreApp)
 	for i := range nodes {
@@ -540,24 +540,24 @@ func (saq *StoreAppQuery) loadStoreAppBinary(ctx context.Context, query *StoreAp
 	return nil
 }
 
-func (saq *StoreAppQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := saq.querySpec()
-	_spec.Node.Columns = saq.ctx.Fields
-	if len(saq.ctx.Fields) > 0 {
-		_spec.Unique = saq.ctx.Unique != nil && *saq.ctx.Unique
+func (_q *StoreAppQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, saq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (saq *StoreAppQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *StoreAppQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(storeapp.Table, storeapp.Columns, sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64))
-	_spec.From = saq.sql
-	if unique := saq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if saq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := saq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, storeapp.FieldID)
 		for i := range fields {
@@ -566,20 +566,20 @@ func (saq *StoreAppQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := saq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := saq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := saq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := saq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -589,33 +589,33 @@ func (saq *StoreAppQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (saq *StoreAppQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(saq.driver.Dialect())
+func (_q *StoreAppQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(storeapp.Table)
-	columns := saq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = storeapp.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if saq.sql != nil {
-		selector = saq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if saq.ctx.Unique != nil && *saq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range saq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range saq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := saq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := saq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -628,41 +628,41 @@ type StoreAppGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (sagb *StoreAppGroupBy) Aggregate(fns ...AggregateFunc) *StoreAppGroupBy {
-	sagb.fns = append(sagb.fns, fns...)
-	return sagb
+func (_g *StoreAppGroupBy) Aggregate(fns ...AggregateFunc) *StoreAppGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (sagb *StoreAppGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, sagb.build.ctx, ent.OpQueryGroupBy)
-	if err := sagb.build.prepareQuery(ctx); err != nil {
+func (_g *StoreAppGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*StoreAppQuery, *StoreAppGroupBy](ctx, sagb.build, sagb, sagb.build.inters, v)
+	return scanWithInterceptors[*StoreAppQuery, *StoreAppGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (sagb *StoreAppGroupBy) sqlScan(ctx context.Context, root *StoreAppQuery, v any) error {
+func (_g *StoreAppGroupBy) sqlScan(ctx context.Context, root *StoreAppQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(sagb.fns))
-	for _, fn := range sagb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*sagb.flds)+len(sagb.fns))
-		for _, f := range *sagb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*sagb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := sagb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -676,27 +676,27 @@ type StoreAppSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (sas *StoreAppSelect) Aggregate(fns ...AggregateFunc) *StoreAppSelect {
-	sas.fns = append(sas.fns, fns...)
-	return sas
+func (_s *StoreAppSelect) Aggregate(fns ...AggregateFunc) *StoreAppSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (sas *StoreAppSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, sas.ctx, ent.OpQuerySelect)
-	if err := sas.prepareQuery(ctx); err != nil {
+func (_s *StoreAppSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*StoreAppQuery, *StoreAppSelect](ctx, sas.StoreAppQuery, sas, sas.inters, v)
+	return scanWithInterceptors[*StoreAppQuery, *StoreAppSelect](ctx, _s.StoreAppQuery, _s, _s.inters, v)
 }
 
-func (sas *StoreAppSelect) sqlScan(ctx context.Context, root *StoreAppQuery, v any) error {
+func (_s *StoreAppSelect) sqlScan(ctx context.Context, root *StoreAppQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(sas.fns))
-	for _, fn := range sas.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*sas.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -704,7 +704,7 @@ func (sas *StoreAppSelect) sqlScan(ctx context.Context, root *StoreAppQuery, v a
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := sas.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

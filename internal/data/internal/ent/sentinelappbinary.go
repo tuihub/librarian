@@ -101,7 +101,7 @@ func (*SentinelAppBinary) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the SentinelAppBinary fields.
-func (sab *SentinelAppBinary) assignValues(columns []string, values []any) error {
+func (_m *SentinelAppBinary) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -111,88 +111,88 @@ func (sab *SentinelAppBinary) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				sab.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case sentinelappbinary.FieldUnionID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field union_id", values[i])
 			} else if value.Valid {
-				sab.UnionID = value.String
+				_m.UnionID = value.String
 			}
 		case sentinelappbinary.FieldSentinelID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_id", values[i])
 			} else if value.Valid {
-				sab.SentinelID = model.InternalID(value.Int64)
+				_m.SentinelID = model.InternalID(value.Int64)
 			}
 		case sentinelappbinary.FieldSentinelLibraryReportedID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_library_reported_id", values[i])
 			} else if value.Valid {
-				sab.SentinelLibraryReportedID = value.Int64
+				_m.SentinelLibraryReportedID = value.Int64
 			}
 		case sentinelappbinary.FieldLibrarySnapshot:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field library_snapshot", values[i])
 			} else if value.Valid {
-				sab.LibrarySnapshot = value.Time
+				_m.LibrarySnapshot = value.Time
 			}
 		case sentinelappbinary.FieldGeneratedID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field generated_id", values[i])
 			} else if value.Valid {
-				sab.GeneratedID = value.String
+				_m.GeneratedID = value.String
 			}
 		case sentinelappbinary.FieldSizeBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field size_bytes", values[i])
 			} else if value.Valid {
-				sab.SizeBytes = value.Int64
+				_m.SizeBytes = value.Int64
 			}
 		case sentinelappbinary.FieldNeedToken:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field need_token", values[i])
 			} else if value.Valid {
-				sab.NeedToken = value.Bool
+				_m.NeedToken = value.Bool
 			}
 		case sentinelappbinary.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				sab.Name = value.String
+				_m.Name = value.String
 			}
 		case sentinelappbinary.FieldVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field version", values[i])
 			} else if value.Valid {
-				sab.Version = value.String
+				_m.Version = value.String
 			}
 		case sentinelappbinary.FieldDeveloper:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field developer", values[i])
 			} else if value.Valid {
-				sab.Developer = value.String
+				_m.Developer = value.String
 			}
 		case sentinelappbinary.FieldPublisher:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field publisher", values[i])
 			} else if value.Valid {
-				sab.Publisher = value.String
+				_m.Publisher = value.String
 			}
 		case sentinelappbinary.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				sab.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case sentinelappbinary.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				sab.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			sab.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -200,81 +200,81 @@ func (sab *SentinelAppBinary) assignValues(columns []string, values []any) error
 
 // Value returns the ent.Value that was dynamically selected and assigned to the SentinelAppBinary.
 // This includes values selected through modifiers, order, etc.
-func (sab *SentinelAppBinary) Value(name string) (ent.Value, error) {
-	return sab.selectValues.Get(name)
+func (_m *SentinelAppBinary) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryStoreApp queries the "store_app" edge of the SentinelAppBinary entity.
-func (sab *SentinelAppBinary) QueryStoreApp() *StoreAppQuery {
-	return NewSentinelAppBinaryClient(sab.config).QueryStoreApp(sab)
+func (_m *SentinelAppBinary) QueryStoreApp() *StoreAppQuery {
+	return NewSentinelAppBinaryClient(_m.config).QueryStoreApp(_m)
 }
 
 // QueryStoreAppBinary queries the "store_app_binary" edge of the SentinelAppBinary entity.
-func (sab *SentinelAppBinary) QueryStoreAppBinary() *StoreAppBinaryQuery {
-	return NewSentinelAppBinaryClient(sab.config).QueryStoreAppBinary(sab)
+func (_m *SentinelAppBinary) QueryStoreAppBinary() *StoreAppBinaryQuery {
+	return NewSentinelAppBinaryClient(_m.config).QueryStoreAppBinary(_m)
 }
 
 // Update returns a builder for updating this SentinelAppBinary.
 // Note that you need to call SentinelAppBinary.Unwrap() before calling this method if this SentinelAppBinary
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (sab *SentinelAppBinary) Update() *SentinelAppBinaryUpdateOne {
-	return NewSentinelAppBinaryClient(sab.config).UpdateOne(sab)
+func (_m *SentinelAppBinary) Update() *SentinelAppBinaryUpdateOne {
+	return NewSentinelAppBinaryClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the SentinelAppBinary entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (sab *SentinelAppBinary) Unwrap() *SentinelAppBinary {
-	_tx, ok := sab.config.driver.(*txDriver)
+func (_m *SentinelAppBinary) Unwrap() *SentinelAppBinary {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: SentinelAppBinary is not a transactional entity")
 	}
-	sab.config.driver = _tx.drv
-	return sab
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (sab *SentinelAppBinary) String() string {
+func (_m *SentinelAppBinary) String() string {
 	var builder strings.Builder
 	builder.WriteString("SentinelAppBinary(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", sab.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("union_id=")
-	builder.WriteString(sab.UnionID)
+	builder.WriteString(_m.UnionID)
 	builder.WriteString(", ")
 	builder.WriteString("sentinel_id=")
-	builder.WriteString(fmt.Sprintf("%v", sab.SentinelID))
+	builder.WriteString(fmt.Sprintf("%v", _m.SentinelID))
 	builder.WriteString(", ")
 	builder.WriteString("sentinel_library_reported_id=")
-	builder.WriteString(fmt.Sprintf("%v", sab.SentinelLibraryReportedID))
+	builder.WriteString(fmt.Sprintf("%v", _m.SentinelLibraryReportedID))
 	builder.WriteString(", ")
 	builder.WriteString("library_snapshot=")
-	builder.WriteString(sab.LibrarySnapshot.Format(time.ANSIC))
+	builder.WriteString(_m.LibrarySnapshot.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("generated_id=")
-	builder.WriteString(sab.GeneratedID)
+	builder.WriteString(_m.GeneratedID)
 	builder.WriteString(", ")
 	builder.WriteString("size_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", sab.SizeBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.SizeBytes))
 	builder.WriteString(", ")
 	builder.WriteString("need_token=")
-	builder.WriteString(fmt.Sprintf("%v", sab.NeedToken))
+	builder.WriteString(fmt.Sprintf("%v", _m.NeedToken))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(sab.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("version=")
-	builder.WriteString(sab.Version)
+	builder.WriteString(_m.Version)
 	builder.WriteString(", ")
 	builder.WriteString("developer=")
-	builder.WriteString(sab.Developer)
+	builder.WriteString(_m.Developer)
 	builder.WriteString(", ")
 	builder.WriteString("publisher=")
-	builder.WriteString(sab.Publisher)
+	builder.WriteString(_m.Publisher)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(sab.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(sab.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

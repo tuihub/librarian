@@ -26,97 +26,97 @@ type FeedActionSetCreate struct {
 }
 
 // SetName sets the "name" field.
-func (fasc *FeedActionSetCreate) SetName(s string) *FeedActionSetCreate {
-	fasc.mutation.SetName(s)
-	return fasc
+func (_c *FeedActionSetCreate) SetName(v string) *FeedActionSetCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (fasc *FeedActionSetCreate) SetDescription(s string) *FeedActionSetCreate {
-	fasc.mutation.SetDescription(s)
-	return fasc
+func (_c *FeedActionSetCreate) SetDescription(v string) *FeedActionSetCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetActions sets the "actions" field.
-func (fasc *FeedActionSetCreate) SetActions(mr []*model.FeatureRequest) *FeedActionSetCreate {
-	fasc.mutation.SetActions(mr)
-	return fasc
+func (_c *FeedActionSetCreate) SetActions(v []*model.FeatureRequest) *FeedActionSetCreate {
+	_c.mutation.SetActions(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fasc *FeedActionSetCreate) SetUpdatedAt(t time.Time) *FeedActionSetCreate {
-	fasc.mutation.SetUpdatedAt(t)
-	return fasc
+func (_c *FeedActionSetCreate) SetUpdatedAt(v time.Time) *FeedActionSetCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (fasc *FeedActionSetCreate) SetNillableUpdatedAt(t *time.Time) *FeedActionSetCreate {
-	if t != nil {
-		fasc.SetUpdatedAt(*t)
+func (_c *FeedActionSetCreate) SetNillableUpdatedAt(v *time.Time) *FeedActionSetCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return fasc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fasc *FeedActionSetCreate) SetCreatedAt(t time.Time) *FeedActionSetCreate {
-	fasc.mutation.SetCreatedAt(t)
-	return fasc
+func (_c *FeedActionSetCreate) SetCreatedAt(v time.Time) *FeedActionSetCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fasc *FeedActionSetCreate) SetNillableCreatedAt(t *time.Time) *FeedActionSetCreate {
-	if t != nil {
-		fasc.SetCreatedAt(*t)
+func (_c *FeedActionSetCreate) SetNillableCreatedAt(v *time.Time) *FeedActionSetCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return fasc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (fasc *FeedActionSetCreate) SetID(mi model.InternalID) *FeedActionSetCreate {
-	fasc.mutation.SetID(mi)
-	return fasc
+func (_c *FeedActionSetCreate) SetID(v model.InternalID) *FeedActionSetCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (fasc *FeedActionSetCreate) SetOwnerID(id model.InternalID) *FeedActionSetCreate {
-	fasc.mutation.SetOwnerID(id)
-	return fasc
+func (_c *FeedActionSetCreate) SetOwnerID(id model.InternalID) *FeedActionSetCreate {
+	_c.mutation.SetOwnerID(id)
+	return _c
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (fasc *FeedActionSetCreate) SetOwner(u *User) *FeedActionSetCreate {
-	return fasc.SetOwnerID(u.ID)
+func (_c *FeedActionSetCreate) SetOwner(v *User) *FeedActionSetCreate {
+	return _c.SetOwnerID(v.ID)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
-func (fasc *FeedActionSetCreate) AddFeedConfigIDs(ids ...model.InternalID) *FeedActionSetCreate {
-	fasc.mutation.AddFeedConfigIDs(ids...)
-	return fasc
+func (_c *FeedActionSetCreate) AddFeedConfigIDs(ids ...model.InternalID) *FeedActionSetCreate {
+	_c.mutation.AddFeedConfigIDs(ids...)
+	return _c
 }
 
 // AddFeedConfig adds the "feed_config" edges to the FeedConfig entity.
-func (fasc *FeedActionSetCreate) AddFeedConfig(f ...*FeedConfig) *FeedActionSetCreate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_c *FeedActionSetCreate) AddFeedConfig(v ...*FeedConfig) *FeedActionSetCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fasc.AddFeedConfigIDs(ids...)
+	return _c.AddFeedConfigIDs(ids...)
 }
 
 // Mutation returns the FeedActionSetMutation object of the builder.
-func (fasc *FeedActionSetCreate) Mutation() *FeedActionSetMutation {
-	return fasc.mutation
+func (_c *FeedActionSetCreate) Mutation() *FeedActionSetMutation {
+	return _c.mutation
 }
 
 // Save creates the FeedActionSet in the database.
-func (fasc *FeedActionSetCreate) Save(ctx context.Context) (*FeedActionSet, error) {
-	fasc.defaults()
-	return withHooks(ctx, fasc.sqlSave, fasc.mutation, fasc.hooks)
+func (_c *FeedActionSetCreate) Save(ctx context.Context) (*FeedActionSet, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (fasc *FeedActionSetCreate) SaveX(ctx context.Context) *FeedActionSet {
-	v, err := fasc.Save(ctx)
+func (_c *FeedActionSetCreate) SaveX(ctx context.Context) *FeedActionSet {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -124,59 +124,59 @@ func (fasc *FeedActionSetCreate) SaveX(ctx context.Context) *FeedActionSet {
 }
 
 // Exec executes the query.
-func (fasc *FeedActionSetCreate) Exec(ctx context.Context) error {
-	_, err := fasc.Save(ctx)
+func (_c *FeedActionSetCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fasc *FeedActionSetCreate) ExecX(ctx context.Context) {
-	if err := fasc.Exec(ctx); err != nil {
+func (_c *FeedActionSetCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fasc *FeedActionSetCreate) defaults() {
-	if _, ok := fasc.mutation.UpdatedAt(); !ok {
+func (_c *FeedActionSetCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := feedactionset.DefaultUpdatedAt()
-		fasc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := fasc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := feedactionset.DefaultCreatedAt()
-		fasc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fasc *FeedActionSetCreate) check() error {
-	if _, ok := fasc.mutation.Name(); !ok {
+func (_c *FeedActionSetCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "FeedActionSet.name"`)}
 	}
-	if _, ok := fasc.mutation.Description(); !ok {
+	if _, ok := _c.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "FeedActionSet.description"`)}
 	}
-	if _, ok := fasc.mutation.Actions(); !ok {
+	if _, ok := _c.mutation.Actions(); !ok {
 		return &ValidationError{Name: "actions", err: errors.New(`ent: missing required field "FeedActionSet.actions"`)}
 	}
-	if _, ok := fasc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "FeedActionSet.updated_at"`)}
 	}
-	if _, ok := fasc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedActionSet.created_at"`)}
 	}
-	if len(fasc.mutation.OwnerIDs()) == 0 {
+	if len(_c.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "FeedActionSet.owner"`)}
 	}
 	return nil
 }
 
-func (fasc *FeedActionSetCreate) sqlSave(ctx context.Context) (*FeedActionSet, error) {
-	if err := fasc.check(); err != nil {
+func (_c *FeedActionSetCreate) sqlSave(ctx context.Context) (*FeedActionSet, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := fasc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, fasc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -186,42 +186,42 @@ func (fasc *FeedActionSetCreate) sqlSave(ctx context.Context) (*FeedActionSet, e
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	fasc.mutation.id = &_node.ID
-	fasc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (fasc *FeedActionSetCreate) createSpec() (*FeedActionSet, *sqlgraph.CreateSpec) {
+func (_c *FeedActionSetCreate) createSpec() (*FeedActionSet, *sqlgraph.CreateSpec) {
 	var (
-		_node = &FeedActionSet{config: fasc.config}
+		_node = &FeedActionSet{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(feedactionset.Table, sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = fasc.conflict
-	if id, ok := fasc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := fasc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(feedactionset.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := fasc.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(feedactionset.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := fasc.mutation.Actions(); ok {
+	if value, ok := _c.mutation.Actions(); ok {
 		_spec.SetField(feedactionset.FieldActions, field.TypeJSON, value)
 		_node.Actions = value
 	}
-	if value, ok := fasc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedactionset.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := fasc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(feedactionset.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := fasc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -238,7 +238,7 @@ func (fasc *FeedActionSetCreate) createSpec() (*FeedActionSet, *sqlgraph.CreateS
 		_node.user_feed_action_set = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fasc.mutation.FeedConfigIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FeedConfigIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -273,10 +273,10 @@ func (fasc *FeedActionSetCreate) createSpec() (*FeedActionSet, *sqlgraph.CreateS
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (fasc *FeedActionSetCreate) OnConflict(opts ...sql.ConflictOption) *FeedActionSetUpsertOne {
-	fasc.conflict = opts
+func (_c *FeedActionSetCreate) OnConflict(opts ...sql.ConflictOption) *FeedActionSetUpsertOne {
+	_c.conflict = opts
 	return &FeedActionSetUpsertOne{
-		create: fasc,
+		create: _c,
 	}
 }
 
@@ -286,10 +286,10 @@ func (fasc *FeedActionSetCreate) OnConflict(opts ...sql.ConflictOption) *FeedAct
 //	client.FeedActionSet.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (fasc *FeedActionSetCreate) OnConflictColumns(columns ...string) *FeedActionSetUpsertOne {
-	fasc.conflict = append(fasc.conflict, sql.ConflictColumns(columns...))
+func (_c *FeedActionSetCreate) OnConflictColumns(columns ...string) *FeedActionSetUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FeedActionSetUpsertOne{
-		create: fasc,
+		create: _c,
 	}
 }
 
@@ -526,16 +526,16 @@ type FeedActionSetCreateBulk struct {
 }
 
 // Save creates the FeedActionSet entities in the database.
-func (fascb *FeedActionSetCreateBulk) Save(ctx context.Context) ([]*FeedActionSet, error) {
-	if fascb.err != nil {
-		return nil, fascb.err
+func (_c *FeedActionSetCreateBulk) Save(ctx context.Context) ([]*FeedActionSet, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(fascb.builders))
-	nodes := make([]*FeedActionSet, len(fascb.builders))
-	mutators := make([]Mutator, len(fascb.builders))
-	for i := range fascb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*FeedActionSet, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := fascb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FeedActionSetMutation)
@@ -549,12 +549,12 @@ func (fascb *FeedActionSetCreateBulk) Save(ctx context.Context) ([]*FeedActionSe
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, fascb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = fascb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, fascb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -578,7 +578,7 @@ func (fascb *FeedActionSetCreateBulk) Save(ctx context.Context) ([]*FeedActionSe
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, fascb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -586,8 +586,8 @@ func (fascb *FeedActionSetCreateBulk) Save(ctx context.Context) ([]*FeedActionSe
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fascb *FeedActionSetCreateBulk) SaveX(ctx context.Context) []*FeedActionSet {
-	v, err := fascb.Save(ctx)
+func (_c *FeedActionSetCreateBulk) SaveX(ctx context.Context) []*FeedActionSet {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -595,14 +595,14 @@ func (fascb *FeedActionSetCreateBulk) SaveX(ctx context.Context) []*FeedActionSe
 }
 
 // Exec executes the query.
-func (fascb *FeedActionSetCreateBulk) Exec(ctx context.Context) error {
-	_, err := fascb.Save(ctx)
+func (_c *FeedActionSetCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fascb *FeedActionSetCreateBulk) ExecX(ctx context.Context) {
-	if err := fascb.Exec(ctx); err != nil {
+func (_c *FeedActionSetCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -622,10 +622,10 @@ func (fascb *FeedActionSetCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (fascb *FeedActionSetCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedActionSetUpsertBulk {
-	fascb.conflict = opts
+func (_c *FeedActionSetCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedActionSetUpsertBulk {
+	_c.conflict = opts
 	return &FeedActionSetUpsertBulk{
-		create: fascb,
+		create: _c,
 	}
 }
 
@@ -635,10 +635,10 @@ func (fascb *FeedActionSetCreateBulk) OnConflict(opts ...sql.ConflictOption) *Fe
 //	client.FeedActionSet.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (fascb *FeedActionSetCreateBulk) OnConflictColumns(columns ...string) *FeedActionSetUpsertBulk {
-	fascb.conflict = append(fascb.conflict, sql.ConflictColumns(columns...))
+func (_c *FeedActionSetCreateBulk) OnConflictColumns(columns ...string) *FeedActionSetUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FeedActionSetUpsertBulk{
-		create: fascb,
+		create: _c,
 	}
 }
 

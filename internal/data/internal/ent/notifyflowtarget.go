@@ -92,7 +92,7 @@ func (*NotifyFlowTarget) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the NotifyFlowTarget fields.
-func (nft *NotifyFlowTarget) assignValues(columns []string, values []any) error {
+func (_m *NotifyFlowTarget) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -103,24 +103,24 @@ func (nft *NotifyFlowTarget) assignValues(columns []string, values []any) error 
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			nft.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case notifyflowtarget.FieldNotifyFlowID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field notify_flow_id", values[i])
 			} else if value.Valid {
-				nft.NotifyFlowID = model.InternalID(value.Int64)
+				_m.NotifyFlowID = model.InternalID(value.Int64)
 			}
 		case notifyflowtarget.FieldNotifyTargetID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field notify_target_id", values[i])
 			} else if value.Valid {
-				nft.NotifyTargetID = model.InternalID(value.Int64)
+				_m.NotifyTargetID = model.InternalID(value.Int64)
 			}
 		case notifyflowtarget.FieldFilterIncludeKeywords:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field filter_include_keywords", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &nft.FilterIncludeKeywords); err != nil {
+				if err := json.Unmarshal(*value, &_m.FilterIncludeKeywords); err != nil {
 					return fmt.Errorf("unmarshal field filter_include_keywords: %w", err)
 				}
 			}
@@ -128,7 +128,7 @@ func (nft *NotifyFlowTarget) assignValues(columns []string, values []any) error 
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field filter_exclude_keywords", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &nft.FilterExcludeKeywords); err != nil {
+				if err := json.Unmarshal(*value, &_m.FilterExcludeKeywords); err != nil {
 					return fmt.Errorf("unmarshal field filter_exclude_keywords: %w", err)
 				}
 			}
@@ -136,16 +136,16 @@ func (nft *NotifyFlowTarget) assignValues(columns []string, values []any) error 
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				nft.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case notifyflowtarget.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				nft.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			nft.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -153,60 +153,60 @@ func (nft *NotifyFlowTarget) assignValues(columns []string, values []any) error 
 
 // Value returns the ent.Value that was dynamically selected and assigned to the NotifyFlowTarget.
 // This includes values selected through modifiers, order, etc.
-func (nft *NotifyFlowTarget) Value(name string) (ent.Value, error) {
-	return nft.selectValues.Get(name)
+func (_m *NotifyFlowTarget) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryNotifyFlow queries the "notify_flow" edge of the NotifyFlowTarget entity.
-func (nft *NotifyFlowTarget) QueryNotifyFlow() *NotifyFlowQuery {
-	return NewNotifyFlowTargetClient(nft.config).QueryNotifyFlow(nft)
+func (_m *NotifyFlowTarget) QueryNotifyFlow() *NotifyFlowQuery {
+	return NewNotifyFlowTargetClient(_m.config).QueryNotifyFlow(_m)
 }
 
 // QueryNotifyTarget queries the "notify_target" edge of the NotifyFlowTarget entity.
-func (nft *NotifyFlowTarget) QueryNotifyTarget() *NotifyTargetQuery {
-	return NewNotifyFlowTargetClient(nft.config).QueryNotifyTarget(nft)
+func (_m *NotifyFlowTarget) QueryNotifyTarget() *NotifyTargetQuery {
+	return NewNotifyFlowTargetClient(_m.config).QueryNotifyTarget(_m)
 }
 
 // Update returns a builder for updating this NotifyFlowTarget.
 // Note that you need to call NotifyFlowTarget.Unwrap() before calling this method if this NotifyFlowTarget
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (nft *NotifyFlowTarget) Update() *NotifyFlowTargetUpdateOne {
-	return NewNotifyFlowTargetClient(nft.config).UpdateOne(nft)
+func (_m *NotifyFlowTarget) Update() *NotifyFlowTargetUpdateOne {
+	return NewNotifyFlowTargetClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the NotifyFlowTarget entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (nft *NotifyFlowTarget) Unwrap() *NotifyFlowTarget {
-	_tx, ok := nft.config.driver.(*txDriver)
+func (_m *NotifyFlowTarget) Unwrap() *NotifyFlowTarget {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: NotifyFlowTarget is not a transactional entity")
 	}
-	nft.config.driver = _tx.drv
-	return nft
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (nft *NotifyFlowTarget) String() string {
+func (_m *NotifyFlowTarget) String() string {
 	var builder strings.Builder
 	builder.WriteString("NotifyFlowTarget(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", nft.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("notify_flow_id=")
-	builder.WriteString(fmt.Sprintf("%v", nft.NotifyFlowID))
+	builder.WriteString(fmt.Sprintf("%v", _m.NotifyFlowID))
 	builder.WriteString(", ")
 	builder.WriteString("notify_target_id=")
-	builder.WriteString(fmt.Sprintf("%v", nft.NotifyTargetID))
+	builder.WriteString(fmt.Sprintf("%v", _m.NotifyTargetID))
 	builder.WriteString(", ")
 	builder.WriteString("filter_include_keywords=")
-	builder.WriteString(fmt.Sprintf("%v", nft.FilterIncludeKeywords))
+	builder.WriteString(fmt.Sprintf("%v", _m.FilterIncludeKeywords))
 	builder.WriteString(", ")
 	builder.WriteString("filter_exclude_keywords=")
-	builder.WriteString(fmt.Sprintf("%v", nft.FilterExcludeKeywords))
+	builder.WriteString(fmt.Sprintf("%v", _m.FilterExcludeKeywords))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(nft.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(nft.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

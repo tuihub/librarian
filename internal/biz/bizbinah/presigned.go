@@ -6,7 +6,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libtime"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	pb "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )

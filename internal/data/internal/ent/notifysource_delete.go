@@ -20,56 +20,56 @@ type NotifySourceDelete struct {
 }
 
 // Where appends a list predicates to the NotifySourceDelete builder.
-func (nsd *NotifySourceDelete) Where(ps ...predicate.NotifySource) *NotifySourceDelete {
-	nsd.mutation.Where(ps...)
-	return nsd
+func (_d *NotifySourceDelete) Where(ps ...predicate.NotifySource) *NotifySourceDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (nsd *NotifySourceDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, nsd.sqlExec, nsd.mutation, nsd.hooks)
+func (_d *NotifySourceDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nsd *NotifySourceDelete) ExecX(ctx context.Context) int {
-	n, err := nsd.Exec(ctx)
+func (_d *NotifySourceDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (nsd *NotifySourceDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *NotifySourceDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(notifysource.Table, sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64))
-	if ps := nsd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, nsd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	nsd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // NotifySourceDeleteOne is the builder for deleting a single NotifySource entity.
 type NotifySourceDeleteOne struct {
-	nsd *NotifySourceDelete
+	_d *NotifySourceDelete
 }
 
 // Where appends a list predicates to the NotifySourceDelete builder.
-func (nsdo *NotifySourceDeleteOne) Where(ps ...predicate.NotifySource) *NotifySourceDeleteOne {
-	nsdo.nsd.mutation.Where(ps...)
-	return nsdo
+func (_d *NotifySourceDeleteOne) Where(ps ...predicate.NotifySource) *NotifySourceDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (nsdo *NotifySourceDeleteOne) Exec(ctx context.Context) error {
-	n, err := nsdo.nsd.Exec(ctx)
+func (_d *NotifySourceDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (nsdo *NotifySourceDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nsdo *NotifySourceDeleteOne) ExecX(ctx context.Context) {
-	if err := nsdo.Exec(ctx); err != nil {
+func (_d *NotifySourceDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

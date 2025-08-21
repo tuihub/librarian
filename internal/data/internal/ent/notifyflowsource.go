@@ -92,7 +92,7 @@ func (*NotifyFlowSource) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the NotifyFlowSource fields.
-func (nfs *NotifyFlowSource) assignValues(columns []string, values []any) error {
+func (_m *NotifyFlowSource) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -103,24 +103,24 @@ func (nfs *NotifyFlowSource) assignValues(columns []string, values []any) error 
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			nfs.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case notifyflowsource.FieldNotifyFlowID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field notify_flow_id", values[i])
 			} else if value.Valid {
-				nfs.NotifyFlowID = model.InternalID(value.Int64)
+				_m.NotifyFlowID = model.InternalID(value.Int64)
 			}
 		case notifyflowsource.FieldNotifySourceID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field notify_source_id", values[i])
 			} else if value.Valid {
-				nfs.NotifySourceID = model.InternalID(value.Int64)
+				_m.NotifySourceID = model.InternalID(value.Int64)
 			}
 		case notifyflowsource.FieldFilterIncludeKeywords:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field filter_include_keywords", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &nfs.FilterIncludeKeywords); err != nil {
+				if err := json.Unmarshal(*value, &_m.FilterIncludeKeywords); err != nil {
 					return fmt.Errorf("unmarshal field filter_include_keywords: %w", err)
 				}
 			}
@@ -128,7 +128,7 @@ func (nfs *NotifyFlowSource) assignValues(columns []string, values []any) error 
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field filter_exclude_keywords", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &nfs.FilterExcludeKeywords); err != nil {
+				if err := json.Unmarshal(*value, &_m.FilterExcludeKeywords); err != nil {
 					return fmt.Errorf("unmarshal field filter_exclude_keywords: %w", err)
 				}
 			}
@@ -136,16 +136,16 @@ func (nfs *NotifyFlowSource) assignValues(columns []string, values []any) error 
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				nfs.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case notifyflowsource.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				nfs.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			nfs.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -153,60 +153,60 @@ func (nfs *NotifyFlowSource) assignValues(columns []string, values []any) error 
 
 // Value returns the ent.Value that was dynamically selected and assigned to the NotifyFlowSource.
 // This includes values selected through modifiers, order, etc.
-func (nfs *NotifyFlowSource) Value(name string) (ent.Value, error) {
-	return nfs.selectValues.Get(name)
+func (_m *NotifyFlowSource) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryNotifyFlow queries the "notify_flow" edge of the NotifyFlowSource entity.
-func (nfs *NotifyFlowSource) QueryNotifyFlow() *NotifyFlowQuery {
-	return NewNotifyFlowSourceClient(nfs.config).QueryNotifyFlow(nfs)
+func (_m *NotifyFlowSource) QueryNotifyFlow() *NotifyFlowQuery {
+	return NewNotifyFlowSourceClient(_m.config).QueryNotifyFlow(_m)
 }
 
 // QueryNotifySource queries the "notify_source" edge of the NotifyFlowSource entity.
-func (nfs *NotifyFlowSource) QueryNotifySource() *NotifySourceQuery {
-	return NewNotifyFlowSourceClient(nfs.config).QueryNotifySource(nfs)
+func (_m *NotifyFlowSource) QueryNotifySource() *NotifySourceQuery {
+	return NewNotifyFlowSourceClient(_m.config).QueryNotifySource(_m)
 }
 
 // Update returns a builder for updating this NotifyFlowSource.
 // Note that you need to call NotifyFlowSource.Unwrap() before calling this method if this NotifyFlowSource
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (nfs *NotifyFlowSource) Update() *NotifyFlowSourceUpdateOne {
-	return NewNotifyFlowSourceClient(nfs.config).UpdateOne(nfs)
+func (_m *NotifyFlowSource) Update() *NotifyFlowSourceUpdateOne {
+	return NewNotifyFlowSourceClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the NotifyFlowSource entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (nfs *NotifyFlowSource) Unwrap() *NotifyFlowSource {
-	_tx, ok := nfs.config.driver.(*txDriver)
+func (_m *NotifyFlowSource) Unwrap() *NotifyFlowSource {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: NotifyFlowSource is not a transactional entity")
 	}
-	nfs.config.driver = _tx.drv
-	return nfs
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (nfs *NotifyFlowSource) String() string {
+func (_m *NotifyFlowSource) String() string {
 	var builder strings.Builder
 	builder.WriteString("NotifyFlowSource(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", nfs.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("notify_flow_id=")
-	builder.WriteString(fmt.Sprintf("%v", nfs.NotifyFlowID))
+	builder.WriteString(fmt.Sprintf("%v", _m.NotifyFlowID))
 	builder.WriteString(", ")
 	builder.WriteString("notify_source_id=")
-	builder.WriteString(fmt.Sprintf("%v", nfs.NotifySourceID))
+	builder.WriteString(fmt.Sprintf("%v", _m.NotifySourceID))
 	builder.WriteString(", ")
 	builder.WriteString("filter_include_keywords=")
-	builder.WriteString(fmt.Sprintf("%v", nfs.FilterIncludeKeywords))
+	builder.WriteString(fmt.Sprintf("%v", _m.FilterIncludeKeywords))
 	builder.WriteString(", ")
 	builder.WriteString("filter_exclude_keywords=")
-	builder.WriteString(fmt.Sprintf("%v", nfs.FilterExcludeKeywords))
+	builder.WriteString(fmt.Sprintf("%v", _m.FilterExcludeKeywords))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(nfs.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(nfs.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

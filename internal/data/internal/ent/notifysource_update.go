@@ -29,196 +29,196 @@ type NotifySourceUpdate struct {
 }
 
 // Where appends a list predicates to the NotifySourceUpdate builder.
-func (nsu *NotifySourceUpdate) Where(ps ...predicate.NotifySource) *NotifySourceUpdate {
-	nsu.mutation.Where(ps...)
-	return nsu
+func (_u *NotifySourceUpdate) Where(ps ...predicate.NotifySource) *NotifySourceUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetFeedConfigID sets the "feed_config_id" field.
-func (nsu *NotifySourceUpdate) SetFeedConfigID(mi model.InternalID) *NotifySourceUpdate {
-	nsu.mutation.SetFeedConfigID(mi)
-	return nsu
+func (_u *NotifySourceUpdate) SetFeedConfigID(v model.InternalID) *NotifySourceUpdate {
+	_u.mutation.SetFeedConfigID(v)
+	return _u
 }
 
 // SetNillableFeedConfigID sets the "feed_config_id" field if the given value is not nil.
-func (nsu *NotifySourceUpdate) SetNillableFeedConfigID(mi *model.InternalID) *NotifySourceUpdate {
-	if mi != nil {
-		nsu.SetFeedConfigID(*mi)
+func (_u *NotifySourceUpdate) SetNillableFeedConfigID(v *model.InternalID) *NotifySourceUpdate {
+	if v != nil {
+		_u.SetFeedConfigID(*v)
 	}
-	return nsu
+	return _u
 }
 
 // ClearFeedConfigID clears the value of the "feed_config_id" field.
-func (nsu *NotifySourceUpdate) ClearFeedConfigID() *NotifySourceUpdate {
-	nsu.mutation.ClearFeedConfigID()
-	return nsu
+func (_u *NotifySourceUpdate) ClearFeedConfigID() *NotifySourceUpdate {
+	_u.mutation.ClearFeedConfigID()
+	return _u
 }
 
 // SetFeedItemCollectionID sets the "feed_item_collection_id" field.
-func (nsu *NotifySourceUpdate) SetFeedItemCollectionID(mi model.InternalID) *NotifySourceUpdate {
-	nsu.mutation.SetFeedItemCollectionID(mi)
-	return nsu
+func (_u *NotifySourceUpdate) SetFeedItemCollectionID(v model.InternalID) *NotifySourceUpdate {
+	_u.mutation.SetFeedItemCollectionID(v)
+	return _u
 }
 
 // SetNillableFeedItemCollectionID sets the "feed_item_collection_id" field if the given value is not nil.
-func (nsu *NotifySourceUpdate) SetNillableFeedItemCollectionID(mi *model.InternalID) *NotifySourceUpdate {
-	if mi != nil {
-		nsu.SetFeedItemCollectionID(*mi)
+func (_u *NotifySourceUpdate) SetNillableFeedItemCollectionID(v *model.InternalID) *NotifySourceUpdate {
+	if v != nil {
+		_u.SetFeedItemCollectionID(*v)
 	}
-	return nsu
+	return _u
 }
 
 // ClearFeedItemCollectionID clears the value of the "feed_item_collection_id" field.
-func (nsu *NotifySourceUpdate) ClearFeedItemCollectionID() *NotifySourceUpdate {
-	nsu.mutation.ClearFeedItemCollectionID()
-	return nsu
+func (_u *NotifySourceUpdate) ClearFeedItemCollectionID() *NotifySourceUpdate {
+	_u.mutation.ClearFeedItemCollectionID()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (nsu *NotifySourceUpdate) SetUpdatedAt(t time.Time) *NotifySourceUpdate {
-	nsu.mutation.SetUpdatedAt(t)
-	return nsu
+func (_u *NotifySourceUpdate) SetUpdatedAt(v time.Time) *NotifySourceUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (nsu *NotifySourceUpdate) SetCreatedAt(t time.Time) *NotifySourceUpdate {
-	nsu.mutation.SetCreatedAt(t)
-	return nsu
+func (_u *NotifySourceUpdate) SetCreatedAt(v time.Time) *NotifySourceUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (nsu *NotifySourceUpdate) SetNillableCreatedAt(t *time.Time) *NotifySourceUpdate {
-	if t != nil {
-		nsu.SetCreatedAt(*t)
+func (_u *NotifySourceUpdate) SetNillableCreatedAt(v *time.Time) *NotifySourceUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return nsu
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (nsu *NotifySourceUpdate) SetOwnerID(id model.InternalID) *NotifySourceUpdate {
-	nsu.mutation.SetOwnerID(id)
-	return nsu
+func (_u *NotifySourceUpdate) SetOwnerID(id model.InternalID) *NotifySourceUpdate {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (nsu *NotifySourceUpdate) SetOwner(u *User) *NotifySourceUpdate {
-	return nsu.SetOwnerID(u.ID)
+func (_u *NotifySourceUpdate) SetOwner(v *User) *NotifySourceUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (nsu *NotifySourceUpdate) AddNotifyFlowIDs(ids ...model.InternalID) *NotifySourceUpdate {
-	nsu.mutation.AddNotifyFlowIDs(ids...)
-	return nsu
+func (_u *NotifySourceUpdate) AddNotifyFlowIDs(ids ...model.InternalID) *NotifySourceUpdate {
+	_u.mutation.AddNotifyFlowIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
-func (nsu *NotifySourceUpdate) AddNotifyFlow(n ...*NotifyFlow) *NotifySourceUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifySourceUpdate) AddNotifyFlow(v ...*NotifyFlow) *NotifySourceUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsu.AddNotifyFlowIDs(ids...)
+	return _u.AddNotifyFlowIDs(ids...)
 }
 
 // SetFeedConfig sets the "feed_config" edge to the FeedConfig entity.
-func (nsu *NotifySourceUpdate) SetFeedConfig(f *FeedConfig) *NotifySourceUpdate {
-	return nsu.SetFeedConfigID(f.ID)
+func (_u *NotifySourceUpdate) SetFeedConfig(v *FeedConfig) *NotifySourceUpdate {
+	return _u.SetFeedConfigID(v.ID)
 }
 
 // SetFeedItemCollection sets the "feed_item_collection" edge to the FeedItemCollection entity.
-func (nsu *NotifySourceUpdate) SetFeedItemCollection(f *FeedItemCollection) *NotifySourceUpdate {
-	return nsu.SetFeedItemCollectionID(f.ID)
+func (_u *NotifySourceUpdate) SetFeedItemCollection(v *FeedItemCollection) *NotifySourceUpdate {
+	return _u.SetFeedItemCollectionID(v.ID)
 }
 
 // AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (nsu *NotifySourceUpdate) AddNotifyFlowSourceIDs(ids ...int) *NotifySourceUpdate {
-	nsu.mutation.AddNotifyFlowSourceIDs(ids...)
-	return nsu
+func (_u *NotifySourceUpdate) AddNotifyFlowSourceIDs(ids ...int) *NotifySourceUpdate {
+	_u.mutation.AddNotifyFlowSourceIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nsu *NotifySourceUpdate) AddNotifyFlowSource(n ...*NotifyFlowSource) *NotifySourceUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifySourceUpdate) AddNotifyFlowSource(v ...*NotifyFlowSource) *NotifySourceUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsu.AddNotifyFlowSourceIDs(ids...)
+	return _u.AddNotifyFlowSourceIDs(ids...)
 }
 
 // Mutation returns the NotifySourceMutation object of the builder.
-func (nsu *NotifySourceUpdate) Mutation() *NotifySourceMutation {
-	return nsu.mutation
+func (_u *NotifySourceUpdate) Mutation() *NotifySourceMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (nsu *NotifySourceUpdate) ClearOwner() *NotifySourceUpdate {
-	nsu.mutation.ClearOwner()
-	return nsu
+func (_u *NotifySourceUpdate) ClearOwner() *NotifySourceUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearNotifyFlow clears all "notify_flow" edges to the NotifyFlow entity.
-func (nsu *NotifySourceUpdate) ClearNotifyFlow() *NotifySourceUpdate {
-	nsu.mutation.ClearNotifyFlow()
-	return nsu
+func (_u *NotifySourceUpdate) ClearNotifyFlow() *NotifySourceUpdate {
+	_u.mutation.ClearNotifyFlow()
+	return _u
 }
 
 // RemoveNotifyFlowIDs removes the "notify_flow" edge to NotifyFlow entities by IDs.
-func (nsu *NotifySourceUpdate) RemoveNotifyFlowIDs(ids ...model.InternalID) *NotifySourceUpdate {
-	nsu.mutation.RemoveNotifyFlowIDs(ids...)
-	return nsu
+func (_u *NotifySourceUpdate) RemoveNotifyFlowIDs(ids ...model.InternalID) *NotifySourceUpdate {
+	_u.mutation.RemoveNotifyFlowIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlow removes "notify_flow" edges to NotifyFlow entities.
-func (nsu *NotifySourceUpdate) RemoveNotifyFlow(n ...*NotifyFlow) *NotifySourceUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifySourceUpdate) RemoveNotifyFlow(v ...*NotifyFlow) *NotifySourceUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsu.RemoveNotifyFlowIDs(ids...)
+	return _u.RemoveNotifyFlowIDs(ids...)
 }
 
 // ClearFeedConfig clears the "feed_config" edge to the FeedConfig entity.
-func (nsu *NotifySourceUpdate) ClearFeedConfig() *NotifySourceUpdate {
-	nsu.mutation.ClearFeedConfig()
-	return nsu
+func (_u *NotifySourceUpdate) ClearFeedConfig() *NotifySourceUpdate {
+	_u.mutation.ClearFeedConfig()
+	return _u
 }
 
 // ClearFeedItemCollection clears the "feed_item_collection" edge to the FeedItemCollection entity.
-func (nsu *NotifySourceUpdate) ClearFeedItemCollection() *NotifySourceUpdate {
-	nsu.mutation.ClearFeedItemCollection()
-	return nsu
+func (_u *NotifySourceUpdate) ClearFeedItemCollection() *NotifySourceUpdate {
+	_u.mutation.ClearFeedItemCollection()
+	return _u
 }
 
 // ClearNotifyFlowSource clears all "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nsu *NotifySourceUpdate) ClearNotifyFlowSource() *NotifySourceUpdate {
-	nsu.mutation.ClearNotifyFlowSource()
-	return nsu
+func (_u *NotifySourceUpdate) ClearNotifyFlowSource() *NotifySourceUpdate {
+	_u.mutation.ClearNotifyFlowSource()
+	return _u
 }
 
 // RemoveNotifyFlowSourceIDs removes the "notify_flow_source" edge to NotifyFlowSource entities by IDs.
-func (nsu *NotifySourceUpdate) RemoveNotifyFlowSourceIDs(ids ...int) *NotifySourceUpdate {
-	nsu.mutation.RemoveNotifyFlowSourceIDs(ids...)
-	return nsu
+func (_u *NotifySourceUpdate) RemoveNotifyFlowSourceIDs(ids ...int) *NotifySourceUpdate {
+	_u.mutation.RemoveNotifyFlowSourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlowSource removes "notify_flow_source" edges to NotifyFlowSource entities.
-func (nsu *NotifySourceUpdate) RemoveNotifyFlowSource(n ...*NotifyFlowSource) *NotifySourceUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifySourceUpdate) RemoveNotifyFlowSource(v ...*NotifyFlowSource) *NotifySourceUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsu.RemoveNotifyFlowSourceIDs(ids...)
+	return _u.RemoveNotifyFlowSourceIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (nsu *NotifySourceUpdate) Save(ctx context.Context) (int, error) {
-	nsu.defaults()
-	return withHooks(ctx, nsu.sqlSave, nsu.mutation, nsu.hooks)
+func (_u *NotifySourceUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nsu *NotifySourceUpdate) SaveX(ctx context.Context) int {
-	affected, err := nsu.Save(ctx)
+func (_u *NotifySourceUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -226,53 +226,53 @@ func (nsu *NotifySourceUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (nsu *NotifySourceUpdate) Exec(ctx context.Context) error {
-	_, err := nsu.Save(ctx)
+func (_u *NotifySourceUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nsu *NotifySourceUpdate) ExecX(ctx context.Context) {
-	if err := nsu.Exec(ctx); err != nil {
+func (_u *NotifySourceUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (nsu *NotifySourceUpdate) defaults() {
-	if _, ok := nsu.mutation.UpdatedAt(); !ok {
+func (_u *NotifySourceUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := notifysource.UpdateDefaultUpdatedAt()
-		nsu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nsu *NotifySourceUpdate) check() error {
-	if nsu.mutation.OwnerCleared() && len(nsu.mutation.OwnerIDs()) > 0 {
+func (_u *NotifySourceUpdate) check() error {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifySource.owner"`)
 	}
 	return nil
 }
 
-func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := nsu.check(); err != nil {
-		return n, err
+func (_u *NotifySourceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(notifysource.Table, notifysource.Columns, sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64))
-	if ps := nsu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := nsu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifysource.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := nsu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(notifysource.FieldCreatedAt, field.TypeTime, value)
 	}
-	if nsu.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -285,7 +285,7 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -301,7 +301,7 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nsu.mutation.NotifyFlowCleared() {
+	if _u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -312,13 +312,13 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &NotifyFlowSourceCreate{config: nsu.config, mutation: newNotifyFlowSourceMutation(nsu.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsu.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !nsu.mutation.NotifyFlowCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -332,13 +332,13 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nsu.config, mutation: newNotifyFlowSourceMutation(nsu.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsu.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -352,13 +352,13 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nsu.config, mutation: newNotifyFlowSourceMutation(nsu.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nsu.mutation.FeedConfigCleared() {
+	if _u.mutation.FeedConfigCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -371,7 +371,7 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsu.mutation.FeedConfigIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedConfigIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -387,7 +387,7 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nsu.mutation.FeedItemCollectionCleared() {
+	if _u.mutation.FeedItemCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -400,7 +400,7 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsu.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -416,7 +416,7 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nsu.mutation.NotifyFlowSourceCleared() {
+	if _u.mutation.NotifyFlowSourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -429,7 +429,7 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsu.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !nsu.mutation.NotifyFlowSourceCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowSourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -445,7 +445,7 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsu.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -461,7 +461,7 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, nsu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{notifysource.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -469,8 +469,8 @@ func (nsu *NotifySourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	nsu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // NotifySourceUpdateOne is the builder for updating a single NotifySource entity.
@@ -482,203 +482,203 @@ type NotifySourceUpdateOne struct {
 }
 
 // SetFeedConfigID sets the "feed_config_id" field.
-func (nsuo *NotifySourceUpdateOne) SetFeedConfigID(mi model.InternalID) *NotifySourceUpdateOne {
-	nsuo.mutation.SetFeedConfigID(mi)
-	return nsuo
+func (_u *NotifySourceUpdateOne) SetFeedConfigID(v model.InternalID) *NotifySourceUpdateOne {
+	_u.mutation.SetFeedConfigID(v)
+	return _u
 }
 
 // SetNillableFeedConfigID sets the "feed_config_id" field if the given value is not nil.
-func (nsuo *NotifySourceUpdateOne) SetNillableFeedConfigID(mi *model.InternalID) *NotifySourceUpdateOne {
-	if mi != nil {
-		nsuo.SetFeedConfigID(*mi)
+func (_u *NotifySourceUpdateOne) SetNillableFeedConfigID(v *model.InternalID) *NotifySourceUpdateOne {
+	if v != nil {
+		_u.SetFeedConfigID(*v)
 	}
-	return nsuo
+	return _u
 }
 
 // ClearFeedConfigID clears the value of the "feed_config_id" field.
-func (nsuo *NotifySourceUpdateOne) ClearFeedConfigID() *NotifySourceUpdateOne {
-	nsuo.mutation.ClearFeedConfigID()
-	return nsuo
+func (_u *NotifySourceUpdateOne) ClearFeedConfigID() *NotifySourceUpdateOne {
+	_u.mutation.ClearFeedConfigID()
+	return _u
 }
 
 // SetFeedItemCollectionID sets the "feed_item_collection_id" field.
-func (nsuo *NotifySourceUpdateOne) SetFeedItemCollectionID(mi model.InternalID) *NotifySourceUpdateOne {
-	nsuo.mutation.SetFeedItemCollectionID(mi)
-	return nsuo
+func (_u *NotifySourceUpdateOne) SetFeedItemCollectionID(v model.InternalID) *NotifySourceUpdateOne {
+	_u.mutation.SetFeedItemCollectionID(v)
+	return _u
 }
 
 // SetNillableFeedItemCollectionID sets the "feed_item_collection_id" field if the given value is not nil.
-func (nsuo *NotifySourceUpdateOne) SetNillableFeedItemCollectionID(mi *model.InternalID) *NotifySourceUpdateOne {
-	if mi != nil {
-		nsuo.SetFeedItemCollectionID(*mi)
+func (_u *NotifySourceUpdateOne) SetNillableFeedItemCollectionID(v *model.InternalID) *NotifySourceUpdateOne {
+	if v != nil {
+		_u.SetFeedItemCollectionID(*v)
 	}
-	return nsuo
+	return _u
 }
 
 // ClearFeedItemCollectionID clears the value of the "feed_item_collection_id" field.
-func (nsuo *NotifySourceUpdateOne) ClearFeedItemCollectionID() *NotifySourceUpdateOne {
-	nsuo.mutation.ClearFeedItemCollectionID()
-	return nsuo
+func (_u *NotifySourceUpdateOne) ClearFeedItemCollectionID() *NotifySourceUpdateOne {
+	_u.mutation.ClearFeedItemCollectionID()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (nsuo *NotifySourceUpdateOne) SetUpdatedAt(t time.Time) *NotifySourceUpdateOne {
-	nsuo.mutation.SetUpdatedAt(t)
-	return nsuo
+func (_u *NotifySourceUpdateOne) SetUpdatedAt(v time.Time) *NotifySourceUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (nsuo *NotifySourceUpdateOne) SetCreatedAt(t time.Time) *NotifySourceUpdateOne {
-	nsuo.mutation.SetCreatedAt(t)
-	return nsuo
+func (_u *NotifySourceUpdateOne) SetCreatedAt(v time.Time) *NotifySourceUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (nsuo *NotifySourceUpdateOne) SetNillableCreatedAt(t *time.Time) *NotifySourceUpdateOne {
-	if t != nil {
-		nsuo.SetCreatedAt(*t)
+func (_u *NotifySourceUpdateOne) SetNillableCreatedAt(v *time.Time) *NotifySourceUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return nsuo
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (nsuo *NotifySourceUpdateOne) SetOwnerID(id model.InternalID) *NotifySourceUpdateOne {
-	nsuo.mutation.SetOwnerID(id)
-	return nsuo
+func (_u *NotifySourceUpdateOne) SetOwnerID(id model.InternalID) *NotifySourceUpdateOne {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (nsuo *NotifySourceUpdateOne) SetOwner(u *User) *NotifySourceUpdateOne {
-	return nsuo.SetOwnerID(u.ID)
+func (_u *NotifySourceUpdateOne) SetOwner(v *User) *NotifySourceUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (nsuo *NotifySourceUpdateOne) AddNotifyFlowIDs(ids ...model.InternalID) *NotifySourceUpdateOne {
-	nsuo.mutation.AddNotifyFlowIDs(ids...)
-	return nsuo
+func (_u *NotifySourceUpdateOne) AddNotifyFlowIDs(ids ...model.InternalID) *NotifySourceUpdateOne {
+	_u.mutation.AddNotifyFlowIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
-func (nsuo *NotifySourceUpdateOne) AddNotifyFlow(n ...*NotifyFlow) *NotifySourceUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifySourceUpdateOne) AddNotifyFlow(v ...*NotifyFlow) *NotifySourceUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsuo.AddNotifyFlowIDs(ids...)
+	return _u.AddNotifyFlowIDs(ids...)
 }
 
 // SetFeedConfig sets the "feed_config" edge to the FeedConfig entity.
-func (nsuo *NotifySourceUpdateOne) SetFeedConfig(f *FeedConfig) *NotifySourceUpdateOne {
-	return nsuo.SetFeedConfigID(f.ID)
+func (_u *NotifySourceUpdateOne) SetFeedConfig(v *FeedConfig) *NotifySourceUpdateOne {
+	return _u.SetFeedConfigID(v.ID)
 }
 
 // SetFeedItemCollection sets the "feed_item_collection" edge to the FeedItemCollection entity.
-func (nsuo *NotifySourceUpdateOne) SetFeedItemCollection(f *FeedItemCollection) *NotifySourceUpdateOne {
-	return nsuo.SetFeedItemCollectionID(f.ID)
+func (_u *NotifySourceUpdateOne) SetFeedItemCollection(v *FeedItemCollection) *NotifySourceUpdateOne {
+	return _u.SetFeedItemCollectionID(v.ID)
 }
 
 // AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (nsuo *NotifySourceUpdateOne) AddNotifyFlowSourceIDs(ids ...int) *NotifySourceUpdateOne {
-	nsuo.mutation.AddNotifyFlowSourceIDs(ids...)
-	return nsuo
+func (_u *NotifySourceUpdateOne) AddNotifyFlowSourceIDs(ids ...int) *NotifySourceUpdateOne {
+	_u.mutation.AddNotifyFlowSourceIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nsuo *NotifySourceUpdateOne) AddNotifyFlowSource(n ...*NotifyFlowSource) *NotifySourceUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifySourceUpdateOne) AddNotifyFlowSource(v ...*NotifyFlowSource) *NotifySourceUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsuo.AddNotifyFlowSourceIDs(ids...)
+	return _u.AddNotifyFlowSourceIDs(ids...)
 }
 
 // Mutation returns the NotifySourceMutation object of the builder.
-func (nsuo *NotifySourceUpdateOne) Mutation() *NotifySourceMutation {
-	return nsuo.mutation
+func (_u *NotifySourceUpdateOne) Mutation() *NotifySourceMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (nsuo *NotifySourceUpdateOne) ClearOwner() *NotifySourceUpdateOne {
-	nsuo.mutation.ClearOwner()
-	return nsuo
+func (_u *NotifySourceUpdateOne) ClearOwner() *NotifySourceUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearNotifyFlow clears all "notify_flow" edges to the NotifyFlow entity.
-func (nsuo *NotifySourceUpdateOne) ClearNotifyFlow() *NotifySourceUpdateOne {
-	nsuo.mutation.ClearNotifyFlow()
-	return nsuo
+func (_u *NotifySourceUpdateOne) ClearNotifyFlow() *NotifySourceUpdateOne {
+	_u.mutation.ClearNotifyFlow()
+	return _u
 }
 
 // RemoveNotifyFlowIDs removes the "notify_flow" edge to NotifyFlow entities by IDs.
-func (nsuo *NotifySourceUpdateOne) RemoveNotifyFlowIDs(ids ...model.InternalID) *NotifySourceUpdateOne {
-	nsuo.mutation.RemoveNotifyFlowIDs(ids...)
-	return nsuo
+func (_u *NotifySourceUpdateOne) RemoveNotifyFlowIDs(ids ...model.InternalID) *NotifySourceUpdateOne {
+	_u.mutation.RemoveNotifyFlowIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlow removes "notify_flow" edges to NotifyFlow entities.
-func (nsuo *NotifySourceUpdateOne) RemoveNotifyFlow(n ...*NotifyFlow) *NotifySourceUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifySourceUpdateOne) RemoveNotifyFlow(v ...*NotifyFlow) *NotifySourceUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsuo.RemoveNotifyFlowIDs(ids...)
+	return _u.RemoveNotifyFlowIDs(ids...)
 }
 
 // ClearFeedConfig clears the "feed_config" edge to the FeedConfig entity.
-func (nsuo *NotifySourceUpdateOne) ClearFeedConfig() *NotifySourceUpdateOne {
-	nsuo.mutation.ClearFeedConfig()
-	return nsuo
+func (_u *NotifySourceUpdateOne) ClearFeedConfig() *NotifySourceUpdateOne {
+	_u.mutation.ClearFeedConfig()
+	return _u
 }
 
 // ClearFeedItemCollection clears the "feed_item_collection" edge to the FeedItemCollection entity.
-func (nsuo *NotifySourceUpdateOne) ClearFeedItemCollection() *NotifySourceUpdateOne {
-	nsuo.mutation.ClearFeedItemCollection()
-	return nsuo
+func (_u *NotifySourceUpdateOne) ClearFeedItemCollection() *NotifySourceUpdateOne {
+	_u.mutation.ClearFeedItemCollection()
+	return _u
 }
 
 // ClearNotifyFlowSource clears all "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nsuo *NotifySourceUpdateOne) ClearNotifyFlowSource() *NotifySourceUpdateOne {
-	nsuo.mutation.ClearNotifyFlowSource()
-	return nsuo
+func (_u *NotifySourceUpdateOne) ClearNotifyFlowSource() *NotifySourceUpdateOne {
+	_u.mutation.ClearNotifyFlowSource()
+	return _u
 }
 
 // RemoveNotifyFlowSourceIDs removes the "notify_flow_source" edge to NotifyFlowSource entities by IDs.
-func (nsuo *NotifySourceUpdateOne) RemoveNotifyFlowSourceIDs(ids ...int) *NotifySourceUpdateOne {
-	nsuo.mutation.RemoveNotifyFlowSourceIDs(ids...)
-	return nsuo
+func (_u *NotifySourceUpdateOne) RemoveNotifyFlowSourceIDs(ids ...int) *NotifySourceUpdateOne {
+	_u.mutation.RemoveNotifyFlowSourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlowSource removes "notify_flow_source" edges to NotifyFlowSource entities.
-func (nsuo *NotifySourceUpdateOne) RemoveNotifyFlowSource(n ...*NotifyFlowSource) *NotifySourceUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifySourceUpdateOne) RemoveNotifyFlowSource(v ...*NotifyFlowSource) *NotifySourceUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsuo.RemoveNotifyFlowSourceIDs(ids...)
+	return _u.RemoveNotifyFlowSourceIDs(ids...)
 }
 
 // Where appends a list predicates to the NotifySourceUpdate builder.
-func (nsuo *NotifySourceUpdateOne) Where(ps ...predicate.NotifySource) *NotifySourceUpdateOne {
-	nsuo.mutation.Where(ps...)
-	return nsuo
+func (_u *NotifySourceUpdateOne) Where(ps ...predicate.NotifySource) *NotifySourceUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (nsuo *NotifySourceUpdateOne) Select(field string, fields ...string) *NotifySourceUpdateOne {
-	nsuo.fields = append([]string{field}, fields...)
-	return nsuo
+func (_u *NotifySourceUpdateOne) Select(field string, fields ...string) *NotifySourceUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated NotifySource entity.
-func (nsuo *NotifySourceUpdateOne) Save(ctx context.Context) (*NotifySource, error) {
-	nsuo.defaults()
-	return withHooks(ctx, nsuo.sqlSave, nsuo.mutation, nsuo.hooks)
+func (_u *NotifySourceUpdateOne) Save(ctx context.Context) (*NotifySource, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nsuo *NotifySourceUpdateOne) SaveX(ctx context.Context) *NotifySource {
-	node, err := nsuo.Save(ctx)
+func (_u *NotifySourceUpdateOne) SaveX(ctx context.Context) *NotifySource {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -686,45 +686,45 @@ func (nsuo *NotifySourceUpdateOne) SaveX(ctx context.Context) *NotifySource {
 }
 
 // Exec executes the query on the entity.
-func (nsuo *NotifySourceUpdateOne) Exec(ctx context.Context) error {
-	_, err := nsuo.Save(ctx)
+func (_u *NotifySourceUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nsuo *NotifySourceUpdateOne) ExecX(ctx context.Context) {
-	if err := nsuo.Exec(ctx); err != nil {
+func (_u *NotifySourceUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (nsuo *NotifySourceUpdateOne) defaults() {
-	if _, ok := nsuo.mutation.UpdatedAt(); !ok {
+func (_u *NotifySourceUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := notifysource.UpdateDefaultUpdatedAt()
-		nsuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nsuo *NotifySourceUpdateOne) check() error {
-	if nsuo.mutation.OwnerCleared() && len(nsuo.mutation.OwnerIDs()) > 0 {
+func (_u *NotifySourceUpdateOne) check() error {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifySource.owner"`)
 	}
 	return nil
 }
 
-func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySource, err error) {
-	if err := nsuo.check(); err != nil {
+func (_u *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySource, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(notifysource.Table, notifysource.Columns, sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64))
-	id, ok := nsuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "NotifySource.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := nsuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, notifysource.FieldID)
 		for _, f := range fields {
@@ -736,20 +736,20 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 			}
 		}
 	}
-	if ps := nsuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := nsuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifysource.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := nsuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(notifysource.FieldCreatedAt, field.TypeTime, value)
 	}
-	if nsuo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -762,7 +762,7 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -778,7 +778,7 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nsuo.mutation.NotifyFlowCleared() {
+	if _u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -789,13 +789,13 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &NotifyFlowSourceCreate{config: nsuo.config, mutation: newNotifyFlowSourceMutation(nsuo.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsuo.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !nsuo.mutation.NotifyFlowCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -809,13 +809,13 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nsuo.config, mutation: newNotifyFlowSourceMutation(nsuo.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsuo.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -829,13 +829,13 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nsuo.config, mutation: newNotifyFlowSourceMutation(nsuo.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nsuo.mutation.FeedConfigCleared() {
+	if _u.mutation.FeedConfigCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -848,7 +848,7 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsuo.mutation.FeedConfigIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedConfigIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -864,7 +864,7 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nsuo.mutation.FeedItemCollectionCleared() {
+	if _u.mutation.FeedItemCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -877,7 +877,7 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsuo.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -893,7 +893,7 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nsuo.mutation.NotifyFlowSourceCleared() {
+	if _u.mutation.NotifyFlowSourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -906,7 +906,7 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsuo.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !nsuo.mutation.NotifyFlowSourceCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowSourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -922,7 +922,7 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nsuo.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -938,10 +938,10 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &NotifySource{config: nsuo.config}
+	_node = &NotifySource{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, nsuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{notifysource.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -949,6 +949,6 @@ func (nsuo *NotifySourceUpdateOne) sqlSave(ctx context.Context) (_node *NotifySo
 		}
 		return nil, err
 	}
-	nsuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

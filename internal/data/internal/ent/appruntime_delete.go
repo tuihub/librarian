@@ -20,56 +20,56 @@ type AppRunTimeDelete struct {
 }
 
 // Where appends a list predicates to the AppRunTimeDelete builder.
-func (artd *AppRunTimeDelete) Where(ps ...predicate.AppRunTime) *AppRunTimeDelete {
-	artd.mutation.Where(ps...)
-	return artd
+func (_d *AppRunTimeDelete) Where(ps ...predicate.AppRunTime) *AppRunTimeDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (artd *AppRunTimeDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, artd.sqlExec, artd.mutation, artd.hooks)
+func (_d *AppRunTimeDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (artd *AppRunTimeDelete) ExecX(ctx context.Context) int {
-	n, err := artd.Exec(ctx)
+func (_d *AppRunTimeDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (artd *AppRunTimeDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *AppRunTimeDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(appruntime.Table, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64))
-	if ps := artd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, artd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	artd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // AppRunTimeDeleteOne is the builder for deleting a single AppRunTime entity.
 type AppRunTimeDeleteOne struct {
-	artd *AppRunTimeDelete
+	_d *AppRunTimeDelete
 }
 
 // Where appends a list predicates to the AppRunTimeDelete builder.
-func (artdo *AppRunTimeDeleteOne) Where(ps ...predicate.AppRunTime) *AppRunTimeDeleteOne {
-	artdo.artd.mutation.Where(ps...)
-	return artdo
+func (_d *AppRunTimeDeleteOne) Where(ps ...predicate.AppRunTime) *AppRunTimeDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (artdo *AppRunTimeDeleteOne) Exec(ctx context.Context) error {
-	n, err := artdo.artd.Exec(ctx)
+func (_d *AppRunTimeDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (artdo *AppRunTimeDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (artdo *AppRunTimeDeleteOne) ExecX(ctx context.Context) {
-	if err := artdo.Exec(ctx); err != nil {
+func (_d *AppRunTimeDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -40,44 +40,44 @@ type FeedConfigQuery struct {
 }
 
 // Where adds a new predicate for the FeedConfigQuery builder.
-func (fcq *FeedConfigQuery) Where(ps ...predicate.FeedConfig) *FeedConfigQuery {
-	fcq.predicates = append(fcq.predicates, ps...)
-	return fcq
+func (_q *FeedConfigQuery) Where(ps ...predicate.FeedConfig) *FeedConfigQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (fcq *FeedConfigQuery) Limit(limit int) *FeedConfigQuery {
-	fcq.ctx.Limit = &limit
-	return fcq
+func (_q *FeedConfigQuery) Limit(limit int) *FeedConfigQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (fcq *FeedConfigQuery) Offset(offset int) *FeedConfigQuery {
-	fcq.ctx.Offset = &offset
-	return fcq
+func (_q *FeedConfigQuery) Offset(offset int) *FeedConfigQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (fcq *FeedConfigQuery) Unique(unique bool) *FeedConfigQuery {
-	fcq.ctx.Unique = &unique
-	return fcq
+func (_q *FeedConfigQuery) Unique(unique bool) *FeedConfigQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (fcq *FeedConfigQuery) Order(o ...feedconfig.OrderOption) *FeedConfigQuery {
-	fcq.order = append(fcq.order, o...)
-	return fcq
+func (_q *FeedConfigQuery) Order(o ...feedconfig.OrderOption) *FeedConfigQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryOwner chains the current query on the "owner" edge.
-func (fcq *FeedConfigQuery) QueryOwner() *UserQuery {
-	query := (&UserClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) QueryOwner() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := fcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := fcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -86,20 +86,20 @@ func (fcq *FeedConfigQuery) QueryOwner() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, feedconfig.OwnerTable, feedconfig.OwnerColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryFeed chains the current query on the "feed" edge.
-func (fcq *FeedConfigQuery) QueryFeed() *FeedQuery {
-	query := (&FeedClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) QueryFeed() *FeedQuery {
+	query := (&FeedClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := fcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := fcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -108,20 +108,20 @@ func (fcq *FeedConfigQuery) QueryFeed() *FeedQuery {
 			sqlgraph.To(feed.Table, feed.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, feedconfig.FeedTable, feedconfig.FeedColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryNotifySource chains the current query on the "notify_source" edge.
-func (fcq *FeedConfigQuery) QueryNotifySource() *NotifySourceQuery {
-	query := (&NotifySourceClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) QueryNotifySource() *NotifySourceQuery {
+	query := (&NotifySourceClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := fcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := fcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -130,20 +130,20 @@ func (fcq *FeedConfigQuery) QueryNotifySource() *NotifySourceQuery {
 			sqlgraph.To(notifysource.Table, notifysource.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, feedconfig.NotifySourceTable, feedconfig.NotifySourceColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryFeedActionSet chains the current query on the "feed_action_set" edge.
-func (fcq *FeedConfigQuery) QueryFeedActionSet() *FeedActionSetQuery {
-	query := (&FeedActionSetClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) QueryFeedActionSet() *FeedActionSetQuery {
+	query := (&FeedActionSetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := fcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := fcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -152,20 +152,20 @@ func (fcq *FeedConfigQuery) QueryFeedActionSet() *FeedActionSetQuery {
 			sqlgraph.To(feedactionset.Table, feedactionset.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, feedconfig.FeedActionSetTable, feedconfig.FeedActionSetPrimaryKey...),
 		)
-		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryFeedConfigAction chains the current query on the "feed_config_action" edge.
-func (fcq *FeedConfigQuery) QueryFeedConfigAction() *FeedConfigActionQuery {
-	query := (&FeedConfigActionClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) QueryFeedConfigAction() *FeedConfigActionQuery {
+	query := (&FeedConfigActionClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := fcq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := fcq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -174,7 +174,7 @@ func (fcq *FeedConfigQuery) QueryFeedConfigAction() *FeedConfigActionQuery {
 			sqlgraph.To(feedconfigaction.Table, feedconfigaction.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, feedconfig.FeedConfigActionTable, feedconfig.FeedConfigActionColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -182,8 +182,8 @@ func (fcq *FeedConfigQuery) QueryFeedConfigAction() *FeedConfigActionQuery {
 
 // First returns the first FeedConfig entity from the query.
 // Returns a *NotFoundError when no FeedConfig was found.
-func (fcq *FeedConfigQuery) First(ctx context.Context) (*FeedConfig, error) {
-	nodes, err := fcq.Limit(1).All(setContextOp(ctx, fcq.ctx, ent.OpQueryFirst))
+func (_q *FeedConfigQuery) First(ctx context.Context) (*FeedConfig, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -194,8 +194,8 @@ func (fcq *FeedConfigQuery) First(ctx context.Context) (*FeedConfig, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (fcq *FeedConfigQuery) FirstX(ctx context.Context) *FeedConfig {
-	node, err := fcq.First(ctx)
+func (_q *FeedConfigQuery) FirstX(ctx context.Context) *FeedConfig {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -204,9 +204,9 @@ func (fcq *FeedConfigQuery) FirstX(ctx context.Context) *FeedConfig {
 
 // FirstID returns the first FeedConfig ID from the query.
 // Returns a *NotFoundError when no FeedConfig ID was found.
-func (fcq *FeedConfigQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *FeedConfigQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = fcq.Limit(1).IDs(setContextOp(ctx, fcq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -217,8 +217,8 @@ func (fcq *FeedConfigQuery) FirstID(ctx context.Context) (id model.InternalID, e
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (fcq *FeedConfigQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := fcq.FirstID(ctx)
+func (_q *FeedConfigQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -228,8 +228,8 @@ func (fcq *FeedConfigQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Only returns a single FeedConfig entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one FeedConfig entity is found.
 // Returns a *NotFoundError when no FeedConfig entities are found.
-func (fcq *FeedConfigQuery) Only(ctx context.Context) (*FeedConfig, error) {
-	nodes, err := fcq.Limit(2).All(setContextOp(ctx, fcq.ctx, ent.OpQueryOnly))
+func (_q *FeedConfigQuery) Only(ctx context.Context) (*FeedConfig, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -244,8 +244,8 @@ func (fcq *FeedConfigQuery) Only(ctx context.Context) (*FeedConfig, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (fcq *FeedConfigQuery) OnlyX(ctx context.Context) *FeedConfig {
-	node, err := fcq.Only(ctx)
+func (_q *FeedConfigQuery) OnlyX(ctx context.Context) *FeedConfig {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -255,9 +255,9 @@ func (fcq *FeedConfigQuery) OnlyX(ctx context.Context) *FeedConfig {
 // OnlyID is like Only, but returns the only FeedConfig ID in the query.
 // Returns a *NotSingularError when more than one FeedConfig ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (fcq *FeedConfigQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *FeedConfigQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = fcq.Limit(2).IDs(setContextOp(ctx, fcq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -272,8 +272,8 @@ func (fcq *FeedConfigQuery) OnlyID(ctx context.Context) (id model.InternalID, er
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (fcq *FeedConfigQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := fcq.OnlyID(ctx)
+func (_q *FeedConfigQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -281,18 +281,18 @@ func (fcq *FeedConfigQuery) OnlyIDX(ctx context.Context) model.InternalID {
 }
 
 // All executes the query and returns a list of FeedConfigs.
-func (fcq *FeedConfigQuery) All(ctx context.Context) ([]*FeedConfig, error) {
-	ctx = setContextOp(ctx, fcq.ctx, ent.OpQueryAll)
-	if err := fcq.prepareQuery(ctx); err != nil {
+func (_q *FeedConfigQuery) All(ctx context.Context) ([]*FeedConfig, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*FeedConfig, *FeedConfigQuery]()
-	return withInterceptors[[]*FeedConfig](ctx, fcq, qr, fcq.inters)
+	return withInterceptors[[]*FeedConfig](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (fcq *FeedConfigQuery) AllX(ctx context.Context) []*FeedConfig {
-	nodes, err := fcq.All(ctx)
+func (_q *FeedConfigQuery) AllX(ctx context.Context) []*FeedConfig {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -300,20 +300,20 @@ func (fcq *FeedConfigQuery) AllX(ctx context.Context) []*FeedConfig {
 }
 
 // IDs executes the query and returns a list of FeedConfig IDs.
-func (fcq *FeedConfigQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if fcq.ctx.Unique == nil && fcq.path != nil {
-		fcq.Unique(true)
+func (_q *FeedConfigQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, fcq.ctx, ent.OpQueryIDs)
-	if err = fcq.Select(feedconfig.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(feedconfig.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (fcq *FeedConfigQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := fcq.IDs(ctx)
+func (_q *FeedConfigQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -321,17 +321,17 @@ func (fcq *FeedConfigQuery) IDsX(ctx context.Context) []model.InternalID {
 }
 
 // Count returns the count of the given query.
-func (fcq *FeedConfigQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fcq.ctx, ent.OpQueryCount)
-	if err := fcq.prepareQuery(ctx); err != nil {
+func (_q *FeedConfigQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, fcq, querierCount[*FeedConfigQuery](), fcq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*FeedConfigQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (fcq *FeedConfigQuery) CountX(ctx context.Context) int {
-	count, err := fcq.Count(ctx)
+func (_q *FeedConfigQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -339,9 +339,9 @@ func (fcq *FeedConfigQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (fcq *FeedConfigQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fcq.ctx, ent.OpQueryExist)
-	switch _, err := fcq.FirstID(ctx); {
+func (_q *FeedConfigQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -352,8 +352,8 @@ func (fcq *FeedConfigQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (fcq *FeedConfigQuery) ExistX(ctx context.Context) bool {
-	exist, err := fcq.Exist(ctx)
+func (_q *FeedConfigQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -362,80 +362,80 @@ func (fcq *FeedConfigQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the FeedConfigQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (fcq *FeedConfigQuery) Clone() *FeedConfigQuery {
-	if fcq == nil {
+func (_q *FeedConfigQuery) Clone() *FeedConfigQuery {
+	if _q == nil {
 		return nil
 	}
 	return &FeedConfigQuery{
-		config:               fcq.config,
-		ctx:                  fcq.ctx.Clone(),
-		order:                append([]feedconfig.OrderOption{}, fcq.order...),
-		inters:               append([]Interceptor{}, fcq.inters...),
-		predicates:           append([]predicate.FeedConfig{}, fcq.predicates...),
-		withOwner:            fcq.withOwner.Clone(),
-		withFeed:             fcq.withFeed.Clone(),
-		withNotifySource:     fcq.withNotifySource.Clone(),
-		withFeedActionSet:    fcq.withFeedActionSet.Clone(),
-		withFeedConfigAction: fcq.withFeedConfigAction.Clone(),
+		config:               _q.config,
+		ctx:                  _q.ctx.Clone(),
+		order:                append([]feedconfig.OrderOption{}, _q.order...),
+		inters:               append([]Interceptor{}, _q.inters...),
+		predicates:           append([]predicate.FeedConfig{}, _q.predicates...),
+		withOwner:            _q.withOwner.Clone(),
+		withFeed:             _q.withFeed.Clone(),
+		withNotifySource:     _q.withNotifySource.Clone(),
+		withFeedActionSet:    _q.withFeedActionSet.Clone(),
+		withFeedConfigAction: _q.withFeedConfigAction.Clone(),
 		// clone intermediate query.
-		sql:  fcq.sql.Clone(),
-		path: fcq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithOwner tells the query-builder to eager-load the nodes that are connected to
 // the "owner" edge. The optional arguments are used to configure the query builder of the edge.
-func (fcq *FeedConfigQuery) WithOwner(opts ...func(*UserQuery)) *FeedConfigQuery {
-	query := (&UserClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) WithOwner(opts ...func(*UserQuery)) *FeedConfigQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fcq.withOwner = query
-	return fcq
+	_q.withOwner = query
+	return _q
 }
 
 // WithFeed tells the query-builder to eager-load the nodes that are connected to
 // the "feed" edge. The optional arguments are used to configure the query builder of the edge.
-func (fcq *FeedConfigQuery) WithFeed(opts ...func(*FeedQuery)) *FeedConfigQuery {
-	query := (&FeedClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) WithFeed(opts ...func(*FeedQuery)) *FeedConfigQuery {
+	query := (&FeedClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fcq.withFeed = query
-	return fcq
+	_q.withFeed = query
+	return _q
 }
 
 // WithNotifySource tells the query-builder to eager-load the nodes that are connected to
 // the "notify_source" edge. The optional arguments are used to configure the query builder of the edge.
-func (fcq *FeedConfigQuery) WithNotifySource(opts ...func(*NotifySourceQuery)) *FeedConfigQuery {
-	query := (&NotifySourceClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) WithNotifySource(opts ...func(*NotifySourceQuery)) *FeedConfigQuery {
+	query := (&NotifySourceClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fcq.withNotifySource = query
-	return fcq
+	_q.withNotifySource = query
+	return _q
 }
 
 // WithFeedActionSet tells the query-builder to eager-load the nodes that are connected to
 // the "feed_action_set" edge. The optional arguments are used to configure the query builder of the edge.
-func (fcq *FeedConfigQuery) WithFeedActionSet(opts ...func(*FeedActionSetQuery)) *FeedConfigQuery {
-	query := (&FeedActionSetClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) WithFeedActionSet(opts ...func(*FeedActionSetQuery)) *FeedConfigQuery {
+	query := (&FeedActionSetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fcq.withFeedActionSet = query
-	return fcq
+	_q.withFeedActionSet = query
+	return _q
 }
 
 // WithFeedConfigAction tells the query-builder to eager-load the nodes that are connected to
 // the "feed_config_action" edge. The optional arguments are used to configure the query builder of the edge.
-func (fcq *FeedConfigQuery) WithFeedConfigAction(opts ...func(*FeedConfigActionQuery)) *FeedConfigQuery {
-	query := (&FeedConfigActionClient{config: fcq.config}).Query()
+func (_q *FeedConfigQuery) WithFeedConfigAction(opts ...func(*FeedConfigActionQuery)) *FeedConfigQuery {
+	query := (&FeedConfigActionClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fcq.withFeedConfigAction = query
-	return fcq
+	_q.withFeedConfigAction = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -452,10 +452,10 @@ func (fcq *FeedConfigQuery) WithFeedConfigAction(opts ...func(*FeedConfigActionQ
 //		GroupBy(feedconfig.FieldUserFeedConfig).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (fcq *FeedConfigQuery) GroupBy(field string, fields ...string) *FeedConfigGroupBy {
-	fcq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &FeedConfigGroupBy{build: fcq}
-	grbuild.flds = &fcq.ctx.Fields
+func (_q *FeedConfigQuery) GroupBy(field string, fields ...string) *FeedConfigGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &FeedConfigGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = feedconfig.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -473,62 +473,62 @@ func (fcq *FeedConfigQuery) GroupBy(field string, fields ...string) *FeedConfigG
 //	client.FeedConfig.Query().
 //		Select(feedconfig.FieldUserFeedConfig).
 //		Scan(ctx, &v)
-func (fcq *FeedConfigQuery) Select(fields ...string) *FeedConfigSelect {
-	fcq.ctx.Fields = append(fcq.ctx.Fields, fields...)
-	sbuild := &FeedConfigSelect{FeedConfigQuery: fcq}
+func (_q *FeedConfigQuery) Select(fields ...string) *FeedConfigSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &FeedConfigSelect{FeedConfigQuery: _q}
 	sbuild.label = feedconfig.Label
-	sbuild.flds, sbuild.scan = &fcq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a FeedConfigSelect configured with the given aggregations.
-func (fcq *FeedConfigQuery) Aggregate(fns ...AggregateFunc) *FeedConfigSelect {
-	return fcq.Select().Aggregate(fns...)
+func (_q *FeedConfigQuery) Aggregate(fns ...AggregateFunc) *FeedConfigSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (fcq *FeedConfigQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range fcq.inters {
+func (_q *FeedConfigQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, fcq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range fcq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !feedconfig.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if fcq.path != nil {
-		prev, err := fcq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		fcq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedConfig, error) {
+func (_q *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedConfig, error) {
 	var (
 		nodes       = []*FeedConfig{}
-		_spec       = fcq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [5]bool{
-			fcq.withOwner != nil,
-			fcq.withFeed != nil,
-			fcq.withNotifySource != nil,
-			fcq.withFeedActionSet != nil,
-			fcq.withFeedConfigAction != nil,
+			_q.withOwner != nil,
+			_q.withFeed != nil,
+			_q.withNotifySource != nil,
+			_q.withFeedActionSet != nil,
+			_q.withFeedConfigAction != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*FeedConfig).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &FeedConfig{config: fcq.config}
+		node := &FeedConfig{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -536,40 +536,40 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, fcq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := fcq.withOwner; query != nil {
-		if err := fcq.loadOwner(ctx, query, nodes, nil,
+	if query := _q.withOwner; query != nil {
+		if err := _q.loadOwner(ctx, query, nodes, nil,
 			func(n *FeedConfig, e *User) { n.Edges.Owner = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := fcq.withFeed; query != nil {
-		if err := fcq.loadFeed(ctx, query, nodes, nil,
+	if query := _q.withFeed; query != nil {
+		if err := _q.loadFeed(ctx, query, nodes, nil,
 			func(n *FeedConfig, e *Feed) { n.Edges.Feed = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := fcq.withNotifySource; query != nil {
-		if err := fcq.loadNotifySource(ctx, query, nodes,
+	if query := _q.withNotifySource; query != nil {
+		if err := _q.loadNotifySource(ctx, query, nodes,
 			func(n *FeedConfig) { n.Edges.NotifySource = []*NotifySource{} },
 			func(n *FeedConfig, e *NotifySource) { n.Edges.NotifySource = append(n.Edges.NotifySource, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := fcq.withFeedActionSet; query != nil {
-		if err := fcq.loadFeedActionSet(ctx, query, nodes,
+	if query := _q.withFeedActionSet; query != nil {
+		if err := _q.loadFeedActionSet(ctx, query, nodes,
 			func(n *FeedConfig) { n.Edges.FeedActionSet = []*FeedActionSet{} },
 			func(n *FeedConfig, e *FeedActionSet) { n.Edges.FeedActionSet = append(n.Edges.FeedActionSet, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := fcq.withFeedConfigAction; query != nil {
-		if err := fcq.loadFeedConfigAction(ctx, query, nodes,
+	if query := _q.withFeedConfigAction; query != nil {
+		if err := _q.loadFeedConfigAction(ctx, query, nodes,
 			func(n *FeedConfig) { n.Edges.FeedConfigAction = []*FeedConfigAction{} },
 			func(n *FeedConfig, e *FeedConfigAction) {
 				n.Edges.FeedConfigAction = append(n.Edges.FeedConfigAction, e)
@@ -580,7 +580,7 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	return nodes, nil
 }
 
-func (fcq *FeedConfigQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *User)) error {
+func (_q *FeedConfigQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *User)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*FeedConfig)
 	for i := range nodes {
@@ -609,7 +609,7 @@ func (fcq *FeedConfigQuery) loadOwner(ctx context.Context, query *UserQuery, nod
 	}
 	return nil
 }
-func (fcq *FeedConfigQuery) loadFeed(ctx context.Context, query *FeedQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *Feed)) error {
+func (_q *FeedConfigQuery) loadFeed(ctx context.Context, query *FeedQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *Feed)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*FeedConfig)
 	for i := range nodes {
@@ -637,7 +637,7 @@ func (fcq *FeedConfigQuery) loadFeed(ctx context.Context, query *FeedQuery, node
 	}
 	return nil
 }
-func (fcq *FeedConfigQuery) loadNotifySource(ctx context.Context, query *NotifySourceQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *NotifySource)) error {
+func (_q *FeedConfigQuery) loadNotifySource(ctx context.Context, query *NotifySourceQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *NotifySource)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*FeedConfig)
 	for i := range nodes {
@@ -668,7 +668,7 @@ func (fcq *FeedConfigQuery) loadNotifySource(ctx context.Context, query *NotifyS
 	}
 	return nil
 }
-func (fcq *FeedConfigQuery) loadFeedActionSet(ctx context.Context, query *FeedActionSetQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *FeedActionSet)) error {
+func (_q *FeedConfigQuery) loadFeedActionSet(ctx context.Context, query *FeedActionSetQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *FeedActionSet)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[model.InternalID]*FeedConfig)
 	nids := make(map[model.InternalID]map[*FeedConfig]struct{})
@@ -729,7 +729,7 @@ func (fcq *FeedConfigQuery) loadFeedActionSet(ctx context.Context, query *FeedAc
 	}
 	return nil
 }
-func (fcq *FeedConfigQuery) loadFeedConfigAction(ctx context.Context, query *FeedConfigActionQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *FeedConfigAction)) error {
+func (_q *FeedConfigQuery) loadFeedConfigAction(ctx context.Context, query *FeedConfigActionQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *FeedConfigAction)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*FeedConfig)
 	for i := range nodes {
@@ -760,24 +760,24 @@ func (fcq *FeedConfigQuery) loadFeedConfigAction(ctx context.Context, query *Fee
 	return nil
 }
 
-func (fcq *FeedConfigQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := fcq.querySpec()
-	_spec.Node.Columns = fcq.ctx.Fields
-	if len(fcq.ctx.Fields) > 0 {
-		_spec.Unique = fcq.ctx.Unique != nil && *fcq.ctx.Unique
+func (_q *FeedConfigQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, fcq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (fcq *FeedConfigQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *FeedConfigQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64))
-	_spec.From = fcq.sql
-	if unique := fcq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if fcq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := fcq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, feedconfig.FieldID)
 		for i := range fields {
@@ -785,24 +785,24 @@ func (fcq *FeedConfigQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if fcq.withOwner != nil {
+		if _q.withOwner != nil {
 			_spec.Node.AddColumnOnce(feedconfig.FieldUserFeedConfig)
 		}
 	}
-	if ps := fcq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := fcq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := fcq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := fcq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -812,33 +812,33 @@ func (fcq *FeedConfigQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (fcq *FeedConfigQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(fcq.driver.Dialect())
+func (_q *FeedConfigQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(feedconfig.Table)
-	columns := fcq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = feedconfig.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if fcq.sql != nil {
-		selector = fcq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if fcq.ctx.Unique != nil && *fcq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range fcq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range fcq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := fcq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := fcq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -851,41 +851,41 @@ type FeedConfigGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (fcgb *FeedConfigGroupBy) Aggregate(fns ...AggregateFunc) *FeedConfigGroupBy {
-	fcgb.fns = append(fcgb.fns, fns...)
-	return fcgb
+func (_g *FeedConfigGroupBy) Aggregate(fns ...AggregateFunc) *FeedConfigGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (fcgb *FeedConfigGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fcgb.build.ctx, ent.OpQueryGroupBy)
-	if err := fcgb.build.prepareQuery(ctx); err != nil {
+func (_g *FeedConfigGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*FeedConfigQuery, *FeedConfigGroupBy](ctx, fcgb.build, fcgb, fcgb.build.inters, v)
+	return scanWithInterceptors[*FeedConfigQuery, *FeedConfigGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (fcgb *FeedConfigGroupBy) sqlScan(ctx context.Context, root *FeedConfigQuery, v any) error {
+func (_g *FeedConfigGroupBy) sqlScan(ctx context.Context, root *FeedConfigQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(fcgb.fns))
-	for _, fn := range fcgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*fcgb.flds)+len(fcgb.fns))
-		for _, f := range *fcgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*fcgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := fcgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -899,27 +899,27 @@ type FeedConfigSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (fcs *FeedConfigSelect) Aggregate(fns ...AggregateFunc) *FeedConfigSelect {
-	fcs.fns = append(fcs.fns, fns...)
-	return fcs
+func (_s *FeedConfigSelect) Aggregate(fns ...AggregateFunc) *FeedConfigSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (fcs *FeedConfigSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fcs.ctx, ent.OpQuerySelect)
-	if err := fcs.prepareQuery(ctx); err != nil {
+func (_s *FeedConfigSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*FeedConfigQuery, *FeedConfigSelect](ctx, fcs.FeedConfigQuery, fcs, fcs.inters, v)
+	return scanWithInterceptors[*FeedConfigQuery, *FeedConfigSelect](ctx, _s.FeedConfigQuery, _s, _s.inters, v)
 }
 
-func (fcs *FeedConfigSelect) sqlScan(ctx context.Context, root *FeedConfigQuery, v any) error {
+func (_s *FeedConfigSelect) sqlScan(ctx context.Context, root *FeedConfigQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(fcs.fns))
-	for _, fn := range fcs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*fcs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -927,7 +927,7 @@ func (fcs *FeedConfigSelect) sqlScan(ctx context.Context, root *FeedConfigQuery,
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := fcs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

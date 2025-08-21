@@ -29,40 +29,40 @@ type AppInfoQuery struct {
 }
 
 // Where adds a new predicate for the AppInfoQuery builder.
-func (aiq *AppInfoQuery) Where(ps ...predicate.AppInfo) *AppInfoQuery {
-	aiq.predicates = append(aiq.predicates, ps...)
-	return aiq
+func (_q *AppInfoQuery) Where(ps ...predicate.AppInfo) *AppInfoQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (aiq *AppInfoQuery) Limit(limit int) *AppInfoQuery {
-	aiq.ctx.Limit = &limit
-	return aiq
+func (_q *AppInfoQuery) Limit(limit int) *AppInfoQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (aiq *AppInfoQuery) Offset(offset int) *AppInfoQuery {
-	aiq.ctx.Offset = &offset
-	return aiq
+func (_q *AppInfoQuery) Offset(offset int) *AppInfoQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (aiq *AppInfoQuery) Unique(unique bool) *AppInfoQuery {
-	aiq.ctx.Unique = &unique
-	return aiq
+func (_q *AppInfoQuery) Unique(unique bool) *AppInfoQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (aiq *AppInfoQuery) Order(o ...appinfo.OrderOption) *AppInfoQuery {
-	aiq.order = append(aiq.order, o...)
-	return aiq
+func (_q *AppInfoQuery) Order(o ...appinfo.OrderOption) *AppInfoQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // First returns the first AppInfo entity from the query.
 // Returns a *NotFoundError when no AppInfo was found.
-func (aiq *AppInfoQuery) First(ctx context.Context) (*AppInfo, error) {
-	nodes, err := aiq.Limit(1).All(setContextOp(ctx, aiq.ctx, ent.OpQueryFirst))
+func (_q *AppInfoQuery) First(ctx context.Context) (*AppInfo, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (aiq *AppInfoQuery) First(ctx context.Context) (*AppInfo, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (aiq *AppInfoQuery) FirstX(ctx context.Context) *AppInfo {
-	node, err := aiq.First(ctx)
+func (_q *AppInfoQuery) FirstX(ctx context.Context) *AppInfo {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -83,9 +83,9 @@ func (aiq *AppInfoQuery) FirstX(ctx context.Context) *AppInfo {
 
 // FirstID returns the first AppInfo ID from the query.
 // Returns a *NotFoundError when no AppInfo ID was found.
-func (aiq *AppInfoQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *AppInfoQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = aiq.Limit(1).IDs(setContextOp(ctx, aiq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -96,8 +96,8 @@ func (aiq *AppInfoQuery) FirstID(ctx context.Context) (id model.InternalID, err 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aiq *AppInfoQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := aiq.FirstID(ctx)
+func (_q *AppInfoQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -107,8 +107,8 @@ func (aiq *AppInfoQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Only returns a single AppInfo entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one AppInfo entity is found.
 // Returns a *NotFoundError when no AppInfo entities are found.
-func (aiq *AppInfoQuery) Only(ctx context.Context) (*AppInfo, error) {
-	nodes, err := aiq.Limit(2).All(setContextOp(ctx, aiq.ctx, ent.OpQueryOnly))
+func (_q *AppInfoQuery) Only(ctx context.Context) (*AppInfo, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -123,8 +123,8 @@ func (aiq *AppInfoQuery) Only(ctx context.Context) (*AppInfo, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (aiq *AppInfoQuery) OnlyX(ctx context.Context) *AppInfo {
-	node, err := aiq.Only(ctx)
+func (_q *AppInfoQuery) OnlyX(ctx context.Context) *AppInfo {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -134,9 +134,9 @@ func (aiq *AppInfoQuery) OnlyX(ctx context.Context) *AppInfo {
 // OnlyID is like Only, but returns the only AppInfo ID in the query.
 // Returns a *NotSingularError when more than one AppInfo ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (aiq *AppInfoQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *AppInfoQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = aiq.Limit(2).IDs(setContextOp(ctx, aiq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -151,8 +151,8 @@ func (aiq *AppInfoQuery) OnlyID(ctx context.Context) (id model.InternalID, err e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aiq *AppInfoQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := aiq.OnlyID(ctx)
+func (_q *AppInfoQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,18 +160,18 @@ func (aiq *AppInfoQuery) OnlyIDX(ctx context.Context) model.InternalID {
 }
 
 // All executes the query and returns a list of AppInfos.
-func (aiq *AppInfoQuery) All(ctx context.Context) ([]*AppInfo, error) {
-	ctx = setContextOp(ctx, aiq.ctx, ent.OpQueryAll)
-	if err := aiq.prepareQuery(ctx); err != nil {
+func (_q *AppInfoQuery) All(ctx context.Context) ([]*AppInfo, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*AppInfo, *AppInfoQuery]()
-	return withInterceptors[[]*AppInfo](ctx, aiq, qr, aiq.inters)
+	return withInterceptors[[]*AppInfo](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (aiq *AppInfoQuery) AllX(ctx context.Context) []*AppInfo {
-	nodes, err := aiq.All(ctx)
+func (_q *AppInfoQuery) AllX(ctx context.Context) []*AppInfo {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -179,20 +179,20 @@ func (aiq *AppInfoQuery) AllX(ctx context.Context) []*AppInfo {
 }
 
 // IDs executes the query and returns a list of AppInfo IDs.
-func (aiq *AppInfoQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if aiq.ctx.Unique == nil && aiq.path != nil {
-		aiq.Unique(true)
+func (_q *AppInfoQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, aiq.ctx, ent.OpQueryIDs)
-	if err = aiq.Select(appinfo.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(appinfo.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aiq *AppInfoQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := aiq.IDs(ctx)
+func (_q *AppInfoQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -200,17 +200,17 @@ func (aiq *AppInfoQuery) IDsX(ctx context.Context) []model.InternalID {
 }
 
 // Count returns the count of the given query.
-func (aiq *AppInfoQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, aiq.ctx, ent.OpQueryCount)
-	if err := aiq.prepareQuery(ctx); err != nil {
+func (_q *AppInfoQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, aiq, querierCount[*AppInfoQuery](), aiq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*AppInfoQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (aiq *AppInfoQuery) CountX(ctx context.Context) int {
-	count, err := aiq.Count(ctx)
+func (_q *AppInfoQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -218,9 +218,9 @@ func (aiq *AppInfoQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (aiq *AppInfoQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, aiq.ctx, ent.OpQueryExist)
-	switch _, err := aiq.FirstID(ctx); {
+func (_q *AppInfoQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -231,8 +231,8 @@ func (aiq *AppInfoQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (aiq *AppInfoQuery) ExistX(ctx context.Context) bool {
-	exist, err := aiq.Exist(ctx)
+func (_q *AppInfoQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -241,19 +241,19 @@ func (aiq *AppInfoQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the AppInfoQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (aiq *AppInfoQuery) Clone() *AppInfoQuery {
-	if aiq == nil {
+func (_q *AppInfoQuery) Clone() *AppInfoQuery {
+	if _q == nil {
 		return nil
 	}
 	return &AppInfoQuery{
-		config:     aiq.config,
-		ctx:        aiq.ctx.Clone(),
-		order:      append([]appinfo.OrderOption{}, aiq.order...),
-		inters:     append([]Interceptor{}, aiq.inters...),
-		predicates: append([]predicate.AppInfo{}, aiq.predicates...),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]appinfo.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.AppInfo{}, _q.predicates...),
 		// clone intermediate query.
-		sql:  aiq.sql.Clone(),
-		path: aiq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
@@ -271,10 +271,10 @@ func (aiq *AppInfoQuery) Clone() *AppInfoQuery {
 //		GroupBy(appinfo.FieldSource).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (aiq *AppInfoQuery) GroupBy(field string, fields ...string) *AppInfoGroupBy {
-	aiq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AppInfoGroupBy{build: aiq}
-	grbuild.flds = &aiq.ctx.Fields
+func (_q *AppInfoQuery) GroupBy(field string, fields ...string) *AppInfoGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppInfoGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = appinfo.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -292,62 +292,62 @@ func (aiq *AppInfoQuery) GroupBy(field string, fields ...string) *AppInfoGroupBy
 //	client.AppInfo.Query().
 //		Select(appinfo.FieldSource).
 //		Scan(ctx, &v)
-func (aiq *AppInfoQuery) Select(fields ...string) *AppInfoSelect {
-	aiq.ctx.Fields = append(aiq.ctx.Fields, fields...)
-	sbuild := &AppInfoSelect{AppInfoQuery: aiq}
+func (_q *AppInfoQuery) Select(fields ...string) *AppInfoSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &AppInfoSelect{AppInfoQuery: _q}
 	sbuild.label = appinfo.Label
-	sbuild.flds, sbuild.scan = &aiq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a AppInfoSelect configured with the given aggregations.
-func (aiq *AppInfoQuery) Aggregate(fns ...AggregateFunc) *AppInfoSelect {
-	return aiq.Select().Aggregate(fns...)
+func (_q *AppInfoQuery) Aggregate(fns ...AggregateFunc) *AppInfoSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (aiq *AppInfoQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range aiq.inters {
+func (_q *AppInfoQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, aiq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range aiq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !appinfo.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if aiq.path != nil {
-		prev, err := aiq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		aiq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (aiq *AppInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppInfo, error) {
+func (_q *AppInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppInfo, error) {
 	var (
 		nodes = []*AppInfo{}
-		_spec = aiq.querySpec()
+		_spec = _q.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppInfo).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &AppInfo{config: aiq.config}
+		node := &AppInfo{config: _q.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, aiq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
@@ -356,24 +356,24 @@ func (aiq *AppInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App
 	return nodes, nil
 }
 
-func (aiq *AppInfoQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := aiq.querySpec()
-	_spec.Node.Columns = aiq.ctx.Fields
-	if len(aiq.ctx.Fields) > 0 {
-		_spec.Unique = aiq.ctx.Unique != nil && *aiq.ctx.Unique
+func (_q *AppInfoQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, aiq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (aiq *AppInfoQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *AppInfoQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(appinfo.Table, appinfo.Columns, sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64))
-	_spec.From = aiq.sql
-	if unique := aiq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if aiq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := aiq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appinfo.FieldID)
 		for i := range fields {
@@ -382,20 +382,20 @@ func (aiq *AppInfoQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := aiq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := aiq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := aiq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := aiq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -405,33 +405,33 @@ func (aiq *AppInfoQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (aiq *AppInfoQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(aiq.driver.Dialect())
+func (_q *AppInfoQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(appinfo.Table)
-	columns := aiq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = appinfo.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if aiq.sql != nil {
-		selector = aiq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if aiq.ctx.Unique != nil && *aiq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range aiq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range aiq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := aiq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := aiq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -444,41 +444,41 @@ type AppInfoGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (aigb *AppInfoGroupBy) Aggregate(fns ...AggregateFunc) *AppInfoGroupBy {
-	aigb.fns = append(aigb.fns, fns...)
-	return aigb
+func (_g *AppInfoGroupBy) Aggregate(fns ...AggregateFunc) *AppInfoGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (aigb *AppInfoGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, aigb.build.ctx, ent.OpQueryGroupBy)
-	if err := aigb.build.prepareQuery(ctx); err != nil {
+func (_g *AppInfoGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppInfoQuery, *AppInfoGroupBy](ctx, aigb.build, aigb, aigb.build.inters, v)
+	return scanWithInterceptors[*AppInfoQuery, *AppInfoGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (aigb *AppInfoGroupBy) sqlScan(ctx context.Context, root *AppInfoQuery, v any) error {
+func (_g *AppInfoGroupBy) sqlScan(ctx context.Context, root *AppInfoQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(aigb.fns))
-	for _, fn := range aigb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*aigb.flds)+len(aigb.fns))
-		for _, f := range *aigb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*aigb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := aigb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -492,27 +492,27 @@ type AppInfoSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ais *AppInfoSelect) Aggregate(fns ...AggregateFunc) *AppInfoSelect {
-	ais.fns = append(ais.fns, fns...)
-	return ais
+func (_s *AppInfoSelect) Aggregate(fns ...AggregateFunc) *AppInfoSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ais *AppInfoSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ais.ctx, ent.OpQuerySelect)
-	if err := ais.prepareQuery(ctx); err != nil {
+func (_s *AppInfoSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppInfoQuery, *AppInfoSelect](ctx, ais.AppInfoQuery, ais, ais.inters, v)
+	return scanWithInterceptors[*AppInfoQuery, *AppInfoSelect](ctx, _s.AppInfoQuery, _s, _s.inters, v)
 }
 
-func (ais *AppInfoSelect) sqlScan(ctx context.Context, root *AppInfoQuery, v any) error {
+func (_s *AppInfoSelect) sqlScan(ctx context.Context, root *AppInfoQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ais.fns))
-	for _, fn := range ais.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ais.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -520,7 +520,7 @@ func (ais *AppInfoSelect) sqlScan(ctx context.Context, root *AppInfoQuery, v any
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ais.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

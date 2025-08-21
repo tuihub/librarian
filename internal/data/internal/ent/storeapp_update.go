@@ -26,145 +26,145 @@ type StoreAppUpdate struct {
 }
 
 // Where appends a list predicates to the StoreAppUpdate builder.
-func (sau *StoreAppUpdate) Where(ps ...predicate.StoreApp) *StoreAppUpdate {
-	sau.mutation.Where(ps...)
-	return sau
+func (_u *StoreAppUpdate) Where(ps ...predicate.StoreApp) *StoreAppUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (sau *StoreAppUpdate) SetName(s string) *StoreAppUpdate {
-	sau.mutation.SetName(s)
-	return sau
+func (_u *StoreAppUpdate) SetName(v string) *StoreAppUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (sau *StoreAppUpdate) SetNillableName(s *string) *StoreAppUpdate {
-	if s != nil {
-		sau.SetName(*s)
+func (_u *StoreAppUpdate) SetNillableName(v *string) *StoreAppUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return sau
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (sau *StoreAppUpdate) SetDescription(s string) *StoreAppUpdate {
-	sau.mutation.SetDescription(s)
-	return sau
+func (_u *StoreAppUpdate) SetDescription(v string) *StoreAppUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (sau *StoreAppUpdate) SetNillableDescription(s *string) *StoreAppUpdate {
-	if s != nil {
-		sau.SetDescription(*s)
+func (_u *StoreAppUpdate) SetNillableDescription(v *string) *StoreAppUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return sau
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sau *StoreAppUpdate) SetUpdatedAt(t time.Time) *StoreAppUpdate {
-	sau.mutation.SetUpdatedAt(t)
-	return sau
+func (_u *StoreAppUpdate) SetUpdatedAt(v time.Time) *StoreAppUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sau *StoreAppUpdate) SetCreatedAt(t time.Time) *StoreAppUpdate {
-	sau.mutation.SetCreatedAt(t)
-	return sau
+func (_u *StoreAppUpdate) SetCreatedAt(v time.Time) *StoreAppUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sau *StoreAppUpdate) SetNillableCreatedAt(t *time.Time) *StoreAppUpdate {
-	if t != nil {
-		sau.SetCreatedAt(*t)
+func (_u *StoreAppUpdate) SetNillableCreatedAt(v *time.Time) *StoreAppUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return sau
+	return _u
 }
 
 // AddAppBinaryIDs adds the "app_binary" edge to the SentinelAppBinary entity by IDs.
-func (sau *StoreAppUpdate) AddAppBinaryIDs(ids ...model.InternalID) *StoreAppUpdate {
-	sau.mutation.AddAppBinaryIDs(ids...)
-	return sau
+func (_u *StoreAppUpdate) AddAppBinaryIDs(ids ...model.InternalID) *StoreAppUpdate {
+	_u.mutation.AddAppBinaryIDs(ids...)
+	return _u
 }
 
 // AddAppBinary adds the "app_binary" edges to the SentinelAppBinary entity.
-func (sau *StoreAppUpdate) AddAppBinary(s ...*SentinelAppBinary) *StoreAppUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *StoreAppUpdate) AddAppBinary(v ...*SentinelAppBinary) *StoreAppUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sau.AddAppBinaryIDs(ids...)
+	return _u.AddAppBinaryIDs(ids...)
 }
 
 // AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by IDs.
-func (sau *StoreAppUpdate) AddStoreAppBinaryIDs(ids ...int) *StoreAppUpdate {
-	sau.mutation.AddStoreAppBinaryIDs(ids...)
-	return sau
+func (_u *StoreAppUpdate) AddStoreAppBinaryIDs(ids ...int) *StoreAppUpdate {
+	_u.mutation.AddStoreAppBinaryIDs(ids...)
+	return _u
 }
 
 // AddStoreAppBinary adds the "store_app_binary" edges to the StoreAppBinary entity.
-func (sau *StoreAppUpdate) AddStoreAppBinary(s ...*StoreAppBinary) *StoreAppUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *StoreAppUpdate) AddStoreAppBinary(v ...*StoreAppBinary) *StoreAppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sau.AddStoreAppBinaryIDs(ids...)
+	return _u.AddStoreAppBinaryIDs(ids...)
 }
 
 // Mutation returns the StoreAppMutation object of the builder.
-func (sau *StoreAppUpdate) Mutation() *StoreAppMutation {
-	return sau.mutation
+func (_u *StoreAppUpdate) Mutation() *StoreAppMutation {
+	return _u.mutation
 }
 
 // ClearAppBinary clears all "app_binary" edges to the SentinelAppBinary entity.
-func (sau *StoreAppUpdate) ClearAppBinary() *StoreAppUpdate {
-	sau.mutation.ClearAppBinary()
-	return sau
+func (_u *StoreAppUpdate) ClearAppBinary() *StoreAppUpdate {
+	_u.mutation.ClearAppBinary()
+	return _u
 }
 
 // RemoveAppBinaryIDs removes the "app_binary" edge to SentinelAppBinary entities by IDs.
-func (sau *StoreAppUpdate) RemoveAppBinaryIDs(ids ...model.InternalID) *StoreAppUpdate {
-	sau.mutation.RemoveAppBinaryIDs(ids...)
-	return sau
+func (_u *StoreAppUpdate) RemoveAppBinaryIDs(ids ...model.InternalID) *StoreAppUpdate {
+	_u.mutation.RemoveAppBinaryIDs(ids...)
+	return _u
 }
 
 // RemoveAppBinary removes "app_binary" edges to SentinelAppBinary entities.
-func (sau *StoreAppUpdate) RemoveAppBinary(s ...*SentinelAppBinary) *StoreAppUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *StoreAppUpdate) RemoveAppBinary(v ...*SentinelAppBinary) *StoreAppUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sau.RemoveAppBinaryIDs(ids...)
+	return _u.RemoveAppBinaryIDs(ids...)
 }
 
 // ClearStoreAppBinary clears all "store_app_binary" edges to the StoreAppBinary entity.
-func (sau *StoreAppUpdate) ClearStoreAppBinary() *StoreAppUpdate {
-	sau.mutation.ClearStoreAppBinary()
-	return sau
+func (_u *StoreAppUpdate) ClearStoreAppBinary() *StoreAppUpdate {
+	_u.mutation.ClearStoreAppBinary()
+	return _u
 }
 
 // RemoveStoreAppBinaryIDs removes the "store_app_binary" edge to StoreAppBinary entities by IDs.
-func (sau *StoreAppUpdate) RemoveStoreAppBinaryIDs(ids ...int) *StoreAppUpdate {
-	sau.mutation.RemoveStoreAppBinaryIDs(ids...)
-	return sau
+func (_u *StoreAppUpdate) RemoveStoreAppBinaryIDs(ids ...int) *StoreAppUpdate {
+	_u.mutation.RemoveStoreAppBinaryIDs(ids...)
+	return _u
 }
 
 // RemoveStoreAppBinary removes "store_app_binary" edges to StoreAppBinary entities.
-func (sau *StoreAppUpdate) RemoveStoreAppBinary(s ...*StoreAppBinary) *StoreAppUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *StoreAppUpdate) RemoveStoreAppBinary(v ...*StoreAppBinary) *StoreAppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sau.RemoveStoreAppBinaryIDs(ids...)
+	return _u.RemoveStoreAppBinaryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (sau *StoreAppUpdate) Save(ctx context.Context) (int, error) {
-	sau.defaults()
-	return withHooks(ctx, sau.sqlSave, sau.mutation, sau.hooks)
+func (_u *StoreAppUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sau *StoreAppUpdate) SaveX(ctx context.Context) int {
-	affected, err := sau.Save(ctx)
+func (_u *StoreAppUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -172,48 +172,48 @@ func (sau *StoreAppUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (sau *StoreAppUpdate) Exec(ctx context.Context) error {
-	_, err := sau.Save(ctx)
+func (_u *StoreAppUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sau *StoreAppUpdate) ExecX(ctx context.Context) {
-	if err := sau.Exec(ctx); err != nil {
+func (_u *StoreAppUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sau *StoreAppUpdate) defaults() {
-	if _, ok := sau.mutation.UpdatedAt(); !ok {
+func (_u *StoreAppUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := storeapp.UpdateDefaultUpdatedAt()
-		sau.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (sau *StoreAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *StoreAppUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(storeapp.Table, storeapp.Columns, sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64))
-	if ps := sau.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := sau.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(storeapp.FieldName, field.TypeString, value)
 	}
-	if value, ok := sau.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(storeapp.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := sau.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(storeapp.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := sau.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(storeapp.FieldCreatedAt, field.TypeTime, value)
 	}
-	if sau.mutation.AppBinaryCleared() {
+	if _u.mutation.AppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -224,13 +224,13 @@ func (sau *StoreAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &StoreAppBinaryCreate{config: sau.config, mutation: newStoreAppBinaryMutation(sau.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sau.mutation.RemovedAppBinaryIDs(); len(nodes) > 0 && !sau.mutation.AppBinaryCleared() {
+	if nodes := _u.mutation.RemovedAppBinaryIDs(); len(nodes) > 0 && !_u.mutation.AppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -244,13 +244,13 @@ func (sau *StoreAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &StoreAppBinaryCreate{config: sau.config, mutation: newStoreAppBinaryMutation(sau.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sau.mutation.AppBinaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppBinaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -264,13 +264,13 @@ func (sau *StoreAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &StoreAppBinaryCreate{config: sau.config, mutation: newStoreAppBinaryMutation(sau.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if sau.mutation.StoreAppBinaryCleared() {
+	if _u.mutation.StoreAppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -283,7 +283,7 @@ func (sau *StoreAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sau.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !sau.mutation.StoreAppBinaryCleared() {
+	if nodes := _u.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !_u.mutation.StoreAppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -299,7 +299,7 @@ func (sau *StoreAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sau.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -315,7 +315,7 @@ func (sau *StoreAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, sau.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{storeapp.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -323,8 +323,8 @@ func (sau *StoreAppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	sau.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // StoreAppUpdateOne is the builder for updating a single StoreApp entity.
@@ -336,152 +336,152 @@ type StoreAppUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (sauo *StoreAppUpdateOne) SetName(s string) *StoreAppUpdateOne {
-	sauo.mutation.SetName(s)
-	return sauo
+func (_u *StoreAppUpdateOne) SetName(v string) *StoreAppUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (sauo *StoreAppUpdateOne) SetNillableName(s *string) *StoreAppUpdateOne {
-	if s != nil {
-		sauo.SetName(*s)
+func (_u *StoreAppUpdateOne) SetNillableName(v *string) *StoreAppUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return sauo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (sauo *StoreAppUpdateOne) SetDescription(s string) *StoreAppUpdateOne {
-	sauo.mutation.SetDescription(s)
-	return sauo
+func (_u *StoreAppUpdateOne) SetDescription(v string) *StoreAppUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (sauo *StoreAppUpdateOne) SetNillableDescription(s *string) *StoreAppUpdateOne {
-	if s != nil {
-		sauo.SetDescription(*s)
+func (_u *StoreAppUpdateOne) SetNillableDescription(v *string) *StoreAppUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return sauo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sauo *StoreAppUpdateOne) SetUpdatedAt(t time.Time) *StoreAppUpdateOne {
-	sauo.mutation.SetUpdatedAt(t)
-	return sauo
+func (_u *StoreAppUpdateOne) SetUpdatedAt(v time.Time) *StoreAppUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sauo *StoreAppUpdateOne) SetCreatedAt(t time.Time) *StoreAppUpdateOne {
-	sauo.mutation.SetCreatedAt(t)
-	return sauo
+func (_u *StoreAppUpdateOne) SetCreatedAt(v time.Time) *StoreAppUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sauo *StoreAppUpdateOne) SetNillableCreatedAt(t *time.Time) *StoreAppUpdateOne {
-	if t != nil {
-		sauo.SetCreatedAt(*t)
+func (_u *StoreAppUpdateOne) SetNillableCreatedAt(v *time.Time) *StoreAppUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return sauo
+	return _u
 }
 
 // AddAppBinaryIDs adds the "app_binary" edge to the SentinelAppBinary entity by IDs.
-func (sauo *StoreAppUpdateOne) AddAppBinaryIDs(ids ...model.InternalID) *StoreAppUpdateOne {
-	sauo.mutation.AddAppBinaryIDs(ids...)
-	return sauo
+func (_u *StoreAppUpdateOne) AddAppBinaryIDs(ids ...model.InternalID) *StoreAppUpdateOne {
+	_u.mutation.AddAppBinaryIDs(ids...)
+	return _u
 }
 
 // AddAppBinary adds the "app_binary" edges to the SentinelAppBinary entity.
-func (sauo *StoreAppUpdateOne) AddAppBinary(s ...*SentinelAppBinary) *StoreAppUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *StoreAppUpdateOne) AddAppBinary(v ...*SentinelAppBinary) *StoreAppUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sauo.AddAppBinaryIDs(ids...)
+	return _u.AddAppBinaryIDs(ids...)
 }
 
 // AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by IDs.
-func (sauo *StoreAppUpdateOne) AddStoreAppBinaryIDs(ids ...int) *StoreAppUpdateOne {
-	sauo.mutation.AddStoreAppBinaryIDs(ids...)
-	return sauo
+func (_u *StoreAppUpdateOne) AddStoreAppBinaryIDs(ids ...int) *StoreAppUpdateOne {
+	_u.mutation.AddStoreAppBinaryIDs(ids...)
+	return _u
 }
 
 // AddStoreAppBinary adds the "store_app_binary" edges to the StoreAppBinary entity.
-func (sauo *StoreAppUpdateOne) AddStoreAppBinary(s ...*StoreAppBinary) *StoreAppUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *StoreAppUpdateOne) AddStoreAppBinary(v ...*StoreAppBinary) *StoreAppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sauo.AddStoreAppBinaryIDs(ids...)
+	return _u.AddStoreAppBinaryIDs(ids...)
 }
 
 // Mutation returns the StoreAppMutation object of the builder.
-func (sauo *StoreAppUpdateOne) Mutation() *StoreAppMutation {
-	return sauo.mutation
+func (_u *StoreAppUpdateOne) Mutation() *StoreAppMutation {
+	return _u.mutation
 }
 
 // ClearAppBinary clears all "app_binary" edges to the SentinelAppBinary entity.
-func (sauo *StoreAppUpdateOne) ClearAppBinary() *StoreAppUpdateOne {
-	sauo.mutation.ClearAppBinary()
-	return sauo
+func (_u *StoreAppUpdateOne) ClearAppBinary() *StoreAppUpdateOne {
+	_u.mutation.ClearAppBinary()
+	return _u
 }
 
 // RemoveAppBinaryIDs removes the "app_binary" edge to SentinelAppBinary entities by IDs.
-func (sauo *StoreAppUpdateOne) RemoveAppBinaryIDs(ids ...model.InternalID) *StoreAppUpdateOne {
-	sauo.mutation.RemoveAppBinaryIDs(ids...)
-	return sauo
+func (_u *StoreAppUpdateOne) RemoveAppBinaryIDs(ids ...model.InternalID) *StoreAppUpdateOne {
+	_u.mutation.RemoveAppBinaryIDs(ids...)
+	return _u
 }
 
 // RemoveAppBinary removes "app_binary" edges to SentinelAppBinary entities.
-func (sauo *StoreAppUpdateOne) RemoveAppBinary(s ...*SentinelAppBinary) *StoreAppUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *StoreAppUpdateOne) RemoveAppBinary(v ...*SentinelAppBinary) *StoreAppUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sauo.RemoveAppBinaryIDs(ids...)
+	return _u.RemoveAppBinaryIDs(ids...)
 }
 
 // ClearStoreAppBinary clears all "store_app_binary" edges to the StoreAppBinary entity.
-func (sauo *StoreAppUpdateOne) ClearStoreAppBinary() *StoreAppUpdateOne {
-	sauo.mutation.ClearStoreAppBinary()
-	return sauo
+func (_u *StoreAppUpdateOne) ClearStoreAppBinary() *StoreAppUpdateOne {
+	_u.mutation.ClearStoreAppBinary()
+	return _u
 }
 
 // RemoveStoreAppBinaryIDs removes the "store_app_binary" edge to StoreAppBinary entities by IDs.
-func (sauo *StoreAppUpdateOne) RemoveStoreAppBinaryIDs(ids ...int) *StoreAppUpdateOne {
-	sauo.mutation.RemoveStoreAppBinaryIDs(ids...)
-	return sauo
+func (_u *StoreAppUpdateOne) RemoveStoreAppBinaryIDs(ids ...int) *StoreAppUpdateOne {
+	_u.mutation.RemoveStoreAppBinaryIDs(ids...)
+	return _u
 }
 
 // RemoveStoreAppBinary removes "store_app_binary" edges to StoreAppBinary entities.
-func (sauo *StoreAppUpdateOne) RemoveStoreAppBinary(s ...*StoreAppBinary) *StoreAppUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *StoreAppUpdateOne) RemoveStoreAppBinary(v ...*StoreAppBinary) *StoreAppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sauo.RemoveStoreAppBinaryIDs(ids...)
+	return _u.RemoveStoreAppBinaryIDs(ids...)
 }
 
 // Where appends a list predicates to the StoreAppUpdate builder.
-func (sauo *StoreAppUpdateOne) Where(ps ...predicate.StoreApp) *StoreAppUpdateOne {
-	sauo.mutation.Where(ps...)
-	return sauo
+func (_u *StoreAppUpdateOne) Where(ps ...predicate.StoreApp) *StoreAppUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (sauo *StoreAppUpdateOne) Select(field string, fields ...string) *StoreAppUpdateOne {
-	sauo.fields = append([]string{field}, fields...)
-	return sauo
+func (_u *StoreAppUpdateOne) Select(field string, fields ...string) *StoreAppUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated StoreApp entity.
-func (sauo *StoreAppUpdateOne) Save(ctx context.Context) (*StoreApp, error) {
-	sauo.defaults()
-	return withHooks(ctx, sauo.sqlSave, sauo.mutation, sauo.hooks)
+func (_u *StoreAppUpdateOne) Save(ctx context.Context) (*StoreApp, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sauo *StoreAppUpdateOne) SaveX(ctx context.Context) *StoreApp {
-	node, err := sauo.Save(ctx)
+func (_u *StoreAppUpdateOne) SaveX(ctx context.Context) *StoreApp {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -489,34 +489,34 @@ func (sauo *StoreAppUpdateOne) SaveX(ctx context.Context) *StoreApp {
 }
 
 // Exec executes the query on the entity.
-func (sauo *StoreAppUpdateOne) Exec(ctx context.Context) error {
-	_, err := sauo.Save(ctx)
+func (_u *StoreAppUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sauo *StoreAppUpdateOne) ExecX(ctx context.Context) {
-	if err := sauo.Exec(ctx); err != nil {
+func (_u *StoreAppUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sauo *StoreAppUpdateOne) defaults() {
-	if _, ok := sauo.mutation.UpdatedAt(); !ok {
+func (_u *StoreAppUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := storeapp.UpdateDefaultUpdatedAt()
-		sauo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (sauo *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, err error) {
+func (_u *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, err error) {
 	_spec := sqlgraph.NewUpdateSpec(storeapp.Table, storeapp.Columns, sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64))
-	id, ok := sauo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "StoreApp.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := sauo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, storeapp.FieldID)
 		for _, f := range fields {
@@ -528,26 +528,26 @@ func (sauo *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, er
 			}
 		}
 	}
-	if ps := sauo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := sauo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(storeapp.FieldName, field.TypeString, value)
 	}
-	if value, ok := sauo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(storeapp.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := sauo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(storeapp.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := sauo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(storeapp.FieldCreatedAt, field.TypeTime, value)
 	}
-	if sauo.mutation.AppBinaryCleared() {
+	if _u.mutation.AppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -558,13 +558,13 @@ func (sauo *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, er
 				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &StoreAppBinaryCreate{config: sauo.config, mutation: newStoreAppBinaryMutation(sauo.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sauo.mutation.RemovedAppBinaryIDs(); len(nodes) > 0 && !sauo.mutation.AppBinaryCleared() {
+	if nodes := _u.mutation.RemovedAppBinaryIDs(); len(nodes) > 0 && !_u.mutation.AppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -578,13 +578,13 @@ func (sauo *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, er
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &StoreAppBinaryCreate{config: sauo.config, mutation: newStoreAppBinaryMutation(sauo.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sauo.mutation.AppBinaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppBinaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -598,13 +598,13 @@ func (sauo *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, er
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &StoreAppBinaryCreate{config: sauo.config, mutation: newStoreAppBinaryMutation(sauo.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if sauo.mutation.StoreAppBinaryCleared() {
+	if _u.mutation.StoreAppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -617,7 +617,7 @@ func (sauo *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sauo.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !sauo.mutation.StoreAppBinaryCleared() {
+	if nodes := _u.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !_u.mutation.StoreAppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -633,7 +633,7 @@ func (sauo *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sauo.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -649,10 +649,10 @@ func (sauo *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &StoreApp{config: sauo.config}
+	_node = &StoreApp{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, sauo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{storeapp.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -660,6 +660,6 @@ func (sauo *StoreAppUpdateOne) sqlSave(ctx context.Context) (_node *StoreApp, er
 		}
 		return nil, err
 	}
-	sauo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

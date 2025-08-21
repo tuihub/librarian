@@ -29,40 +29,40 @@ type SentinelAppBinaryFileQuery struct {
 }
 
 // Where adds a new predicate for the SentinelAppBinaryFileQuery builder.
-func (sabfq *SentinelAppBinaryFileQuery) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileQuery {
-	sabfq.predicates = append(sabfq.predicates, ps...)
-	return sabfq
+func (_q *SentinelAppBinaryFileQuery) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (sabfq *SentinelAppBinaryFileQuery) Limit(limit int) *SentinelAppBinaryFileQuery {
-	sabfq.ctx.Limit = &limit
-	return sabfq
+func (_q *SentinelAppBinaryFileQuery) Limit(limit int) *SentinelAppBinaryFileQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (sabfq *SentinelAppBinaryFileQuery) Offset(offset int) *SentinelAppBinaryFileQuery {
-	sabfq.ctx.Offset = &offset
-	return sabfq
+func (_q *SentinelAppBinaryFileQuery) Offset(offset int) *SentinelAppBinaryFileQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (sabfq *SentinelAppBinaryFileQuery) Unique(unique bool) *SentinelAppBinaryFileQuery {
-	sabfq.ctx.Unique = &unique
-	return sabfq
+func (_q *SentinelAppBinaryFileQuery) Unique(unique bool) *SentinelAppBinaryFileQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (sabfq *SentinelAppBinaryFileQuery) Order(o ...sentinelappbinaryfile.OrderOption) *SentinelAppBinaryFileQuery {
-	sabfq.order = append(sabfq.order, o...)
-	return sabfq
+func (_q *SentinelAppBinaryFileQuery) Order(o ...sentinelappbinaryfile.OrderOption) *SentinelAppBinaryFileQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // First returns the first SentinelAppBinaryFile entity from the query.
 // Returns a *NotFoundError when no SentinelAppBinaryFile was found.
-func (sabfq *SentinelAppBinaryFileQuery) First(ctx context.Context) (*SentinelAppBinaryFile, error) {
-	nodes, err := sabfq.Limit(1).All(setContextOp(ctx, sabfq.ctx, ent.OpQueryFirst))
+func (_q *SentinelAppBinaryFileQuery) First(ctx context.Context) (*SentinelAppBinaryFile, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (sabfq *SentinelAppBinaryFileQuery) First(ctx context.Context) (*SentinelAp
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (sabfq *SentinelAppBinaryFileQuery) FirstX(ctx context.Context) *SentinelAppBinaryFile {
-	node, err := sabfq.First(ctx)
+func (_q *SentinelAppBinaryFileQuery) FirstX(ctx context.Context) *SentinelAppBinaryFile {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -83,9 +83,9 @@ func (sabfq *SentinelAppBinaryFileQuery) FirstX(ctx context.Context) *SentinelAp
 
 // FirstID returns the first SentinelAppBinaryFile ID from the query.
 // Returns a *NotFoundError when no SentinelAppBinaryFile ID was found.
-func (sabfq *SentinelAppBinaryFileQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *SentinelAppBinaryFileQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = sabfq.Limit(1).IDs(setContextOp(ctx, sabfq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -96,8 +96,8 @@ func (sabfq *SentinelAppBinaryFileQuery) FirstID(ctx context.Context) (id model.
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (sabfq *SentinelAppBinaryFileQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := sabfq.FirstID(ctx)
+func (_q *SentinelAppBinaryFileQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -107,8 +107,8 @@ func (sabfq *SentinelAppBinaryFileQuery) FirstIDX(ctx context.Context) model.Int
 // Only returns a single SentinelAppBinaryFile entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one SentinelAppBinaryFile entity is found.
 // Returns a *NotFoundError when no SentinelAppBinaryFile entities are found.
-func (sabfq *SentinelAppBinaryFileQuery) Only(ctx context.Context) (*SentinelAppBinaryFile, error) {
-	nodes, err := sabfq.Limit(2).All(setContextOp(ctx, sabfq.ctx, ent.OpQueryOnly))
+func (_q *SentinelAppBinaryFileQuery) Only(ctx context.Context) (*SentinelAppBinaryFile, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -123,8 +123,8 @@ func (sabfq *SentinelAppBinaryFileQuery) Only(ctx context.Context) (*SentinelApp
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (sabfq *SentinelAppBinaryFileQuery) OnlyX(ctx context.Context) *SentinelAppBinaryFile {
-	node, err := sabfq.Only(ctx)
+func (_q *SentinelAppBinaryFileQuery) OnlyX(ctx context.Context) *SentinelAppBinaryFile {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -134,9 +134,9 @@ func (sabfq *SentinelAppBinaryFileQuery) OnlyX(ctx context.Context) *SentinelApp
 // OnlyID is like Only, but returns the only SentinelAppBinaryFile ID in the query.
 // Returns a *NotSingularError when more than one SentinelAppBinaryFile ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (sabfq *SentinelAppBinaryFileQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *SentinelAppBinaryFileQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = sabfq.Limit(2).IDs(setContextOp(ctx, sabfq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -151,8 +151,8 @@ func (sabfq *SentinelAppBinaryFileQuery) OnlyID(ctx context.Context) (id model.I
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (sabfq *SentinelAppBinaryFileQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := sabfq.OnlyID(ctx)
+func (_q *SentinelAppBinaryFileQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,18 +160,18 @@ func (sabfq *SentinelAppBinaryFileQuery) OnlyIDX(ctx context.Context) model.Inte
 }
 
 // All executes the query and returns a list of SentinelAppBinaryFiles.
-func (sabfq *SentinelAppBinaryFileQuery) All(ctx context.Context) ([]*SentinelAppBinaryFile, error) {
-	ctx = setContextOp(ctx, sabfq.ctx, ent.OpQueryAll)
-	if err := sabfq.prepareQuery(ctx); err != nil {
+func (_q *SentinelAppBinaryFileQuery) All(ctx context.Context) ([]*SentinelAppBinaryFile, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*SentinelAppBinaryFile, *SentinelAppBinaryFileQuery]()
-	return withInterceptors[[]*SentinelAppBinaryFile](ctx, sabfq, qr, sabfq.inters)
+	return withInterceptors[[]*SentinelAppBinaryFile](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (sabfq *SentinelAppBinaryFileQuery) AllX(ctx context.Context) []*SentinelAppBinaryFile {
-	nodes, err := sabfq.All(ctx)
+func (_q *SentinelAppBinaryFileQuery) AllX(ctx context.Context) []*SentinelAppBinaryFile {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -179,20 +179,20 @@ func (sabfq *SentinelAppBinaryFileQuery) AllX(ctx context.Context) []*SentinelAp
 }
 
 // IDs executes the query and returns a list of SentinelAppBinaryFile IDs.
-func (sabfq *SentinelAppBinaryFileQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if sabfq.ctx.Unique == nil && sabfq.path != nil {
-		sabfq.Unique(true)
+func (_q *SentinelAppBinaryFileQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, sabfq.ctx, ent.OpQueryIDs)
-	if err = sabfq.Select(sentinelappbinaryfile.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(sentinelappbinaryfile.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (sabfq *SentinelAppBinaryFileQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := sabfq.IDs(ctx)
+func (_q *SentinelAppBinaryFileQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -200,17 +200,17 @@ func (sabfq *SentinelAppBinaryFileQuery) IDsX(ctx context.Context) []model.Inter
 }
 
 // Count returns the count of the given query.
-func (sabfq *SentinelAppBinaryFileQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, sabfq.ctx, ent.OpQueryCount)
-	if err := sabfq.prepareQuery(ctx); err != nil {
+func (_q *SentinelAppBinaryFileQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, sabfq, querierCount[*SentinelAppBinaryFileQuery](), sabfq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*SentinelAppBinaryFileQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (sabfq *SentinelAppBinaryFileQuery) CountX(ctx context.Context) int {
-	count, err := sabfq.Count(ctx)
+func (_q *SentinelAppBinaryFileQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -218,9 +218,9 @@ func (sabfq *SentinelAppBinaryFileQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (sabfq *SentinelAppBinaryFileQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, sabfq.ctx, ent.OpQueryExist)
-	switch _, err := sabfq.FirstID(ctx); {
+func (_q *SentinelAppBinaryFileQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -231,8 +231,8 @@ func (sabfq *SentinelAppBinaryFileQuery) Exist(ctx context.Context) (bool, error
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (sabfq *SentinelAppBinaryFileQuery) ExistX(ctx context.Context) bool {
-	exist, err := sabfq.Exist(ctx)
+func (_q *SentinelAppBinaryFileQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -241,19 +241,19 @@ func (sabfq *SentinelAppBinaryFileQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the SentinelAppBinaryFileQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (sabfq *SentinelAppBinaryFileQuery) Clone() *SentinelAppBinaryFileQuery {
-	if sabfq == nil {
+func (_q *SentinelAppBinaryFileQuery) Clone() *SentinelAppBinaryFileQuery {
+	if _q == nil {
 		return nil
 	}
 	return &SentinelAppBinaryFileQuery{
-		config:     sabfq.config,
-		ctx:        sabfq.ctx.Clone(),
-		order:      append([]sentinelappbinaryfile.OrderOption{}, sabfq.order...),
-		inters:     append([]Interceptor{}, sabfq.inters...),
-		predicates: append([]predicate.SentinelAppBinaryFile{}, sabfq.predicates...),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]sentinelappbinaryfile.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.SentinelAppBinaryFile{}, _q.predicates...),
 		// clone intermediate query.
-		sql:  sabfq.sql.Clone(),
-		path: sabfq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
@@ -271,10 +271,10 @@ func (sabfq *SentinelAppBinaryFileQuery) Clone() *SentinelAppBinaryFileQuery {
 //		GroupBy(sentinelappbinaryfile.FieldSentinelID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (sabfq *SentinelAppBinaryFileQuery) GroupBy(field string, fields ...string) *SentinelAppBinaryFileGroupBy {
-	sabfq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &SentinelAppBinaryFileGroupBy{build: sabfq}
-	grbuild.flds = &sabfq.ctx.Fields
+func (_q *SentinelAppBinaryFileQuery) GroupBy(field string, fields ...string) *SentinelAppBinaryFileGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &SentinelAppBinaryFileGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = sentinelappbinaryfile.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -292,62 +292,62 @@ func (sabfq *SentinelAppBinaryFileQuery) GroupBy(field string, fields ...string)
 //	client.SentinelAppBinaryFile.Query().
 //		Select(sentinelappbinaryfile.FieldSentinelID).
 //		Scan(ctx, &v)
-func (sabfq *SentinelAppBinaryFileQuery) Select(fields ...string) *SentinelAppBinaryFileSelect {
-	sabfq.ctx.Fields = append(sabfq.ctx.Fields, fields...)
-	sbuild := &SentinelAppBinaryFileSelect{SentinelAppBinaryFileQuery: sabfq}
+func (_q *SentinelAppBinaryFileQuery) Select(fields ...string) *SentinelAppBinaryFileSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &SentinelAppBinaryFileSelect{SentinelAppBinaryFileQuery: _q}
 	sbuild.label = sentinelappbinaryfile.Label
-	sbuild.flds, sbuild.scan = &sabfq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a SentinelAppBinaryFileSelect configured with the given aggregations.
-func (sabfq *SentinelAppBinaryFileQuery) Aggregate(fns ...AggregateFunc) *SentinelAppBinaryFileSelect {
-	return sabfq.Select().Aggregate(fns...)
+func (_q *SentinelAppBinaryFileQuery) Aggregate(fns ...AggregateFunc) *SentinelAppBinaryFileSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (sabfq *SentinelAppBinaryFileQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range sabfq.inters {
+func (_q *SentinelAppBinaryFileQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, sabfq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range sabfq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !sentinelappbinaryfile.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if sabfq.path != nil {
-		prev, err := sabfq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		sabfq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (sabfq *SentinelAppBinaryFileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SentinelAppBinaryFile, error) {
+func (_q *SentinelAppBinaryFileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SentinelAppBinaryFile, error) {
 	var (
 		nodes = []*SentinelAppBinaryFile{}
-		_spec = sabfq.querySpec()
+		_spec = _q.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SentinelAppBinaryFile).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &SentinelAppBinaryFile{config: sabfq.config}
+		node := &SentinelAppBinaryFile{config: _q.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, sabfq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
@@ -356,24 +356,24 @@ func (sabfq *SentinelAppBinaryFileQuery) sqlAll(ctx context.Context, hooks ...qu
 	return nodes, nil
 }
 
-func (sabfq *SentinelAppBinaryFileQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := sabfq.querySpec()
-	_spec.Node.Columns = sabfq.ctx.Fields
-	if len(sabfq.ctx.Fields) > 0 {
-		_spec.Unique = sabfq.ctx.Unique != nil && *sabfq.ctx.Unique
+func (_q *SentinelAppBinaryFileQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, sabfq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (sabfq *SentinelAppBinaryFileQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *SentinelAppBinaryFileQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
-	_spec.From = sabfq.sql
-	if unique := sabfq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if sabfq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := sabfq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sentinelappbinaryfile.FieldID)
 		for i := range fields {
@@ -382,20 +382,20 @@ func (sabfq *SentinelAppBinaryFileQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := sabfq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := sabfq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := sabfq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := sabfq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -405,33 +405,33 @@ func (sabfq *SentinelAppBinaryFileQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (sabfq *SentinelAppBinaryFileQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(sabfq.driver.Dialect())
+func (_q *SentinelAppBinaryFileQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(sentinelappbinaryfile.Table)
-	columns := sabfq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = sentinelappbinaryfile.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if sabfq.sql != nil {
-		selector = sabfq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if sabfq.ctx.Unique != nil && *sabfq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range sabfq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range sabfq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := sabfq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := sabfq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -444,41 +444,41 @@ type SentinelAppBinaryFileGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (sabfgb *SentinelAppBinaryFileGroupBy) Aggregate(fns ...AggregateFunc) *SentinelAppBinaryFileGroupBy {
-	sabfgb.fns = append(sabfgb.fns, fns...)
-	return sabfgb
+func (_g *SentinelAppBinaryFileGroupBy) Aggregate(fns ...AggregateFunc) *SentinelAppBinaryFileGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (sabfgb *SentinelAppBinaryFileGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, sabfgb.build.ctx, ent.OpQueryGroupBy)
-	if err := sabfgb.build.prepareQuery(ctx); err != nil {
+func (_g *SentinelAppBinaryFileGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SentinelAppBinaryFileQuery, *SentinelAppBinaryFileGroupBy](ctx, sabfgb.build, sabfgb, sabfgb.build.inters, v)
+	return scanWithInterceptors[*SentinelAppBinaryFileQuery, *SentinelAppBinaryFileGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (sabfgb *SentinelAppBinaryFileGroupBy) sqlScan(ctx context.Context, root *SentinelAppBinaryFileQuery, v any) error {
+func (_g *SentinelAppBinaryFileGroupBy) sqlScan(ctx context.Context, root *SentinelAppBinaryFileQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(sabfgb.fns))
-	for _, fn := range sabfgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*sabfgb.flds)+len(sabfgb.fns))
-		for _, f := range *sabfgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*sabfgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := sabfgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -492,27 +492,27 @@ type SentinelAppBinaryFileSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (sabfs *SentinelAppBinaryFileSelect) Aggregate(fns ...AggregateFunc) *SentinelAppBinaryFileSelect {
-	sabfs.fns = append(sabfs.fns, fns...)
-	return sabfs
+func (_s *SentinelAppBinaryFileSelect) Aggregate(fns ...AggregateFunc) *SentinelAppBinaryFileSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (sabfs *SentinelAppBinaryFileSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, sabfs.ctx, ent.OpQuerySelect)
-	if err := sabfs.prepareQuery(ctx); err != nil {
+func (_s *SentinelAppBinaryFileSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SentinelAppBinaryFileQuery, *SentinelAppBinaryFileSelect](ctx, sabfs.SentinelAppBinaryFileQuery, sabfs, sabfs.inters, v)
+	return scanWithInterceptors[*SentinelAppBinaryFileQuery, *SentinelAppBinaryFileSelect](ctx, _s.SentinelAppBinaryFileQuery, _s, _s.inters, v)
 }
 
-func (sabfs *SentinelAppBinaryFileSelect) sqlScan(ctx context.Context, root *SentinelAppBinaryFileQuery, v any) error {
+func (_s *SentinelAppBinaryFileSelect) sqlScan(ctx context.Context, root *SentinelAppBinaryFileQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(sabfs.fns))
-	for _, fn := range sabfs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*sabfs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -520,7 +520,7 @@ func (sabfs *SentinelAppBinaryFileSelect) sqlScan(ctx context.Context, root *Sen
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := sabfs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

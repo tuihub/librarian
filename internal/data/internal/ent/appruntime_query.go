@@ -31,44 +31,44 @@ type AppRunTimeQuery struct {
 }
 
 // Where adds a new predicate for the AppRunTimeQuery builder.
-func (artq *AppRunTimeQuery) Where(ps ...predicate.AppRunTime) *AppRunTimeQuery {
-	artq.predicates = append(artq.predicates, ps...)
-	return artq
+func (_q *AppRunTimeQuery) Where(ps ...predicate.AppRunTime) *AppRunTimeQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (artq *AppRunTimeQuery) Limit(limit int) *AppRunTimeQuery {
-	artq.ctx.Limit = &limit
-	return artq
+func (_q *AppRunTimeQuery) Limit(limit int) *AppRunTimeQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (artq *AppRunTimeQuery) Offset(offset int) *AppRunTimeQuery {
-	artq.ctx.Offset = &offset
-	return artq
+func (_q *AppRunTimeQuery) Offset(offset int) *AppRunTimeQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (artq *AppRunTimeQuery) Unique(unique bool) *AppRunTimeQuery {
-	artq.ctx.Unique = &unique
-	return artq
+func (_q *AppRunTimeQuery) Unique(unique bool) *AppRunTimeQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (artq *AppRunTimeQuery) Order(o ...appruntime.OrderOption) *AppRunTimeQuery {
-	artq.order = append(artq.order, o...)
-	return artq
+func (_q *AppRunTimeQuery) Order(o ...appruntime.OrderOption) *AppRunTimeQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryApp chains the current query on the "app" edge.
-func (artq *AppRunTimeQuery) QueryApp() *AppQuery {
-	query := (&AppClient{config: artq.config}).Query()
+func (_q *AppRunTimeQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := artq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := artq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -77,7 +77,7 @@ func (artq *AppRunTimeQuery) QueryApp() *AppQuery {
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, appruntime.AppTable, appruntime.AppColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(artq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -85,8 +85,8 @@ func (artq *AppRunTimeQuery) QueryApp() *AppQuery {
 
 // First returns the first AppRunTime entity from the query.
 // Returns a *NotFoundError when no AppRunTime was found.
-func (artq *AppRunTimeQuery) First(ctx context.Context) (*AppRunTime, error) {
-	nodes, err := artq.Limit(1).All(setContextOp(ctx, artq.ctx, ent.OpQueryFirst))
+func (_q *AppRunTimeQuery) First(ctx context.Context) (*AppRunTime, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +97,8 @@ func (artq *AppRunTimeQuery) First(ctx context.Context) (*AppRunTime, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (artq *AppRunTimeQuery) FirstX(ctx context.Context) *AppRunTime {
-	node, err := artq.First(ctx)
+func (_q *AppRunTimeQuery) FirstX(ctx context.Context) *AppRunTime {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -107,9 +107,9 @@ func (artq *AppRunTimeQuery) FirstX(ctx context.Context) *AppRunTime {
 
 // FirstID returns the first AppRunTime ID from the query.
 // Returns a *NotFoundError when no AppRunTime ID was found.
-func (artq *AppRunTimeQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *AppRunTimeQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = artq.Limit(1).IDs(setContextOp(ctx, artq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -120,8 +120,8 @@ func (artq *AppRunTimeQuery) FirstID(ctx context.Context) (id model.InternalID, 
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (artq *AppRunTimeQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := artq.FirstID(ctx)
+func (_q *AppRunTimeQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -131,8 +131,8 @@ func (artq *AppRunTimeQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Only returns a single AppRunTime entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one AppRunTime entity is found.
 // Returns a *NotFoundError when no AppRunTime entities are found.
-func (artq *AppRunTimeQuery) Only(ctx context.Context) (*AppRunTime, error) {
-	nodes, err := artq.Limit(2).All(setContextOp(ctx, artq.ctx, ent.OpQueryOnly))
+func (_q *AppRunTimeQuery) Only(ctx context.Context) (*AppRunTime, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +147,8 @@ func (artq *AppRunTimeQuery) Only(ctx context.Context) (*AppRunTime, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (artq *AppRunTimeQuery) OnlyX(ctx context.Context) *AppRunTime {
-	node, err := artq.Only(ctx)
+func (_q *AppRunTimeQuery) OnlyX(ctx context.Context) *AppRunTime {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -158,9 +158,9 @@ func (artq *AppRunTimeQuery) OnlyX(ctx context.Context) *AppRunTime {
 // OnlyID is like Only, but returns the only AppRunTime ID in the query.
 // Returns a *NotSingularError when more than one AppRunTime ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (artq *AppRunTimeQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *AppRunTimeQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = artq.Limit(2).IDs(setContextOp(ctx, artq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -175,8 +175,8 @@ func (artq *AppRunTimeQuery) OnlyID(ctx context.Context) (id model.InternalID, e
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (artq *AppRunTimeQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := artq.OnlyID(ctx)
+func (_q *AppRunTimeQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -184,18 +184,18 @@ func (artq *AppRunTimeQuery) OnlyIDX(ctx context.Context) model.InternalID {
 }
 
 // All executes the query and returns a list of AppRunTimes.
-func (artq *AppRunTimeQuery) All(ctx context.Context) ([]*AppRunTime, error) {
-	ctx = setContextOp(ctx, artq.ctx, ent.OpQueryAll)
-	if err := artq.prepareQuery(ctx); err != nil {
+func (_q *AppRunTimeQuery) All(ctx context.Context) ([]*AppRunTime, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*AppRunTime, *AppRunTimeQuery]()
-	return withInterceptors[[]*AppRunTime](ctx, artq, qr, artq.inters)
+	return withInterceptors[[]*AppRunTime](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (artq *AppRunTimeQuery) AllX(ctx context.Context) []*AppRunTime {
-	nodes, err := artq.All(ctx)
+func (_q *AppRunTimeQuery) AllX(ctx context.Context) []*AppRunTime {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -203,20 +203,20 @@ func (artq *AppRunTimeQuery) AllX(ctx context.Context) []*AppRunTime {
 }
 
 // IDs executes the query and returns a list of AppRunTime IDs.
-func (artq *AppRunTimeQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if artq.ctx.Unique == nil && artq.path != nil {
-		artq.Unique(true)
+func (_q *AppRunTimeQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, artq.ctx, ent.OpQueryIDs)
-	if err = artq.Select(appruntime.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(appruntime.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (artq *AppRunTimeQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := artq.IDs(ctx)
+func (_q *AppRunTimeQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -224,17 +224,17 @@ func (artq *AppRunTimeQuery) IDsX(ctx context.Context) []model.InternalID {
 }
 
 // Count returns the count of the given query.
-func (artq *AppRunTimeQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, artq.ctx, ent.OpQueryCount)
-	if err := artq.prepareQuery(ctx); err != nil {
+func (_q *AppRunTimeQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, artq, querierCount[*AppRunTimeQuery](), artq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*AppRunTimeQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (artq *AppRunTimeQuery) CountX(ctx context.Context) int {
-	count, err := artq.Count(ctx)
+func (_q *AppRunTimeQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -242,9 +242,9 @@ func (artq *AppRunTimeQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (artq *AppRunTimeQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, artq.ctx, ent.OpQueryExist)
-	switch _, err := artq.FirstID(ctx); {
+func (_q *AppRunTimeQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -255,8 +255,8 @@ func (artq *AppRunTimeQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (artq *AppRunTimeQuery) ExistX(ctx context.Context) bool {
-	exist, err := artq.Exist(ctx)
+func (_q *AppRunTimeQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -265,32 +265,32 @@ func (artq *AppRunTimeQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the AppRunTimeQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (artq *AppRunTimeQuery) Clone() *AppRunTimeQuery {
-	if artq == nil {
+func (_q *AppRunTimeQuery) Clone() *AppRunTimeQuery {
+	if _q == nil {
 		return nil
 	}
 	return &AppRunTimeQuery{
-		config:     artq.config,
-		ctx:        artq.ctx.Clone(),
-		order:      append([]appruntime.OrderOption{}, artq.order...),
-		inters:     append([]Interceptor{}, artq.inters...),
-		predicates: append([]predicate.AppRunTime{}, artq.predicates...),
-		withApp:    artq.withApp.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]appruntime.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.AppRunTime{}, _q.predicates...),
+		withApp:    _q.withApp.Clone(),
 		// clone intermediate query.
-		sql:  artq.sql.Clone(),
-		path: artq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithApp tells the query-builder to eager-load the nodes that are connected to
 // the "app" edge. The optional arguments are used to configure the query builder of the edge.
-func (artq *AppRunTimeQuery) WithApp(opts ...func(*AppQuery)) *AppRunTimeQuery {
-	query := (&AppClient{config: artq.config}).Query()
+func (_q *AppRunTimeQuery) WithApp(opts ...func(*AppQuery)) *AppRunTimeQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	artq.withApp = query
-	return artq
+	_q.withApp = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -307,10 +307,10 @@ func (artq *AppRunTimeQuery) WithApp(opts ...func(*AppQuery)) *AppRunTimeQuery {
 //		GroupBy(appruntime.FieldUserID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (artq *AppRunTimeQuery) GroupBy(field string, fields ...string) *AppRunTimeGroupBy {
-	artq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AppRunTimeGroupBy{build: artq}
-	grbuild.flds = &artq.ctx.Fields
+func (_q *AppRunTimeQuery) GroupBy(field string, fields ...string) *AppRunTimeGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppRunTimeGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = appruntime.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -328,58 +328,58 @@ func (artq *AppRunTimeQuery) GroupBy(field string, fields ...string) *AppRunTime
 //	client.AppRunTime.Query().
 //		Select(appruntime.FieldUserID).
 //		Scan(ctx, &v)
-func (artq *AppRunTimeQuery) Select(fields ...string) *AppRunTimeSelect {
-	artq.ctx.Fields = append(artq.ctx.Fields, fields...)
-	sbuild := &AppRunTimeSelect{AppRunTimeQuery: artq}
+func (_q *AppRunTimeQuery) Select(fields ...string) *AppRunTimeSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &AppRunTimeSelect{AppRunTimeQuery: _q}
 	sbuild.label = appruntime.Label
-	sbuild.flds, sbuild.scan = &artq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a AppRunTimeSelect configured with the given aggregations.
-func (artq *AppRunTimeQuery) Aggregate(fns ...AggregateFunc) *AppRunTimeSelect {
-	return artq.Select().Aggregate(fns...)
+func (_q *AppRunTimeQuery) Aggregate(fns ...AggregateFunc) *AppRunTimeSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (artq *AppRunTimeQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range artq.inters {
+func (_q *AppRunTimeQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, artq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range artq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !appruntime.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if artq.path != nil {
-		prev, err := artq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		artq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (artq *AppRunTimeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppRunTime, error) {
+func (_q *AppRunTimeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppRunTime, error) {
 	var (
 		nodes       = []*AppRunTime{}
-		_spec       = artq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			artq.withApp != nil,
+			_q.withApp != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppRunTime).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &AppRunTime{config: artq.config}
+		node := &AppRunTime{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -387,14 +387,14 @@ func (artq *AppRunTimeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, artq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := artq.withApp; query != nil {
-		if err := artq.loadApp(ctx, query, nodes, nil,
+	if query := _q.withApp; query != nil {
+		if err := _q.loadApp(ctx, query, nodes, nil,
 			func(n *AppRunTime, e *App) { n.Edges.App = e }); err != nil {
 			return nil, err
 		}
@@ -402,7 +402,7 @@ func (artq *AppRunTimeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	return nodes, nil
 }
 
-func (artq *AppRunTimeQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppRunTime, init func(*AppRunTime), assign func(*AppRunTime, *App)) error {
+func (_q *AppRunTimeQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppRunTime, init func(*AppRunTime), assign func(*AppRunTime, *App)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*AppRunTime)
 	for i := range nodes {
@@ -432,24 +432,24 @@ func (artq *AppRunTimeQuery) loadApp(ctx context.Context, query *AppQuery, nodes
 	return nil
 }
 
-func (artq *AppRunTimeQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := artq.querySpec()
-	_spec.Node.Columns = artq.ctx.Fields
-	if len(artq.ctx.Fields) > 0 {
-		_spec.Unique = artq.ctx.Unique != nil && *artq.ctx.Unique
+func (_q *AppRunTimeQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, artq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (artq *AppRunTimeQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *AppRunTimeQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(appruntime.Table, appruntime.Columns, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64))
-	_spec.From = artq.sql
-	if unique := artq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if artq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := artq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appruntime.FieldID)
 		for i := range fields {
@@ -457,24 +457,24 @@ func (artq *AppRunTimeQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if artq.withApp != nil {
+		if _q.withApp != nil {
 			_spec.Node.AddColumnOnce(appruntime.FieldAppID)
 		}
 	}
-	if ps := artq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := artq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := artq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := artq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -484,33 +484,33 @@ func (artq *AppRunTimeQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (artq *AppRunTimeQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(artq.driver.Dialect())
+func (_q *AppRunTimeQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(appruntime.Table)
-	columns := artq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = appruntime.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if artq.sql != nil {
-		selector = artq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if artq.ctx.Unique != nil && *artq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range artq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range artq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := artq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := artq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -523,41 +523,41 @@ type AppRunTimeGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (artgb *AppRunTimeGroupBy) Aggregate(fns ...AggregateFunc) *AppRunTimeGroupBy {
-	artgb.fns = append(artgb.fns, fns...)
-	return artgb
+func (_g *AppRunTimeGroupBy) Aggregate(fns ...AggregateFunc) *AppRunTimeGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (artgb *AppRunTimeGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, artgb.build.ctx, ent.OpQueryGroupBy)
-	if err := artgb.build.prepareQuery(ctx); err != nil {
+func (_g *AppRunTimeGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppRunTimeQuery, *AppRunTimeGroupBy](ctx, artgb.build, artgb, artgb.build.inters, v)
+	return scanWithInterceptors[*AppRunTimeQuery, *AppRunTimeGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (artgb *AppRunTimeGroupBy) sqlScan(ctx context.Context, root *AppRunTimeQuery, v any) error {
+func (_g *AppRunTimeGroupBy) sqlScan(ctx context.Context, root *AppRunTimeQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(artgb.fns))
-	for _, fn := range artgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*artgb.flds)+len(artgb.fns))
-		for _, f := range *artgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*artgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := artgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -571,27 +571,27 @@ type AppRunTimeSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (arts *AppRunTimeSelect) Aggregate(fns ...AggregateFunc) *AppRunTimeSelect {
-	arts.fns = append(arts.fns, fns...)
-	return arts
+func (_s *AppRunTimeSelect) Aggregate(fns ...AggregateFunc) *AppRunTimeSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (arts *AppRunTimeSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, arts.ctx, ent.OpQuerySelect)
-	if err := arts.prepareQuery(ctx); err != nil {
+func (_s *AppRunTimeSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppRunTimeQuery, *AppRunTimeSelect](ctx, arts.AppRunTimeQuery, arts, arts.inters, v)
+	return scanWithInterceptors[*AppRunTimeQuery, *AppRunTimeSelect](ctx, _s.AppRunTimeQuery, _s, _s.inters, v)
 }
 
-func (arts *AppRunTimeSelect) sqlScan(ctx context.Context, root *AppRunTimeQuery, v any) error {
+func (_s *AppRunTimeSelect) sqlScan(ctx context.Context, root *AppRunTimeQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(arts.fns))
-	for _, fn := range arts.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*arts.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -599,7 +599,7 @@ func (arts *AppRunTimeSelect) sqlScan(ctx context.Context, root *AppRunTimeQuery
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := arts.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

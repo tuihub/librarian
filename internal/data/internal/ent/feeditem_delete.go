@@ -20,56 +20,56 @@ type FeedItemDelete struct {
 }
 
 // Where appends a list predicates to the FeedItemDelete builder.
-func (fid *FeedItemDelete) Where(ps ...predicate.FeedItem) *FeedItemDelete {
-	fid.mutation.Where(ps...)
-	return fid
+func (_d *FeedItemDelete) Where(ps ...predicate.FeedItem) *FeedItemDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (fid *FeedItemDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, fid.sqlExec, fid.mutation, fid.hooks)
+func (_d *FeedItemDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fid *FeedItemDelete) ExecX(ctx context.Context) int {
-	n, err := fid.Exec(ctx)
+func (_d *FeedItemDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (fid *FeedItemDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *FeedItemDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(feeditem.Table, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64))
-	if ps := fid.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, fid.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	fid.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // FeedItemDeleteOne is the builder for deleting a single FeedItem entity.
 type FeedItemDeleteOne struct {
-	fid *FeedItemDelete
+	_d *FeedItemDelete
 }
 
 // Where appends a list predicates to the FeedItemDelete builder.
-func (fido *FeedItemDeleteOne) Where(ps ...predicate.FeedItem) *FeedItemDeleteOne {
-	fido.fid.mutation.Where(ps...)
-	return fido
+func (_d *FeedItemDeleteOne) Where(ps ...predicate.FeedItem) *FeedItemDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (fido *FeedItemDeleteOne) Exec(ctx context.Context) error {
-	n, err := fido.fid.Exec(ctx)
+func (_d *FeedItemDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (fido *FeedItemDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fido *FeedItemDeleteOne) ExecX(ctx context.Context) {
-	if err := fido.Exec(ctx); err != nil {
+func (_d *FeedItemDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

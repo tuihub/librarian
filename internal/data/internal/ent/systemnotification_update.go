@@ -24,142 +24,142 @@ type SystemNotificationUpdate struct {
 }
 
 // Where appends a list predicates to the SystemNotificationUpdate builder.
-func (snu *SystemNotificationUpdate) Where(ps ...predicate.SystemNotification) *SystemNotificationUpdate {
-	snu.mutation.Where(ps...)
-	return snu
+func (_u *SystemNotificationUpdate) Where(ps ...predicate.SystemNotification) *SystemNotificationUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (snu *SystemNotificationUpdate) SetUserID(mi model.InternalID) *SystemNotificationUpdate {
-	snu.mutation.ResetUserID()
-	snu.mutation.SetUserID(mi)
-	return snu
+func (_u *SystemNotificationUpdate) SetUserID(v model.InternalID) *SystemNotificationUpdate {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (snu *SystemNotificationUpdate) SetNillableUserID(mi *model.InternalID) *SystemNotificationUpdate {
-	if mi != nil {
-		snu.SetUserID(*mi)
+func (_u *SystemNotificationUpdate) SetNillableUserID(v *model.InternalID) *SystemNotificationUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return snu
+	return _u
 }
 
-// AddUserID adds mi to the "user_id" field.
-func (snu *SystemNotificationUpdate) AddUserID(mi model.InternalID) *SystemNotificationUpdate {
-	snu.mutation.AddUserID(mi)
-	return snu
+// AddUserID adds value to the "user_id" field.
+func (_u *SystemNotificationUpdate) AddUserID(v model.InternalID) *SystemNotificationUpdate {
+	_u.mutation.AddUserID(v)
+	return _u
 }
 
 // ClearUserID clears the value of the "user_id" field.
-func (snu *SystemNotificationUpdate) ClearUserID() *SystemNotificationUpdate {
-	snu.mutation.ClearUserID()
-	return snu
+func (_u *SystemNotificationUpdate) ClearUserID() *SystemNotificationUpdate {
+	_u.mutation.ClearUserID()
+	return _u
 }
 
 // SetType sets the "type" field.
-func (snu *SystemNotificationUpdate) SetType(s systemnotification.Type) *SystemNotificationUpdate {
-	snu.mutation.SetType(s)
-	return snu
+func (_u *SystemNotificationUpdate) SetType(v systemnotification.Type) *SystemNotificationUpdate {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (snu *SystemNotificationUpdate) SetNillableType(s *systemnotification.Type) *SystemNotificationUpdate {
-	if s != nil {
-		snu.SetType(*s)
+func (_u *SystemNotificationUpdate) SetNillableType(v *systemnotification.Type) *SystemNotificationUpdate {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return snu
+	return _u
 }
 
 // SetLevel sets the "level" field.
-func (snu *SystemNotificationUpdate) SetLevel(s systemnotification.Level) *SystemNotificationUpdate {
-	snu.mutation.SetLevel(s)
-	return snu
+func (_u *SystemNotificationUpdate) SetLevel(v systemnotification.Level) *SystemNotificationUpdate {
+	_u.mutation.SetLevel(v)
+	return _u
 }
 
 // SetNillableLevel sets the "level" field if the given value is not nil.
-func (snu *SystemNotificationUpdate) SetNillableLevel(s *systemnotification.Level) *SystemNotificationUpdate {
-	if s != nil {
-		snu.SetLevel(*s)
+func (_u *SystemNotificationUpdate) SetNillableLevel(v *systemnotification.Level) *SystemNotificationUpdate {
+	if v != nil {
+		_u.SetLevel(*v)
 	}
-	return snu
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (snu *SystemNotificationUpdate) SetStatus(s systemnotification.Status) *SystemNotificationUpdate {
-	snu.mutation.SetStatus(s)
-	return snu
+func (_u *SystemNotificationUpdate) SetStatus(v systemnotification.Status) *SystemNotificationUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (snu *SystemNotificationUpdate) SetNillableStatus(s *systemnotification.Status) *SystemNotificationUpdate {
-	if s != nil {
-		snu.SetStatus(*s)
+func (_u *SystemNotificationUpdate) SetNillableStatus(v *systemnotification.Status) *SystemNotificationUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return snu
+	return _u
 }
 
 // SetTitle sets the "title" field.
-func (snu *SystemNotificationUpdate) SetTitle(s string) *SystemNotificationUpdate {
-	snu.mutation.SetTitle(s)
-	return snu
+func (_u *SystemNotificationUpdate) SetTitle(v string) *SystemNotificationUpdate {
+	_u.mutation.SetTitle(v)
+	return _u
 }
 
 // SetNillableTitle sets the "title" field if the given value is not nil.
-func (snu *SystemNotificationUpdate) SetNillableTitle(s *string) *SystemNotificationUpdate {
-	if s != nil {
-		snu.SetTitle(*s)
+func (_u *SystemNotificationUpdate) SetNillableTitle(v *string) *SystemNotificationUpdate {
+	if v != nil {
+		_u.SetTitle(*v)
 	}
-	return snu
+	return _u
 }
 
 // SetContent sets the "content" field.
-func (snu *SystemNotificationUpdate) SetContent(s string) *SystemNotificationUpdate {
-	snu.mutation.SetContent(s)
-	return snu
+func (_u *SystemNotificationUpdate) SetContent(v string) *SystemNotificationUpdate {
+	_u.mutation.SetContent(v)
+	return _u
 }
 
 // SetNillableContent sets the "content" field if the given value is not nil.
-func (snu *SystemNotificationUpdate) SetNillableContent(s *string) *SystemNotificationUpdate {
-	if s != nil {
-		snu.SetContent(*s)
+func (_u *SystemNotificationUpdate) SetNillableContent(v *string) *SystemNotificationUpdate {
+	if v != nil {
+		_u.SetContent(*v)
 	}
-	return snu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (snu *SystemNotificationUpdate) SetUpdatedAt(t time.Time) *SystemNotificationUpdate {
-	snu.mutation.SetUpdatedAt(t)
-	return snu
+func (_u *SystemNotificationUpdate) SetUpdatedAt(v time.Time) *SystemNotificationUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (snu *SystemNotificationUpdate) SetCreatedAt(t time.Time) *SystemNotificationUpdate {
-	snu.mutation.SetCreatedAt(t)
-	return snu
+func (_u *SystemNotificationUpdate) SetCreatedAt(v time.Time) *SystemNotificationUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (snu *SystemNotificationUpdate) SetNillableCreatedAt(t *time.Time) *SystemNotificationUpdate {
-	if t != nil {
-		snu.SetCreatedAt(*t)
+func (_u *SystemNotificationUpdate) SetNillableCreatedAt(v *time.Time) *SystemNotificationUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return snu
+	return _u
 }
 
 // Mutation returns the SystemNotificationMutation object of the builder.
-func (snu *SystemNotificationUpdate) Mutation() *SystemNotificationMutation {
-	return snu.mutation
+func (_u *SystemNotificationUpdate) Mutation() *SystemNotificationMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (snu *SystemNotificationUpdate) Save(ctx context.Context) (int, error) {
-	snu.defaults()
-	return withHooks(ctx, snu.sqlSave, snu.mutation, snu.hooks)
+func (_u *SystemNotificationUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (snu *SystemNotificationUpdate) SaveX(ctx context.Context) int {
-	affected, err := snu.Save(ctx)
+func (_u *SystemNotificationUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -167,39 +167,39 @@ func (snu *SystemNotificationUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (snu *SystemNotificationUpdate) Exec(ctx context.Context) error {
-	_, err := snu.Save(ctx)
+func (_u *SystemNotificationUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (snu *SystemNotificationUpdate) ExecX(ctx context.Context) {
-	if err := snu.Exec(ctx); err != nil {
+func (_u *SystemNotificationUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (snu *SystemNotificationUpdate) defaults() {
-	if _, ok := snu.mutation.UpdatedAt(); !ok {
+func (_u *SystemNotificationUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := systemnotification.UpdateDefaultUpdatedAt()
-		snu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (snu *SystemNotificationUpdate) check() error {
-	if v, ok := snu.mutation.GetType(); ok {
+func (_u *SystemNotificationUpdate) check() error {
+	if v, ok := _u.mutation.GetType(); ok {
 		if err := systemnotification.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "SystemNotification.type": %w`, err)}
 		}
 	}
-	if v, ok := snu.mutation.Level(); ok {
+	if v, ok := _u.mutation.Level(); ok {
 		if err := systemnotification.LevelValidator(v); err != nil {
 			return &ValidationError{Name: "level", err: fmt.Errorf(`ent: validator failed for field "SystemNotification.level": %w`, err)}
 		}
 	}
-	if v, ok := snu.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := systemnotification.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SystemNotification.status": %w`, err)}
 		}
@@ -207,49 +207,49 @@ func (snu *SystemNotificationUpdate) check() error {
 	return nil
 }
 
-func (snu *SystemNotificationUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := snu.check(); err != nil {
-		return n, err
+func (_u *SystemNotificationUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(systemnotification.Table, systemnotification.Columns, sqlgraph.NewFieldSpec(systemnotification.FieldID, field.TypeInt64))
-	if ps := snu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := snu.mutation.UserID(); ok {
+	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(systemnotification.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := snu.mutation.AddedUserID(); ok {
+	if value, ok := _u.mutation.AddedUserID(); ok {
 		_spec.AddField(systemnotification.FieldUserID, field.TypeInt64, value)
 	}
-	if snu.mutation.UserIDCleared() {
+	if _u.mutation.UserIDCleared() {
 		_spec.ClearField(systemnotification.FieldUserID, field.TypeInt64)
 	}
-	if value, ok := snu.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(systemnotification.FieldType, field.TypeEnum, value)
 	}
-	if value, ok := snu.mutation.Level(); ok {
+	if value, ok := _u.mutation.Level(); ok {
 		_spec.SetField(systemnotification.FieldLevel, field.TypeEnum, value)
 	}
-	if value, ok := snu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(systemnotification.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := snu.mutation.Title(); ok {
+	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(systemnotification.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := snu.mutation.Content(); ok {
+	if value, ok := _u.mutation.Content(); ok {
 		_spec.SetField(systemnotification.FieldContent, field.TypeString, value)
 	}
-	if value, ok := snu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(systemnotification.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := snu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(systemnotification.FieldCreatedAt, field.TypeTime, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, snu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{systemnotification.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -257,8 +257,8 @@ func (snu *SystemNotificationUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		return 0, err
 	}
-	snu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // SystemNotificationUpdateOne is the builder for updating a single SystemNotification entity.
@@ -270,149 +270,149 @@ type SystemNotificationUpdateOne struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (snuo *SystemNotificationUpdateOne) SetUserID(mi model.InternalID) *SystemNotificationUpdateOne {
-	snuo.mutation.ResetUserID()
-	snuo.mutation.SetUserID(mi)
-	return snuo
+func (_u *SystemNotificationUpdateOne) SetUserID(v model.InternalID) *SystemNotificationUpdateOne {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (snuo *SystemNotificationUpdateOne) SetNillableUserID(mi *model.InternalID) *SystemNotificationUpdateOne {
-	if mi != nil {
-		snuo.SetUserID(*mi)
+func (_u *SystemNotificationUpdateOne) SetNillableUserID(v *model.InternalID) *SystemNotificationUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return snuo
+	return _u
 }
 
-// AddUserID adds mi to the "user_id" field.
-func (snuo *SystemNotificationUpdateOne) AddUserID(mi model.InternalID) *SystemNotificationUpdateOne {
-	snuo.mutation.AddUserID(mi)
-	return snuo
+// AddUserID adds value to the "user_id" field.
+func (_u *SystemNotificationUpdateOne) AddUserID(v model.InternalID) *SystemNotificationUpdateOne {
+	_u.mutation.AddUserID(v)
+	return _u
 }
 
 // ClearUserID clears the value of the "user_id" field.
-func (snuo *SystemNotificationUpdateOne) ClearUserID() *SystemNotificationUpdateOne {
-	snuo.mutation.ClearUserID()
-	return snuo
+func (_u *SystemNotificationUpdateOne) ClearUserID() *SystemNotificationUpdateOne {
+	_u.mutation.ClearUserID()
+	return _u
 }
 
 // SetType sets the "type" field.
-func (snuo *SystemNotificationUpdateOne) SetType(s systemnotification.Type) *SystemNotificationUpdateOne {
-	snuo.mutation.SetType(s)
-	return snuo
+func (_u *SystemNotificationUpdateOne) SetType(v systemnotification.Type) *SystemNotificationUpdateOne {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (snuo *SystemNotificationUpdateOne) SetNillableType(s *systemnotification.Type) *SystemNotificationUpdateOne {
-	if s != nil {
-		snuo.SetType(*s)
+func (_u *SystemNotificationUpdateOne) SetNillableType(v *systemnotification.Type) *SystemNotificationUpdateOne {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return snuo
+	return _u
 }
 
 // SetLevel sets the "level" field.
-func (snuo *SystemNotificationUpdateOne) SetLevel(s systemnotification.Level) *SystemNotificationUpdateOne {
-	snuo.mutation.SetLevel(s)
-	return snuo
+func (_u *SystemNotificationUpdateOne) SetLevel(v systemnotification.Level) *SystemNotificationUpdateOne {
+	_u.mutation.SetLevel(v)
+	return _u
 }
 
 // SetNillableLevel sets the "level" field if the given value is not nil.
-func (snuo *SystemNotificationUpdateOne) SetNillableLevel(s *systemnotification.Level) *SystemNotificationUpdateOne {
-	if s != nil {
-		snuo.SetLevel(*s)
+func (_u *SystemNotificationUpdateOne) SetNillableLevel(v *systemnotification.Level) *SystemNotificationUpdateOne {
+	if v != nil {
+		_u.SetLevel(*v)
 	}
-	return snuo
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (snuo *SystemNotificationUpdateOne) SetStatus(s systemnotification.Status) *SystemNotificationUpdateOne {
-	snuo.mutation.SetStatus(s)
-	return snuo
+func (_u *SystemNotificationUpdateOne) SetStatus(v systemnotification.Status) *SystemNotificationUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (snuo *SystemNotificationUpdateOne) SetNillableStatus(s *systemnotification.Status) *SystemNotificationUpdateOne {
-	if s != nil {
-		snuo.SetStatus(*s)
+func (_u *SystemNotificationUpdateOne) SetNillableStatus(v *systemnotification.Status) *SystemNotificationUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return snuo
+	return _u
 }
 
 // SetTitle sets the "title" field.
-func (snuo *SystemNotificationUpdateOne) SetTitle(s string) *SystemNotificationUpdateOne {
-	snuo.mutation.SetTitle(s)
-	return snuo
+func (_u *SystemNotificationUpdateOne) SetTitle(v string) *SystemNotificationUpdateOne {
+	_u.mutation.SetTitle(v)
+	return _u
 }
 
 // SetNillableTitle sets the "title" field if the given value is not nil.
-func (snuo *SystemNotificationUpdateOne) SetNillableTitle(s *string) *SystemNotificationUpdateOne {
-	if s != nil {
-		snuo.SetTitle(*s)
+func (_u *SystemNotificationUpdateOne) SetNillableTitle(v *string) *SystemNotificationUpdateOne {
+	if v != nil {
+		_u.SetTitle(*v)
 	}
-	return snuo
+	return _u
 }
 
 // SetContent sets the "content" field.
-func (snuo *SystemNotificationUpdateOne) SetContent(s string) *SystemNotificationUpdateOne {
-	snuo.mutation.SetContent(s)
-	return snuo
+func (_u *SystemNotificationUpdateOne) SetContent(v string) *SystemNotificationUpdateOne {
+	_u.mutation.SetContent(v)
+	return _u
 }
 
 // SetNillableContent sets the "content" field if the given value is not nil.
-func (snuo *SystemNotificationUpdateOne) SetNillableContent(s *string) *SystemNotificationUpdateOne {
-	if s != nil {
-		snuo.SetContent(*s)
+func (_u *SystemNotificationUpdateOne) SetNillableContent(v *string) *SystemNotificationUpdateOne {
+	if v != nil {
+		_u.SetContent(*v)
 	}
-	return snuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (snuo *SystemNotificationUpdateOne) SetUpdatedAt(t time.Time) *SystemNotificationUpdateOne {
-	snuo.mutation.SetUpdatedAt(t)
-	return snuo
+func (_u *SystemNotificationUpdateOne) SetUpdatedAt(v time.Time) *SystemNotificationUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (snuo *SystemNotificationUpdateOne) SetCreatedAt(t time.Time) *SystemNotificationUpdateOne {
-	snuo.mutation.SetCreatedAt(t)
-	return snuo
+func (_u *SystemNotificationUpdateOne) SetCreatedAt(v time.Time) *SystemNotificationUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (snuo *SystemNotificationUpdateOne) SetNillableCreatedAt(t *time.Time) *SystemNotificationUpdateOne {
-	if t != nil {
-		snuo.SetCreatedAt(*t)
+func (_u *SystemNotificationUpdateOne) SetNillableCreatedAt(v *time.Time) *SystemNotificationUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return snuo
+	return _u
 }
 
 // Mutation returns the SystemNotificationMutation object of the builder.
-func (snuo *SystemNotificationUpdateOne) Mutation() *SystemNotificationMutation {
-	return snuo.mutation
+func (_u *SystemNotificationUpdateOne) Mutation() *SystemNotificationMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the SystemNotificationUpdate builder.
-func (snuo *SystemNotificationUpdateOne) Where(ps ...predicate.SystemNotification) *SystemNotificationUpdateOne {
-	snuo.mutation.Where(ps...)
-	return snuo
+func (_u *SystemNotificationUpdateOne) Where(ps ...predicate.SystemNotification) *SystemNotificationUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (snuo *SystemNotificationUpdateOne) Select(field string, fields ...string) *SystemNotificationUpdateOne {
-	snuo.fields = append([]string{field}, fields...)
-	return snuo
+func (_u *SystemNotificationUpdateOne) Select(field string, fields ...string) *SystemNotificationUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated SystemNotification entity.
-func (snuo *SystemNotificationUpdateOne) Save(ctx context.Context) (*SystemNotification, error) {
-	snuo.defaults()
-	return withHooks(ctx, snuo.sqlSave, snuo.mutation, snuo.hooks)
+func (_u *SystemNotificationUpdateOne) Save(ctx context.Context) (*SystemNotification, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (snuo *SystemNotificationUpdateOne) SaveX(ctx context.Context) *SystemNotification {
-	node, err := snuo.Save(ctx)
+func (_u *SystemNotificationUpdateOne) SaveX(ctx context.Context) *SystemNotification {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -420,39 +420,39 @@ func (snuo *SystemNotificationUpdateOne) SaveX(ctx context.Context) *SystemNotif
 }
 
 // Exec executes the query on the entity.
-func (snuo *SystemNotificationUpdateOne) Exec(ctx context.Context) error {
-	_, err := snuo.Save(ctx)
+func (_u *SystemNotificationUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (snuo *SystemNotificationUpdateOne) ExecX(ctx context.Context) {
-	if err := snuo.Exec(ctx); err != nil {
+func (_u *SystemNotificationUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (snuo *SystemNotificationUpdateOne) defaults() {
-	if _, ok := snuo.mutation.UpdatedAt(); !ok {
+func (_u *SystemNotificationUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := systemnotification.UpdateDefaultUpdatedAt()
-		snuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (snuo *SystemNotificationUpdateOne) check() error {
-	if v, ok := snuo.mutation.GetType(); ok {
+func (_u *SystemNotificationUpdateOne) check() error {
+	if v, ok := _u.mutation.GetType(); ok {
 		if err := systemnotification.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "SystemNotification.type": %w`, err)}
 		}
 	}
-	if v, ok := snuo.mutation.Level(); ok {
+	if v, ok := _u.mutation.Level(); ok {
 		if err := systemnotification.LevelValidator(v); err != nil {
 			return &ValidationError{Name: "level", err: fmt.Errorf(`ent: validator failed for field "SystemNotification.level": %w`, err)}
 		}
 	}
-	if v, ok := snuo.mutation.Status(); ok {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := systemnotification.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SystemNotification.status": %w`, err)}
 		}
@@ -460,17 +460,17 @@ func (snuo *SystemNotificationUpdateOne) check() error {
 	return nil
 }
 
-func (snuo *SystemNotificationUpdateOne) sqlSave(ctx context.Context) (_node *SystemNotification, err error) {
-	if err := snuo.check(); err != nil {
+func (_u *SystemNotificationUpdateOne) sqlSave(ctx context.Context) (_node *SystemNotification, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(systemnotification.Table, systemnotification.Columns, sqlgraph.NewFieldSpec(systemnotification.FieldID, field.TypeInt64))
-	id, ok := snuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SystemNotification.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := snuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, systemnotification.FieldID)
 		for _, f := range fields {
@@ -482,47 +482,47 @@ func (snuo *SystemNotificationUpdateOne) sqlSave(ctx context.Context) (_node *Sy
 			}
 		}
 	}
-	if ps := snuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := snuo.mutation.UserID(); ok {
+	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(systemnotification.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := snuo.mutation.AddedUserID(); ok {
+	if value, ok := _u.mutation.AddedUserID(); ok {
 		_spec.AddField(systemnotification.FieldUserID, field.TypeInt64, value)
 	}
-	if snuo.mutation.UserIDCleared() {
+	if _u.mutation.UserIDCleared() {
 		_spec.ClearField(systemnotification.FieldUserID, field.TypeInt64)
 	}
-	if value, ok := snuo.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(systemnotification.FieldType, field.TypeEnum, value)
 	}
-	if value, ok := snuo.mutation.Level(); ok {
+	if value, ok := _u.mutation.Level(); ok {
 		_spec.SetField(systemnotification.FieldLevel, field.TypeEnum, value)
 	}
-	if value, ok := snuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(systemnotification.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := snuo.mutation.Title(); ok {
+	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(systemnotification.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := snuo.mutation.Content(); ok {
+	if value, ok := _u.mutation.Content(); ok {
 		_spec.SetField(systemnotification.FieldContent, field.TypeString, value)
 	}
-	if value, ok := snuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(systemnotification.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := snuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(systemnotification.FieldCreatedAt, field.TypeTime, value)
 	}
-	_node = &SystemNotification{config: snuo.config}
+	_node = &SystemNotification{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, snuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{systemnotification.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -530,6 +530,6 @@ func (snuo *SystemNotificationUpdateOne) sqlSave(ctx context.Context) (_node *Sy
 		}
 		return nil, err
 	}
-	snuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

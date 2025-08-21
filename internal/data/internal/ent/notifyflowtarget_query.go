@@ -33,44 +33,44 @@ type NotifyFlowTargetQuery struct {
 }
 
 // Where adds a new predicate for the NotifyFlowTargetQuery builder.
-func (nftq *NotifyFlowTargetQuery) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetQuery {
-	nftq.predicates = append(nftq.predicates, ps...)
-	return nftq
+func (_q *NotifyFlowTargetQuery) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (nftq *NotifyFlowTargetQuery) Limit(limit int) *NotifyFlowTargetQuery {
-	nftq.ctx.Limit = &limit
-	return nftq
+func (_q *NotifyFlowTargetQuery) Limit(limit int) *NotifyFlowTargetQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (nftq *NotifyFlowTargetQuery) Offset(offset int) *NotifyFlowTargetQuery {
-	nftq.ctx.Offset = &offset
-	return nftq
+func (_q *NotifyFlowTargetQuery) Offset(offset int) *NotifyFlowTargetQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (nftq *NotifyFlowTargetQuery) Unique(unique bool) *NotifyFlowTargetQuery {
-	nftq.ctx.Unique = &unique
-	return nftq
+func (_q *NotifyFlowTargetQuery) Unique(unique bool) *NotifyFlowTargetQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (nftq *NotifyFlowTargetQuery) Order(o ...notifyflowtarget.OrderOption) *NotifyFlowTargetQuery {
-	nftq.order = append(nftq.order, o...)
-	return nftq
+func (_q *NotifyFlowTargetQuery) Order(o ...notifyflowtarget.OrderOption) *NotifyFlowTargetQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryNotifyFlow chains the current query on the "notify_flow" edge.
-func (nftq *NotifyFlowTargetQuery) QueryNotifyFlow() *NotifyFlowQuery {
-	query := (&NotifyFlowClient{config: nftq.config}).Query()
+func (_q *NotifyFlowTargetQuery) QueryNotifyFlow() *NotifyFlowQuery {
+	query := (&NotifyFlowClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := nftq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := nftq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,20 +79,20 @@ func (nftq *NotifyFlowTargetQuery) QueryNotifyFlow() *NotifyFlowQuery {
 			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, notifyflowtarget.NotifyFlowTable, notifyflowtarget.NotifyFlowColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(nftq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryNotifyTarget chains the current query on the "notify_target" edge.
-func (nftq *NotifyFlowTargetQuery) QueryNotifyTarget() *NotifyTargetQuery {
-	query := (&NotifyTargetClient{config: nftq.config}).Query()
+func (_q *NotifyFlowTargetQuery) QueryNotifyTarget() *NotifyTargetQuery {
+	query := (&NotifyTargetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := nftq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := nftq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -101,7 +101,7 @@ func (nftq *NotifyFlowTargetQuery) QueryNotifyTarget() *NotifyTargetQuery {
 			sqlgraph.To(notifytarget.Table, notifytarget.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, notifyflowtarget.NotifyTargetTable, notifyflowtarget.NotifyTargetColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(nftq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -109,8 +109,8 @@ func (nftq *NotifyFlowTargetQuery) QueryNotifyTarget() *NotifyTargetQuery {
 
 // First returns the first NotifyFlowTarget entity from the query.
 // Returns a *NotFoundError when no NotifyFlowTarget was found.
-func (nftq *NotifyFlowTargetQuery) First(ctx context.Context) (*NotifyFlowTarget, error) {
-	nodes, err := nftq.Limit(1).All(setContextOp(ctx, nftq.ctx, ent.OpQueryFirst))
+func (_q *NotifyFlowTargetQuery) First(ctx context.Context) (*NotifyFlowTarget, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -121,8 +121,8 @@ func (nftq *NotifyFlowTargetQuery) First(ctx context.Context) (*NotifyFlowTarget
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) FirstX(ctx context.Context) *NotifyFlowTarget {
-	node, err := nftq.First(ctx)
+func (_q *NotifyFlowTargetQuery) FirstX(ctx context.Context) *NotifyFlowTarget {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -131,9 +131,9 @@ func (nftq *NotifyFlowTargetQuery) FirstX(ctx context.Context) *NotifyFlowTarget
 
 // FirstID returns the first NotifyFlowTarget ID from the query.
 // Returns a *NotFoundError when no NotifyFlowTarget ID was found.
-func (nftq *NotifyFlowTargetQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *NotifyFlowTargetQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = nftq.Limit(1).IDs(setContextOp(ctx, nftq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -144,8 +144,8 @@ func (nftq *NotifyFlowTargetQuery) FirstID(ctx context.Context) (id int, err err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) FirstIDX(ctx context.Context) int {
-	id, err := nftq.FirstID(ctx)
+func (_q *NotifyFlowTargetQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -155,8 +155,8 @@ func (nftq *NotifyFlowTargetQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single NotifyFlowTarget entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one NotifyFlowTarget entity is found.
 // Returns a *NotFoundError when no NotifyFlowTarget entities are found.
-func (nftq *NotifyFlowTargetQuery) Only(ctx context.Context) (*NotifyFlowTarget, error) {
-	nodes, err := nftq.Limit(2).All(setContextOp(ctx, nftq.ctx, ent.OpQueryOnly))
+func (_q *NotifyFlowTargetQuery) Only(ctx context.Context) (*NotifyFlowTarget, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -171,8 +171,8 @@ func (nftq *NotifyFlowTargetQuery) Only(ctx context.Context) (*NotifyFlowTarget,
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) OnlyX(ctx context.Context) *NotifyFlowTarget {
-	node, err := nftq.Only(ctx)
+func (_q *NotifyFlowTargetQuery) OnlyX(ctx context.Context) *NotifyFlowTarget {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -182,9 +182,9 @@ func (nftq *NotifyFlowTargetQuery) OnlyX(ctx context.Context) *NotifyFlowTarget 
 // OnlyID is like Only, but returns the only NotifyFlowTarget ID in the query.
 // Returns a *NotSingularError when more than one NotifyFlowTarget ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (nftq *NotifyFlowTargetQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *NotifyFlowTargetQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = nftq.Limit(2).IDs(setContextOp(ctx, nftq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -199,8 +199,8 @@ func (nftq *NotifyFlowTargetQuery) OnlyID(ctx context.Context) (id int, err erro
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) OnlyIDX(ctx context.Context) int {
-	id, err := nftq.OnlyID(ctx)
+func (_q *NotifyFlowTargetQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -208,18 +208,18 @@ func (nftq *NotifyFlowTargetQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of NotifyFlowTargets.
-func (nftq *NotifyFlowTargetQuery) All(ctx context.Context) ([]*NotifyFlowTarget, error) {
-	ctx = setContextOp(ctx, nftq.ctx, ent.OpQueryAll)
-	if err := nftq.prepareQuery(ctx); err != nil {
+func (_q *NotifyFlowTargetQuery) All(ctx context.Context) ([]*NotifyFlowTarget, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*NotifyFlowTarget, *NotifyFlowTargetQuery]()
-	return withInterceptors[[]*NotifyFlowTarget](ctx, nftq, qr, nftq.inters)
+	return withInterceptors[[]*NotifyFlowTarget](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) AllX(ctx context.Context) []*NotifyFlowTarget {
-	nodes, err := nftq.All(ctx)
+func (_q *NotifyFlowTargetQuery) AllX(ctx context.Context) []*NotifyFlowTarget {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -227,20 +227,20 @@ func (nftq *NotifyFlowTargetQuery) AllX(ctx context.Context) []*NotifyFlowTarget
 }
 
 // IDs executes the query and returns a list of NotifyFlowTarget IDs.
-func (nftq *NotifyFlowTargetQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if nftq.ctx.Unique == nil && nftq.path != nil {
-		nftq.Unique(true)
+func (_q *NotifyFlowTargetQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, nftq.ctx, ent.OpQueryIDs)
-	if err = nftq.Select(notifyflowtarget.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(notifyflowtarget.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) IDsX(ctx context.Context) []int {
-	ids, err := nftq.IDs(ctx)
+func (_q *NotifyFlowTargetQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -248,17 +248,17 @@ func (nftq *NotifyFlowTargetQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (nftq *NotifyFlowTargetQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, nftq.ctx, ent.OpQueryCount)
-	if err := nftq.prepareQuery(ctx); err != nil {
+func (_q *NotifyFlowTargetQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, nftq, querierCount[*NotifyFlowTargetQuery](), nftq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*NotifyFlowTargetQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) CountX(ctx context.Context) int {
-	count, err := nftq.Count(ctx)
+func (_q *NotifyFlowTargetQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -266,9 +266,9 @@ func (nftq *NotifyFlowTargetQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (nftq *NotifyFlowTargetQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, nftq.ctx, ent.OpQueryExist)
-	switch _, err := nftq.FirstID(ctx); {
+func (_q *NotifyFlowTargetQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -279,8 +279,8 @@ func (nftq *NotifyFlowTargetQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) ExistX(ctx context.Context) bool {
-	exist, err := nftq.Exist(ctx)
+func (_q *NotifyFlowTargetQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -289,44 +289,44 @@ func (nftq *NotifyFlowTargetQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the NotifyFlowTargetQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (nftq *NotifyFlowTargetQuery) Clone() *NotifyFlowTargetQuery {
-	if nftq == nil {
+func (_q *NotifyFlowTargetQuery) Clone() *NotifyFlowTargetQuery {
+	if _q == nil {
 		return nil
 	}
 	return &NotifyFlowTargetQuery{
-		config:           nftq.config,
-		ctx:              nftq.ctx.Clone(),
-		order:            append([]notifyflowtarget.OrderOption{}, nftq.order...),
-		inters:           append([]Interceptor{}, nftq.inters...),
-		predicates:       append([]predicate.NotifyFlowTarget{}, nftq.predicates...),
-		withNotifyFlow:   nftq.withNotifyFlow.Clone(),
-		withNotifyTarget: nftq.withNotifyTarget.Clone(),
+		config:           _q.config,
+		ctx:              _q.ctx.Clone(),
+		order:            append([]notifyflowtarget.OrderOption{}, _q.order...),
+		inters:           append([]Interceptor{}, _q.inters...),
+		predicates:       append([]predicate.NotifyFlowTarget{}, _q.predicates...),
+		withNotifyFlow:   _q.withNotifyFlow.Clone(),
+		withNotifyTarget: _q.withNotifyTarget.Clone(),
 		// clone intermediate query.
-		sql:  nftq.sql.Clone(),
-		path: nftq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithNotifyFlow tells the query-builder to eager-load the nodes that are connected to
 // the "notify_flow" edge. The optional arguments are used to configure the query builder of the edge.
-func (nftq *NotifyFlowTargetQuery) WithNotifyFlow(opts ...func(*NotifyFlowQuery)) *NotifyFlowTargetQuery {
-	query := (&NotifyFlowClient{config: nftq.config}).Query()
+func (_q *NotifyFlowTargetQuery) WithNotifyFlow(opts ...func(*NotifyFlowQuery)) *NotifyFlowTargetQuery {
+	query := (&NotifyFlowClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	nftq.withNotifyFlow = query
-	return nftq
+	_q.withNotifyFlow = query
+	return _q
 }
 
 // WithNotifyTarget tells the query-builder to eager-load the nodes that are connected to
 // the "notify_target" edge. The optional arguments are used to configure the query builder of the edge.
-func (nftq *NotifyFlowTargetQuery) WithNotifyTarget(opts ...func(*NotifyTargetQuery)) *NotifyFlowTargetQuery {
-	query := (&NotifyTargetClient{config: nftq.config}).Query()
+func (_q *NotifyFlowTargetQuery) WithNotifyTarget(opts ...func(*NotifyTargetQuery)) *NotifyFlowTargetQuery {
+	query := (&NotifyTargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	nftq.withNotifyTarget = query
-	return nftq
+	_q.withNotifyTarget = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -343,10 +343,10 @@ func (nftq *NotifyFlowTargetQuery) WithNotifyTarget(opts ...func(*NotifyTargetQu
 //		GroupBy(notifyflowtarget.FieldNotifyFlowID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (nftq *NotifyFlowTargetQuery) GroupBy(field string, fields ...string) *NotifyFlowTargetGroupBy {
-	nftq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &NotifyFlowTargetGroupBy{build: nftq}
-	grbuild.flds = &nftq.ctx.Fields
+func (_q *NotifyFlowTargetQuery) GroupBy(field string, fields ...string) *NotifyFlowTargetGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &NotifyFlowTargetGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = notifyflowtarget.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -364,59 +364,59 @@ func (nftq *NotifyFlowTargetQuery) GroupBy(field string, fields ...string) *Noti
 //	client.NotifyFlowTarget.Query().
 //		Select(notifyflowtarget.FieldNotifyFlowID).
 //		Scan(ctx, &v)
-func (nftq *NotifyFlowTargetQuery) Select(fields ...string) *NotifyFlowTargetSelect {
-	nftq.ctx.Fields = append(nftq.ctx.Fields, fields...)
-	sbuild := &NotifyFlowTargetSelect{NotifyFlowTargetQuery: nftq}
+func (_q *NotifyFlowTargetQuery) Select(fields ...string) *NotifyFlowTargetSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &NotifyFlowTargetSelect{NotifyFlowTargetQuery: _q}
 	sbuild.label = notifyflowtarget.Label
-	sbuild.flds, sbuild.scan = &nftq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a NotifyFlowTargetSelect configured with the given aggregations.
-func (nftq *NotifyFlowTargetQuery) Aggregate(fns ...AggregateFunc) *NotifyFlowTargetSelect {
-	return nftq.Select().Aggregate(fns...)
+func (_q *NotifyFlowTargetQuery) Aggregate(fns ...AggregateFunc) *NotifyFlowTargetSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (nftq *NotifyFlowTargetQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range nftq.inters {
+func (_q *NotifyFlowTargetQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, nftq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range nftq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !notifyflowtarget.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if nftq.path != nil {
-		prev, err := nftq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		nftq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (nftq *NotifyFlowTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*NotifyFlowTarget, error) {
+func (_q *NotifyFlowTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*NotifyFlowTarget, error) {
 	var (
 		nodes       = []*NotifyFlowTarget{}
-		_spec       = nftq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			nftq.withNotifyFlow != nil,
-			nftq.withNotifyTarget != nil,
+			_q.withNotifyFlow != nil,
+			_q.withNotifyTarget != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*NotifyFlowTarget).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &NotifyFlowTarget{config: nftq.config}
+		node := &NotifyFlowTarget{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -424,20 +424,20 @@ func (nftq *NotifyFlowTargetQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, nftq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := nftq.withNotifyFlow; query != nil {
-		if err := nftq.loadNotifyFlow(ctx, query, nodes, nil,
+	if query := _q.withNotifyFlow; query != nil {
+		if err := _q.loadNotifyFlow(ctx, query, nodes, nil,
 			func(n *NotifyFlowTarget, e *NotifyFlow) { n.Edges.NotifyFlow = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := nftq.withNotifyTarget; query != nil {
-		if err := nftq.loadNotifyTarget(ctx, query, nodes, nil,
+	if query := _q.withNotifyTarget; query != nil {
+		if err := _q.loadNotifyTarget(ctx, query, nodes, nil,
 			func(n *NotifyFlowTarget, e *NotifyTarget) { n.Edges.NotifyTarget = e }); err != nil {
 			return nil, err
 		}
@@ -445,7 +445,7 @@ func (nftq *NotifyFlowTargetQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 	return nodes, nil
 }
 
-func (nftq *NotifyFlowTargetQuery) loadNotifyFlow(ctx context.Context, query *NotifyFlowQuery, nodes []*NotifyFlowTarget, init func(*NotifyFlowTarget), assign func(*NotifyFlowTarget, *NotifyFlow)) error {
+func (_q *NotifyFlowTargetQuery) loadNotifyFlow(ctx context.Context, query *NotifyFlowQuery, nodes []*NotifyFlowTarget, init func(*NotifyFlowTarget), assign func(*NotifyFlowTarget, *NotifyFlow)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*NotifyFlowTarget)
 	for i := range nodes {
@@ -474,7 +474,7 @@ func (nftq *NotifyFlowTargetQuery) loadNotifyFlow(ctx context.Context, query *No
 	}
 	return nil
 }
-func (nftq *NotifyFlowTargetQuery) loadNotifyTarget(ctx context.Context, query *NotifyTargetQuery, nodes []*NotifyFlowTarget, init func(*NotifyFlowTarget), assign func(*NotifyFlowTarget, *NotifyTarget)) error {
+func (_q *NotifyFlowTargetQuery) loadNotifyTarget(ctx context.Context, query *NotifyTargetQuery, nodes []*NotifyFlowTarget, init func(*NotifyFlowTarget), assign func(*NotifyFlowTarget, *NotifyTarget)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*NotifyFlowTarget)
 	for i := range nodes {
@@ -504,24 +504,24 @@ func (nftq *NotifyFlowTargetQuery) loadNotifyTarget(ctx context.Context, query *
 	return nil
 }
 
-func (nftq *NotifyFlowTargetQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := nftq.querySpec()
-	_spec.Node.Columns = nftq.ctx.Fields
-	if len(nftq.ctx.Fields) > 0 {
-		_spec.Unique = nftq.ctx.Unique != nil && *nftq.ctx.Unique
+func (_q *NotifyFlowTargetQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, nftq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (nftq *NotifyFlowTargetQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *NotifyFlowTargetQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(notifyflowtarget.Table, notifyflowtarget.Columns, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
-	_spec.From = nftq.sql
-	if unique := nftq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if nftq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := nftq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, notifyflowtarget.FieldID)
 		for i := range fields {
@@ -529,27 +529,27 @@ func (nftq *NotifyFlowTargetQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if nftq.withNotifyFlow != nil {
+		if _q.withNotifyFlow != nil {
 			_spec.Node.AddColumnOnce(notifyflowtarget.FieldNotifyFlowID)
 		}
-		if nftq.withNotifyTarget != nil {
+		if _q.withNotifyTarget != nil {
 			_spec.Node.AddColumnOnce(notifyflowtarget.FieldNotifyTargetID)
 		}
 	}
-	if ps := nftq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := nftq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := nftq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := nftq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -559,33 +559,33 @@ func (nftq *NotifyFlowTargetQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (nftq *NotifyFlowTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(nftq.driver.Dialect())
+func (_q *NotifyFlowTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(notifyflowtarget.Table)
-	columns := nftq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = notifyflowtarget.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if nftq.sql != nil {
-		selector = nftq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if nftq.ctx.Unique != nil && *nftq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range nftq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range nftq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := nftq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := nftq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -598,41 +598,41 @@ type NotifyFlowTargetGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (nftgb *NotifyFlowTargetGroupBy) Aggregate(fns ...AggregateFunc) *NotifyFlowTargetGroupBy {
-	nftgb.fns = append(nftgb.fns, fns...)
-	return nftgb
+func (_g *NotifyFlowTargetGroupBy) Aggregate(fns ...AggregateFunc) *NotifyFlowTargetGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (nftgb *NotifyFlowTargetGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nftgb.build.ctx, ent.OpQueryGroupBy)
-	if err := nftgb.build.prepareQuery(ctx); err != nil {
+func (_g *NotifyFlowTargetGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*NotifyFlowTargetQuery, *NotifyFlowTargetGroupBy](ctx, nftgb.build, nftgb, nftgb.build.inters, v)
+	return scanWithInterceptors[*NotifyFlowTargetQuery, *NotifyFlowTargetGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (nftgb *NotifyFlowTargetGroupBy) sqlScan(ctx context.Context, root *NotifyFlowTargetQuery, v any) error {
+func (_g *NotifyFlowTargetGroupBy) sqlScan(ctx context.Context, root *NotifyFlowTargetQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(nftgb.fns))
-	for _, fn := range nftgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*nftgb.flds)+len(nftgb.fns))
-		for _, f := range *nftgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*nftgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := nftgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -646,27 +646,27 @@ type NotifyFlowTargetSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (nfts *NotifyFlowTargetSelect) Aggregate(fns ...AggregateFunc) *NotifyFlowTargetSelect {
-	nfts.fns = append(nfts.fns, fns...)
-	return nfts
+func (_s *NotifyFlowTargetSelect) Aggregate(fns ...AggregateFunc) *NotifyFlowTargetSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (nfts *NotifyFlowTargetSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nfts.ctx, ent.OpQuerySelect)
-	if err := nfts.prepareQuery(ctx); err != nil {
+func (_s *NotifyFlowTargetSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*NotifyFlowTargetQuery, *NotifyFlowTargetSelect](ctx, nfts.NotifyFlowTargetQuery, nfts, nfts.inters, v)
+	return scanWithInterceptors[*NotifyFlowTargetQuery, *NotifyFlowTargetSelect](ctx, _s.NotifyFlowTargetQuery, _s, _s.inters, v)
 }
 
-func (nfts *NotifyFlowTargetSelect) sqlScan(ctx context.Context, root *NotifyFlowTargetQuery, v any) error {
+func (_s *NotifyFlowTargetSelect) sqlScan(ctx context.Context, root *NotifyFlowTargetQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(nfts.fns))
-	for _, fn := range nfts.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*nfts.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -674,7 +674,7 @@ func (nfts *NotifyFlowTargetSelect) sqlScan(ctx context.Context, root *NotifyFlo
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := nfts.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

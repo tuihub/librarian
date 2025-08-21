@@ -29,528 +29,528 @@ type AppUpdate struct {
 }
 
 // Where appends a list predicates to the AppUpdate builder.
-func (au *AppUpdate) Where(ps ...predicate.App) *AppUpdate {
-	au.mutation.Where(ps...)
-	return au
+func (_u *AppUpdate) Where(ps ...predicate.App) *AppUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetVersionNumber sets the "version_number" field.
-func (au *AppUpdate) SetVersionNumber(u uint64) *AppUpdate {
-	au.mutation.ResetVersionNumber()
-	au.mutation.SetVersionNumber(u)
-	return au
+func (_u *AppUpdate) SetVersionNumber(v uint64) *AppUpdate {
+	_u.mutation.ResetVersionNumber()
+	_u.mutation.SetVersionNumber(v)
+	return _u
 }
 
 // SetNillableVersionNumber sets the "version_number" field if the given value is not nil.
-func (au *AppUpdate) SetNillableVersionNumber(u *uint64) *AppUpdate {
-	if u != nil {
-		au.SetVersionNumber(*u)
+func (_u *AppUpdate) SetNillableVersionNumber(v *uint64) *AppUpdate {
+	if v != nil {
+		_u.SetVersionNumber(*v)
 	}
-	return au
+	return _u
 }
 
-// AddVersionNumber adds u to the "version_number" field.
-func (au *AppUpdate) AddVersionNumber(u int64) *AppUpdate {
-	au.mutation.AddVersionNumber(u)
-	return au
+// AddVersionNumber adds value to the "version_number" field.
+func (_u *AppUpdate) AddVersionNumber(v int64) *AppUpdate {
+	_u.mutation.AddVersionNumber(v)
+	return _u
 }
 
 // SetVersionDate sets the "version_date" field.
-func (au *AppUpdate) SetVersionDate(t time.Time) *AppUpdate {
-	au.mutation.SetVersionDate(t)
-	return au
+func (_u *AppUpdate) SetVersionDate(v time.Time) *AppUpdate {
+	_u.mutation.SetVersionDate(v)
+	return _u
 }
 
 // SetNillableVersionDate sets the "version_date" field if the given value is not nil.
-func (au *AppUpdate) SetNillableVersionDate(t *time.Time) *AppUpdate {
-	if t != nil {
-		au.SetVersionDate(*t)
+func (_u *AppUpdate) SetNillableVersionDate(v *time.Time) *AppUpdate {
+	if v != nil {
+		_u.SetVersionDate(*v)
 	}
-	return au
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (au *AppUpdate) SetUserID(mi model.InternalID) *AppUpdate {
-	au.mutation.SetUserID(mi)
-	return au
+func (_u *AppUpdate) SetUserID(v model.InternalID) *AppUpdate {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (au *AppUpdate) SetNillableUserID(mi *model.InternalID) *AppUpdate {
-	if mi != nil {
-		au.SetUserID(*mi)
+func (_u *AppUpdate) SetNillableUserID(v *model.InternalID) *AppUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return au
+	return _u
 }
 
 // SetAppSources sets the "app_sources" field.
-func (au *AppUpdate) SetAppSources(m map[string]string) *AppUpdate {
-	au.mutation.SetAppSources(m)
-	return au
+func (_u *AppUpdate) SetAppSources(v map[string]string) *AppUpdate {
+	_u.mutation.SetAppSources(v)
+	return _u
 }
 
 // SetPublic sets the "public" field.
-func (au *AppUpdate) SetPublic(b bool) *AppUpdate {
-	au.mutation.SetPublic(b)
-	return au
+func (_u *AppUpdate) SetPublic(v bool) *AppUpdate {
+	_u.mutation.SetPublic(v)
+	return _u
 }
 
 // SetNillablePublic sets the "public" field if the given value is not nil.
-func (au *AppUpdate) SetNillablePublic(b *bool) *AppUpdate {
-	if b != nil {
-		au.SetPublic(*b)
+func (_u *AppUpdate) SetNillablePublic(v *bool) *AppUpdate {
+	if v != nil {
+		_u.SetPublic(*v)
 	}
-	return au
+	return _u
 }
 
 // SetStopStoreManage sets the "stop_store_manage" field.
-func (au *AppUpdate) SetStopStoreManage(b bool) *AppUpdate {
-	au.mutation.SetStopStoreManage(b)
-	return au
+func (_u *AppUpdate) SetStopStoreManage(v bool) *AppUpdate {
+	_u.mutation.SetStopStoreManage(v)
+	return _u
 }
 
 // SetNillableStopStoreManage sets the "stop_store_manage" field if the given value is not nil.
-func (au *AppUpdate) SetNillableStopStoreManage(b *bool) *AppUpdate {
-	if b != nil {
-		au.SetStopStoreManage(*b)
+func (_u *AppUpdate) SetNillableStopStoreManage(v *bool) *AppUpdate {
+	if v != nil {
+		_u.SetStopStoreManage(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearStopStoreManage clears the value of the "stop_store_manage" field.
-func (au *AppUpdate) ClearStopStoreManage() *AppUpdate {
-	au.mutation.ClearStopStoreManage()
-	return au
+func (_u *AppUpdate) ClearStopStoreManage() *AppUpdate {
+	_u.mutation.ClearStopStoreManage()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (au *AppUpdate) SetName(s string) *AppUpdate {
-	au.mutation.SetName(s)
-	return au
+func (_u *AppUpdate) SetName(v string) *AppUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (au *AppUpdate) SetNillableName(s *string) *AppUpdate {
-	if s != nil {
-		au.SetName(*s)
+func (_u *AppUpdate) SetNillableName(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return au
+	return _u
 }
 
 // SetType sets the "type" field.
-func (au *AppUpdate) SetType(a app.Type) *AppUpdate {
-	au.mutation.SetType(a)
-	return au
+func (_u *AppUpdate) SetType(v app.Type) *AppUpdate {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (au *AppUpdate) SetNillableType(a *app.Type) *AppUpdate {
-	if a != nil {
-		au.SetType(*a)
+func (_u *AppUpdate) SetNillableType(v *app.Type) *AppUpdate {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return au
+	return _u
 }
 
 // SetShortDescription sets the "short_description" field.
-func (au *AppUpdate) SetShortDescription(s string) *AppUpdate {
-	au.mutation.SetShortDescription(s)
-	return au
+func (_u *AppUpdate) SetShortDescription(v string) *AppUpdate {
+	_u.mutation.SetShortDescription(v)
+	return _u
 }
 
 // SetNillableShortDescription sets the "short_description" field if the given value is not nil.
-func (au *AppUpdate) SetNillableShortDescription(s *string) *AppUpdate {
-	if s != nil {
-		au.SetShortDescription(*s)
+func (_u *AppUpdate) SetNillableShortDescription(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetShortDescription(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearShortDescription clears the value of the "short_description" field.
-func (au *AppUpdate) ClearShortDescription() *AppUpdate {
-	au.mutation.ClearShortDescription()
-	return au
+func (_u *AppUpdate) ClearShortDescription() *AppUpdate {
+	_u.mutation.ClearShortDescription()
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (au *AppUpdate) SetDescription(s string) *AppUpdate {
-	au.mutation.SetDescription(s)
-	return au
+func (_u *AppUpdate) SetDescription(v string) *AppUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (au *AppUpdate) SetNillableDescription(s *string) *AppUpdate {
-	if s != nil {
-		au.SetDescription(*s)
+func (_u *AppUpdate) SetNillableDescription(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearDescription clears the value of the "description" field.
-func (au *AppUpdate) ClearDescription() *AppUpdate {
-	au.mutation.ClearDescription()
-	return au
+func (_u *AppUpdate) ClearDescription() *AppUpdate {
+	_u.mutation.ClearDescription()
+	return _u
 }
 
 // SetIconImageURL sets the "icon_image_url" field.
-func (au *AppUpdate) SetIconImageURL(s string) *AppUpdate {
-	au.mutation.SetIconImageURL(s)
-	return au
+func (_u *AppUpdate) SetIconImageURL(v string) *AppUpdate {
+	_u.mutation.SetIconImageURL(v)
+	return _u
 }
 
 // SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
-func (au *AppUpdate) SetNillableIconImageURL(s *string) *AppUpdate {
-	if s != nil {
-		au.SetIconImageURL(*s)
+func (_u *AppUpdate) SetNillableIconImageURL(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetIconImageURL(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearIconImageURL clears the value of the "icon_image_url" field.
-func (au *AppUpdate) ClearIconImageURL() *AppUpdate {
-	au.mutation.ClearIconImageURL()
-	return au
+func (_u *AppUpdate) ClearIconImageURL() *AppUpdate {
+	_u.mutation.ClearIconImageURL()
+	return _u
 }
 
 // SetIconImageID sets the "icon_image_id" field.
-func (au *AppUpdate) SetIconImageID(mi model.InternalID) *AppUpdate {
-	au.mutation.ResetIconImageID()
-	au.mutation.SetIconImageID(mi)
-	return au
+func (_u *AppUpdate) SetIconImageID(v model.InternalID) *AppUpdate {
+	_u.mutation.ResetIconImageID()
+	_u.mutation.SetIconImageID(v)
+	return _u
 }
 
 // SetNillableIconImageID sets the "icon_image_id" field if the given value is not nil.
-func (au *AppUpdate) SetNillableIconImageID(mi *model.InternalID) *AppUpdate {
-	if mi != nil {
-		au.SetIconImageID(*mi)
+func (_u *AppUpdate) SetNillableIconImageID(v *model.InternalID) *AppUpdate {
+	if v != nil {
+		_u.SetIconImageID(*v)
 	}
-	return au
+	return _u
 }
 
-// AddIconImageID adds mi to the "icon_image_id" field.
-func (au *AppUpdate) AddIconImageID(mi model.InternalID) *AppUpdate {
-	au.mutation.AddIconImageID(mi)
-	return au
+// AddIconImageID adds value to the "icon_image_id" field.
+func (_u *AppUpdate) AddIconImageID(v model.InternalID) *AppUpdate {
+	_u.mutation.AddIconImageID(v)
+	return _u
 }
 
 // SetBackgroundImageURL sets the "background_image_url" field.
-func (au *AppUpdate) SetBackgroundImageURL(s string) *AppUpdate {
-	au.mutation.SetBackgroundImageURL(s)
-	return au
+func (_u *AppUpdate) SetBackgroundImageURL(v string) *AppUpdate {
+	_u.mutation.SetBackgroundImageURL(v)
+	return _u
 }
 
 // SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
-func (au *AppUpdate) SetNillableBackgroundImageURL(s *string) *AppUpdate {
-	if s != nil {
-		au.SetBackgroundImageURL(*s)
+func (_u *AppUpdate) SetNillableBackgroundImageURL(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetBackgroundImageURL(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearBackgroundImageURL clears the value of the "background_image_url" field.
-func (au *AppUpdate) ClearBackgroundImageURL() *AppUpdate {
-	au.mutation.ClearBackgroundImageURL()
-	return au
+func (_u *AppUpdate) ClearBackgroundImageURL() *AppUpdate {
+	_u.mutation.ClearBackgroundImageURL()
+	return _u
 }
 
 // SetBackgroundImageID sets the "background_image_id" field.
-func (au *AppUpdate) SetBackgroundImageID(mi model.InternalID) *AppUpdate {
-	au.mutation.ResetBackgroundImageID()
-	au.mutation.SetBackgroundImageID(mi)
-	return au
+func (_u *AppUpdate) SetBackgroundImageID(v model.InternalID) *AppUpdate {
+	_u.mutation.ResetBackgroundImageID()
+	_u.mutation.SetBackgroundImageID(v)
+	return _u
 }
 
 // SetNillableBackgroundImageID sets the "background_image_id" field if the given value is not nil.
-func (au *AppUpdate) SetNillableBackgroundImageID(mi *model.InternalID) *AppUpdate {
-	if mi != nil {
-		au.SetBackgroundImageID(*mi)
+func (_u *AppUpdate) SetNillableBackgroundImageID(v *model.InternalID) *AppUpdate {
+	if v != nil {
+		_u.SetBackgroundImageID(*v)
 	}
-	return au
+	return _u
 }
 
-// AddBackgroundImageID adds mi to the "background_image_id" field.
-func (au *AppUpdate) AddBackgroundImageID(mi model.InternalID) *AppUpdate {
-	au.mutation.AddBackgroundImageID(mi)
-	return au
+// AddBackgroundImageID adds value to the "background_image_id" field.
+func (_u *AppUpdate) AddBackgroundImageID(v model.InternalID) *AppUpdate {
+	_u.mutation.AddBackgroundImageID(v)
+	return _u
 }
 
 // SetCoverImageURL sets the "cover_image_url" field.
-func (au *AppUpdate) SetCoverImageURL(s string) *AppUpdate {
-	au.mutation.SetCoverImageURL(s)
-	return au
+func (_u *AppUpdate) SetCoverImageURL(v string) *AppUpdate {
+	_u.mutation.SetCoverImageURL(v)
+	return _u
 }
 
 // SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
-func (au *AppUpdate) SetNillableCoverImageURL(s *string) *AppUpdate {
-	if s != nil {
-		au.SetCoverImageURL(*s)
+func (_u *AppUpdate) SetNillableCoverImageURL(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetCoverImageURL(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearCoverImageURL clears the value of the "cover_image_url" field.
-func (au *AppUpdate) ClearCoverImageURL() *AppUpdate {
-	au.mutation.ClearCoverImageURL()
-	return au
+func (_u *AppUpdate) ClearCoverImageURL() *AppUpdate {
+	_u.mutation.ClearCoverImageURL()
+	return _u
 }
 
 // SetCoverImageID sets the "cover_image_id" field.
-func (au *AppUpdate) SetCoverImageID(mi model.InternalID) *AppUpdate {
-	au.mutation.ResetCoverImageID()
-	au.mutation.SetCoverImageID(mi)
-	return au
+func (_u *AppUpdate) SetCoverImageID(v model.InternalID) *AppUpdate {
+	_u.mutation.ResetCoverImageID()
+	_u.mutation.SetCoverImageID(v)
+	return _u
 }
 
 // SetNillableCoverImageID sets the "cover_image_id" field if the given value is not nil.
-func (au *AppUpdate) SetNillableCoverImageID(mi *model.InternalID) *AppUpdate {
-	if mi != nil {
-		au.SetCoverImageID(*mi)
+func (_u *AppUpdate) SetNillableCoverImageID(v *model.InternalID) *AppUpdate {
+	if v != nil {
+		_u.SetCoverImageID(*v)
 	}
-	return au
+	return _u
 }
 
-// AddCoverImageID adds mi to the "cover_image_id" field.
-func (au *AppUpdate) AddCoverImageID(mi model.InternalID) *AppUpdate {
-	au.mutation.AddCoverImageID(mi)
-	return au
+// AddCoverImageID adds value to the "cover_image_id" field.
+func (_u *AppUpdate) AddCoverImageID(v model.InternalID) *AppUpdate {
+	_u.mutation.AddCoverImageID(v)
+	return _u
 }
 
 // SetReleaseDate sets the "release_date" field.
-func (au *AppUpdate) SetReleaseDate(s string) *AppUpdate {
-	au.mutation.SetReleaseDate(s)
-	return au
+func (_u *AppUpdate) SetReleaseDate(v string) *AppUpdate {
+	_u.mutation.SetReleaseDate(v)
+	return _u
 }
 
 // SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
-func (au *AppUpdate) SetNillableReleaseDate(s *string) *AppUpdate {
-	if s != nil {
-		au.SetReleaseDate(*s)
+func (_u *AppUpdate) SetNillableReleaseDate(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetReleaseDate(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearReleaseDate clears the value of the "release_date" field.
-func (au *AppUpdate) ClearReleaseDate() *AppUpdate {
-	au.mutation.ClearReleaseDate()
-	return au
+func (_u *AppUpdate) ClearReleaseDate() *AppUpdate {
+	_u.mutation.ClearReleaseDate()
+	return _u
 }
 
 // SetDeveloper sets the "developer" field.
-func (au *AppUpdate) SetDeveloper(s string) *AppUpdate {
-	au.mutation.SetDeveloper(s)
-	return au
+func (_u *AppUpdate) SetDeveloper(v string) *AppUpdate {
+	_u.mutation.SetDeveloper(v)
+	return _u
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (au *AppUpdate) SetNillableDeveloper(s *string) *AppUpdate {
-	if s != nil {
-		au.SetDeveloper(*s)
+func (_u *AppUpdate) SetNillableDeveloper(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetDeveloper(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearDeveloper clears the value of the "developer" field.
-func (au *AppUpdate) ClearDeveloper() *AppUpdate {
-	au.mutation.ClearDeveloper()
-	return au
+func (_u *AppUpdate) ClearDeveloper() *AppUpdate {
+	_u.mutation.ClearDeveloper()
+	return _u
 }
 
 // SetPublisher sets the "publisher" field.
-func (au *AppUpdate) SetPublisher(s string) *AppUpdate {
-	au.mutation.SetPublisher(s)
-	return au
+func (_u *AppUpdate) SetPublisher(v string) *AppUpdate {
+	_u.mutation.SetPublisher(v)
+	return _u
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (au *AppUpdate) SetNillablePublisher(s *string) *AppUpdate {
-	if s != nil {
-		au.SetPublisher(*s)
+func (_u *AppUpdate) SetNillablePublisher(v *string) *AppUpdate {
+	if v != nil {
+		_u.SetPublisher(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearPublisher clears the value of the "publisher" field.
-func (au *AppUpdate) ClearPublisher() *AppUpdate {
-	au.mutation.ClearPublisher()
-	return au
+func (_u *AppUpdate) ClearPublisher() *AppUpdate {
+	_u.mutation.ClearPublisher()
+	return _u
 }
 
 // SetTags sets the "tags" field.
-func (au *AppUpdate) SetTags(s []string) *AppUpdate {
-	au.mutation.SetTags(s)
-	return au
+func (_u *AppUpdate) SetTags(v []string) *AppUpdate {
+	_u.mutation.SetTags(v)
+	return _u
 }
 
-// AppendTags appends s to the "tags" field.
-func (au *AppUpdate) AppendTags(s []string) *AppUpdate {
-	au.mutation.AppendTags(s)
-	return au
+// AppendTags appends value to the "tags" field.
+func (_u *AppUpdate) AppendTags(v []string) *AppUpdate {
+	_u.mutation.AppendTags(v)
+	return _u
 }
 
 // SetAlternativeNames sets the "alternative_names" field.
-func (au *AppUpdate) SetAlternativeNames(s []string) *AppUpdate {
-	au.mutation.SetAlternativeNames(s)
-	return au
+func (_u *AppUpdate) SetAlternativeNames(v []string) *AppUpdate {
+	_u.mutation.SetAlternativeNames(v)
+	return _u
 }
 
-// AppendAlternativeNames appends s to the "alternative_names" field.
-func (au *AppUpdate) AppendAlternativeNames(s []string) *AppUpdate {
-	au.mutation.AppendAlternativeNames(s)
-	return au
+// AppendAlternativeNames appends value to the "alternative_names" field.
+func (_u *AppUpdate) AppendAlternativeNames(v []string) *AppUpdate {
+	_u.mutation.AppendAlternativeNames(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (au *AppUpdate) SetUpdatedAt(t time.Time) *AppUpdate {
-	au.mutation.SetUpdatedAt(t)
-	return au
+func (_u *AppUpdate) SetUpdatedAt(v time.Time) *AppUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (au *AppUpdate) SetCreatedAt(t time.Time) *AppUpdate {
-	au.mutation.SetCreatedAt(t)
-	return au
+func (_u *AppUpdate) SetCreatedAt(v time.Time) *AppUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (au *AppUpdate) SetNillableCreatedAt(t *time.Time) *AppUpdate {
-	if t != nil {
-		au.SetCreatedAt(*t)
+func (_u *AppUpdate) SetNillableCreatedAt(v *time.Time) *AppUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return au
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (au *AppUpdate) SetUser(u *User) *AppUpdate {
-	return au.SetUserID(u.ID)
+func (_u *AppUpdate) SetUser(v *User) *AppUpdate {
+	return _u.SetUserID(v.ID)
 }
 
 // AddAppRunTimeIDs adds the "app_run_time" edge to the AppRunTime entity by IDs.
-func (au *AppUpdate) AddAppRunTimeIDs(ids ...model.InternalID) *AppUpdate {
-	au.mutation.AddAppRunTimeIDs(ids...)
-	return au
+func (_u *AppUpdate) AddAppRunTimeIDs(ids ...model.InternalID) *AppUpdate {
+	_u.mutation.AddAppRunTimeIDs(ids...)
+	return _u
 }
 
 // AddAppRunTime adds the "app_run_time" edges to the AppRunTime entity.
-func (au *AppUpdate) AddAppRunTime(a ...*AppRunTime) *AppUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddAppRunTime(v ...*AppRunTime) *AppUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddAppRunTimeIDs(ids...)
+	return _u.AddAppRunTimeIDs(ids...)
 }
 
 // AddAppCategoryIDs adds the "app_category" edge to the AppCategory entity by IDs.
-func (au *AppUpdate) AddAppCategoryIDs(ids ...model.InternalID) *AppUpdate {
-	au.mutation.AddAppCategoryIDs(ids...)
-	return au
+func (_u *AppUpdate) AddAppCategoryIDs(ids ...model.InternalID) *AppUpdate {
+	_u.mutation.AddAppCategoryIDs(ids...)
+	return _u
 }
 
 // AddAppCategory adds the "app_category" edges to the AppCategory entity.
-func (au *AppUpdate) AddAppCategory(a ...*AppCategory) *AppUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddAppCategory(v ...*AppCategory) *AppUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddAppCategoryIDs(ids...)
+	return _u.AddAppCategoryIDs(ids...)
 }
 
 // AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by IDs.
-func (au *AppUpdate) AddAppAppCategoryIDs(ids ...int) *AppUpdate {
-	au.mutation.AddAppAppCategoryIDs(ids...)
-	return au
+func (_u *AppUpdate) AddAppAppCategoryIDs(ids ...int) *AppUpdate {
+	_u.mutation.AddAppAppCategoryIDs(ids...)
+	return _u
 }
 
 // AddAppAppCategory adds the "app_app_category" edges to the AppAppCategory entity.
-func (au *AppUpdate) AddAppAppCategory(a ...*AppAppCategory) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) AddAppAppCategory(v ...*AppAppCategory) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.AddAppAppCategoryIDs(ids...)
+	return _u.AddAppAppCategoryIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
-func (au *AppUpdate) Mutation() *AppMutation {
-	return au.mutation
+func (_u *AppUpdate) Mutation() *AppMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (au *AppUpdate) ClearUser() *AppUpdate {
-	au.mutation.ClearUser()
-	return au
+func (_u *AppUpdate) ClearUser() *AppUpdate {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // ClearAppRunTime clears all "app_run_time" edges to the AppRunTime entity.
-func (au *AppUpdate) ClearAppRunTime() *AppUpdate {
-	au.mutation.ClearAppRunTime()
-	return au
+func (_u *AppUpdate) ClearAppRunTime() *AppUpdate {
+	_u.mutation.ClearAppRunTime()
+	return _u
 }
 
 // RemoveAppRunTimeIDs removes the "app_run_time" edge to AppRunTime entities by IDs.
-func (au *AppUpdate) RemoveAppRunTimeIDs(ids ...model.InternalID) *AppUpdate {
-	au.mutation.RemoveAppRunTimeIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveAppRunTimeIDs(ids ...model.InternalID) *AppUpdate {
+	_u.mutation.RemoveAppRunTimeIDs(ids...)
+	return _u
 }
 
 // RemoveAppRunTime removes "app_run_time" edges to AppRunTime entities.
-func (au *AppUpdate) RemoveAppRunTime(a ...*AppRunTime) *AppUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemoveAppRunTime(v ...*AppRunTime) *AppUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveAppRunTimeIDs(ids...)
+	return _u.RemoveAppRunTimeIDs(ids...)
 }
 
 // ClearAppCategory clears all "app_category" edges to the AppCategory entity.
-func (au *AppUpdate) ClearAppCategory() *AppUpdate {
-	au.mutation.ClearAppCategory()
-	return au
+func (_u *AppUpdate) ClearAppCategory() *AppUpdate {
+	_u.mutation.ClearAppCategory()
+	return _u
 }
 
 // RemoveAppCategoryIDs removes the "app_category" edge to AppCategory entities by IDs.
-func (au *AppUpdate) RemoveAppCategoryIDs(ids ...model.InternalID) *AppUpdate {
-	au.mutation.RemoveAppCategoryIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveAppCategoryIDs(ids ...model.InternalID) *AppUpdate {
+	_u.mutation.RemoveAppCategoryIDs(ids...)
+	return _u
 }
 
 // RemoveAppCategory removes "app_category" edges to AppCategory entities.
-func (au *AppUpdate) RemoveAppCategory(a ...*AppCategory) *AppUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemoveAppCategory(v ...*AppCategory) *AppUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveAppCategoryIDs(ids...)
+	return _u.RemoveAppCategoryIDs(ids...)
 }
 
 // ClearAppAppCategory clears all "app_app_category" edges to the AppAppCategory entity.
-func (au *AppUpdate) ClearAppAppCategory() *AppUpdate {
-	au.mutation.ClearAppAppCategory()
-	return au
+func (_u *AppUpdate) ClearAppAppCategory() *AppUpdate {
+	_u.mutation.ClearAppAppCategory()
+	return _u
 }
 
 // RemoveAppAppCategoryIDs removes the "app_app_category" edge to AppAppCategory entities by IDs.
-func (au *AppUpdate) RemoveAppAppCategoryIDs(ids ...int) *AppUpdate {
-	au.mutation.RemoveAppAppCategoryIDs(ids...)
-	return au
+func (_u *AppUpdate) RemoveAppAppCategoryIDs(ids ...int) *AppUpdate {
+	_u.mutation.RemoveAppAppCategoryIDs(ids...)
+	return _u
 }
 
 // RemoveAppAppCategory removes "app_app_category" edges to AppAppCategory entities.
-func (au *AppUpdate) RemoveAppAppCategory(a ...*AppAppCategory) *AppUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdate) RemoveAppAppCategory(v ...*AppAppCategory) *AppUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return au.RemoveAppAppCategoryIDs(ids...)
+	return _u.RemoveAppAppCategoryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (au *AppUpdate) Save(ctx context.Context) (int, error) {
-	au.defaults()
-	return withHooks(ctx, au.sqlSave, au.mutation, au.hooks)
+func (_u *AppUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (au *AppUpdate) SaveX(ctx context.Context) int {
-	affected, err := au.Save(ctx)
+func (_u *AppUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -558,173 +558,173 @@ func (au *AppUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (au *AppUpdate) Exec(ctx context.Context) error {
-	_, err := au.Save(ctx)
+func (_u *AppUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (au *AppUpdate) ExecX(ctx context.Context) {
-	if err := au.Exec(ctx); err != nil {
+func (_u *AppUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (au *AppUpdate) defaults() {
-	if _, ok := au.mutation.UpdatedAt(); !ok {
+func (_u *AppUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := app.UpdateDefaultUpdatedAt()
-		au.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (au *AppUpdate) check() error {
-	if v, ok := au.mutation.GetType(); ok {
+func (_u *AppUpdate) check() error {
+	if v, ok := _u.mutation.GetType(); ok {
 		if err := app.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
 		}
 	}
-	if au.mutation.UserCleared() && len(au.mutation.UserIDs()) > 0 {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "App.user"`)
 	}
-	if au.mutation.DeviceCleared() && len(au.mutation.DeviceIDs()) > 0 {
+	if _u.mutation.DeviceCleared() && len(_u.mutation.DeviceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "App.device"`)
 	}
 	return nil
 }
 
-func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := au.check(); err != nil {
-		return n, err
+func (_u *AppUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64))
-	if ps := au.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := au.mutation.VersionNumber(); ok {
+	if value, ok := _u.mutation.VersionNumber(); ok {
 		_spec.SetField(app.FieldVersionNumber, field.TypeUint64, value)
 	}
-	if value, ok := au.mutation.AddedVersionNumber(); ok {
+	if value, ok := _u.mutation.AddedVersionNumber(); ok {
 		_spec.AddField(app.FieldVersionNumber, field.TypeUint64, value)
 	}
-	if value, ok := au.mutation.VersionDate(); ok {
+	if value, ok := _u.mutation.VersionDate(); ok {
 		_spec.SetField(app.FieldVersionDate, field.TypeTime, value)
 	}
-	if value, ok := au.mutation.AppSources(); ok {
+	if value, ok := _u.mutation.AppSources(); ok {
 		_spec.SetField(app.FieldAppSources, field.TypeJSON, value)
 	}
-	if value, ok := au.mutation.Public(); ok {
+	if value, ok := _u.mutation.Public(); ok {
 		_spec.SetField(app.FieldPublic, field.TypeBool, value)
 	}
-	if au.mutation.BoundStoreAppIDCleared() {
+	if _u.mutation.BoundStoreAppIDCleared() {
 		_spec.ClearField(app.FieldBoundStoreAppID, field.TypeInt64)
 	}
-	if value, ok := au.mutation.StopStoreManage(); ok {
+	if value, ok := _u.mutation.StopStoreManage(); ok {
 		_spec.SetField(app.FieldStopStoreManage, field.TypeBool, value)
 	}
-	if au.mutation.StopStoreManageCleared() {
+	if _u.mutation.StopStoreManageCleared() {
 		_spec.ClearField(app.FieldStopStoreManage, field.TypeBool)
 	}
-	if value, ok := au.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 	}
-	if value, ok := au.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(app.FieldType, field.TypeEnum, value)
 	}
-	if value, ok := au.mutation.ShortDescription(); ok {
+	if value, ok := _u.mutation.ShortDescription(); ok {
 		_spec.SetField(app.FieldShortDescription, field.TypeString, value)
 	}
-	if au.mutation.ShortDescriptionCleared() {
+	if _u.mutation.ShortDescriptionCleared() {
 		_spec.ClearField(app.FieldShortDescription, field.TypeString)
 	}
-	if value, ok := au.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
 	}
-	if au.mutation.DescriptionCleared() {
+	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(app.FieldDescription, field.TypeString)
 	}
-	if value, ok := au.mutation.IconImageURL(); ok {
+	if value, ok := _u.mutation.IconImageURL(); ok {
 		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
 	}
-	if au.mutation.IconImageURLCleared() {
+	if _u.mutation.IconImageURLCleared() {
 		_spec.ClearField(app.FieldIconImageURL, field.TypeString)
 	}
-	if value, ok := au.mutation.IconImageID(); ok {
+	if value, ok := _u.mutation.IconImageID(); ok {
 		_spec.SetField(app.FieldIconImageID, field.TypeInt64, value)
 	}
-	if value, ok := au.mutation.AddedIconImageID(); ok {
+	if value, ok := _u.mutation.AddedIconImageID(); ok {
 		_spec.AddField(app.FieldIconImageID, field.TypeInt64, value)
 	}
-	if value, ok := au.mutation.BackgroundImageURL(); ok {
+	if value, ok := _u.mutation.BackgroundImageURL(); ok {
 		_spec.SetField(app.FieldBackgroundImageURL, field.TypeString, value)
 	}
-	if au.mutation.BackgroundImageURLCleared() {
+	if _u.mutation.BackgroundImageURLCleared() {
 		_spec.ClearField(app.FieldBackgroundImageURL, field.TypeString)
 	}
-	if value, ok := au.mutation.BackgroundImageID(); ok {
+	if value, ok := _u.mutation.BackgroundImageID(); ok {
 		_spec.SetField(app.FieldBackgroundImageID, field.TypeInt64, value)
 	}
-	if value, ok := au.mutation.AddedBackgroundImageID(); ok {
+	if value, ok := _u.mutation.AddedBackgroundImageID(); ok {
 		_spec.AddField(app.FieldBackgroundImageID, field.TypeInt64, value)
 	}
-	if value, ok := au.mutation.CoverImageURL(); ok {
+	if value, ok := _u.mutation.CoverImageURL(); ok {
 		_spec.SetField(app.FieldCoverImageURL, field.TypeString, value)
 	}
-	if au.mutation.CoverImageURLCleared() {
+	if _u.mutation.CoverImageURLCleared() {
 		_spec.ClearField(app.FieldCoverImageURL, field.TypeString)
 	}
-	if value, ok := au.mutation.CoverImageID(); ok {
+	if value, ok := _u.mutation.CoverImageID(); ok {
 		_spec.SetField(app.FieldCoverImageID, field.TypeInt64, value)
 	}
-	if value, ok := au.mutation.AddedCoverImageID(); ok {
+	if value, ok := _u.mutation.AddedCoverImageID(); ok {
 		_spec.AddField(app.FieldCoverImageID, field.TypeInt64, value)
 	}
-	if value, ok := au.mutation.ReleaseDate(); ok {
+	if value, ok := _u.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
 	}
-	if au.mutation.ReleaseDateCleared() {
+	if _u.mutation.ReleaseDateCleared() {
 		_spec.ClearField(app.FieldReleaseDate, field.TypeString)
 	}
-	if value, ok := au.mutation.Developer(); ok {
+	if value, ok := _u.mutation.Developer(); ok {
 		_spec.SetField(app.FieldDeveloper, field.TypeString, value)
 	}
-	if au.mutation.DeveloperCleared() {
+	if _u.mutation.DeveloperCleared() {
 		_spec.ClearField(app.FieldDeveloper, field.TypeString)
 	}
-	if value, ok := au.mutation.Publisher(); ok {
+	if value, ok := _u.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
 	}
-	if au.mutation.PublisherCleared() {
+	if _u.mutation.PublisherCleared() {
 		_spec.ClearField(app.FieldPublisher, field.TypeString)
 	}
-	if value, ok := au.mutation.Tags(); ok {
+	if value, ok := _u.mutation.Tags(); ok {
 		_spec.SetField(app.FieldTags, field.TypeJSON, value)
 	}
-	if value, ok := au.mutation.AppendedTags(); ok {
+	if value, ok := _u.mutation.AppendedTags(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, app.FieldTags, value)
 		})
 	}
-	if value, ok := au.mutation.AlternativeNames(); ok {
+	if value, ok := _u.mutation.AlternativeNames(); ok {
 		_spec.SetField(app.FieldAlternativeNames, field.TypeJSON, value)
 	}
-	if value, ok := au.mutation.AppendedAlternativeNames(); ok {
+	if value, ok := _u.mutation.AppendedAlternativeNames(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, app.FieldAlternativeNames, value)
 		})
 	}
-	if value, ok := au.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := au.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 	}
-	if au.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -737,7 +737,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -753,7 +753,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.AppRunTimeCleared() {
+	if _u.mutation.AppRunTimeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -766,7 +766,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedAppRunTimeIDs(); len(nodes) > 0 && !au.mutation.AppRunTimeCleared() {
+	if nodes := _u.mutation.RemovedAppRunTimeIDs(); len(nodes) > 0 && !_u.mutation.AppRunTimeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -782,7 +782,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.AppRunTimeIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppRunTimeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -798,7 +798,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.AppCategoryCleared() {
+	if _u.mutation.AppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -811,7 +811,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedAppCategoryIDs(); len(nodes) > 0 && !au.mutation.AppCategoryCleared() {
+	if nodes := _u.mutation.RemovedAppCategoryIDs(); len(nodes) > 0 && !_u.mutation.AppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -827,7 +827,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.AppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -843,7 +843,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.AppAppCategoryCleared() {
+	if _u.mutation.AppAppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -856,7 +856,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !au.mutation.AppAppCategoryCleared() {
+	if nodes := _u.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !_u.mutation.AppAppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -872,7 +872,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -888,7 +888,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{app.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -896,8 +896,8 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	au.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppUpdateOne is the builder for updating a single App entity.
@@ -909,535 +909,535 @@ type AppUpdateOne struct {
 }
 
 // SetVersionNumber sets the "version_number" field.
-func (auo *AppUpdateOne) SetVersionNumber(u uint64) *AppUpdateOne {
-	auo.mutation.ResetVersionNumber()
-	auo.mutation.SetVersionNumber(u)
-	return auo
+func (_u *AppUpdateOne) SetVersionNumber(v uint64) *AppUpdateOne {
+	_u.mutation.ResetVersionNumber()
+	_u.mutation.SetVersionNumber(v)
+	return _u
 }
 
 // SetNillableVersionNumber sets the "version_number" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableVersionNumber(u *uint64) *AppUpdateOne {
-	if u != nil {
-		auo.SetVersionNumber(*u)
+func (_u *AppUpdateOne) SetNillableVersionNumber(v *uint64) *AppUpdateOne {
+	if v != nil {
+		_u.SetVersionNumber(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddVersionNumber adds u to the "version_number" field.
-func (auo *AppUpdateOne) AddVersionNumber(u int64) *AppUpdateOne {
-	auo.mutation.AddVersionNumber(u)
-	return auo
+// AddVersionNumber adds value to the "version_number" field.
+func (_u *AppUpdateOne) AddVersionNumber(v int64) *AppUpdateOne {
+	_u.mutation.AddVersionNumber(v)
+	return _u
 }
 
 // SetVersionDate sets the "version_date" field.
-func (auo *AppUpdateOne) SetVersionDate(t time.Time) *AppUpdateOne {
-	auo.mutation.SetVersionDate(t)
-	return auo
+func (_u *AppUpdateOne) SetVersionDate(v time.Time) *AppUpdateOne {
+	_u.mutation.SetVersionDate(v)
+	return _u
 }
 
 // SetNillableVersionDate sets the "version_date" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableVersionDate(t *time.Time) *AppUpdateOne {
-	if t != nil {
-		auo.SetVersionDate(*t)
+func (_u *AppUpdateOne) SetNillableVersionDate(v *time.Time) *AppUpdateOne {
+	if v != nil {
+		_u.SetVersionDate(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (auo *AppUpdateOne) SetUserID(mi model.InternalID) *AppUpdateOne {
-	auo.mutation.SetUserID(mi)
-	return auo
+func (_u *AppUpdateOne) SetUserID(v model.InternalID) *AppUpdateOne {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableUserID(mi *model.InternalID) *AppUpdateOne {
-	if mi != nil {
-		auo.SetUserID(*mi)
+func (_u *AppUpdateOne) SetNillableUserID(v *model.InternalID) *AppUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetAppSources sets the "app_sources" field.
-func (auo *AppUpdateOne) SetAppSources(m map[string]string) *AppUpdateOne {
-	auo.mutation.SetAppSources(m)
-	return auo
+func (_u *AppUpdateOne) SetAppSources(v map[string]string) *AppUpdateOne {
+	_u.mutation.SetAppSources(v)
+	return _u
 }
 
 // SetPublic sets the "public" field.
-func (auo *AppUpdateOne) SetPublic(b bool) *AppUpdateOne {
-	auo.mutation.SetPublic(b)
-	return auo
+func (_u *AppUpdateOne) SetPublic(v bool) *AppUpdateOne {
+	_u.mutation.SetPublic(v)
+	return _u
 }
 
 // SetNillablePublic sets the "public" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillablePublic(b *bool) *AppUpdateOne {
-	if b != nil {
-		auo.SetPublic(*b)
+func (_u *AppUpdateOne) SetNillablePublic(v *bool) *AppUpdateOne {
+	if v != nil {
+		_u.SetPublic(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetStopStoreManage sets the "stop_store_manage" field.
-func (auo *AppUpdateOne) SetStopStoreManage(b bool) *AppUpdateOne {
-	auo.mutation.SetStopStoreManage(b)
-	return auo
+func (_u *AppUpdateOne) SetStopStoreManage(v bool) *AppUpdateOne {
+	_u.mutation.SetStopStoreManage(v)
+	return _u
 }
 
 // SetNillableStopStoreManage sets the "stop_store_manage" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableStopStoreManage(b *bool) *AppUpdateOne {
-	if b != nil {
-		auo.SetStopStoreManage(*b)
+func (_u *AppUpdateOne) SetNillableStopStoreManage(v *bool) *AppUpdateOne {
+	if v != nil {
+		_u.SetStopStoreManage(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearStopStoreManage clears the value of the "stop_store_manage" field.
-func (auo *AppUpdateOne) ClearStopStoreManage() *AppUpdateOne {
-	auo.mutation.ClearStopStoreManage()
-	return auo
+func (_u *AppUpdateOne) ClearStopStoreManage() *AppUpdateOne {
+	_u.mutation.ClearStopStoreManage()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (auo *AppUpdateOne) SetName(s string) *AppUpdateOne {
-	auo.mutation.SetName(s)
-	return auo
+func (_u *AppUpdateOne) SetName(v string) *AppUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableName(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetName(*s)
+func (_u *AppUpdateOne) SetNillableName(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetType sets the "type" field.
-func (auo *AppUpdateOne) SetType(a app.Type) *AppUpdateOne {
-	auo.mutation.SetType(a)
-	return auo
+func (_u *AppUpdateOne) SetType(v app.Type) *AppUpdateOne {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableType(a *app.Type) *AppUpdateOne {
-	if a != nil {
-		auo.SetType(*a)
+func (_u *AppUpdateOne) SetNillableType(v *app.Type) *AppUpdateOne {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetShortDescription sets the "short_description" field.
-func (auo *AppUpdateOne) SetShortDescription(s string) *AppUpdateOne {
-	auo.mutation.SetShortDescription(s)
-	return auo
+func (_u *AppUpdateOne) SetShortDescription(v string) *AppUpdateOne {
+	_u.mutation.SetShortDescription(v)
+	return _u
 }
 
 // SetNillableShortDescription sets the "short_description" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableShortDescription(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetShortDescription(*s)
+func (_u *AppUpdateOne) SetNillableShortDescription(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetShortDescription(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearShortDescription clears the value of the "short_description" field.
-func (auo *AppUpdateOne) ClearShortDescription() *AppUpdateOne {
-	auo.mutation.ClearShortDescription()
-	return auo
+func (_u *AppUpdateOne) ClearShortDescription() *AppUpdateOne {
+	_u.mutation.ClearShortDescription()
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (auo *AppUpdateOne) SetDescription(s string) *AppUpdateOne {
-	auo.mutation.SetDescription(s)
-	return auo
+func (_u *AppUpdateOne) SetDescription(v string) *AppUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableDescription(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetDescription(*s)
+func (_u *AppUpdateOne) SetNillableDescription(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearDescription clears the value of the "description" field.
-func (auo *AppUpdateOne) ClearDescription() *AppUpdateOne {
-	auo.mutation.ClearDescription()
-	return auo
+func (_u *AppUpdateOne) ClearDescription() *AppUpdateOne {
+	_u.mutation.ClearDescription()
+	return _u
 }
 
 // SetIconImageURL sets the "icon_image_url" field.
-func (auo *AppUpdateOne) SetIconImageURL(s string) *AppUpdateOne {
-	auo.mutation.SetIconImageURL(s)
-	return auo
+func (_u *AppUpdateOne) SetIconImageURL(v string) *AppUpdateOne {
+	_u.mutation.SetIconImageURL(v)
+	return _u
 }
 
 // SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableIconImageURL(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetIconImageURL(*s)
+func (_u *AppUpdateOne) SetNillableIconImageURL(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetIconImageURL(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearIconImageURL clears the value of the "icon_image_url" field.
-func (auo *AppUpdateOne) ClearIconImageURL() *AppUpdateOne {
-	auo.mutation.ClearIconImageURL()
-	return auo
+func (_u *AppUpdateOne) ClearIconImageURL() *AppUpdateOne {
+	_u.mutation.ClearIconImageURL()
+	return _u
 }
 
 // SetIconImageID sets the "icon_image_id" field.
-func (auo *AppUpdateOne) SetIconImageID(mi model.InternalID) *AppUpdateOne {
-	auo.mutation.ResetIconImageID()
-	auo.mutation.SetIconImageID(mi)
-	return auo
+func (_u *AppUpdateOne) SetIconImageID(v model.InternalID) *AppUpdateOne {
+	_u.mutation.ResetIconImageID()
+	_u.mutation.SetIconImageID(v)
+	return _u
 }
 
 // SetNillableIconImageID sets the "icon_image_id" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableIconImageID(mi *model.InternalID) *AppUpdateOne {
-	if mi != nil {
-		auo.SetIconImageID(*mi)
+func (_u *AppUpdateOne) SetNillableIconImageID(v *model.InternalID) *AppUpdateOne {
+	if v != nil {
+		_u.SetIconImageID(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddIconImageID adds mi to the "icon_image_id" field.
-func (auo *AppUpdateOne) AddIconImageID(mi model.InternalID) *AppUpdateOne {
-	auo.mutation.AddIconImageID(mi)
-	return auo
+// AddIconImageID adds value to the "icon_image_id" field.
+func (_u *AppUpdateOne) AddIconImageID(v model.InternalID) *AppUpdateOne {
+	_u.mutation.AddIconImageID(v)
+	return _u
 }
 
 // SetBackgroundImageURL sets the "background_image_url" field.
-func (auo *AppUpdateOne) SetBackgroundImageURL(s string) *AppUpdateOne {
-	auo.mutation.SetBackgroundImageURL(s)
-	return auo
+func (_u *AppUpdateOne) SetBackgroundImageURL(v string) *AppUpdateOne {
+	_u.mutation.SetBackgroundImageURL(v)
+	return _u
 }
 
 // SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableBackgroundImageURL(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetBackgroundImageURL(*s)
+func (_u *AppUpdateOne) SetNillableBackgroundImageURL(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetBackgroundImageURL(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearBackgroundImageURL clears the value of the "background_image_url" field.
-func (auo *AppUpdateOne) ClearBackgroundImageURL() *AppUpdateOne {
-	auo.mutation.ClearBackgroundImageURL()
-	return auo
+func (_u *AppUpdateOne) ClearBackgroundImageURL() *AppUpdateOne {
+	_u.mutation.ClearBackgroundImageURL()
+	return _u
 }
 
 // SetBackgroundImageID sets the "background_image_id" field.
-func (auo *AppUpdateOne) SetBackgroundImageID(mi model.InternalID) *AppUpdateOne {
-	auo.mutation.ResetBackgroundImageID()
-	auo.mutation.SetBackgroundImageID(mi)
-	return auo
+func (_u *AppUpdateOne) SetBackgroundImageID(v model.InternalID) *AppUpdateOne {
+	_u.mutation.ResetBackgroundImageID()
+	_u.mutation.SetBackgroundImageID(v)
+	return _u
 }
 
 // SetNillableBackgroundImageID sets the "background_image_id" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableBackgroundImageID(mi *model.InternalID) *AppUpdateOne {
-	if mi != nil {
-		auo.SetBackgroundImageID(*mi)
+func (_u *AppUpdateOne) SetNillableBackgroundImageID(v *model.InternalID) *AppUpdateOne {
+	if v != nil {
+		_u.SetBackgroundImageID(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddBackgroundImageID adds mi to the "background_image_id" field.
-func (auo *AppUpdateOne) AddBackgroundImageID(mi model.InternalID) *AppUpdateOne {
-	auo.mutation.AddBackgroundImageID(mi)
-	return auo
+// AddBackgroundImageID adds value to the "background_image_id" field.
+func (_u *AppUpdateOne) AddBackgroundImageID(v model.InternalID) *AppUpdateOne {
+	_u.mutation.AddBackgroundImageID(v)
+	return _u
 }
 
 // SetCoverImageURL sets the "cover_image_url" field.
-func (auo *AppUpdateOne) SetCoverImageURL(s string) *AppUpdateOne {
-	auo.mutation.SetCoverImageURL(s)
-	return auo
+func (_u *AppUpdateOne) SetCoverImageURL(v string) *AppUpdateOne {
+	_u.mutation.SetCoverImageURL(v)
+	return _u
 }
 
 // SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableCoverImageURL(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetCoverImageURL(*s)
+func (_u *AppUpdateOne) SetNillableCoverImageURL(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetCoverImageURL(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearCoverImageURL clears the value of the "cover_image_url" field.
-func (auo *AppUpdateOne) ClearCoverImageURL() *AppUpdateOne {
-	auo.mutation.ClearCoverImageURL()
-	return auo
+func (_u *AppUpdateOne) ClearCoverImageURL() *AppUpdateOne {
+	_u.mutation.ClearCoverImageURL()
+	return _u
 }
 
 // SetCoverImageID sets the "cover_image_id" field.
-func (auo *AppUpdateOne) SetCoverImageID(mi model.InternalID) *AppUpdateOne {
-	auo.mutation.ResetCoverImageID()
-	auo.mutation.SetCoverImageID(mi)
-	return auo
+func (_u *AppUpdateOne) SetCoverImageID(v model.InternalID) *AppUpdateOne {
+	_u.mutation.ResetCoverImageID()
+	_u.mutation.SetCoverImageID(v)
+	return _u
 }
 
 // SetNillableCoverImageID sets the "cover_image_id" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableCoverImageID(mi *model.InternalID) *AppUpdateOne {
-	if mi != nil {
-		auo.SetCoverImageID(*mi)
+func (_u *AppUpdateOne) SetNillableCoverImageID(v *model.InternalID) *AppUpdateOne {
+	if v != nil {
+		_u.SetCoverImageID(*v)
 	}
-	return auo
+	return _u
 }
 
-// AddCoverImageID adds mi to the "cover_image_id" field.
-func (auo *AppUpdateOne) AddCoverImageID(mi model.InternalID) *AppUpdateOne {
-	auo.mutation.AddCoverImageID(mi)
-	return auo
+// AddCoverImageID adds value to the "cover_image_id" field.
+func (_u *AppUpdateOne) AddCoverImageID(v model.InternalID) *AppUpdateOne {
+	_u.mutation.AddCoverImageID(v)
+	return _u
 }
 
 // SetReleaseDate sets the "release_date" field.
-func (auo *AppUpdateOne) SetReleaseDate(s string) *AppUpdateOne {
-	auo.mutation.SetReleaseDate(s)
-	return auo
+func (_u *AppUpdateOne) SetReleaseDate(v string) *AppUpdateOne {
+	_u.mutation.SetReleaseDate(v)
+	return _u
 }
 
 // SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableReleaseDate(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetReleaseDate(*s)
+func (_u *AppUpdateOne) SetNillableReleaseDate(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetReleaseDate(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearReleaseDate clears the value of the "release_date" field.
-func (auo *AppUpdateOne) ClearReleaseDate() *AppUpdateOne {
-	auo.mutation.ClearReleaseDate()
-	return auo
+func (_u *AppUpdateOne) ClearReleaseDate() *AppUpdateOne {
+	_u.mutation.ClearReleaseDate()
+	return _u
 }
 
 // SetDeveloper sets the "developer" field.
-func (auo *AppUpdateOne) SetDeveloper(s string) *AppUpdateOne {
-	auo.mutation.SetDeveloper(s)
-	return auo
+func (_u *AppUpdateOne) SetDeveloper(v string) *AppUpdateOne {
+	_u.mutation.SetDeveloper(v)
+	return _u
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableDeveloper(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetDeveloper(*s)
+func (_u *AppUpdateOne) SetNillableDeveloper(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetDeveloper(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearDeveloper clears the value of the "developer" field.
-func (auo *AppUpdateOne) ClearDeveloper() *AppUpdateOne {
-	auo.mutation.ClearDeveloper()
-	return auo
+func (_u *AppUpdateOne) ClearDeveloper() *AppUpdateOne {
+	_u.mutation.ClearDeveloper()
+	return _u
 }
 
 // SetPublisher sets the "publisher" field.
-func (auo *AppUpdateOne) SetPublisher(s string) *AppUpdateOne {
-	auo.mutation.SetPublisher(s)
-	return auo
+func (_u *AppUpdateOne) SetPublisher(v string) *AppUpdateOne {
+	_u.mutation.SetPublisher(v)
+	return _u
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillablePublisher(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetPublisher(*s)
+func (_u *AppUpdateOne) SetNillablePublisher(v *string) *AppUpdateOne {
+	if v != nil {
+		_u.SetPublisher(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearPublisher clears the value of the "publisher" field.
-func (auo *AppUpdateOne) ClearPublisher() *AppUpdateOne {
-	auo.mutation.ClearPublisher()
-	return auo
+func (_u *AppUpdateOne) ClearPublisher() *AppUpdateOne {
+	_u.mutation.ClearPublisher()
+	return _u
 }
 
 // SetTags sets the "tags" field.
-func (auo *AppUpdateOne) SetTags(s []string) *AppUpdateOne {
-	auo.mutation.SetTags(s)
-	return auo
+func (_u *AppUpdateOne) SetTags(v []string) *AppUpdateOne {
+	_u.mutation.SetTags(v)
+	return _u
 }
 
-// AppendTags appends s to the "tags" field.
-func (auo *AppUpdateOne) AppendTags(s []string) *AppUpdateOne {
-	auo.mutation.AppendTags(s)
-	return auo
+// AppendTags appends value to the "tags" field.
+func (_u *AppUpdateOne) AppendTags(v []string) *AppUpdateOne {
+	_u.mutation.AppendTags(v)
+	return _u
 }
 
 // SetAlternativeNames sets the "alternative_names" field.
-func (auo *AppUpdateOne) SetAlternativeNames(s []string) *AppUpdateOne {
-	auo.mutation.SetAlternativeNames(s)
-	return auo
+func (_u *AppUpdateOne) SetAlternativeNames(v []string) *AppUpdateOne {
+	_u.mutation.SetAlternativeNames(v)
+	return _u
 }
 
-// AppendAlternativeNames appends s to the "alternative_names" field.
-func (auo *AppUpdateOne) AppendAlternativeNames(s []string) *AppUpdateOne {
-	auo.mutation.AppendAlternativeNames(s)
-	return auo
+// AppendAlternativeNames appends value to the "alternative_names" field.
+func (_u *AppUpdateOne) AppendAlternativeNames(v []string) *AppUpdateOne {
+	_u.mutation.AppendAlternativeNames(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (auo *AppUpdateOne) SetUpdatedAt(t time.Time) *AppUpdateOne {
-	auo.mutation.SetUpdatedAt(t)
-	return auo
+func (_u *AppUpdateOne) SetUpdatedAt(v time.Time) *AppUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (auo *AppUpdateOne) SetCreatedAt(t time.Time) *AppUpdateOne {
-	auo.mutation.SetCreatedAt(t)
-	return auo
+func (_u *AppUpdateOne) SetCreatedAt(v time.Time) *AppUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableCreatedAt(t *time.Time) *AppUpdateOne {
-	if t != nil {
-		auo.SetCreatedAt(*t)
+func (_u *AppUpdateOne) SetNillableCreatedAt(v *time.Time) *AppUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (auo *AppUpdateOne) SetUser(u *User) *AppUpdateOne {
-	return auo.SetUserID(u.ID)
+func (_u *AppUpdateOne) SetUser(v *User) *AppUpdateOne {
+	return _u.SetUserID(v.ID)
 }
 
 // AddAppRunTimeIDs adds the "app_run_time" edge to the AppRunTime entity by IDs.
-func (auo *AppUpdateOne) AddAppRunTimeIDs(ids ...model.InternalID) *AppUpdateOne {
-	auo.mutation.AddAppRunTimeIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddAppRunTimeIDs(ids ...model.InternalID) *AppUpdateOne {
+	_u.mutation.AddAppRunTimeIDs(ids...)
+	return _u
 }
 
 // AddAppRunTime adds the "app_run_time" edges to the AppRunTime entity.
-func (auo *AppUpdateOne) AddAppRunTime(a ...*AppRunTime) *AppUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddAppRunTime(v ...*AppRunTime) *AppUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddAppRunTimeIDs(ids...)
+	return _u.AddAppRunTimeIDs(ids...)
 }
 
 // AddAppCategoryIDs adds the "app_category" edge to the AppCategory entity by IDs.
-func (auo *AppUpdateOne) AddAppCategoryIDs(ids ...model.InternalID) *AppUpdateOne {
-	auo.mutation.AddAppCategoryIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddAppCategoryIDs(ids ...model.InternalID) *AppUpdateOne {
+	_u.mutation.AddAppCategoryIDs(ids...)
+	return _u
 }
 
 // AddAppCategory adds the "app_category" edges to the AppCategory entity.
-func (auo *AppUpdateOne) AddAppCategory(a ...*AppCategory) *AppUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddAppCategory(v ...*AppCategory) *AppUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddAppCategoryIDs(ids...)
+	return _u.AddAppCategoryIDs(ids...)
 }
 
 // AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by IDs.
-func (auo *AppUpdateOne) AddAppAppCategoryIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddAppAppCategoryIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) AddAppAppCategoryIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.AddAppAppCategoryIDs(ids...)
+	return _u
 }
 
 // AddAppAppCategory adds the "app_app_category" edges to the AppAppCategory entity.
-func (auo *AppUpdateOne) AddAppAppCategory(a ...*AppAppCategory) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) AddAppAppCategory(v ...*AppAppCategory) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.AddAppAppCategoryIDs(ids...)
+	return _u.AddAppAppCategoryIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
-func (auo *AppUpdateOne) Mutation() *AppMutation {
-	return auo.mutation
+func (_u *AppUpdateOne) Mutation() *AppMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (auo *AppUpdateOne) ClearUser() *AppUpdateOne {
-	auo.mutation.ClearUser()
-	return auo
+func (_u *AppUpdateOne) ClearUser() *AppUpdateOne {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // ClearAppRunTime clears all "app_run_time" edges to the AppRunTime entity.
-func (auo *AppUpdateOne) ClearAppRunTime() *AppUpdateOne {
-	auo.mutation.ClearAppRunTime()
-	return auo
+func (_u *AppUpdateOne) ClearAppRunTime() *AppUpdateOne {
+	_u.mutation.ClearAppRunTime()
+	return _u
 }
 
 // RemoveAppRunTimeIDs removes the "app_run_time" edge to AppRunTime entities by IDs.
-func (auo *AppUpdateOne) RemoveAppRunTimeIDs(ids ...model.InternalID) *AppUpdateOne {
-	auo.mutation.RemoveAppRunTimeIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveAppRunTimeIDs(ids ...model.InternalID) *AppUpdateOne {
+	_u.mutation.RemoveAppRunTimeIDs(ids...)
+	return _u
 }
 
 // RemoveAppRunTime removes "app_run_time" edges to AppRunTime entities.
-func (auo *AppUpdateOne) RemoveAppRunTime(a ...*AppRunTime) *AppUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemoveAppRunTime(v ...*AppRunTime) *AppUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveAppRunTimeIDs(ids...)
+	return _u.RemoveAppRunTimeIDs(ids...)
 }
 
 // ClearAppCategory clears all "app_category" edges to the AppCategory entity.
-func (auo *AppUpdateOne) ClearAppCategory() *AppUpdateOne {
-	auo.mutation.ClearAppCategory()
-	return auo
+func (_u *AppUpdateOne) ClearAppCategory() *AppUpdateOne {
+	_u.mutation.ClearAppCategory()
+	return _u
 }
 
 // RemoveAppCategoryIDs removes the "app_category" edge to AppCategory entities by IDs.
-func (auo *AppUpdateOne) RemoveAppCategoryIDs(ids ...model.InternalID) *AppUpdateOne {
-	auo.mutation.RemoveAppCategoryIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveAppCategoryIDs(ids ...model.InternalID) *AppUpdateOne {
+	_u.mutation.RemoveAppCategoryIDs(ids...)
+	return _u
 }
 
 // RemoveAppCategory removes "app_category" edges to AppCategory entities.
-func (auo *AppUpdateOne) RemoveAppCategory(a ...*AppCategory) *AppUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemoveAppCategory(v ...*AppCategory) *AppUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveAppCategoryIDs(ids...)
+	return _u.RemoveAppCategoryIDs(ids...)
 }
 
 // ClearAppAppCategory clears all "app_app_category" edges to the AppAppCategory entity.
-func (auo *AppUpdateOne) ClearAppAppCategory() *AppUpdateOne {
-	auo.mutation.ClearAppAppCategory()
-	return auo
+func (_u *AppUpdateOne) ClearAppAppCategory() *AppUpdateOne {
+	_u.mutation.ClearAppAppCategory()
+	return _u
 }
 
 // RemoveAppAppCategoryIDs removes the "app_app_category" edge to AppAppCategory entities by IDs.
-func (auo *AppUpdateOne) RemoveAppAppCategoryIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemoveAppAppCategoryIDs(ids...)
-	return auo
+func (_u *AppUpdateOne) RemoveAppAppCategoryIDs(ids ...int) *AppUpdateOne {
+	_u.mutation.RemoveAppAppCategoryIDs(ids...)
+	return _u
 }
 
 // RemoveAppAppCategory removes "app_app_category" edges to AppAppCategory entities.
-func (auo *AppUpdateOne) RemoveAppAppCategory(a ...*AppAppCategory) *AppUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppUpdateOne) RemoveAppAppCategory(v ...*AppAppCategory) *AppUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return auo.RemoveAppAppCategoryIDs(ids...)
+	return _u.RemoveAppAppCategoryIDs(ids...)
 }
 
 // Where appends a list predicates to the AppUpdate builder.
-func (auo *AppUpdateOne) Where(ps ...predicate.App) *AppUpdateOne {
-	auo.mutation.Where(ps...)
-	return auo
+func (_u *AppUpdateOne) Where(ps ...predicate.App) *AppUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (auo *AppUpdateOne) Select(field string, fields ...string) *AppUpdateOne {
-	auo.fields = append([]string{field}, fields...)
-	return auo
+func (_u *AppUpdateOne) Select(field string, fields ...string) *AppUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated App entity.
-func (auo *AppUpdateOne) Save(ctx context.Context) (*App, error) {
-	auo.defaults()
-	return withHooks(ctx, auo.sqlSave, auo.mutation, auo.hooks)
+func (_u *AppUpdateOne) Save(ctx context.Context) (*App, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (auo *AppUpdateOne) SaveX(ctx context.Context) *App {
-	node, err := auo.Save(ctx)
+func (_u *AppUpdateOne) SaveX(ctx context.Context) *App {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1445,53 +1445,53 @@ func (auo *AppUpdateOne) SaveX(ctx context.Context) *App {
 }
 
 // Exec executes the query on the entity.
-func (auo *AppUpdateOne) Exec(ctx context.Context) error {
-	_, err := auo.Save(ctx)
+func (_u *AppUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (auo *AppUpdateOne) ExecX(ctx context.Context) {
-	if err := auo.Exec(ctx); err != nil {
+func (_u *AppUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (auo *AppUpdateOne) defaults() {
-	if _, ok := auo.mutation.UpdatedAt(); !ok {
+func (_u *AppUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := app.UpdateDefaultUpdatedAt()
-		auo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (auo *AppUpdateOne) check() error {
-	if v, ok := auo.mutation.GetType(); ok {
+func (_u *AppUpdateOne) check() error {
+	if v, ok := _u.mutation.GetType(); ok {
 		if err := app.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
 		}
 	}
-	if auo.mutation.UserCleared() && len(auo.mutation.UserIDs()) > 0 {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "App.user"`)
 	}
-	if auo.mutation.DeviceCleared() && len(auo.mutation.DeviceIDs()) > 0 {
+	if _u.mutation.DeviceCleared() && len(_u.mutation.DeviceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "App.device"`)
 	}
 	return nil
 }
 
-func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
-	if err := auo.check(); err != nil {
+func (_u *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64))
-	id, ok := auo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "App.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := auo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, app.FieldID)
 		for _, f := range fields {
@@ -1503,132 +1503,132 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			}
 		}
 	}
-	if ps := auo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := auo.mutation.VersionNumber(); ok {
+	if value, ok := _u.mutation.VersionNumber(); ok {
 		_spec.SetField(app.FieldVersionNumber, field.TypeUint64, value)
 	}
-	if value, ok := auo.mutation.AddedVersionNumber(); ok {
+	if value, ok := _u.mutation.AddedVersionNumber(); ok {
 		_spec.AddField(app.FieldVersionNumber, field.TypeUint64, value)
 	}
-	if value, ok := auo.mutation.VersionDate(); ok {
+	if value, ok := _u.mutation.VersionDate(); ok {
 		_spec.SetField(app.FieldVersionDate, field.TypeTime, value)
 	}
-	if value, ok := auo.mutation.AppSources(); ok {
+	if value, ok := _u.mutation.AppSources(); ok {
 		_spec.SetField(app.FieldAppSources, field.TypeJSON, value)
 	}
-	if value, ok := auo.mutation.Public(); ok {
+	if value, ok := _u.mutation.Public(); ok {
 		_spec.SetField(app.FieldPublic, field.TypeBool, value)
 	}
-	if auo.mutation.BoundStoreAppIDCleared() {
+	if _u.mutation.BoundStoreAppIDCleared() {
 		_spec.ClearField(app.FieldBoundStoreAppID, field.TypeInt64)
 	}
-	if value, ok := auo.mutation.StopStoreManage(); ok {
+	if value, ok := _u.mutation.StopStoreManage(); ok {
 		_spec.SetField(app.FieldStopStoreManage, field.TypeBool, value)
 	}
-	if auo.mutation.StopStoreManageCleared() {
+	if _u.mutation.StopStoreManageCleared() {
 		_spec.ClearField(app.FieldStopStoreManage, field.TypeBool)
 	}
-	if value, ok := auo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(app.FieldType, field.TypeEnum, value)
 	}
-	if value, ok := auo.mutation.ShortDescription(); ok {
+	if value, ok := _u.mutation.ShortDescription(); ok {
 		_spec.SetField(app.FieldShortDescription, field.TypeString, value)
 	}
-	if auo.mutation.ShortDescriptionCleared() {
+	if _u.mutation.ShortDescriptionCleared() {
 		_spec.ClearField(app.FieldShortDescription, field.TypeString)
 	}
-	if value, ok := auo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
 	}
-	if auo.mutation.DescriptionCleared() {
+	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(app.FieldDescription, field.TypeString)
 	}
-	if value, ok := auo.mutation.IconImageURL(); ok {
+	if value, ok := _u.mutation.IconImageURL(); ok {
 		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
 	}
-	if auo.mutation.IconImageURLCleared() {
+	if _u.mutation.IconImageURLCleared() {
 		_spec.ClearField(app.FieldIconImageURL, field.TypeString)
 	}
-	if value, ok := auo.mutation.IconImageID(); ok {
+	if value, ok := _u.mutation.IconImageID(); ok {
 		_spec.SetField(app.FieldIconImageID, field.TypeInt64, value)
 	}
-	if value, ok := auo.mutation.AddedIconImageID(); ok {
+	if value, ok := _u.mutation.AddedIconImageID(); ok {
 		_spec.AddField(app.FieldIconImageID, field.TypeInt64, value)
 	}
-	if value, ok := auo.mutation.BackgroundImageURL(); ok {
+	if value, ok := _u.mutation.BackgroundImageURL(); ok {
 		_spec.SetField(app.FieldBackgroundImageURL, field.TypeString, value)
 	}
-	if auo.mutation.BackgroundImageURLCleared() {
+	if _u.mutation.BackgroundImageURLCleared() {
 		_spec.ClearField(app.FieldBackgroundImageURL, field.TypeString)
 	}
-	if value, ok := auo.mutation.BackgroundImageID(); ok {
+	if value, ok := _u.mutation.BackgroundImageID(); ok {
 		_spec.SetField(app.FieldBackgroundImageID, field.TypeInt64, value)
 	}
-	if value, ok := auo.mutation.AddedBackgroundImageID(); ok {
+	if value, ok := _u.mutation.AddedBackgroundImageID(); ok {
 		_spec.AddField(app.FieldBackgroundImageID, field.TypeInt64, value)
 	}
-	if value, ok := auo.mutation.CoverImageURL(); ok {
+	if value, ok := _u.mutation.CoverImageURL(); ok {
 		_spec.SetField(app.FieldCoverImageURL, field.TypeString, value)
 	}
-	if auo.mutation.CoverImageURLCleared() {
+	if _u.mutation.CoverImageURLCleared() {
 		_spec.ClearField(app.FieldCoverImageURL, field.TypeString)
 	}
-	if value, ok := auo.mutation.CoverImageID(); ok {
+	if value, ok := _u.mutation.CoverImageID(); ok {
 		_spec.SetField(app.FieldCoverImageID, field.TypeInt64, value)
 	}
-	if value, ok := auo.mutation.AddedCoverImageID(); ok {
+	if value, ok := _u.mutation.AddedCoverImageID(); ok {
 		_spec.AddField(app.FieldCoverImageID, field.TypeInt64, value)
 	}
-	if value, ok := auo.mutation.ReleaseDate(); ok {
+	if value, ok := _u.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
 	}
-	if auo.mutation.ReleaseDateCleared() {
+	if _u.mutation.ReleaseDateCleared() {
 		_spec.ClearField(app.FieldReleaseDate, field.TypeString)
 	}
-	if value, ok := auo.mutation.Developer(); ok {
+	if value, ok := _u.mutation.Developer(); ok {
 		_spec.SetField(app.FieldDeveloper, field.TypeString, value)
 	}
-	if auo.mutation.DeveloperCleared() {
+	if _u.mutation.DeveloperCleared() {
 		_spec.ClearField(app.FieldDeveloper, field.TypeString)
 	}
-	if value, ok := auo.mutation.Publisher(); ok {
+	if value, ok := _u.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
 	}
-	if auo.mutation.PublisherCleared() {
+	if _u.mutation.PublisherCleared() {
 		_spec.ClearField(app.FieldPublisher, field.TypeString)
 	}
-	if value, ok := auo.mutation.Tags(); ok {
+	if value, ok := _u.mutation.Tags(); ok {
 		_spec.SetField(app.FieldTags, field.TypeJSON, value)
 	}
-	if value, ok := auo.mutation.AppendedTags(); ok {
+	if value, ok := _u.mutation.AppendedTags(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, app.FieldTags, value)
 		})
 	}
-	if value, ok := auo.mutation.AlternativeNames(); ok {
+	if value, ok := _u.mutation.AlternativeNames(); ok {
 		_spec.SetField(app.FieldAlternativeNames, field.TypeJSON, value)
 	}
-	if value, ok := auo.mutation.AppendedAlternativeNames(); ok {
+	if value, ok := _u.mutation.AppendedAlternativeNames(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, app.FieldAlternativeNames, value)
 		})
 	}
-	if value, ok := auo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := auo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 	}
-	if auo.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1641,7 +1641,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1657,7 +1657,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.AppRunTimeCleared() {
+	if _u.mutation.AppRunTimeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1670,7 +1670,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedAppRunTimeIDs(); len(nodes) > 0 && !auo.mutation.AppRunTimeCleared() {
+	if nodes := _u.mutation.RemovedAppRunTimeIDs(); len(nodes) > 0 && !_u.mutation.AppRunTimeCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1686,7 +1686,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.AppRunTimeIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppRunTimeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1702,7 +1702,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.AppCategoryCleared() {
+	if _u.mutation.AppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -1715,7 +1715,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedAppCategoryIDs(); len(nodes) > 0 && !auo.mutation.AppCategoryCleared() {
+	if nodes := _u.mutation.RemovedAppCategoryIDs(); len(nodes) > 0 && !_u.mutation.AppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -1731,7 +1731,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.AppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -1747,7 +1747,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.AppAppCategoryCleared() {
+	if _u.mutation.AppAppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1760,7 +1760,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !auo.mutation.AppAppCategoryCleared() {
+	if nodes := _u.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !_u.mutation.AppAppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1776,7 +1776,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1792,10 +1792,10 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &App{config: auo.config}
+	_node = &App{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, auo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{app.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1803,6 +1803,6 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		return nil, err
 	}
-	auo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

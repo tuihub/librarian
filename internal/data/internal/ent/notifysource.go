@@ -124,7 +124,7 @@ func (*NotifySource) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the NotifySource fields.
-func (ns *NotifySource) assignValues(columns []string, values []any) error {
+func (_m *NotifySource) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -134,41 +134,41 @@ func (ns *NotifySource) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				ns.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case notifysource.FieldFeedConfigID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_config_id", values[i])
 			} else if value.Valid {
-				ns.FeedConfigID = model.InternalID(value.Int64)
+				_m.FeedConfigID = model.InternalID(value.Int64)
 			}
 		case notifysource.FieldFeedItemCollectionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_item_collection_id", values[i])
 			} else if value.Valid {
-				ns.FeedItemCollectionID = model.InternalID(value.Int64)
+				_m.FeedItemCollectionID = model.InternalID(value.Int64)
 			}
 		case notifysource.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ns.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case notifysource.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ns.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case notifysource.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_notify_source", values[i])
 			} else if value.Valid {
-				ns.user_notify_source = new(model.InternalID)
-				*ns.user_notify_source = model.InternalID(value.Int64)
+				_m.user_notify_source = new(model.InternalID)
+				*_m.user_notify_source = model.InternalID(value.Int64)
 			}
 		default:
-			ns.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -176,69 +176,69 @@ func (ns *NotifySource) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the NotifySource.
 // This includes values selected through modifiers, order, etc.
-func (ns *NotifySource) Value(name string) (ent.Value, error) {
-	return ns.selectValues.Get(name)
+func (_m *NotifySource) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the NotifySource entity.
-func (ns *NotifySource) QueryOwner() *UserQuery {
-	return NewNotifySourceClient(ns.config).QueryOwner(ns)
+func (_m *NotifySource) QueryOwner() *UserQuery {
+	return NewNotifySourceClient(_m.config).QueryOwner(_m)
 }
 
 // QueryNotifyFlow queries the "notify_flow" edge of the NotifySource entity.
-func (ns *NotifySource) QueryNotifyFlow() *NotifyFlowQuery {
-	return NewNotifySourceClient(ns.config).QueryNotifyFlow(ns)
+func (_m *NotifySource) QueryNotifyFlow() *NotifyFlowQuery {
+	return NewNotifySourceClient(_m.config).QueryNotifyFlow(_m)
 }
 
 // QueryFeedConfig queries the "feed_config" edge of the NotifySource entity.
-func (ns *NotifySource) QueryFeedConfig() *FeedConfigQuery {
-	return NewNotifySourceClient(ns.config).QueryFeedConfig(ns)
+func (_m *NotifySource) QueryFeedConfig() *FeedConfigQuery {
+	return NewNotifySourceClient(_m.config).QueryFeedConfig(_m)
 }
 
 // QueryFeedItemCollection queries the "feed_item_collection" edge of the NotifySource entity.
-func (ns *NotifySource) QueryFeedItemCollection() *FeedItemCollectionQuery {
-	return NewNotifySourceClient(ns.config).QueryFeedItemCollection(ns)
+func (_m *NotifySource) QueryFeedItemCollection() *FeedItemCollectionQuery {
+	return NewNotifySourceClient(_m.config).QueryFeedItemCollection(_m)
 }
 
 // QueryNotifyFlowSource queries the "notify_flow_source" edge of the NotifySource entity.
-func (ns *NotifySource) QueryNotifyFlowSource() *NotifyFlowSourceQuery {
-	return NewNotifySourceClient(ns.config).QueryNotifyFlowSource(ns)
+func (_m *NotifySource) QueryNotifyFlowSource() *NotifyFlowSourceQuery {
+	return NewNotifySourceClient(_m.config).QueryNotifyFlowSource(_m)
 }
 
 // Update returns a builder for updating this NotifySource.
 // Note that you need to call NotifySource.Unwrap() before calling this method if this NotifySource
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ns *NotifySource) Update() *NotifySourceUpdateOne {
-	return NewNotifySourceClient(ns.config).UpdateOne(ns)
+func (_m *NotifySource) Update() *NotifySourceUpdateOne {
+	return NewNotifySourceClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the NotifySource entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ns *NotifySource) Unwrap() *NotifySource {
-	_tx, ok := ns.config.driver.(*txDriver)
+func (_m *NotifySource) Unwrap() *NotifySource {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: NotifySource is not a transactional entity")
 	}
-	ns.config.driver = _tx.drv
-	return ns
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ns *NotifySource) String() string {
+func (_m *NotifySource) String() string {
 	var builder strings.Builder
 	builder.WriteString("NotifySource(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ns.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("feed_config_id=")
-	builder.WriteString(fmt.Sprintf("%v", ns.FeedConfigID))
+	builder.WriteString(fmt.Sprintf("%v", _m.FeedConfigID))
 	builder.WriteString(", ")
 	builder.WriteString("feed_item_collection_id=")
-	builder.WriteString(fmt.Sprintf("%v", ns.FeedItemCollectionID))
+	builder.WriteString(fmt.Sprintf("%v", _m.FeedItemCollectionID))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ns.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ns.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -29,362 +29,362 @@ type FeedConfigUpdate struct {
 }
 
 // Where appends a list predicates to the FeedConfigUpdate builder.
-func (fcu *FeedConfigUpdate) Where(ps ...predicate.FeedConfig) *FeedConfigUpdate {
-	fcu.mutation.Where(ps...)
-	return fcu
+func (_u *FeedConfigUpdate) Where(ps ...predicate.FeedConfig) *FeedConfigUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUserFeedConfig sets the "user_feed_config" field.
-func (fcu *FeedConfigUpdate) SetUserFeedConfig(mi model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.SetUserFeedConfig(mi)
-	return fcu
+func (_u *FeedConfigUpdate) SetUserFeedConfig(v model.InternalID) *FeedConfigUpdate {
+	_u.mutation.SetUserFeedConfig(v)
+	return _u
 }
 
 // SetNillableUserFeedConfig sets the "user_feed_config" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableUserFeedConfig(mi *model.InternalID) *FeedConfigUpdate {
-	if mi != nil {
-		fcu.SetUserFeedConfig(*mi)
+func (_u *FeedConfigUpdate) SetNillableUserFeedConfig(v *model.InternalID) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetUserFeedConfig(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (fcu *FeedConfigUpdate) SetName(s string) *FeedConfigUpdate {
-	fcu.mutation.SetName(s)
-	return fcu
+func (_u *FeedConfigUpdate) SetName(v string) *FeedConfigUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableName(s *string) *FeedConfigUpdate {
-	if s != nil {
-		fcu.SetName(*s)
+func (_u *FeedConfigUpdate) SetNillableName(v *string) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (fcu *FeedConfigUpdate) SetDescription(s string) *FeedConfigUpdate {
-	fcu.mutation.SetDescription(s)
-	return fcu
+func (_u *FeedConfigUpdate) SetDescription(v string) *FeedConfigUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableDescription(s *string) *FeedConfigUpdate {
-	if s != nil {
-		fcu.SetDescription(*s)
+func (_u *FeedConfigUpdate) SetNillableDescription(v *string) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetSource sets the "source" field.
-func (fcu *FeedConfigUpdate) SetSource(mr *model.FeatureRequest) *FeedConfigUpdate {
-	fcu.mutation.SetSource(mr)
-	return fcu
+func (_u *FeedConfigUpdate) SetSource(v *model.FeatureRequest) *FeedConfigUpdate {
+	_u.mutation.SetSource(v)
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (fcu *FeedConfigUpdate) SetStatus(f feedconfig.Status) *FeedConfigUpdate {
-	fcu.mutation.SetStatus(f)
-	return fcu
+func (_u *FeedConfigUpdate) SetStatus(v feedconfig.Status) *FeedConfigUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableStatus(f *feedconfig.Status) *FeedConfigUpdate {
-	if f != nil {
-		fcu.SetStatus(*f)
+func (_u *FeedConfigUpdate) SetNillableStatus(v *feedconfig.Status) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetCategory sets the "category" field.
-func (fcu *FeedConfigUpdate) SetCategory(s string) *FeedConfigUpdate {
-	fcu.mutation.SetCategory(s)
-	return fcu
+func (_u *FeedConfigUpdate) SetCategory(v string) *FeedConfigUpdate {
+	_u.mutation.SetCategory(v)
+	return _u
 }
 
 // SetNillableCategory sets the "category" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableCategory(s *string) *FeedConfigUpdate {
-	if s != nil {
-		fcu.SetCategory(*s)
+func (_u *FeedConfigUpdate) SetNillableCategory(v *string) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetCategory(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (fcu *FeedConfigUpdate) SetPullInterval(t time.Duration) *FeedConfigUpdate {
-	fcu.mutation.ResetPullInterval()
-	fcu.mutation.SetPullInterval(t)
-	return fcu
+func (_u *FeedConfigUpdate) SetPullInterval(v time.Duration) *FeedConfigUpdate {
+	_u.mutation.ResetPullInterval()
+	_u.mutation.SetPullInterval(v)
+	return _u
 }
 
 // SetNillablePullInterval sets the "pull_interval" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillablePullInterval(t *time.Duration) *FeedConfigUpdate {
-	if t != nil {
-		fcu.SetPullInterval(*t)
+func (_u *FeedConfigUpdate) SetNillablePullInterval(v *time.Duration) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetPullInterval(*v)
 	}
-	return fcu
+	return _u
 }
 
-// AddPullInterval adds t to the "pull_interval" field.
-func (fcu *FeedConfigUpdate) AddPullInterval(t time.Duration) *FeedConfigUpdate {
-	fcu.mutation.AddPullInterval(t)
-	return fcu
+// AddPullInterval adds value to the "pull_interval" field.
+func (_u *FeedConfigUpdate) AddPullInterval(v time.Duration) *FeedConfigUpdate {
+	_u.mutation.AddPullInterval(v)
+	return _u
 }
 
 // SetHideItems sets the "hide_items" field.
-func (fcu *FeedConfigUpdate) SetHideItems(b bool) *FeedConfigUpdate {
-	fcu.mutation.SetHideItems(b)
-	return fcu
+func (_u *FeedConfigUpdate) SetHideItems(v bool) *FeedConfigUpdate {
+	_u.mutation.SetHideItems(v)
+	return _u
 }
 
 // SetNillableHideItems sets the "hide_items" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableHideItems(b *bool) *FeedConfigUpdate {
-	if b != nil {
-		fcu.SetHideItems(*b)
+func (_u *FeedConfigUpdate) SetNillableHideItems(v *bool) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetHideItems(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetLatestPullAt sets the "latest_pull_at" field.
-func (fcu *FeedConfigUpdate) SetLatestPullAt(t time.Time) *FeedConfigUpdate {
-	fcu.mutation.SetLatestPullAt(t)
-	return fcu
+func (_u *FeedConfigUpdate) SetLatestPullAt(v time.Time) *FeedConfigUpdate {
+	_u.mutation.SetLatestPullAt(v)
+	return _u
 }
 
 // SetNillableLatestPullAt sets the "latest_pull_at" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableLatestPullAt(t *time.Time) *FeedConfigUpdate {
-	if t != nil {
-		fcu.SetLatestPullAt(*t)
+func (_u *FeedConfigUpdate) SetNillableLatestPullAt(v *time.Time) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetLatestPullAt(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetLatestPullStatus sets the "latest_pull_status" field.
-func (fcu *FeedConfigUpdate) SetLatestPullStatus(fps feedconfig.LatestPullStatus) *FeedConfigUpdate {
-	fcu.mutation.SetLatestPullStatus(fps)
-	return fcu
+func (_u *FeedConfigUpdate) SetLatestPullStatus(v feedconfig.LatestPullStatus) *FeedConfigUpdate {
+	_u.mutation.SetLatestPullStatus(v)
+	return _u
 }
 
 // SetNillableLatestPullStatus sets the "latest_pull_status" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableLatestPullStatus(fps *feedconfig.LatestPullStatus) *FeedConfigUpdate {
-	if fps != nil {
-		fcu.SetLatestPullStatus(*fps)
+func (_u *FeedConfigUpdate) SetNillableLatestPullStatus(v *feedconfig.LatestPullStatus) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetLatestPullStatus(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetLatestPullMessage sets the "latest_pull_message" field.
-func (fcu *FeedConfigUpdate) SetLatestPullMessage(s string) *FeedConfigUpdate {
-	fcu.mutation.SetLatestPullMessage(s)
-	return fcu
+func (_u *FeedConfigUpdate) SetLatestPullMessage(v string) *FeedConfigUpdate {
+	_u.mutation.SetLatestPullMessage(v)
+	return _u
 }
 
 // SetNillableLatestPullMessage sets the "latest_pull_message" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableLatestPullMessage(s *string) *FeedConfigUpdate {
-	if s != nil {
-		fcu.SetLatestPullMessage(*s)
+func (_u *FeedConfigUpdate) SetNillableLatestPullMessage(v *string) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetLatestPullMessage(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
-func (fcu *FeedConfigUpdate) SetNextPullBeginAt(t time.Time) *FeedConfigUpdate {
-	fcu.mutation.SetNextPullBeginAt(t)
-	return fcu
+func (_u *FeedConfigUpdate) SetNextPullBeginAt(v time.Time) *FeedConfigUpdate {
+	_u.mutation.SetNextPullBeginAt(v)
+	return _u
 }
 
 // SetNillableNextPullBeginAt sets the "next_pull_begin_at" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableNextPullBeginAt(t *time.Time) *FeedConfigUpdate {
-	if t != nil {
-		fcu.SetNextPullBeginAt(*t)
+func (_u *FeedConfigUpdate) SetNillableNextPullBeginAt(v *time.Time) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetNextPullBeginAt(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fcu *FeedConfigUpdate) SetUpdatedAt(t time.Time) *FeedConfigUpdate {
-	fcu.mutation.SetUpdatedAt(t)
-	return fcu
+func (_u *FeedConfigUpdate) SetUpdatedAt(v time.Time) *FeedConfigUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fcu *FeedConfigUpdate) SetCreatedAt(t time.Time) *FeedConfigUpdate {
-	fcu.mutation.SetCreatedAt(t)
-	return fcu
+func (_u *FeedConfigUpdate) SetCreatedAt(v time.Time) *FeedConfigUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableCreatedAt(t *time.Time) *FeedConfigUpdate {
-	if t != nil {
-		fcu.SetCreatedAt(*t)
+func (_u *FeedConfigUpdate) SetNillableCreatedAt(v *time.Time) *FeedConfigUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return fcu
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (fcu *FeedConfigUpdate) SetOwnerID(id model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.SetOwnerID(id)
-	return fcu
+func (_u *FeedConfigUpdate) SetOwnerID(id model.InternalID) *FeedConfigUpdate {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (fcu *FeedConfigUpdate) SetOwner(u *User) *FeedConfigUpdate {
-	return fcu.SetOwnerID(u.ID)
+func (_u *FeedConfigUpdate) SetOwner(v *User) *FeedConfigUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // SetFeedID sets the "feed" edge to the Feed entity by ID.
-func (fcu *FeedConfigUpdate) SetFeedID(id model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.SetFeedID(id)
-	return fcu
+func (_u *FeedConfigUpdate) SetFeedID(id model.InternalID) *FeedConfigUpdate {
+	_u.mutation.SetFeedID(id)
+	return _u
 }
 
 // SetNillableFeedID sets the "feed" edge to the Feed entity by ID if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableFeedID(id *model.InternalID) *FeedConfigUpdate {
+func (_u *FeedConfigUpdate) SetNillableFeedID(id *model.InternalID) *FeedConfigUpdate {
 	if id != nil {
-		fcu = fcu.SetFeedID(*id)
+		_u = _u.SetFeedID(*id)
 	}
-	return fcu
+	return _u
 }
 
 // SetFeed sets the "feed" edge to the Feed entity.
-func (fcu *FeedConfigUpdate) SetFeed(f *Feed) *FeedConfigUpdate {
-	return fcu.SetFeedID(f.ID)
+func (_u *FeedConfigUpdate) SetFeed(v *Feed) *FeedConfigUpdate {
+	return _u.SetFeedID(v.ID)
 }
 
 // AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
-func (fcu *FeedConfigUpdate) AddNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.AddNotifySourceIDs(ids...)
-	return fcu
+func (_u *FeedConfigUpdate) AddNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdate {
+	_u.mutation.AddNotifySourceIDs(ids...)
+	return _u
 }
 
 // AddNotifySource adds the "notify_source" edges to the NotifySource entity.
-func (fcu *FeedConfigUpdate) AddNotifySource(n ...*NotifySource) *FeedConfigUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *FeedConfigUpdate) AddNotifySource(v ...*NotifySource) *FeedConfigUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcu.AddNotifySourceIDs(ids...)
+	return _u.AddNotifySourceIDs(ids...)
 }
 
 // AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by IDs.
-func (fcu *FeedConfigUpdate) AddFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.AddFeedActionSetIDs(ids...)
-	return fcu
+func (_u *FeedConfigUpdate) AddFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdate {
+	_u.mutation.AddFeedActionSetIDs(ids...)
+	return _u
 }
 
 // AddFeedActionSet adds the "feed_action_set" edges to the FeedActionSet entity.
-func (fcu *FeedConfigUpdate) AddFeedActionSet(f ...*FeedActionSet) *FeedConfigUpdate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedConfigUpdate) AddFeedActionSet(v ...*FeedActionSet) *FeedConfigUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcu.AddFeedActionSetIDs(ids...)
+	return _u.AddFeedActionSetIDs(ids...)
 }
 
 // AddFeedConfigActionIDs adds the "feed_config_action" edge to the FeedConfigAction entity by IDs.
-func (fcu *FeedConfigUpdate) AddFeedConfigActionIDs(ids ...int) *FeedConfigUpdate {
-	fcu.mutation.AddFeedConfigActionIDs(ids...)
-	return fcu
+func (_u *FeedConfigUpdate) AddFeedConfigActionIDs(ids ...int) *FeedConfigUpdate {
+	_u.mutation.AddFeedConfigActionIDs(ids...)
+	return _u
 }
 
 // AddFeedConfigAction adds the "feed_config_action" edges to the FeedConfigAction entity.
-func (fcu *FeedConfigUpdate) AddFeedConfigAction(f ...*FeedConfigAction) *FeedConfigUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedConfigUpdate) AddFeedConfigAction(v ...*FeedConfigAction) *FeedConfigUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcu.AddFeedConfigActionIDs(ids...)
+	return _u.AddFeedConfigActionIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
-func (fcu *FeedConfigUpdate) Mutation() *FeedConfigMutation {
-	return fcu.mutation
+func (_u *FeedConfigUpdate) Mutation() *FeedConfigMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (fcu *FeedConfigUpdate) ClearOwner() *FeedConfigUpdate {
-	fcu.mutation.ClearOwner()
-	return fcu
+func (_u *FeedConfigUpdate) ClearOwner() *FeedConfigUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearFeed clears the "feed" edge to the Feed entity.
-func (fcu *FeedConfigUpdate) ClearFeed() *FeedConfigUpdate {
-	fcu.mutation.ClearFeed()
-	return fcu
+func (_u *FeedConfigUpdate) ClearFeed() *FeedConfigUpdate {
+	_u.mutation.ClearFeed()
+	return _u
 }
 
 // ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
-func (fcu *FeedConfigUpdate) ClearNotifySource() *FeedConfigUpdate {
-	fcu.mutation.ClearNotifySource()
-	return fcu
+func (_u *FeedConfigUpdate) ClearNotifySource() *FeedConfigUpdate {
+	_u.mutation.ClearNotifySource()
+	return _u
 }
 
 // RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
-func (fcu *FeedConfigUpdate) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.RemoveNotifySourceIDs(ids...)
-	return fcu
+func (_u *FeedConfigUpdate) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdate {
+	_u.mutation.RemoveNotifySourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifySource removes "notify_source" edges to NotifySource entities.
-func (fcu *FeedConfigUpdate) RemoveNotifySource(n ...*NotifySource) *FeedConfigUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *FeedConfigUpdate) RemoveNotifySource(v ...*NotifySource) *FeedConfigUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcu.RemoveNotifySourceIDs(ids...)
+	return _u.RemoveNotifySourceIDs(ids...)
 }
 
 // ClearFeedActionSet clears all "feed_action_set" edges to the FeedActionSet entity.
-func (fcu *FeedConfigUpdate) ClearFeedActionSet() *FeedConfigUpdate {
-	fcu.mutation.ClearFeedActionSet()
-	return fcu
+func (_u *FeedConfigUpdate) ClearFeedActionSet() *FeedConfigUpdate {
+	_u.mutation.ClearFeedActionSet()
+	return _u
 }
 
 // RemoveFeedActionSetIDs removes the "feed_action_set" edge to FeedActionSet entities by IDs.
-func (fcu *FeedConfigUpdate) RemoveFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.RemoveFeedActionSetIDs(ids...)
-	return fcu
+func (_u *FeedConfigUpdate) RemoveFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdate {
+	_u.mutation.RemoveFeedActionSetIDs(ids...)
+	return _u
 }
 
 // RemoveFeedActionSet removes "feed_action_set" edges to FeedActionSet entities.
-func (fcu *FeedConfigUpdate) RemoveFeedActionSet(f ...*FeedActionSet) *FeedConfigUpdate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedConfigUpdate) RemoveFeedActionSet(v ...*FeedActionSet) *FeedConfigUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcu.RemoveFeedActionSetIDs(ids...)
+	return _u.RemoveFeedActionSetIDs(ids...)
 }
 
 // ClearFeedConfigAction clears all "feed_config_action" edges to the FeedConfigAction entity.
-func (fcu *FeedConfigUpdate) ClearFeedConfigAction() *FeedConfigUpdate {
-	fcu.mutation.ClearFeedConfigAction()
-	return fcu
+func (_u *FeedConfigUpdate) ClearFeedConfigAction() *FeedConfigUpdate {
+	_u.mutation.ClearFeedConfigAction()
+	return _u
 }
 
 // RemoveFeedConfigActionIDs removes the "feed_config_action" edge to FeedConfigAction entities by IDs.
-func (fcu *FeedConfigUpdate) RemoveFeedConfigActionIDs(ids ...int) *FeedConfigUpdate {
-	fcu.mutation.RemoveFeedConfigActionIDs(ids...)
-	return fcu
+func (_u *FeedConfigUpdate) RemoveFeedConfigActionIDs(ids ...int) *FeedConfigUpdate {
+	_u.mutation.RemoveFeedConfigActionIDs(ids...)
+	return _u
 }
 
 // RemoveFeedConfigAction removes "feed_config_action" edges to FeedConfigAction entities.
-func (fcu *FeedConfigUpdate) RemoveFeedConfigAction(f ...*FeedConfigAction) *FeedConfigUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedConfigUpdate) RemoveFeedConfigAction(v ...*FeedConfigAction) *FeedConfigUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcu.RemoveFeedConfigActionIDs(ids...)
+	return _u.RemoveFeedConfigActionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (fcu *FeedConfigUpdate) Save(ctx context.Context) (int, error) {
-	fcu.defaults()
-	return withHooks(ctx, fcu.sqlSave, fcu.mutation, fcu.hooks)
+func (_u *FeedConfigUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fcu *FeedConfigUpdate) SaveX(ctx context.Context) int {
-	affected, err := fcu.Save(ctx)
+func (_u *FeedConfigUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -392,99 +392,99 @@ func (fcu *FeedConfigUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (fcu *FeedConfigUpdate) Exec(ctx context.Context) error {
-	_, err := fcu.Save(ctx)
+func (_u *FeedConfigUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fcu *FeedConfigUpdate) ExecX(ctx context.Context) {
-	if err := fcu.Exec(ctx); err != nil {
+func (_u *FeedConfigUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fcu *FeedConfigUpdate) defaults() {
-	if _, ok := fcu.mutation.UpdatedAt(); !ok {
+func (_u *FeedConfigUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := feedconfig.UpdateDefaultUpdatedAt()
-		fcu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fcu *FeedConfigUpdate) check() error {
-	if v, ok := fcu.mutation.Status(); ok {
+func (_u *FeedConfigUpdate) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := feedconfig.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
-	if v, ok := fcu.mutation.LatestPullStatus(); ok {
+	if v, ok := _u.mutation.LatestPullStatus(); ok {
 		if err := feedconfig.LatestPullStatusValidator(v); err != nil {
 			return &ValidationError{Name: "latest_pull_status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.latest_pull_status": %w`, err)}
 		}
 	}
-	if fcu.mutation.OwnerCleared() && len(fcu.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedConfig.owner"`)
 	}
 	return nil
 }
 
-func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := fcu.check(); err != nil {
-		return n, err
+func (_u *FeedConfigUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64))
-	if ps := fcu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fcu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(feedconfig.FieldName, field.TypeString, value)
 	}
-	if value, ok := fcu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(feedconfig.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := fcu.mutation.Source(); ok {
+	if value, ok := _u.mutation.Source(); ok {
 		_spec.SetField(feedconfig.FieldSource, field.TypeJSON, value)
 	}
-	if value, ok := fcu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := fcu.mutation.Category(); ok {
+	if value, ok := _u.mutation.Category(); ok {
 		_spec.SetField(feedconfig.FieldCategory, field.TypeString, value)
 	}
-	if value, ok := fcu.mutation.PullInterval(); ok {
+	if value, ok := _u.mutation.PullInterval(); ok {
 		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 	}
-	if value, ok := fcu.mutation.AddedPullInterval(); ok {
+	if value, ok := _u.mutation.AddedPullInterval(); ok {
 		_spec.AddField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 	}
-	if value, ok := fcu.mutation.HideItems(); ok {
+	if value, ok := _u.mutation.HideItems(); ok {
 		_spec.SetField(feedconfig.FieldHideItems, field.TypeBool, value)
 	}
-	if value, ok := fcu.mutation.LatestPullAt(); ok {
+	if value, ok := _u.mutation.LatestPullAt(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
 	}
-	if value, ok := fcu.mutation.LatestPullStatus(); ok {
+	if value, ok := _u.mutation.LatestPullStatus(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullStatus, field.TypeEnum, value)
 	}
-	if value, ok := fcu.mutation.LatestPullMessage(); ok {
+	if value, ok := _u.mutation.LatestPullMessage(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullMessage, field.TypeString, value)
 	}
-	if value, ok := fcu.mutation.NextPullBeginAt(); ok {
+	if value, ok := _u.mutation.NextPullBeginAt(); ok {
 		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)
 	}
-	if value, ok := fcu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedconfig.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := fcu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fcu.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -497,7 +497,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -513,7 +513,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcu.mutation.FeedCleared() {
+	if _u.mutation.FeedCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -526,7 +526,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.FeedIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -542,7 +542,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcu.mutation.NotifySourceCleared() {
+	if _u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -555,7 +555,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !fcu.mutation.NotifySourceCleared() {
+	if nodes := _u.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !_u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -571,7 +571,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.NotifySourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -587,7 +587,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcu.mutation.FeedActionSetCleared() {
+	if _u.mutation.FeedActionSetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -598,13 +598,13 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &FeedConfigActionCreate{config: fcu.config, mutation: newFeedConfigActionMutation(fcu.config, OpCreate)}
+		createE := &FeedConfigActionCreate{config: _u.config, mutation: newFeedConfigActionMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.RemovedFeedActionSetIDs(); len(nodes) > 0 && !fcu.mutation.FeedActionSetCleared() {
+	if nodes := _u.mutation.RemovedFeedActionSetIDs(); len(nodes) > 0 && !_u.mutation.FeedActionSetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -618,13 +618,13 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &FeedConfigActionCreate{config: fcu.config, mutation: newFeedConfigActionMutation(fcu.config, OpCreate)}
+		createE := &FeedConfigActionCreate{config: _u.config, mutation: newFeedConfigActionMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.FeedActionSetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedActionSetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -638,13 +638,13 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &FeedConfigActionCreate{config: fcu.config, mutation: newFeedConfigActionMutation(fcu.config, OpCreate)}
+		createE := &FeedConfigActionCreate{config: _u.config, mutation: newFeedConfigActionMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcu.mutation.FeedConfigActionCleared() {
+	if _u.mutation.FeedConfigActionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -657,7 +657,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.RemovedFeedConfigActionIDs(); len(nodes) > 0 && !fcu.mutation.FeedConfigActionCleared() {
+	if nodes := _u.mutation.RemovedFeedConfigActionIDs(); len(nodes) > 0 && !_u.mutation.FeedConfigActionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -673,7 +673,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.FeedConfigActionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedConfigActionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -689,7 +689,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, fcu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{feedconfig.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -697,8 +697,8 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	fcu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // FeedConfigUpdateOne is the builder for updating a single FeedConfig entity.
@@ -710,369 +710,369 @@ type FeedConfigUpdateOne struct {
 }
 
 // SetUserFeedConfig sets the "user_feed_config" field.
-func (fcuo *FeedConfigUpdateOne) SetUserFeedConfig(mi model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.SetUserFeedConfig(mi)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetUserFeedConfig(v model.InternalID) *FeedConfigUpdateOne {
+	_u.mutation.SetUserFeedConfig(v)
+	return _u
 }
 
 // SetNillableUserFeedConfig sets the "user_feed_config" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableUserFeedConfig(mi *model.InternalID) *FeedConfigUpdateOne {
-	if mi != nil {
-		fcuo.SetUserFeedConfig(*mi)
+func (_u *FeedConfigUpdateOne) SetNillableUserFeedConfig(v *model.InternalID) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetUserFeedConfig(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (fcuo *FeedConfigUpdateOne) SetName(s string) *FeedConfigUpdateOne {
-	fcuo.mutation.SetName(s)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetName(v string) *FeedConfigUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableName(s *string) *FeedConfigUpdateOne {
-	if s != nil {
-		fcuo.SetName(*s)
+func (_u *FeedConfigUpdateOne) SetNillableName(v *string) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (fcuo *FeedConfigUpdateOne) SetDescription(s string) *FeedConfigUpdateOne {
-	fcuo.mutation.SetDescription(s)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetDescription(v string) *FeedConfigUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableDescription(s *string) *FeedConfigUpdateOne {
-	if s != nil {
-		fcuo.SetDescription(*s)
+func (_u *FeedConfigUpdateOne) SetNillableDescription(v *string) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetSource sets the "source" field.
-func (fcuo *FeedConfigUpdateOne) SetSource(mr *model.FeatureRequest) *FeedConfigUpdateOne {
-	fcuo.mutation.SetSource(mr)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetSource(v *model.FeatureRequest) *FeedConfigUpdateOne {
+	_u.mutation.SetSource(v)
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (fcuo *FeedConfigUpdateOne) SetStatus(f feedconfig.Status) *FeedConfigUpdateOne {
-	fcuo.mutation.SetStatus(f)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetStatus(v feedconfig.Status) *FeedConfigUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableStatus(f *feedconfig.Status) *FeedConfigUpdateOne {
-	if f != nil {
-		fcuo.SetStatus(*f)
+func (_u *FeedConfigUpdateOne) SetNillableStatus(v *feedconfig.Status) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetCategory sets the "category" field.
-func (fcuo *FeedConfigUpdateOne) SetCategory(s string) *FeedConfigUpdateOne {
-	fcuo.mutation.SetCategory(s)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetCategory(v string) *FeedConfigUpdateOne {
+	_u.mutation.SetCategory(v)
+	return _u
 }
 
 // SetNillableCategory sets the "category" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableCategory(s *string) *FeedConfigUpdateOne {
-	if s != nil {
-		fcuo.SetCategory(*s)
+func (_u *FeedConfigUpdateOne) SetNillableCategory(v *string) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetCategory(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (fcuo *FeedConfigUpdateOne) SetPullInterval(t time.Duration) *FeedConfigUpdateOne {
-	fcuo.mutation.ResetPullInterval()
-	fcuo.mutation.SetPullInterval(t)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetPullInterval(v time.Duration) *FeedConfigUpdateOne {
+	_u.mutation.ResetPullInterval()
+	_u.mutation.SetPullInterval(v)
+	return _u
 }
 
 // SetNillablePullInterval sets the "pull_interval" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillablePullInterval(t *time.Duration) *FeedConfigUpdateOne {
-	if t != nil {
-		fcuo.SetPullInterval(*t)
+func (_u *FeedConfigUpdateOne) SetNillablePullInterval(v *time.Duration) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetPullInterval(*v)
 	}
-	return fcuo
+	return _u
 }
 
-// AddPullInterval adds t to the "pull_interval" field.
-func (fcuo *FeedConfigUpdateOne) AddPullInterval(t time.Duration) *FeedConfigUpdateOne {
-	fcuo.mutation.AddPullInterval(t)
-	return fcuo
+// AddPullInterval adds value to the "pull_interval" field.
+func (_u *FeedConfigUpdateOne) AddPullInterval(v time.Duration) *FeedConfigUpdateOne {
+	_u.mutation.AddPullInterval(v)
+	return _u
 }
 
 // SetHideItems sets the "hide_items" field.
-func (fcuo *FeedConfigUpdateOne) SetHideItems(b bool) *FeedConfigUpdateOne {
-	fcuo.mutation.SetHideItems(b)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetHideItems(v bool) *FeedConfigUpdateOne {
+	_u.mutation.SetHideItems(v)
+	return _u
 }
 
 // SetNillableHideItems sets the "hide_items" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableHideItems(b *bool) *FeedConfigUpdateOne {
-	if b != nil {
-		fcuo.SetHideItems(*b)
+func (_u *FeedConfigUpdateOne) SetNillableHideItems(v *bool) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetHideItems(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetLatestPullAt sets the "latest_pull_at" field.
-func (fcuo *FeedConfigUpdateOne) SetLatestPullAt(t time.Time) *FeedConfigUpdateOne {
-	fcuo.mutation.SetLatestPullAt(t)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetLatestPullAt(v time.Time) *FeedConfigUpdateOne {
+	_u.mutation.SetLatestPullAt(v)
+	return _u
 }
 
 // SetNillableLatestPullAt sets the "latest_pull_at" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableLatestPullAt(t *time.Time) *FeedConfigUpdateOne {
-	if t != nil {
-		fcuo.SetLatestPullAt(*t)
+func (_u *FeedConfigUpdateOne) SetNillableLatestPullAt(v *time.Time) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetLatestPullAt(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetLatestPullStatus sets the "latest_pull_status" field.
-func (fcuo *FeedConfigUpdateOne) SetLatestPullStatus(fps feedconfig.LatestPullStatus) *FeedConfigUpdateOne {
-	fcuo.mutation.SetLatestPullStatus(fps)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetLatestPullStatus(v feedconfig.LatestPullStatus) *FeedConfigUpdateOne {
+	_u.mutation.SetLatestPullStatus(v)
+	return _u
 }
 
 // SetNillableLatestPullStatus sets the "latest_pull_status" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableLatestPullStatus(fps *feedconfig.LatestPullStatus) *FeedConfigUpdateOne {
-	if fps != nil {
-		fcuo.SetLatestPullStatus(*fps)
+func (_u *FeedConfigUpdateOne) SetNillableLatestPullStatus(v *feedconfig.LatestPullStatus) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetLatestPullStatus(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetLatestPullMessage sets the "latest_pull_message" field.
-func (fcuo *FeedConfigUpdateOne) SetLatestPullMessage(s string) *FeedConfigUpdateOne {
-	fcuo.mutation.SetLatestPullMessage(s)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetLatestPullMessage(v string) *FeedConfigUpdateOne {
+	_u.mutation.SetLatestPullMessage(v)
+	return _u
 }
 
 // SetNillableLatestPullMessage sets the "latest_pull_message" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableLatestPullMessage(s *string) *FeedConfigUpdateOne {
-	if s != nil {
-		fcuo.SetLatestPullMessage(*s)
+func (_u *FeedConfigUpdateOne) SetNillableLatestPullMessage(v *string) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetLatestPullMessage(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
-func (fcuo *FeedConfigUpdateOne) SetNextPullBeginAt(t time.Time) *FeedConfigUpdateOne {
-	fcuo.mutation.SetNextPullBeginAt(t)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetNextPullBeginAt(v time.Time) *FeedConfigUpdateOne {
+	_u.mutation.SetNextPullBeginAt(v)
+	return _u
 }
 
 // SetNillableNextPullBeginAt sets the "next_pull_begin_at" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableNextPullBeginAt(t *time.Time) *FeedConfigUpdateOne {
-	if t != nil {
-		fcuo.SetNextPullBeginAt(*t)
+func (_u *FeedConfigUpdateOne) SetNillableNextPullBeginAt(v *time.Time) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetNextPullBeginAt(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fcuo *FeedConfigUpdateOne) SetUpdatedAt(t time.Time) *FeedConfigUpdateOne {
-	fcuo.mutation.SetUpdatedAt(t)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetUpdatedAt(v time.Time) *FeedConfigUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fcuo *FeedConfigUpdateOne) SetCreatedAt(t time.Time) *FeedConfigUpdateOne {
-	fcuo.mutation.SetCreatedAt(t)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetCreatedAt(v time.Time) *FeedConfigUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedConfigUpdateOne {
-	if t != nil {
-		fcuo.SetCreatedAt(*t)
+func (_u *FeedConfigUpdateOne) SetNillableCreatedAt(v *time.Time) *FeedConfigUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return fcuo
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (fcuo *FeedConfigUpdateOne) SetOwnerID(id model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.SetOwnerID(id)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetOwnerID(id model.InternalID) *FeedConfigUpdateOne {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (fcuo *FeedConfigUpdateOne) SetOwner(u *User) *FeedConfigUpdateOne {
-	return fcuo.SetOwnerID(u.ID)
+func (_u *FeedConfigUpdateOne) SetOwner(v *User) *FeedConfigUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // SetFeedID sets the "feed" edge to the Feed entity by ID.
-func (fcuo *FeedConfigUpdateOne) SetFeedID(id model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.SetFeedID(id)
-	return fcuo
+func (_u *FeedConfigUpdateOne) SetFeedID(id model.InternalID) *FeedConfigUpdateOne {
+	_u.mutation.SetFeedID(id)
+	return _u
 }
 
 // SetNillableFeedID sets the "feed" edge to the Feed entity by ID if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableFeedID(id *model.InternalID) *FeedConfigUpdateOne {
+func (_u *FeedConfigUpdateOne) SetNillableFeedID(id *model.InternalID) *FeedConfigUpdateOne {
 	if id != nil {
-		fcuo = fcuo.SetFeedID(*id)
+		_u = _u.SetFeedID(*id)
 	}
-	return fcuo
+	return _u
 }
 
 // SetFeed sets the "feed" edge to the Feed entity.
-func (fcuo *FeedConfigUpdateOne) SetFeed(f *Feed) *FeedConfigUpdateOne {
-	return fcuo.SetFeedID(f.ID)
+func (_u *FeedConfigUpdateOne) SetFeed(v *Feed) *FeedConfigUpdateOne {
+	return _u.SetFeedID(v.ID)
 }
 
 // AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
-func (fcuo *FeedConfigUpdateOne) AddNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.AddNotifySourceIDs(ids...)
-	return fcuo
+func (_u *FeedConfigUpdateOne) AddNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
+	_u.mutation.AddNotifySourceIDs(ids...)
+	return _u
 }
 
 // AddNotifySource adds the "notify_source" edges to the NotifySource entity.
-func (fcuo *FeedConfigUpdateOne) AddNotifySource(n ...*NotifySource) *FeedConfigUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *FeedConfigUpdateOne) AddNotifySource(v ...*NotifySource) *FeedConfigUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcuo.AddNotifySourceIDs(ids...)
+	return _u.AddNotifySourceIDs(ids...)
 }
 
 // AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by IDs.
-func (fcuo *FeedConfigUpdateOne) AddFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.AddFeedActionSetIDs(ids...)
-	return fcuo
+func (_u *FeedConfigUpdateOne) AddFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
+	_u.mutation.AddFeedActionSetIDs(ids...)
+	return _u
 }
 
 // AddFeedActionSet adds the "feed_action_set" edges to the FeedActionSet entity.
-func (fcuo *FeedConfigUpdateOne) AddFeedActionSet(f ...*FeedActionSet) *FeedConfigUpdateOne {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedConfigUpdateOne) AddFeedActionSet(v ...*FeedActionSet) *FeedConfigUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcuo.AddFeedActionSetIDs(ids...)
+	return _u.AddFeedActionSetIDs(ids...)
 }
 
 // AddFeedConfigActionIDs adds the "feed_config_action" edge to the FeedConfigAction entity by IDs.
-func (fcuo *FeedConfigUpdateOne) AddFeedConfigActionIDs(ids ...int) *FeedConfigUpdateOne {
-	fcuo.mutation.AddFeedConfigActionIDs(ids...)
-	return fcuo
+func (_u *FeedConfigUpdateOne) AddFeedConfigActionIDs(ids ...int) *FeedConfigUpdateOne {
+	_u.mutation.AddFeedConfigActionIDs(ids...)
+	return _u
 }
 
 // AddFeedConfigAction adds the "feed_config_action" edges to the FeedConfigAction entity.
-func (fcuo *FeedConfigUpdateOne) AddFeedConfigAction(f ...*FeedConfigAction) *FeedConfigUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedConfigUpdateOne) AddFeedConfigAction(v ...*FeedConfigAction) *FeedConfigUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcuo.AddFeedConfigActionIDs(ids...)
+	return _u.AddFeedConfigActionIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
-func (fcuo *FeedConfigUpdateOne) Mutation() *FeedConfigMutation {
-	return fcuo.mutation
+func (_u *FeedConfigUpdateOne) Mutation() *FeedConfigMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (fcuo *FeedConfigUpdateOne) ClearOwner() *FeedConfigUpdateOne {
-	fcuo.mutation.ClearOwner()
-	return fcuo
+func (_u *FeedConfigUpdateOne) ClearOwner() *FeedConfigUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearFeed clears the "feed" edge to the Feed entity.
-func (fcuo *FeedConfigUpdateOne) ClearFeed() *FeedConfigUpdateOne {
-	fcuo.mutation.ClearFeed()
-	return fcuo
+func (_u *FeedConfigUpdateOne) ClearFeed() *FeedConfigUpdateOne {
+	_u.mutation.ClearFeed()
+	return _u
 }
 
 // ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
-func (fcuo *FeedConfigUpdateOne) ClearNotifySource() *FeedConfigUpdateOne {
-	fcuo.mutation.ClearNotifySource()
-	return fcuo
+func (_u *FeedConfigUpdateOne) ClearNotifySource() *FeedConfigUpdateOne {
+	_u.mutation.ClearNotifySource()
+	return _u
 }
 
 // RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
-func (fcuo *FeedConfigUpdateOne) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.RemoveNotifySourceIDs(ids...)
-	return fcuo
+func (_u *FeedConfigUpdateOne) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
+	_u.mutation.RemoveNotifySourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifySource removes "notify_source" edges to NotifySource entities.
-func (fcuo *FeedConfigUpdateOne) RemoveNotifySource(n ...*NotifySource) *FeedConfigUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *FeedConfigUpdateOne) RemoveNotifySource(v ...*NotifySource) *FeedConfigUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcuo.RemoveNotifySourceIDs(ids...)
+	return _u.RemoveNotifySourceIDs(ids...)
 }
 
 // ClearFeedActionSet clears all "feed_action_set" edges to the FeedActionSet entity.
-func (fcuo *FeedConfigUpdateOne) ClearFeedActionSet() *FeedConfigUpdateOne {
-	fcuo.mutation.ClearFeedActionSet()
-	return fcuo
+func (_u *FeedConfigUpdateOne) ClearFeedActionSet() *FeedConfigUpdateOne {
+	_u.mutation.ClearFeedActionSet()
+	return _u
 }
 
 // RemoveFeedActionSetIDs removes the "feed_action_set" edge to FeedActionSet entities by IDs.
-func (fcuo *FeedConfigUpdateOne) RemoveFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.RemoveFeedActionSetIDs(ids...)
-	return fcuo
+func (_u *FeedConfigUpdateOne) RemoveFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
+	_u.mutation.RemoveFeedActionSetIDs(ids...)
+	return _u
 }
 
 // RemoveFeedActionSet removes "feed_action_set" edges to FeedActionSet entities.
-func (fcuo *FeedConfigUpdateOne) RemoveFeedActionSet(f ...*FeedActionSet) *FeedConfigUpdateOne {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedConfigUpdateOne) RemoveFeedActionSet(v ...*FeedActionSet) *FeedConfigUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcuo.RemoveFeedActionSetIDs(ids...)
+	return _u.RemoveFeedActionSetIDs(ids...)
 }
 
 // ClearFeedConfigAction clears all "feed_config_action" edges to the FeedConfigAction entity.
-func (fcuo *FeedConfigUpdateOne) ClearFeedConfigAction() *FeedConfigUpdateOne {
-	fcuo.mutation.ClearFeedConfigAction()
-	return fcuo
+func (_u *FeedConfigUpdateOne) ClearFeedConfigAction() *FeedConfigUpdateOne {
+	_u.mutation.ClearFeedConfigAction()
+	return _u
 }
 
 // RemoveFeedConfigActionIDs removes the "feed_config_action" edge to FeedConfigAction entities by IDs.
-func (fcuo *FeedConfigUpdateOne) RemoveFeedConfigActionIDs(ids ...int) *FeedConfigUpdateOne {
-	fcuo.mutation.RemoveFeedConfigActionIDs(ids...)
-	return fcuo
+func (_u *FeedConfigUpdateOne) RemoveFeedConfigActionIDs(ids ...int) *FeedConfigUpdateOne {
+	_u.mutation.RemoveFeedConfigActionIDs(ids...)
+	return _u
 }
 
 // RemoveFeedConfigAction removes "feed_config_action" edges to FeedConfigAction entities.
-func (fcuo *FeedConfigUpdateOne) RemoveFeedConfigAction(f ...*FeedConfigAction) *FeedConfigUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedConfigUpdateOne) RemoveFeedConfigAction(v ...*FeedConfigAction) *FeedConfigUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcuo.RemoveFeedConfigActionIDs(ids...)
+	return _u.RemoveFeedConfigActionIDs(ids...)
 }
 
 // Where appends a list predicates to the FeedConfigUpdate builder.
-func (fcuo *FeedConfigUpdateOne) Where(ps ...predicate.FeedConfig) *FeedConfigUpdateOne {
-	fcuo.mutation.Where(ps...)
-	return fcuo
+func (_u *FeedConfigUpdateOne) Where(ps ...predicate.FeedConfig) *FeedConfigUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (fcuo *FeedConfigUpdateOne) Select(field string, fields ...string) *FeedConfigUpdateOne {
-	fcuo.fields = append([]string{field}, fields...)
-	return fcuo
+func (_u *FeedConfigUpdateOne) Select(field string, fields ...string) *FeedConfigUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated FeedConfig entity.
-func (fcuo *FeedConfigUpdateOne) Save(ctx context.Context) (*FeedConfig, error) {
-	fcuo.defaults()
-	return withHooks(ctx, fcuo.sqlSave, fcuo.mutation, fcuo.hooks)
+func (_u *FeedConfigUpdateOne) Save(ctx context.Context) (*FeedConfig, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fcuo *FeedConfigUpdateOne) SaveX(ctx context.Context) *FeedConfig {
-	node, err := fcuo.Save(ctx)
+func (_u *FeedConfigUpdateOne) SaveX(ctx context.Context) *FeedConfig {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1080,55 +1080,55 @@ func (fcuo *FeedConfigUpdateOne) SaveX(ctx context.Context) *FeedConfig {
 }
 
 // Exec executes the query on the entity.
-func (fcuo *FeedConfigUpdateOne) Exec(ctx context.Context) error {
-	_, err := fcuo.Save(ctx)
+func (_u *FeedConfigUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fcuo *FeedConfigUpdateOne) ExecX(ctx context.Context) {
-	if err := fcuo.Exec(ctx); err != nil {
+func (_u *FeedConfigUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fcuo *FeedConfigUpdateOne) defaults() {
-	if _, ok := fcuo.mutation.UpdatedAt(); !ok {
+func (_u *FeedConfigUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := feedconfig.UpdateDefaultUpdatedAt()
-		fcuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fcuo *FeedConfigUpdateOne) check() error {
-	if v, ok := fcuo.mutation.Status(); ok {
+func (_u *FeedConfigUpdateOne) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := feedconfig.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
-	if v, ok := fcuo.mutation.LatestPullStatus(); ok {
+	if v, ok := _u.mutation.LatestPullStatus(); ok {
 		if err := feedconfig.LatestPullStatusValidator(v); err != nil {
 			return &ValidationError{Name: "latest_pull_status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.latest_pull_status": %w`, err)}
 		}
 	}
-	if fcuo.mutation.OwnerCleared() && len(fcuo.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedConfig.owner"`)
 	}
 	return nil
 }
 
-func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig, err error) {
-	if err := fcuo.check(); err != nil {
+func (_u *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64))
-	id, ok := fcuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FeedConfig.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := fcuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, feedconfig.FieldID)
 		for _, f := range fields {
@@ -1140,56 +1140,56 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 			}
 		}
 	}
-	if ps := fcuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fcuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(feedconfig.FieldName, field.TypeString, value)
 	}
-	if value, ok := fcuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(feedconfig.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := fcuo.mutation.Source(); ok {
+	if value, ok := _u.mutation.Source(); ok {
 		_spec.SetField(feedconfig.FieldSource, field.TypeJSON, value)
 	}
-	if value, ok := fcuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := fcuo.mutation.Category(); ok {
+	if value, ok := _u.mutation.Category(); ok {
 		_spec.SetField(feedconfig.FieldCategory, field.TypeString, value)
 	}
-	if value, ok := fcuo.mutation.PullInterval(); ok {
+	if value, ok := _u.mutation.PullInterval(); ok {
 		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 	}
-	if value, ok := fcuo.mutation.AddedPullInterval(); ok {
+	if value, ok := _u.mutation.AddedPullInterval(); ok {
 		_spec.AddField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 	}
-	if value, ok := fcuo.mutation.HideItems(); ok {
+	if value, ok := _u.mutation.HideItems(); ok {
 		_spec.SetField(feedconfig.FieldHideItems, field.TypeBool, value)
 	}
-	if value, ok := fcuo.mutation.LatestPullAt(); ok {
+	if value, ok := _u.mutation.LatestPullAt(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
 	}
-	if value, ok := fcuo.mutation.LatestPullStatus(); ok {
+	if value, ok := _u.mutation.LatestPullStatus(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullStatus, field.TypeEnum, value)
 	}
-	if value, ok := fcuo.mutation.LatestPullMessage(); ok {
+	if value, ok := _u.mutation.LatestPullMessage(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullMessage, field.TypeString, value)
 	}
-	if value, ok := fcuo.mutation.NextPullBeginAt(); ok {
+	if value, ok := _u.mutation.NextPullBeginAt(); ok {
 		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)
 	}
-	if value, ok := fcuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedconfig.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := fcuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fcuo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1202,7 +1202,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -1218,7 +1218,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcuo.mutation.FeedCleared() {
+	if _u.mutation.FeedCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -1231,7 +1231,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.FeedIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -1247,7 +1247,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcuo.mutation.NotifySourceCleared() {
+	if _u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1260,7 +1260,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !fcuo.mutation.NotifySourceCleared() {
+	if nodes := _u.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !_u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1276,7 +1276,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.NotifySourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -1292,7 +1292,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcuo.mutation.FeedActionSetCleared() {
+	if _u.mutation.FeedActionSetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1303,13 +1303,13 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &FeedConfigActionCreate{config: fcuo.config, mutation: newFeedConfigActionMutation(fcuo.config, OpCreate)}
+		createE := &FeedConfigActionCreate{config: _u.config, mutation: newFeedConfigActionMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.RemovedFeedActionSetIDs(); len(nodes) > 0 && !fcuo.mutation.FeedActionSetCleared() {
+	if nodes := _u.mutation.RemovedFeedActionSetIDs(); len(nodes) > 0 && !_u.mutation.FeedActionSetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1323,13 +1323,13 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &FeedConfigActionCreate{config: fcuo.config, mutation: newFeedConfigActionMutation(fcuo.config, OpCreate)}
+		createE := &FeedConfigActionCreate{config: _u.config, mutation: newFeedConfigActionMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.FeedActionSetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedActionSetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1343,13 +1343,13 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &FeedConfigActionCreate{config: fcuo.config, mutation: newFeedConfigActionMutation(fcuo.config, OpCreate)}
+		createE := &FeedConfigActionCreate{config: _u.config, mutation: newFeedConfigActionMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcuo.mutation.FeedConfigActionCleared() {
+	if _u.mutation.FeedConfigActionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1362,7 +1362,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.RemovedFeedConfigActionIDs(); len(nodes) > 0 && !fcuo.mutation.FeedConfigActionCleared() {
+	if nodes := _u.mutation.RemovedFeedConfigActionIDs(); len(nodes) > 0 && !_u.mutation.FeedConfigActionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1378,7 +1378,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.FeedConfigActionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedConfigActionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1394,10 +1394,10 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &FeedConfig{config: fcuo.config}
+	_node = &FeedConfig{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, fcuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{feedconfig.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1405,6 +1405,6 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		return nil, err
 	}
-	fcuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

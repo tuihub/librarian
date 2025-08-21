@@ -81,7 +81,7 @@ func (*StoreApp) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the StoreApp fields.
-func (sa *StoreApp) assignValues(columns []string, values []any) error {
+func (_m *StoreApp) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -91,34 +91,34 @@ func (sa *StoreApp) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				sa.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case storeapp.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				sa.Name = value.String
+				_m.Name = value.String
 			}
 		case storeapp.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				sa.Description = value.String
+				_m.Description = value.String
 			}
 		case storeapp.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				sa.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case storeapp.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				sa.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			sa.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -126,54 +126,54 @@ func (sa *StoreApp) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the StoreApp.
 // This includes values selected through modifiers, order, etc.
-func (sa *StoreApp) Value(name string) (ent.Value, error) {
-	return sa.selectValues.Get(name)
+func (_m *StoreApp) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryAppBinary queries the "app_binary" edge of the StoreApp entity.
-func (sa *StoreApp) QueryAppBinary() *SentinelAppBinaryQuery {
-	return NewStoreAppClient(sa.config).QueryAppBinary(sa)
+func (_m *StoreApp) QueryAppBinary() *SentinelAppBinaryQuery {
+	return NewStoreAppClient(_m.config).QueryAppBinary(_m)
 }
 
 // QueryStoreAppBinary queries the "store_app_binary" edge of the StoreApp entity.
-func (sa *StoreApp) QueryStoreAppBinary() *StoreAppBinaryQuery {
-	return NewStoreAppClient(sa.config).QueryStoreAppBinary(sa)
+func (_m *StoreApp) QueryStoreAppBinary() *StoreAppBinaryQuery {
+	return NewStoreAppClient(_m.config).QueryStoreAppBinary(_m)
 }
 
 // Update returns a builder for updating this StoreApp.
 // Note that you need to call StoreApp.Unwrap() before calling this method if this StoreApp
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (sa *StoreApp) Update() *StoreAppUpdateOne {
-	return NewStoreAppClient(sa.config).UpdateOne(sa)
+func (_m *StoreApp) Update() *StoreAppUpdateOne {
+	return NewStoreAppClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the StoreApp entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (sa *StoreApp) Unwrap() *StoreApp {
-	_tx, ok := sa.config.driver.(*txDriver)
+func (_m *StoreApp) Unwrap() *StoreApp {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: StoreApp is not a transactional entity")
 	}
-	sa.config.driver = _tx.drv
-	return sa
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (sa *StoreApp) String() string {
+func (_m *StoreApp) String() string {
 	var builder strings.Builder
 	builder.WriteString("StoreApp(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", sa.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(sa.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(sa.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(sa.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(sa.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

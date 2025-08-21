@@ -10,7 +10,7 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
-	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"google.golang.org/protobuf/types/known/durationpb"

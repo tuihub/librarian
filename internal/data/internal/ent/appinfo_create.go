@@ -24,239 +24,239 @@ type AppInfoCreate struct {
 }
 
 // SetSource sets the "source" field.
-func (aic *AppInfoCreate) SetSource(s string) *AppInfoCreate {
-	aic.mutation.SetSource(s)
-	return aic
+func (_c *AppInfoCreate) SetSource(v string) *AppInfoCreate {
+	_c.mutation.SetSource(v)
+	return _c
 }
 
 // SetSourceAppID sets the "source_app_id" field.
-func (aic *AppInfoCreate) SetSourceAppID(s string) *AppInfoCreate {
-	aic.mutation.SetSourceAppID(s)
-	return aic
+func (_c *AppInfoCreate) SetSourceAppID(v string) *AppInfoCreate {
+	_c.mutation.SetSourceAppID(v)
+	return _c
 }
 
 // SetSourceURL sets the "source_url" field.
-func (aic *AppInfoCreate) SetSourceURL(s string) *AppInfoCreate {
-	aic.mutation.SetSourceURL(s)
-	return aic
+func (_c *AppInfoCreate) SetSourceURL(v string) *AppInfoCreate {
+	_c.mutation.SetSourceURL(v)
+	return _c
 }
 
 // SetNillableSourceURL sets the "source_url" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableSourceURL(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetSourceURL(*s)
+func (_c *AppInfoCreate) SetNillableSourceURL(v *string) *AppInfoCreate {
+	if v != nil {
+		_c.SetSourceURL(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetName sets the "name" field.
-func (aic *AppInfoCreate) SetName(s string) *AppInfoCreate {
-	aic.mutation.SetName(s)
-	return aic
+func (_c *AppInfoCreate) SetName(v string) *AppInfoCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetType sets the "type" field.
-func (aic *AppInfoCreate) SetType(a appinfo.Type) *AppInfoCreate {
-	aic.mutation.SetType(a)
-	return aic
+func (_c *AppInfoCreate) SetType(v appinfo.Type) *AppInfoCreate {
+	_c.mutation.SetType(v)
+	return _c
 }
 
 // SetShortDescription sets the "short_description" field.
-func (aic *AppInfoCreate) SetShortDescription(s string) *AppInfoCreate {
-	aic.mutation.SetShortDescription(s)
-	return aic
+func (_c *AppInfoCreate) SetShortDescription(v string) *AppInfoCreate {
+	_c.mutation.SetShortDescription(v)
+	return _c
 }
 
 // SetNillableShortDescription sets the "short_description" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableShortDescription(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetShortDescription(*s)
+func (_c *AppInfoCreate) SetNillableShortDescription(v *string) *AppInfoCreate {
+	if v != nil {
+		_c.SetShortDescription(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (aic *AppInfoCreate) SetDescription(s string) *AppInfoCreate {
-	aic.mutation.SetDescription(s)
-	return aic
+func (_c *AppInfoCreate) SetDescription(v string) *AppInfoCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableDescription(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetDescription(*s)
+func (_c *AppInfoCreate) SetNillableDescription(v *string) *AppInfoCreate {
+	if v != nil {
+		_c.SetDescription(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetIconImageURL sets the "icon_image_url" field.
-func (aic *AppInfoCreate) SetIconImageURL(s string) *AppInfoCreate {
-	aic.mutation.SetIconImageURL(s)
-	return aic
+func (_c *AppInfoCreate) SetIconImageURL(v string) *AppInfoCreate {
+	_c.mutation.SetIconImageURL(v)
+	return _c
 }
 
 // SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableIconImageURL(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetIconImageURL(*s)
+func (_c *AppInfoCreate) SetNillableIconImageURL(v *string) *AppInfoCreate {
+	if v != nil {
+		_c.SetIconImageURL(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetIconImageID sets the "icon_image_id" field.
-func (aic *AppInfoCreate) SetIconImageID(mi model.InternalID) *AppInfoCreate {
-	aic.mutation.SetIconImageID(mi)
-	return aic
+func (_c *AppInfoCreate) SetIconImageID(v model.InternalID) *AppInfoCreate {
+	_c.mutation.SetIconImageID(v)
+	return _c
 }
 
 // SetBackgroundImageURL sets the "background_image_url" field.
-func (aic *AppInfoCreate) SetBackgroundImageURL(s string) *AppInfoCreate {
-	aic.mutation.SetBackgroundImageURL(s)
-	return aic
+func (_c *AppInfoCreate) SetBackgroundImageURL(v string) *AppInfoCreate {
+	_c.mutation.SetBackgroundImageURL(v)
+	return _c
 }
 
 // SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableBackgroundImageURL(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetBackgroundImageURL(*s)
+func (_c *AppInfoCreate) SetNillableBackgroundImageURL(v *string) *AppInfoCreate {
+	if v != nil {
+		_c.SetBackgroundImageURL(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetBackgroundImageID sets the "background_image_id" field.
-func (aic *AppInfoCreate) SetBackgroundImageID(mi model.InternalID) *AppInfoCreate {
-	aic.mutation.SetBackgroundImageID(mi)
-	return aic
+func (_c *AppInfoCreate) SetBackgroundImageID(v model.InternalID) *AppInfoCreate {
+	_c.mutation.SetBackgroundImageID(v)
+	return _c
 }
 
 // SetCoverImageURL sets the "cover_image_url" field.
-func (aic *AppInfoCreate) SetCoverImageURL(s string) *AppInfoCreate {
-	aic.mutation.SetCoverImageURL(s)
-	return aic
+func (_c *AppInfoCreate) SetCoverImageURL(v string) *AppInfoCreate {
+	_c.mutation.SetCoverImageURL(v)
+	return _c
 }
 
 // SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableCoverImageURL(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetCoverImageURL(*s)
+func (_c *AppInfoCreate) SetNillableCoverImageURL(v *string) *AppInfoCreate {
+	if v != nil {
+		_c.SetCoverImageURL(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetCoverImageID sets the "cover_image_id" field.
-func (aic *AppInfoCreate) SetCoverImageID(mi model.InternalID) *AppInfoCreate {
-	aic.mutation.SetCoverImageID(mi)
-	return aic
+func (_c *AppInfoCreate) SetCoverImageID(v model.InternalID) *AppInfoCreate {
+	_c.mutation.SetCoverImageID(v)
+	return _c
 }
 
 // SetReleaseDate sets the "release_date" field.
-func (aic *AppInfoCreate) SetReleaseDate(s string) *AppInfoCreate {
-	aic.mutation.SetReleaseDate(s)
-	return aic
+func (_c *AppInfoCreate) SetReleaseDate(v string) *AppInfoCreate {
+	_c.mutation.SetReleaseDate(v)
+	return _c
 }
 
 // SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableReleaseDate(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetReleaseDate(*s)
+func (_c *AppInfoCreate) SetNillableReleaseDate(v *string) *AppInfoCreate {
+	if v != nil {
+		_c.SetReleaseDate(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetDeveloper sets the "developer" field.
-func (aic *AppInfoCreate) SetDeveloper(s string) *AppInfoCreate {
-	aic.mutation.SetDeveloper(s)
-	return aic
+func (_c *AppInfoCreate) SetDeveloper(v string) *AppInfoCreate {
+	_c.mutation.SetDeveloper(v)
+	return _c
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableDeveloper(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetDeveloper(*s)
+func (_c *AppInfoCreate) SetNillableDeveloper(v *string) *AppInfoCreate {
+	if v != nil {
+		_c.SetDeveloper(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetPublisher sets the "publisher" field.
-func (aic *AppInfoCreate) SetPublisher(s string) *AppInfoCreate {
-	aic.mutation.SetPublisher(s)
-	return aic
+func (_c *AppInfoCreate) SetPublisher(v string) *AppInfoCreate {
+	_c.mutation.SetPublisher(v)
+	return _c
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillablePublisher(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetPublisher(*s)
+func (_c *AppInfoCreate) SetNillablePublisher(v *string) *AppInfoCreate {
+	if v != nil {
+		_c.SetPublisher(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetTags sets the "tags" field.
-func (aic *AppInfoCreate) SetTags(s []string) *AppInfoCreate {
-	aic.mutation.SetTags(s)
-	return aic
+func (_c *AppInfoCreate) SetTags(v []string) *AppInfoCreate {
+	_c.mutation.SetTags(v)
+	return _c
 }
 
 // SetAlternativeNames sets the "alternative_names" field.
-func (aic *AppInfoCreate) SetAlternativeNames(s []string) *AppInfoCreate {
-	aic.mutation.SetAlternativeNames(s)
-	return aic
+func (_c *AppInfoCreate) SetAlternativeNames(v []string) *AppInfoCreate {
+	_c.mutation.SetAlternativeNames(v)
+	return _c
 }
 
 // SetRawData sets the "raw_data" field.
-func (aic *AppInfoCreate) SetRawData(s string) *AppInfoCreate {
-	aic.mutation.SetRawData(s)
-	return aic
+func (_c *AppInfoCreate) SetRawData(v string) *AppInfoCreate {
+	_c.mutation.SetRawData(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aic *AppInfoCreate) SetUpdatedAt(t time.Time) *AppInfoCreate {
-	aic.mutation.SetUpdatedAt(t)
-	return aic
+func (_c *AppInfoCreate) SetUpdatedAt(v time.Time) *AppInfoCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableUpdatedAt(t *time.Time) *AppInfoCreate {
-	if t != nil {
-		aic.SetUpdatedAt(*t)
+func (_c *AppInfoCreate) SetNillableUpdatedAt(v *time.Time) *AppInfoCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (aic *AppInfoCreate) SetCreatedAt(t time.Time) *AppInfoCreate {
-	aic.mutation.SetCreatedAt(t)
-	return aic
+func (_c *AppInfoCreate) SetCreatedAt(v time.Time) *AppInfoCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableCreatedAt(t *time.Time) *AppInfoCreate {
-	if t != nil {
-		aic.SetCreatedAt(*t)
+func (_c *AppInfoCreate) SetNillableCreatedAt(v *time.Time) *AppInfoCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return aic
+	return _c
 }
 
 // SetID sets the "id" field.
-func (aic *AppInfoCreate) SetID(mi model.InternalID) *AppInfoCreate {
-	aic.mutation.SetID(mi)
-	return aic
+func (_c *AppInfoCreate) SetID(v model.InternalID) *AppInfoCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // Mutation returns the AppInfoMutation object of the builder.
-func (aic *AppInfoCreate) Mutation() *AppInfoMutation {
-	return aic.mutation
+func (_c *AppInfoCreate) Mutation() *AppInfoMutation {
+	return _c.mutation
 }
 
 // Save creates the AppInfo in the database.
-func (aic *AppInfoCreate) Save(ctx context.Context) (*AppInfo, error) {
-	aic.defaults()
-	return withHooks(ctx, aic.sqlSave, aic.mutation, aic.hooks)
+func (_c *AppInfoCreate) Save(ctx context.Context) (*AppInfo, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (aic *AppInfoCreate) SaveX(ctx context.Context) *AppInfo {
-	v, err := aic.Save(ctx)
+func (_c *AppInfoCreate) SaveX(ctx context.Context) *AppInfo {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -264,82 +264,82 @@ func (aic *AppInfoCreate) SaveX(ctx context.Context) *AppInfo {
 }
 
 // Exec executes the query.
-func (aic *AppInfoCreate) Exec(ctx context.Context) error {
-	_, err := aic.Save(ctx)
+func (_c *AppInfoCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aic *AppInfoCreate) ExecX(ctx context.Context) {
-	if err := aic.Exec(ctx); err != nil {
+func (_c *AppInfoCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (aic *AppInfoCreate) defaults() {
-	if _, ok := aic.mutation.UpdatedAt(); !ok {
+func (_c *AppInfoCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := appinfo.DefaultUpdatedAt()
-		aic.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := aic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := appinfo.DefaultCreatedAt()
-		aic.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aic *AppInfoCreate) check() error {
-	if _, ok := aic.mutation.Source(); !ok {
+func (_c *AppInfoCreate) check() error {
+	if _, ok := _c.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "AppInfo.source"`)}
 	}
-	if _, ok := aic.mutation.SourceAppID(); !ok {
+	if _, ok := _c.mutation.SourceAppID(); !ok {
 		return &ValidationError{Name: "source_app_id", err: errors.New(`ent: missing required field "AppInfo.source_app_id"`)}
 	}
-	if _, ok := aic.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppInfo.name"`)}
 	}
-	if _, ok := aic.mutation.GetType(); !ok {
+	if _, ok := _c.mutation.GetType(); !ok {
 		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "AppInfo.type"`)}
 	}
-	if v, ok := aic.mutation.GetType(); ok {
+	if v, ok := _c.mutation.GetType(); ok {
 		if err := appinfo.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "AppInfo.type": %w`, err)}
 		}
 	}
-	if _, ok := aic.mutation.IconImageID(); !ok {
+	if _, ok := _c.mutation.IconImageID(); !ok {
 		return &ValidationError{Name: "icon_image_id", err: errors.New(`ent: missing required field "AppInfo.icon_image_id"`)}
 	}
-	if _, ok := aic.mutation.BackgroundImageID(); !ok {
+	if _, ok := _c.mutation.BackgroundImageID(); !ok {
 		return &ValidationError{Name: "background_image_id", err: errors.New(`ent: missing required field "AppInfo.background_image_id"`)}
 	}
-	if _, ok := aic.mutation.CoverImageID(); !ok {
+	if _, ok := _c.mutation.CoverImageID(); !ok {
 		return &ValidationError{Name: "cover_image_id", err: errors.New(`ent: missing required field "AppInfo.cover_image_id"`)}
 	}
-	if _, ok := aic.mutation.Tags(); !ok {
+	if _, ok := _c.mutation.Tags(); !ok {
 		return &ValidationError{Name: "tags", err: errors.New(`ent: missing required field "AppInfo.tags"`)}
 	}
-	if _, ok := aic.mutation.AlternativeNames(); !ok {
+	if _, ok := _c.mutation.AlternativeNames(); !ok {
 		return &ValidationError{Name: "alternative_names", err: errors.New(`ent: missing required field "AppInfo.alternative_names"`)}
 	}
-	if _, ok := aic.mutation.RawData(); !ok {
+	if _, ok := _c.mutation.RawData(); !ok {
 		return &ValidationError{Name: "raw_data", err: errors.New(`ent: missing required field "AppInfo.raw_data"`)}
 	}
-	if _, ok := aic.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AppInfo.updated_at"`)}
 	}
-	if _, ok := aic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppInfo.created_at"`)}
 	}
 	return nil
 }
 
-func (aic *AppInfoCreate) sqlSave(ctx context.Context) (*AppInfo, error) {
-	if err := aic.check(); err != nil {
+func (_c *AppInfoCreate) sqlSave(ctx context.Context) (*AppInfo, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := aic.createSpec()
-	if err := sqlgraph.CreateNode(ctx, aic.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -349,102 +349,102 @@ func (aic *AppInfoCreate) sqlSave(ctx context.Context) (*AppInfo, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	aic.mutation.id = &_node.ID
-	aic.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (aic *AppInfoCreate) createSpec() (*AppInfo, *sqlgraph.CreateSpec) {
+func (_c *AppInfoCreate) createSpec() (*AppInfo, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppInfo{config: aic.config}
+		_node = &AppInfo{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(appinfo.Table, sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = aic.conflict
-	if id, ok := aic.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := aic.mutation.Source(); ok {
+	if value, ok := _c.mutation.Source(); ok {
 		_spec.SetField(appinfo.FieldSource, field.TypeString, value)
 		_node.Source = value
 	}
-	if value, ok := aic.mutation.SourceAppID(); ok {
+	if value, ok := _c.mutation.SourceAppID(); ok {
 		_spec.SetField(appinfo.FieldSourceAppID, field.TypeString, value)
 		_node.SourceAppID = value
 	}
-	if value, ok := aic.mutation.SourceURL(); ok {
+	if value, ok := _c.mutation.SourceURL(); ok {
 		_spec.SetField(appinfo.FieldSourceURL, field.TypeString, value)
 		_node.SourceURL = value
 	}
-	if value, ok := aic.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(appinfo.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := aic.mutation.GetType(); ok {
+	if value, ok := _c.mutation.GetType(); ok {
 		_spec.SetField(appinfo.FieldType, field.TypeEnum, value)
 		_node.Type = value
 	}
-	if value, ok := aic.mutation.ShortDescription(); ok {
+	if value, ok := _c.mutation.ShortDescription(); ok {
 		_spec.SetField(appinfo.FieldShortDescription, field.TypeString, value)
 		_node.ShortDescription = value
 	}
-	if value, ok := aic.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(appinfo.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := aic.mutation.IconImageURL(); ok {
+	if value, ok := _c.mutation.IconImageURL(); ok {
 		_spec.SetField(appinfo.FieldIconImageURL, field.TypeString, value)
 		_node.IconImageURL = value
 	}
-	if value, ok := aic.mutation.IconImageID(); ok {
+	if value, ok := _c.mutation.IconImageID(); ok {
 		_spec.SetField(appinfo.FieldIconImageID, field.TypeInt64, value)
 		_node.IconImageID = value
 	}
-	if value, ok := aic.mutation.BackgroundImageURL(); ok {
+	if value, ok := _c.mutation.BackgroundImageURL(); ok {
 		_spec.SetField(appinfo.FieldBackgroundImageURL, field.TypeString, value)
 		_node.BackgroundImageURL = value
 	}
-	if value, ok := aic.mutation.BackgroundImageID(); ok {
+	if value, ok := _c.mutation.BackgroundImageID(); ok {
 		_spec.SetField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
 		_node.BackgroundImageID = value
 	}
-	if value, ok := aic.mutation.CoverImageURL(); ok {
+	if value, ok := _c.mutation.CoverImageURL(); ok {
 		_spec.SetField(appinfo.FieldCoverImageURL, field.TypeString, value)
 		_node.CoverImageURL = value
 	}
-	if value, ok := aic.mutation.CoverImageID(); ok {
+	if value, ok := _c.mutation.CoverImageID(); ok {
 		_spec.SetField(appinfo.FieldCoverImageID, field.TypeInt64, value)
 		_node.CoverImageID = value
 	}
-	if value, ok := aic.mutation.ReleaseDate(); ok {
+	if value, ok := _c.mutation.ReleaseDate(); ok {
 		_spec.SetField(appinfo.FieldReleaseDate, field.TypeString, value)
 		_node.ReleaseDate = value
 	}
-	if value, ok := aic.mutation.Developer(); ok {
+	if value, ok := _c.mutation.Developer(); ok {
 		_spec.SetField(appinfo.FieldDeveloper, field.TypeString, value)
 		_node.Developer = value
 	}
-	if value, ok := aic.mutation.Publisher(); ok {
+	if value, ok := _c.mutation.Publisher(); ok {
 		_spec.SetField(appinfo.FieldPublisher, field.TypeString, value)
 		_node.Publisher = value
 	}
-	if value, ok := aic.mutation.Tags(); ok {
+	if value, ok := _c.mutation.Tags(); ok {
 		_spec.SetField(appinfo.FieldTags, field.TypeJSON, value)
 		_node.Tags = value
 	}
-	if value, ok := aic.mutation.AlternativeNames(); ok {
+	if value, ok := _c.mutation.AlternativeNames(); ok {
 		_spec.SetField(appinfo.FieldAlternativeNames, field.TypeJSON, value)
 		_node.AlternativeNames = value
 	}
-	if value, ok := aic.mutation.RawData(); ok {
+	if value, ok := _c.mutation.RawData(); ok {
 		_spec.SetField(appinfo.FieldRawData, field.TypeString, value)
 		_node.RawData = value
 	}
-	if value, ok := aic.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(appinfo.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := aic.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(appinfo.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
@@ -467,10 +467,10 @@ func (aic *AppInfoCreate) createSpec() (*AppInfo, *sqlgraph.CreateSpec) {
 //			SetSource(v+v).
 //		}).
 //		Exec(ctx)
-func (aic *AppInfoCreate) OnConflict(opts ...sql.ConflictOption) *AppInfoUpsertOne {
-	aic.conflict = opts
+func (_c *AppInfoCreate) OnConflict(opts ...sql.ConflictOption) *AppInfoUpsertOne {
+	_c.conflict = opts
 	return &AppInfoUpsertOne{
-		create: aic,
+		create: _c,
 	}
 }
 
@@ -480,10 +480,10 @@ func (aic *AppInfoCreate) OnConflict(opts ...sql.ConflictOption) *AppInfoUpsertO
 //	client.AppInfo.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (aic *AppInfoCreate) OnConflictColumns(columns ...string) *AppInfoUpsertOne {
-	aic.conflict = append(aic.conflict, sql.ConflictColumns(columns...))
+func (_c *AppInfoCreate) OnConflictColumns(columns ...string) *AppInfoUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppInfoUpsertOne{
-		create: aic,
+		create: _c,
 	}
 }
 
@@ -1292,16 +1292,16 @@ type AppInfoCreateBulk struct {
 }
 
 // Save creates the AppInfo entities in the database.
-func (aicb *AppInfoCreateBulk) Save(ctx context.Context) ([]*AppInfo, error) {
-	if aicb.err != nil {
-		return nil, aicb.err
+func (_c *AppInfoCreateBulk) Save(ctx context.Context) ([]*AppInfo, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(aicb.builders))
-	nodes := make([]*AppInfo, len(aicb.builders))
-	mutators := make([]Mutator, len(aicb.builders))
-	for i := range aicb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppInfo, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := aicb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppInfoMutation)
@@ -1315,12 +1315,12 @@ func (aicb *AppInfoCreateBulk) Save(ctx context.Context) ([]*AppInfo, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, aicb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = aicb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, aicb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1344,7 +1344,7 @@ func (aicb *AppInfoCreateBulk) Save(ctx context.Context) ([]*AppInfo, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, aicb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1352,8 +1352,8 @@ func (aicb *AppInfoCreateBulk) Save(ctx context.Context) ([]*AppInfo, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aicb *AppInfoCreateBulk) SaveX(ctx context.Context) []*AppInfo {
-	v, err := aicb.Save(ctx)
+func (_c *AppInfoCreateBulk) SaveX(ctx context.Context) []*AppInfo {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1361,14 +1361,14 @@ func (aicb *AppInfoCreateBulk) SaveX(ctx context.Context) []*AppInfo {
 }
 
 // Exec executes the query.
-func (aicb *AppInfoCreateBulk) Exec(ctx context.Context) error {
-	_, err := aicb.Save(ctx)
+func (_c *AppInfoCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aicb *AppInfoCreateBulk) ExecX(ctx context.Context) {
-	if err := aicb.Exec(ctx); err != nil {
+func (_c *AppInfoCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1388,10 +1388,10 @@ func (aicb *AppInfoCreateBulk) ExecX(ctx context.Context) {
 //			SetSource(v+v).
 //		}).
 //		Exec(ctx)
-func (aicb *AppInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppInfoUpsertBulk {
-	aicb.conflict = opts
+func (_c *AppInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppInfoUpsertBulk {
+	_c.conflict = opts
 	return &AppInfoUpsertBulk{
-		create: aicb,
+		create: _c,
 	}
 }
 
@@ -1401,10 +1401,10 @@ func (aicb *AppInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppInfoUp
 //	client.AppInfo.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (aicb *AppInfoCreateBulk) OnConflictColumns(columns ...string) *AppInfoUpsertBulk {
-	aicb.conflict = append(aicb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppInfoCreateBulk) OnConflictColumns(columns ...string) *AppInfoUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppInfoUpsertBulk{
-		create: aicb,
+		create: _c,
 	}
 }
 

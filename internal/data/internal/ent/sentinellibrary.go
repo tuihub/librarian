@@ -79,7 +79,7 @@ func (*SentinelLibrary) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the SentinelLibrary fields.
-func (sl *SentinelLibrary) assignValues(columns []string, values []any) error {
+func (_m *SentinelLibrary) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -89,52 +89,52 @@ func (sl *SentinelLibrary) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				sl.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case sentinellibrary.FieldSentinelID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_id", values[i])
 			} else if value.Valid {
-				sl.SentinelID = model.InternalID(value.Int64)
+				_m.SentinelID = model.InternalID(value.Int64)
 			}
 		case sentinellibrary.FieldReportedID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field reported_id", values[i])
 			} else if value.Valid {
-				sl.ReportedID = value.Int64
+				_m.ReportedID = value.Int64
 			}
 		case sentinellibrary.FieldDownloadBasePath:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field download_base_path", values[i])
 			} else if value.Valid {
-				sl.DownloadBasePath = value.String
+				_m.DownloadBasePath = value.String
 			}
 		case sentinellibrary.FieldActiveSnapshot:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field active_snapshot", values[i])
 			} else if value.Valid {
-				sl.ActiveSnapshot = value.Time
+				_m.ActiveSnapshot = value.Time
 			}
 		case sentinellibrary.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				sl.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case sentinellibrary.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				sl.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case sentinellibrary.FieldLibraryReportSequence:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field library_report_sequence", values[i])
 			} else if value.Valid {
-				sl.LibraryReportSequence = value.Int64
+				_m.LibraryReportSequence = value.Int64
 			}
 		default:
-			sl.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -142,58 +142,58 @@ func (sl *SentinelLibrary) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the SentinelLibrary.
 // This includes values selected through modifiers, order, etc.
-func (sl *SentinelLibrary) Value(name string) (ent.Value, error) {
-	return sl.selectValues.Get(name)
+func (_m *SentinelLibrary) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QuerySentinel queries the "sentinel" edge of the SentinelLibrary entity.
-func (sl *SentinelLibrary) QuerySentinel() *SentinelQuery {
-	return NewSentinelLibraryClient(sl.config).QuerySentinel(sl)
+func (_m *SentinelLibrary) QuerySentinel() *SentinelQuery {
+	return NewSentinelLibraryClient(_m.config).QuerySentinel(_m)
 }
 
 // Update returns a builder for updating this SentinelLibrary.
 // Note that you need to call SentinelLibrary.Unwrap() before calling this method if this SentinelLibrary
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (sl *SentinelLibrary) Update() *SentinelLibraryUpdateOne {
-	return NewSentinelLibraryClient(sl.config).UpdateOne(sl)
+func (_m *SentinelLibrary) Update() *SentinelLibraryUpdateOne {
+	return NewSentinelLibraryClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the SentinelLibrary entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (sl *SentinelLibrary) Unwrap() *SentinelLibrary {
-	_tx, ok := sl.config.driver.(*txDriver)
+func (_m *SentinelLibrary) Unwrap() *SentinelLibrary {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: SentinelLibrary is not a transactional entity")
 	}
-	sl.config.driver = _tx.drv
-	return sl
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (sl *SentinelLibrary) String() string {
+func (_m *SentinelLibrary) String() string {
 	var builder strings.Builder
 	builder.WriteString("SentinelLibrary(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", sl.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("sentinel_id=")
-	builder.WriteString(fmt.Sprintf("%v", sl.SentinelID))
+	builder.WriteString(fmt.Sprintf("%v", _m.SentinelID))
 	builder.WriteString(", ")
 	builder.WriteString("reported_id=")
-	builder.WriteString(fmt.Sprintf("%v", sl.ReportedID))
+	builder.WriteString(fmt.Sprintf("%v", _m.ReportedID))
 	builder.WriteString(", ")
 	builder.WriteString("download_base_path=")
-	builder.WriteString(sl.DownloadBasePath)
+	builder.WriteString(_m.DownloadBasePath)
 	builder.WriteString(", ")
 	builder.WriteString("active_snapshot=")
-	builder.WriteString(sl.ActiveSnapshot.Format(time.ANSIC))
+	builder.WriteString(_m.ActiveSnapshot.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(sl.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(sl.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("library_report_sequence=")
-	builder.WriteString(fmt.Sprintf("%v", sl.LibraryReportSequence))
+	builder.WriteString(fmt.Sprintf("%v", _m.LibraryReportSequence))
 	builder.WriteByte(')')
 	return builder.String()
 }

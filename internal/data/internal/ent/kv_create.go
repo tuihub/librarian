@@ -23,65 +23,65 @@ type KVCreate struct {
 }
 
 // SetBucket sets the "bucket" field.
-func (kc *KVCreate) SetBucket(s string) *KVCreate {
-	kc.mutation.SetBucket(s)
-	return kc
+func (_c *KVCreate) SetBucket(v string) *KVCreate {
+	_c.mutation.SetBucket(v)
+	return _c
 }
 
 // SetKey sets the "key" field.
-func (kc *KVCreate) SetKey(s string) *KVCreate {
-	kc.mutation.SetKey(s)
-	return kc
+func (_c *KVCreate) SetKey(v string) *KVCreate {
+	_c.mutation.SetKey(v)
+	return _c
 }
 
 // SetValue sets the "value" field.
-func (kc *KVCreate) SetValue(s string) *KVCreate {
-	kc.mutation.SetValue(s)
-	return kc
+func (_c *KVCreate) SetValue(v string) *KVCreate {
+	_c.mutation.SetValue(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (kc *KVCreate) SetUpdatedAt(t time.Time) *KVCreate {
-	kc.mutation.SetUpdatedAt(t)
-	return kc
+func (_c *KVCreate) SetUpdatedAt(v time.Time) *KVCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (kc *KVCreate) SetNillableUpdatedAt(t *time.Time) *KVCreate {
-	if t != nil {
-		kc.SetUpdatedAt(*t)
+func (_c *KVCreate) SetNillableUpdatedAt(v *time.Time) *KVCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return kc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (kc *KVCreate) SetCreatedAt(t time.Time) *KVCreate {
-	kc.mutation.SetCreatedAt(t)
-	return kc
+func (_c *KVCreate) SetCreatedAt(v time.Time) *KVCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (kc *KVCreate) SetNillableCreatedAt(t *time.Time) *KVCreate {
-	if t != nil {
-		kc.SetCreatedAt(*t)
+func (_c *KVCreate) SetNillableCreatedAt(v *time.Time) *KVCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return kc
+	return _c
 }
 
 // Mutation returns the KVMutation object of the builder.
-func (kc *KVCreate) Mutation() *KVMutation {
-	return kc.mutation
+func (_c *KVCreate) Mutation() *KVMutation {
+	return _c.mutation
 }
 
 // Save creates the KV in the database.
-func (kc *KVCreate) Save(ctx context.Context) (*KV, error) {
-	kc.defaults()
-	return withHooks(ctx, kc.sqlSave, kc.mutation, kc.hooks)
+func (_c *KVCreate) Save(ctx context.Context) (*KV, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (kc *KVCreate) SaveX(ctx context.Context) *KV {
-	v, err := kc.Save(ctx)
+func (_c *KVCreate) SaveX(ctx context.Context) *KV {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -89,56 +89,56 @@ func (kc *KVCreate) SaveX(ctx context.Context) *KV {
 }
 
 // Exec executes the query.
-func (kc *KVCreate) Exec(ctx context.Context) error {
-	_, err := kc.Save(ctx)
+func (_c *KVCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (kc *KVCreate) ExecX(ctx context.Context) {
-	if err := kc.Exec(ctx); err != nil {
+func (_c *KVCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (kc *KVCreate) defaults() {
-	if _, ok := kc.mutation.UpdatedAt(); !ok {
+func (_c *KVCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := kv.DefaultUpdatedAt()
-		kc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := kc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := kv.DefaultCreatedAt()
-		kc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (kc *KVCreate) check() error {
-	if _, ok := kc.mutation.Bucket(); !ok {
+func (_c *KVCreate) check() error {
+	if _, ok := _c.mutation.Bucket(); !ok {
 		return &ValidationError{Name: "bucket", err: errors.New(`ent: missing required field "KV.bucket"`)}
 	}
-	if _, ok := kc.mutation.Key(); !ok {
+	if _, ok := _c.mutation.Key(); !ok {
 		return &ValidationError{Name: "key", err: errors.New(`ent: missing required field "KV.key"`)}
 	}
-	if _, ok := kc.mutation.Value(); !ok {
+	if _, ok := _c.mutation.Value(); !ok {
 		return &ValidationError{Name: "value", err: errors.New(`ent: missing required field "KV.value"`)}
 	}
-	if _, ok := kc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "KV.updated_at"`)}
 	}
-	if _, ok := kc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "KV.created_at"`)}
 	}
 	return nil
 }
 
-func (kc *KVCreate) sqlSave(ctx context.Context) (*KV, error) {
-	if err := kc.check(); err != nil {
+func (_c *KVCreate) sqlSave(ctx context.Context) (*KV, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := kc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, kc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -146,34 +146,34 @@ func (kc *KVCreate) sqlSave(ctx context.Context) (*KV, error) {
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	kc.mutation.id = &_node.ID
-	kc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (kc *KVCreate) createSpec() (*KV, *sqlgraph.CreateSpec) {
+func (_c *KVCreate) createSpec() (*KV, *sqlgraph.CreateSpec) {
 	var (
-		_node = &KV{config: kc.config}
+		_node = &KV{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(kv.Table, sqlgraph.NewFieldSpec(kv.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = kc.conflict
-	if value, ok := kc.mutation.Bucket(); ok {
+	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.Bucket(); ok {
 		_spec.SetField(kv.FieldBucket, field.TypeString, value)
 		_node.Bucket = value
 	}
-	if value, ok := kc.mutation.Key(); ok {
+	if value, ok := _c.mutation.Key(); ok {
 		_spec.SetField(kv.FieldKey, field.TypeString, value)
 		_node.Key = value
 	}
-	if value, ok := kc.mutation.Value(); ok {
+	if value, ok := _c.mutation.Value(); ok {
 		_spec.SetField(kv.FieldValue, field.TypeString, value)
 		_node.Value = value
 	}
-	if value, ok := kc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(kv.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := kc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(kv.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
@@ -196,10 +196,10 @@ func (kc *KVCreate) createSpec() (*KV, *sqlgraph.CreateSpec) {
 //			SetBucket(v+v).
 //		}).
 //		Exec(ctx)
-func (kc *KVCreate) OnConflict(opts ...sql.ConflictOption) *KVUpsertOne {
-	kc.conflict = opts
+func (_c *KVCreate) OnConflict(opts ...sql.ConflictOption) *KVUpsertOne {
+	_c.conflict = opts
 	return &KVUpsertOne{
-		create: kc,
+		create: _c,
 	}
 }
 
@@ -209,10 +209,10 @@ func (kc *KVCreate) OnConflict(opts ...sql.ConflictOption) *KVUpsertOne {
 //	client.KV.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (kc *KVCreate) OnConflictColumns(columns ...string) *KVUpsertOne {
-	kc.conflict = append(kc.conflict, sql.ConflictColumns(columns...))
+func (_c *KVCreate) OnConflictColumns(columns ...string) *KVUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &KVUpsertOne{
-		create: kc,
+		create: _c,
 	}
 }
 
@@ -441,16 +441,16 @@ type KVCreateBulk struct {
 }
 
 // Save creates the KV entities in the database.
-func (kcb *KVCreateBulk) Save(ctx context.Context) ([]*KV, error) {
-	if kcb.err != nil {
-		return nil, kcb.err
+func (_c *KVCreateBulk) Save(ctx context.Context) ([]*KV, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(kcb.builders))
-	nodes := make([]*KV, len(kcb.builders))
-	mutators := make([]Mutator, len(kcb.builders))
-	for i := range kcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*KV, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := kcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*KVMutation)
@@ -464,12 +464,12 @@ func (kcb *KVCreateBulk) Save(ctx context.Context) ([]*KV, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, kcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = kcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, kcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -493,7 +493,7 @@ func (kcb *KVCreateBulk) Save(ctx context.Context) ([]*KV, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, kcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -501,8 +501,8 @@ func (kcb *KVCreateBulk) Save(ctx context.Context) ([]*KV, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (kcb *KVCreateBulk) SaveX(ctx context.Context) []*KV {
-	v, err := kcb.Save(ctx)
+func (_c *KVCreateBulk) SaveX(ctx context.Context) []*KV {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -510,14 +510,14 @@ func (kcb *KVCreateBulk) SaveX(ctx context.Context) []*KV {
 }
 
 // Exec executes the query.
-func (kcb *KVCreateBulk) Exec(ctx context.Context) error {
-	_, err := kcb.Save(ctx)
+func (_c *KVCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (kcb *KVCreateBulk) ExecX(ctx context.Context) {
-	if err := kcb.Exec(ctx); err != nil {
+func (_c *KVCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -537,10 +537,10 @@ func (kcb *KVCreateBulk) ExecX(ctx context.Context) {
 //			SetBucket(v+v).
 //		}).
 //		Exec(ctx)
-func (kcb *KVCreateBulk) OnConflict(opts ...sql.ConflictOption) *KVUpsertBulk {
-	kcb.conflict = opts
+func (_c *KVCreateBulk) OnConflict(opts ...sql.ConflictOption) *KVUpsertBulk {
+	_c.conflict = opts
 	return &KVUpsertBulk{
-		create: kcb,
+		create: _c,
 	}
 }
 
@@ -550,10 +550,10 @@ func (kcb *KVCreateBulk) OnConflict(opts ...sql.ConflictOption) *KVUpsertBulk {
 //	client.KV.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (kcb *KVCreateBulk) OnConflictColumns(columns ...string) *KVUpsertBulk {
-	kcb.conflict = append(kcb.conflict, sql.ConflictColumns(columns...))
+func (_c *KVCreateBulk) OnConflictColumns(columns ...string) *KVUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &KVUpsertBulk{
-		create: kcb,
+		create: _c,
 	}
 }
 

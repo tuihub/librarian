@@ -25,88 +25,88 @@ type AppRunTimeCreate struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (artc *AppRunTimeCreate) SetUserID(mi model.InternalID) *AppRunTimeCreate {
-	artc.mutation.SetUserID(mi)
-	return artc
+func (_c *AppRunTimeCreate) SetUserID(v model.InternalID) *AppRunTimeCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (artc *AppRunTimeCreate) SetAppID(mi model.InternalID) *AppRunTimeCreate {
-	artc.mutation.SetAppID(mi)
-	return artc
+func (_c *AppRunTimeCreate) SetAppID(v model.InternalID) *AppRunTimeCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetDeviceID sets the "device_id" field.
-func (artc *AppRunTimeCreate) SetDeviceID(mi model.InternalID) *AppRunTimeCreate {
-	artc.mutation.SetDeviceID(mi)
-	return artc
+func (_c *AppRunTimeCreate) SetDeviceID(v model.InternalID) *AppRunTimeCreate {
+	_c.mutation.SetDeviceID(v)
+	return _c
 }
 
 // SetStartTime sets the "start_time" field.
-func (artc *AppRunTimeCreate) SetStartTime(t time.Time) *AppRunTimeCreate {
-	artc.mutation.SetStartTime(t)
-	return artc
+func (_c *AppRunTimeCreate) SetStartTime(v time.Time) *AppRunTimeCreate {
+	_c.mutation.SetStartTime(v)
+	return _c
 }
 
 // SetDuration sets the "duration" field.
-func (artc *AppRunTimeCreate) SetDuration(t time.Duration) *AppRunTimeCreate {
-	artc.mutation.SetDuration(t)
-	return artc
+func (_c *AppRunTimeCreate) SetDuration(v time.Duration) *AppRunTimeCreate {
+	_c.mutation.SetDuration(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (artc *AppRunTimeCreate) SetUpdatedAt(t time.Time) *AppRunTimeCreate {
-	artc.mutation.SetUpdatedAt(t)
-	return artc
+func (_c *AppRunTimeCreate) SetUpdatedAt(v time.Time) *AppRunTimeCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (artc *AppRunTimeCreate) SetNillableUpdatedAt(t *time.Time) *AppRunTimeCreate {
-	if t != nil {
-		artc.SetUpdatedAt(*t)
+func (_c *AppRunTimeCreate) SetNillableUpdatedAt(v *time.Time) *AppRunTimeCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return artc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (artc *AppRunTimeCreate) SetCreatedAt(t time.Time) *AppRunTimeCreate {
-	artc.mutation.SetCreatedAt(t)
-	return artc
+func (_c *AppRunTimeCreate) SetCreatedAt(v time.Time) *AppRunTimeCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (artc *AppRunTimeCreate) SetNillableCreatedAt(t *time.Time) *AppRunTimeCreate {
-	if t != nil {
-		artc.SetCreatedAt(*t)
+func (_c *AppRunTimeCreate) SetNillableCreatedAt(v *time.Time) *AppRunTimeCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return artc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (artc *AppRunTimeCreate) SetID(mi model.InternalID) *AppRunTimeCreate {
-	artc.mutation.SetID(mi)
-	return artc
+func (_c *AppRunTimeCreate) SetID(v model.InternalID) *AppRunTimeCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (artc *AppRunTimeCreate) SetApp(a *App) *AppRunTimeCreate {
-	return artc.SetAppID(a.ID)
+func (_c *AppRunTimeCreate) SetApp(v *App) *AppRunTimeCreate {
+	return _c.SetAppID(v.ID)
 }
 
 // Mutation returns the AppRunTimeMutation object of the builder.
-func (artc *AppRunTimeCreate) Mutation() *AppRunTimeMutation {
-	return artc.mutation
+func (_c *AppRunTimeCreate) Mutation() *AppRunTimeMutation {
+	return _c.mutation
 }
 
 // Save creates the AppRunTime in the database.
-func (artc *AppRunTimeCreate) Save(ctx context.Context) (*AppRunTime, error) {
-	artc.defaults()
-	return withHooks(ctx, artc.sqlSave, artc.mutation, artc.hooks)
+func (_c *AppRunTimeCreate) Save(ctx context.Context) (*AppRunTime, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (artc *AppRunTimeCreate) SaveX(ctx context.Context) *AppRunTime {
-	v, err := artc.Save(ctx)
+func (_c *AppRunTimeCreate) SaveX(ctx context.Context) *AppRunTime {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -114,65 +114,65 @@ func (artc *AppRunTimeCreate) SaveX(ctx context.Context) *AppRunTime {
 }
 
 // Exec executes the query.
-func (artc *AppRunTimeCreate) Exec(ctx context.Context) error {
-	_, err := artc.Save(ctx)
+func (_c *AppRunTimeCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (artc *AppRunTimeCreate) ExecX(ctx context.Context) {
-	if err := artc.Exec(ctx); err != nil {
+func (_c *AppRunTimeCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (artc *AppRunTimeCreate) defaults() {
-	if _, ok := artc.mutation.UpdatedAt(); !ok {
+func (_c *AppRunTimeCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := appruntime.DefaultUpdatedAt()
-		artc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := artc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := appruntime.DefaultCreatedAt()
-		artc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (artc *AppRunTimeCreate) check() error {
-	if _, ok := artc.mutation.UserID(); !ok {
+func (_c *AppRunTimeCreate) check() error {
+	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "AppRunTime.user_id"`)}
 	}
-	if _, ok := artc.mutation.AppID(); !ok {
+	if _, ok := _c.mutation.AppID(); !ok {
 		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppRunTime.app_id"`)}
 	}
-	if _, ok := artc.mutation.DeviceID(); !ok {
+	if _, ok := _c.mutation.DeviceID(); !ok {
 		return &ValidationError{Name: "device_id", err: errors.New(`ent: missing required field "AppRunTime.device_id"`)}
 	}
-	if _, ok := artc.mutation.StartTime(); !ok {
+	if _, ok := _c.mutation.StartTime(); !ok {
 		return &ValidationError{Name: "start_time", err: errors.New(`ent: missing required field "AppRunTime.start_time"`)}
 	}
-	if _, ok := artc.mutation.Duration(); !ok {
+	if _, ok := _c.mutation.Duration(); !ok {
 		return &ValidationError{Name: "duration", err: errors.New(`ent: missing required field "AppRunTime.duration"`)}
 	}
-	if _, ok := artc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AppRunTime.updated_at"`)}
 	}
-	if _, ok := artc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppRunTime.created_at"`)}
 	}
-	if len(artc.mutation.AppIDs()) == 0 {
+	if len(_c.mutation.AppIDs()) == 0 {
 		return &ValidationError{Name: "app", err: errors.New(`ent: missing required edge "AppRunTime.app"`)}
 	}
 	return nil
 }
 
-func (artc *AppRunTimeCreate) sqlSave(ctx context.Context) (*AppRunTime, error) {
-	if err := artc.check(); err != nil {
+func (_c *AppRunTimeCreate) sqlSave(ctx context.Context) (*AppRunTime, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := artc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, artc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -182,46 +182,46 @@ func (artc *AppRunTimeCreate) sqlSave(ctx context.Context) (*AppRunTime, error) 
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	artc.mutation.id = &_node.ID
-	artc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (artc *AppRunTimeCreate) createSpec() (*AppRunTime, *sqlgraph.CreateSpec) {
+func (_c *AppRunTimeCreate) createSpec() (*AppRunTime, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppRunTime{config: artc.config}
+		_node = &AppRunTime{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(appruntime.Table, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = artc.conflict
-	if id, ok := artc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := artc.mutation.UserID(); ok {
+	if value, ok := _c.mutation.UserID(); ok {
 		_spec.SetField(appruntime.FieldUserID, field.TypeInt64, value)
 		_node.UserID = value
 	}
-	if value, ok := artc.mutation.DeviceID(); ok {
+	if value, ok := _c.mutation.DeviceID(); ok {
 		_spec.SetField(appruntime.FieldDeviceID, field.TypeInt64, value)
 		_node.DeviceID = value
 	}
-	if value, ok := artc.mutation.StartTime(); ok {
+	if value, ok := _c.mutation.StartTime(); ok {
 		_spec.SetField(appruntime.FieldStartTime, field.TypeTime, value)
 		_node.StartTime = value
 	}
-	if value, ok := artc.mutation.Duration(); ok {
+	if value, ok := _c.mutation.Duration(); ok {
 		_spec.SetField(appruntime.FieldDuration, field.TypeInt64, value)
 		_node.Duration = value
 	}
-	if value, ok := artc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(appruntime.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := artc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(appruntime.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := artc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -257,10 +257,10 @@ func (artc *AppRunTimeCreate) createSpec() (*AppRunTime, *sqlgraph.CreateSpec) {
 //			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
-func (artc *AppRunTimeCreate) OnConflict(opts ...sql.ConflictOption) *AppRunTimeUpsertOne {
-	artc.conflict = opts
+func (_c *AppRunTimeCreate) OnConflict(opts ...sql.ConflictOption) *AppRunTimeUpsertOne {
+	_c.conflict = opts
 	return &AppRunTimeUpsertOne{
-		create: artc,
+		create: _c,
 	}
 }
 
@@ -270,10 +270,10 @@ func (artc *AppRunTimeCreate) OnConflict(opts ...sql.ConflictOption) *AppRunTime
 //	client.AppRunTime.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (artc *AppRunTimeCreate) OnConflictColumns(columns ...string) *AppRunTimeUpsertOne {
-	artc.conflict = append(artc.conflict, sql.ConflictColumns(columns...))
+func (_c *AppRunTimeCreate) OnConflictColumns(columns ...string) *AppRunTimeUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppRunTimeUpsertOne{
-		create: artc,
+		create: _c,
 	}
 }
 
@@ -601,16 +601,16 @@ type AppRunTimeCreateBulk struct {
 }
 
 // Save creates the AppRunTime entities in the database.
-func (artcb *AppRunTimeCreateBulk) Save(ctx context.Context) ([]*AppRunTime, error) {
-	if artcb.err != nil {
-		return nil, artcb.err
+func (_c *AppRunTimeCreateBulk) Save(ctx context.Context) ([]*AppRunTime, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(artcb.builders))
-	nodes := make([]*AppRunTime, len(artcb.builders))
-	mutators := make([]Mutator, len(artcb.builders))
-	for i := range artcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppRunTime, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := artcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppRunTimeMutation)
@@ -624,12 +624,12 @@ func (artcb *AppRunTimeCreateBulk) Save(ctx context.Context) ([]*AppRunTime, err
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, artcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = artcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, artcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -653,7 +653,7 @@ func (artcb *AppRunTimeCreateBulk) Save(ctx context.Context) ([]*AppRunTime, err
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, artcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -661,8 +661,8 @@ func (artcb *AppRunTimeCreateBulk) Save(ctx context.Context) ([]*AppRunTime, err
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (artcb *AppRunTimeCreateBulk) SaveX(ctx context.Context) []*AppRunTime {
-	v, err := artcb.Save(ctx)
+func (_c *AppRunTimeCreateBulk) SaveX(ctx context.Context) []*AppRunTime {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -670,14 +670,14 @@ func (artcb *AppRunTimeCreateBulk) SaveX(ctx context.Context) []*AppRunTime {
 }
 
 // Exec executes the query.
-func (artcb *AppRunTimeCreateBulk) Exec(ctx context.Context) error {
-	_, err := artcb.Save(ctx)
+func (_c *AppRunTimeCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (artcb *AppRunTimeCreateBulk) ExecX(ctx context.Context) {
-	if err := artcb.Exec(ctx); err != nil {
+func (_c *AppRunTimeCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -697,10 +697,10 @@ func (artcb *AppRunTimeCreateBulk) ExecX(ctx context.Context) {
 //			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
-func (artcb *AppRunTimeCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppRunTimeUpsertBulk {
-	artcb.conflict = opts
+func (_c *AppRunTimeCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppRunTimeUpsertBulk {
+	_c.conflict = opts
 	return &AppRunTimeUpsertBulk{
-		create: artcb,
+		create: _c,
 	}
 }
 
@@ -710,10 +710,10 @@ func (artcb *AppRunTimeCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppRu
 //	client.AppRunTime.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (artcb *AppRunTimeCreateBulk) OnConflictColumns(columns ...string) *AppRunTimeUpsertBulk {
-	artcb.conflict = append(artcb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppRunTimeCreateBulk) OnConflictColumns(columns ...string) *AppRunTimeUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppRunTimeUpsertBulk{
-		create: artcb,
+		create: _c,
 	}
 }
 

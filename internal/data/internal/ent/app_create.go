@@ -29,332 +29,332 @@ type AppCreate struct {
 }
 
 // SetVersionNumber sets the "version_number" field.
-func (ac *AppCreate) SetVersionNumber(u uint64) *AppCreate {
-	ac.mutation.SetVersionNumber(u)
-	return ac
+func (_c *AppCreate) SetVersionNumber(v uint64) *AppCreate {
+	_c.mutation.SetVersionNumber(v)
+	return _c
 }
 
 // SetVersionDate sets the "version_date" field.
-func (ac *AppCreate) SetVersionDate(t time.Time) *AppCreate {
-	ac.mutation.SetVersionDate(t)
-	return ac
+func (_c *AppCreate) SetVersionDate(v time.Time) *AppCreate {
+	_c.mutation.SetVersionDate(v)
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (ac *AppCreate) SetUserID(mi model.InternalID) *AppCreate {
-	ac.mutation.SetUserID(mi)
-	return ac
+func (_c *AppCreate) SetUserID(v model.InternalID) *AppCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetCreatorDeviceID sets the "creator_device_id" field.
-func (ac *AppCreate) SetCreatorDeviceID(mi model.InternalID) *AppCreate {
-	ac.mutation.SetCreatorDeviceID(mi)
-	return ac
+func (_c *AppCreate) SetCreatorDeviceID(v model.InternalID) *AppCreate {
+	_c.mutation.SetCreatorDeviceID(v)
+	return _c
 }
 
 // SetAppSources sets the "app_sources" field.
-func (ac *AppCreate) SetAppSources(m map[string]string) *AppCreate {
-	ac.mutation.SetAppSources(m)
-	return ac
+func (_c *AppCreate) SetAppSources(v map[string]string) *AppCreate {
+	_c.mutation.SetAppSources(v)
+	return _c
 }
 
 // SetPublic sets the "public" field.
-func (ac *AppCreate) SetPublic(b bool) *AppCreate {
-	ac.mutation.SetPublic(b)
-	return ac
+func (_c *AppCreate) SetPublic(v bool) *AppCreate {
+	_c.mutation.SetPublic(v)
+	return _c
 }
 
 // SetBoundStoreAppID sets the "bound_store_app_id" field.
-func (ac *AppCreate) SetBoundStoreAppID(mi model.InternalID) *AppCreate {
-	ac.mutation.SetBoundStoreAppID(mi)
-	return ac
+func (_c *AppCreate) SetBoundStoreAppID(v model.InternalID) *AppCreate {
+	_c.mutation.SetBoundStoreAppID(v)
+	return _c
 }
 
 // SetNillableBoundStoreAppID sets the "bound_store_app_id" field if the given value is not nil.
-func (ac *AppCreate) SetNillableBoundStoreAppID(mi *model.InternalID) *AppCreate {
-	if mi != nil {
-		ac.SetBoundStoreAppID(*mi)
+func (_c *AppCreate) SetNillableBoundStoreAppID(v *model.InternalID) *AppCreate {
+	if v != nil {
+		_c.SetBoundStoreAppID(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetStopStoreManage sets the "stop_store_manage" field.
-func (ac *AppCreate) SetStopStoreManage(b bool) *AppCreate {
-	ac.mutation.SetStopStoreManage(b)
-	return ac
+func (_c *AppCreate) SetStopStoreManage(v bool) *AppCreate {
+	_c.mutation.SetStopStoreManage(v)
+	return _c
 }
 
 // SetNillableStopStoreManage sets the "stop_store_manage" field if the given value is not nil.
-func (ac *AppCreate) SetNillableStopStoreManage(b *bool) *AppCreate {
-	if b != nil {
-		ac.SetStopStoreManage(*b)
+func (_c *AppCreate) SetNillableStopStoreManage(v *bool) *AppCreate {
+	if v != nil {
+		_c.SetStopStoreManage(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetName sets the "name" field.
-func (ac *AppCreate) SetName(s string) *AppCreate {
-	ac.mutation.SetName(s)
-	return ac
+func (_c *AppCreate) SetName(v string) *AppCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetType sets the "type" field.
-func (ac *AppCreate) SetType(a app.Type) *AppCreate {
-	ac.mutation.SetType(a)
-	return ac
+func (_c *AppCreate) SetType(v app.Type) *AppCreate {
+	_c.mutation.SetType(v)
+	return _c
 }
 
 // SetShortDescription sets the "short_description" field.
-func (ac *AppCreate) SetShortDescription(s string) *AppCreate {
-	ac.mutation.SetShortDescription(s)
-	return ac
+func (_c *AppCreate) SetShortDescription(v string) *AppCreate {
+	_c.mutation.SetShortDescription(v)
+	return _c
 }
 
 // SetNillableShortDescription sets the "short_description" field if the given value is not nil.
-func (ac *AppCreate) SetNillableShortDescription(s *string) *AppCreate {
-	if s != nil {
-		ac.SetShortDescription(*s)
+func (_c *AppCreate) SetNillableShortDescription(v *string) *AppCreate {
+	if v != nil {
+		_c.SetShortDescription(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (ac *AppCreate) SetDescription(s string) *AppCreate {
-	ac.mutation.SetDescription(s)
-	return ac
+func (_c *AppCreate) SetDescription(v string) *AppCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (ac *AppCreate) SetNillableDescription(s *string) *AppCreate {
-	if s != nil {
-		ac.SetDescription(*s)
+func (_c *AppCreate) SetNillableDescription(v *string) *AppCreate {
+	if v != nil {
+		_c.SetDescription(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetIconImageURL sets the "icon_image_url" field.
-func (ac *AppCreate) SetIconImageURL(s string) *AppCreate {
-	ac.mutation.SetIconImageURL(s)
-	return ac
+func (_c *AppCreate) SetIconImageURL(v string) *AppCreate {
+	_c.mutation.SetIconImageURL(v)
+	return _c
 }
 
 // SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
-func (ac *AppCreate) SetNillableIconImageURL(s *string) *AppCreate {
-	if s != nil {
-		ac.SetIconImageURL(*s)
+func (_c *AppCreate) SetNillableIconImageURL(v *string) *AppCreate {
+	if v != nil {
+		_c.SetIconImageURL(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetIconImageID sets the "icon_image_id" field.
-func (ac *AppCreate) SetIconImageID(mi model.InternalID) *AppCreate {
-	ac.mutation.SetIconImageID(mi)
-	return ac
+func (_c *AppCreate) SetIconImageID(v model.InternalID) *AppCreate {
+	_c.mutation.SetIconImageID(v)
+	return _c
 }
 
 // SetBackgroundImageURL sets the "background_image_url" field.
-func (ac *AppCreate) SetBackgroundImageURL(s string) *AppCreate {
-	ac.mutation.SetBackgroundImageURL(s)
-	return ac
+func (_c *AppCreate) SetBackgroundImageURL(v string) *AppCreate {
+	_c.mutation.SetBackgroundImageURL(v)
+	return _c
 }
 
 // SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
-func (ac *AppCreate) SetNillableBackgroundImageURL(s *string) *AppCreate {
-	if s != nil {
-		ac.SetBackgroundImageURL(*s)
+func (_c *AppCreate) SetNillableBackgroundImageURL(v *string) *AppCreate {
+	if v != nil {
+		_c.SetBackgroundImageURL(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetBackgroundImageID sets the "background_image_id" field.
-func (ac *AppCreate) SetBackgroundImageID(mi model.InternalID) *AppCreate {
-	ac.mutation.SetBackgroundImageID(mi)
-	return ac
+func (_c *AppCreate) SetBackgroundImageID(v model.InternalID) *AppCreate {
+	_c.mutation.SetBackgroundImageID(v)
+	return _c
 }
 
 // SetCoverImageURL sets the "cover_image_url" field.
-func (ac *AppCreate) SetCoverImageURL(s string) *AppCreate {
-	ac.mutation.SetCoverImageURL(s)
-	return ac
+func (_c *AppCreate) SetCoverImageURL(v string) *AppCreate {
+	_c.mutation.SetCoverImageURL(v)
+	return _c
 }
 
 // SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
-func (ac *AppCreate) SetNillableCoverImageURL(s *string) *AppCreate {
-	if s != nil {
-		ac.SetCoverImageURL(*s)
+func (_c *AppCreate) SetNillableCoverImageURL(v *string) *AppCreate {
+	if v != nil {
+		_c.SetCoverImageURL(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetCoverImageID sets the "cover_image_id" field.
-func (ac *AppCreate) SetCoverImageID(mi model.InternalID) *AppCreate {
-	ac.mutation.SetCoverImageID(mi)
-	return ac
+func (_c *AppCreate) SetCoverImageID(v model.InternalID) *AppCreate {
+	_c.mutation.SetCoverImageID(v)
+	return _c
 }
 
 // SetReleaseDate sets the "release_date" field.
-func (ac *AppCreate) SetReleaseDate(s string) *AppCreate {
-	ac.mutation.SetReleaseDate(s)
-	return ac
+func (_c *AppCreate) SetReleaseDate(v string) *AppCreate {
+	_c.mutation.SetReleaseDate(v)
+	return _c
 }
 
 // SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
-func (ac *AppCreate) SetNillableReleaseDate(s *string) *AppCreate {
-	if s != nil {
-		ac.SetReleaseDate(*s)
+func (_c *AppCreate) SetNillableReleaseDate(v *string) *AppCreate {
+	if v != nil {
+		_c.SetReleaseDate(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetDeveloper sets the "developer" field.
-func (ac *AppCreate) SetDeveloper(s string) *AppCreate {
-	ac.mutation.SetDeveloper(s)
-	return ac
+func (_c *AppCreate) SetDeveloper(v string) *AppCreate {
+	_c.mutation.SetDeveloper(v)
+	return _c
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (ac *AppCreate) SetNillableDeveloper(s *string) *AppCreate {
-	if s != nil {
-		ac.SetDeveloper(*s)
+func (_c *AppCreate) SetNillableDeveloper(v *string) *AppCreate {
+	if v != nil {
+		_c.SetDeveloper(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetPublisher sets the "publisher" field.
-func (ac *AppCreate) SetPublisher(s string) *AppCreate {
-	ac.mutation.SetPublisher(s)
-	return ac
+func (_c *AppCreate) SetPublisher(v string) *AppCreate {
+	_c.mutation.SetPublisher(v)
+	return _c
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (ac *AppCreate) SetNillablePublisher(s *string) *AppCreate {
-	if s != nil {
-		ac.SetPublisher(*s)
+func (_c *AppCreate) SetNillablePublisher(v *string) *AppCreate {
+	if v != nil {
+		_c.SetPublisher(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetTags sets the "tags" field.
-func (ac *AppCreate) SetTags(s []string) *AppCreate {
-	ac.mutation.SetTags(s)
-	return ac
+func (_c *AppCreate) SetTags(v []string) *AppCreate {
+	_c.mutation.SetTags(v)
+	return _c
 }
 
 // SetAlternativeNames sets the "alternative_names" field.
-func (ac *AppCreate) SetAlternativeNames(s []string) *AppCreate {
-	ac.mutation.SetAlternativeNames(s)
-	return ac
+func (_c *AppCreate) SetAlternativeNames(v []string) *AppCreate {
+	_c.mutation.SetAlternativeNames(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ac *AppCreate) SetUpdatedAt(t time.Time) *AppCreate {
-	ac.mutation.SetUpdatedAt(t)
-	return ac
+func (_c *AppCreate) SetUpdatedAt(v time.Time) *AppCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ac *AppCreate) SetNillableUpdatedAt(t *time.Time) *AppCreate {
-	if t != nil {
-		ac.SetUpdatedAt(*t)
+func (_c *AppCreate) SetNillableUpdatedAt(v *time.Time) *AppCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ac *AppCreate) SetCreatedAt(t time.Time) *AppCreate {
-	ac.mutation.SetCreatedAt(t)
-	return ac
+func (_c *AppCreate) SetCreatedAt(v time.Time) *AppCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ac *AppCreate) SetNillableCreatedAt(t *time.Time) *AppCreate {
-	if t != nil {
-		ac.SetCreatedAt(*t)
+func (_c *AppCreate) SetNillableCreatedAt(v *time.Time) *AppCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ac *AppCreate) SetID(mi model.InternalID) *AppCreate {
-	ac.mutation.SetID(mi)
-	return ac
+func (_c *AppCreate) SetID(v model.InternalID) *AppCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (ac *AppCreate) SetUser(u *User) *AppCreate {
-	return ac.SetUserID(u.ID)
+func (_c *AppCreate) SetUser(v *User) *AppCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // SetDeviceID sets the "device" edge to the Device entity by ID.
-func (ac *AppCreate) SetDeviceID(id model.InternalID) *AppCreate {
-	ac.mutation.SetDeviceID(id)
-	return ac
+func (_c *AppCreate) SetDeviceID(id model.InternalID) *AppCreate {
+	_c.mutation.SetDeviceID(id)
+	return _c
 }
 
 // SetDevice sets the "device" edge to the Device entity.
-func (ac *AppCreate) SetDevice(d *Device) *AppCreate {
-	return ac.SetDeviceID(d.ID)
+func (_c *AppCreate) SetDevice(v *Device) *AppCreate {
+	return _c.SetDeviceID(v.ID)
 }
 
 // AddAppRunTimeIDs adds the "app_run_time" edge to the AppRunTime entity by IDs.
-func (ac *AppCreate) AddAppRunTimeIDs(ids ...model.InternalID) *AppCreate {
-	ac.mutation.AddAppRunTimeIDs(ids...)
-	return ac
+func (_c *AppCreate) AddAppRunTimeIDs(ids ...model.InternalID) *AppCreate {
+	_c.mutation.AddAppRunTimeIDs(ids...)
+	return _c
 }
 
 // AddAppRunTime adds the "app_run_time" edges to the AppRunTime entity.
-func (ac *AppCreate) AddAppRunTime(a ...*AppRunTime) *AppCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddAppRunTime(v ...*AppRunTime) *AppCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddAppRunTimeIDs(ids...)
+	return _c.AddAppRunTimeIDs(ids...)
 }
 
 // AddAppCategoryIDs adds the "app_category" edge to the AppCategory entity by IDs.
-func (ac *AppCreate) AddAppCategoryIDs(ids ...model.InternalID) *AppCreate {
-	ac.mutation.AddAppCategoryIDs(ids...)
-	return ac
+func (_c *AppCreate) AddAppCategoryIDs(ids ...model.InternalID) *AppCreate {
+	_c.mutation.AddAppCategoryIDs(ids...)
+	return _c
 }
 
 // AddAppCategory adds the "app_category" edges to the AppCategory entity.
-func (ac *AppCreate) AddAppCategory(a ...*AppCategory) *AppCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddAppCategory(v ...*AppCategory) *AppCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddAppCategoryIDs(ids...)
+	return _c.AddAppCategoryIDs(ids...)
 }
 
 // AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by IDs.
-func (ac *AppCreate) AddAppAppCategoryIDs(ids ...int) *AppCreate {
-	ac.mutation.AddAppAppCategoryIDs(ids...)
-	return ac
+func (_c *AppCreate) AddAppAppCategoryIDs(ids ...int) *AppCreate {
+	_c.mutation.AddAppAppCategoryIDs(ids...)
+	return _c
 }
 
 // AddAppAppCategory adds the "app_app_category" edges to the AppAppCategory entity.
-func (ac *AppCreate) AddAppAppCategory(a ...*AppAppCategory) *AppCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *AppCreate) AddAppAppCategory(v ...*AppAppCategory) *AppCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ac.AddAppAppCategoryIDs(ids...)
+	return _c.AddAppAppCategoryIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
-func (ac *AppCreate) Mutation() *AppMutation {
-	return ac.mutation
+func (_c *AppCreate) Mutation() *AppMutation {
+	return _c.mutation
 }
 
 // Save creates the App in the database.
-func (ac *AppCreate) Save(ctx context.Context) (*App, error) {
-	ac.defaults()
-	return withHooks(ctx, ac.sqlSave, ac.mutation, ac.hooks)
+func (_c *AppCreate) Save(ctx context.Context) (*App, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ac *AppCreate) SaveX(ctx context.Context) *App {
-	v, err := ac.Save(ctx)
+func (_c *AppCreate) SaveX(ctx context.Context) *App {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -362,97 +362,97 @@ func (ac *AppCreate) SaveX(ctx context.Context) *App {
 }
 
 // Exec executes the query.
-func (ac *AppCreate) Exec(ctx context.Context) error {
-	_, err := ac.Save(ctx)
+func (_c *AppCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ac *AppCreate) ExecX(ctx context.Context) {
-	if err := ac.Exec(ctx); err != nil {
+func (_c *AppCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ac *AppCreate) defaults() {
-	if _, ok := ac.mutation.UpdatedAt(); !ok {
+func (_c *AppCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := app.DefaultUpdatedAt()
-		ac.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := ac.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := app.DefaultCreatedAt()
-		ac.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ac *AppCreate) check() error {
-	if _, ok := ac.mutation.VersionNumber(); !ok {
+func (_c *AppCreate) check() error {
+	if _, ok := _c.mutation.VersionNumber(); !ok {
 		return &ValidationError{Name: "version_number", err: errors.New(`ent: missing required field "App.version_number"`)}
 	}
-	if _, ok := ac.mutation.VersionDate(); !ok {
+	if _, ok := _c.mutation.VersionDate(); !ok {
 		return &ValidationError{Name: "version_date", err: errors.New(`ent: missing required field "App.version_date"`)}
 	}
-	if _, ok := ac.mutation.UserID(); !ok {
+	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "App.user_id"`)}
 	}
-	if _, ok := ac.mutation.CreatorDeviceID(); !ok {
+	if _, ok := _c.mutation.CreatorDeviceID(); !ok {
 		return &ValidationError{Name: "creator_device_id", err: errors.New(`ent: missing required field "App.creator_device_id"`)}
 	}
-	if _, ok := ac.mutation.AppSources(); !ok {
+	if _, ok := _c.mutation.AppSources(); !ok {
 		return &ValidationError{Name: "app_sources", err: errors.New(`ent: missing required field "App.app_sources"`)}
 	}
-	if _, ok := ac.mutation.Public(); !ok {
+	if _, ok := _c.mutation.Public(); !ok {
 		return &ValidationError{Name: "public", err: errors.New(`ent: missing required field "App.public"`)}
 	}
-	if _, ok := ac.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "App.name"`)}
 	}
-	if _, ok := ac.mutation.GetType(); !ok {
+	if _, ok := _c.mutation.GetType(); !ok {
 		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "App.type"`)}
 	}
-	if v, ok := ac.mutation.GetType(); ok {
+	if v, ok := _c.mutation.GetType(); ok {
 		if err := app.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
 		}
 	}
-	if _, ok := ac.mutation.IconImageID(); !ok {
+	if _, ok := _c.mutation.IconImageID(); !ok {
 		return &ValidationError{Name: "icon_image_id", err: errors.New(`ent: missing required field "App.icon_image_id"`)}
 	}
-	if _, ok := ac.mutation.BackgroundImageID(); !ok {
+	if _, ok := _c.mutation.BackgroundImageID(); !ok {
 		return &ValidationError{Name: "background_image_id", err: errors.New(`ent: missing required field "App.background_image_id"`)}
 	}
-	if _, ok := ac.mutation.CoverImageID(); !ok {
+	if _, ok := _c.mutation.CoverImageID(); !ok {
 		return &ValidationError{Name: "cover_image_id", err: errors.New(`ent: missing required field "App.cover_image_id"`)}
 	}
-	if _, ok := ac.mutation.Tags(); !ok {
+	if _, ok := _c.mutation.Tags(); !ok {
 		return &ValidationError{Name: "tags", err: errors.New(`ent: missing required field "App.tags"`)}
 	}
-	if _, ok := ac.mutation.AlternativeNames(); !ok {
+	if _, ok := _c.mutation.AlternativeNames(); !ok {
 		return &ValidationError{Name: "alternative_names", err: errors.New(`ent: missing required field "App.alternative_names"`)}
 	}
-	if _, ok := ac.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "App.updated_at"`)}
 	}
-	if _, ok := ac.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "App.created_at"`)}
 	}
-	if len(ac.mutation.UserIDs()) == 0 {
+	if len(_c.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "App.user"`)}
 	}
-	if len(ac.mutation.DeviceIDs()) == 0 {
+	if len(_c.mutation.DeviceIDs()) == 0 {
 		return &ValidationError{Name: "device", err: errors.New(`ent: missing required edge "App.device"`)}
 	}
 	return nil
 }
 
-func (ac *AppCreate) sqlSave(ctx context.Context) (*App, error) {
-	if err := ac.check(); err != nil {
+func (_c *AppCreate) sqlSave(ctx context.Context) (*App, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ac.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ac.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -462,114 +462,114 @@ func (ac *AppCreate) sqlSave(ctx context.Context) (*App, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	ac.mutation.id = &_node.ID
-	ac.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
+func (_c *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	var (
-		_node = &App{config: ac.config}
+		_node = &App{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(app.Table, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = ac.conflict
-	if id, ok := ac.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ac.mutation.VersionNumber(); ok {
+	if value, ok := _c.mutation.VersionNumber(); ok {
 		_spec.SetField(app.FieldVersionNumber, field.TypeUint64, value)
 		_node.VersionNumber = value
 	}
-	if value, ok := ac.mutation.VersionDate(); ok {
+	if value, ok := _c.mutation.VersionDate(); ok {
 		_spec.SetField(app.FieldVersionDate, field.TypeTime, value)
 		_node.VersionDate = value
 	}
-	if value, ok := ac.mutation.AppSources(); ok {
+	if value, ok := _c.mutation.AppSources(); ok {
 		_spec.SetField(app.FieldAppSources, field.TypeJSON, value)
 		_node.AppSources = value
 	}
-	if value, ok := ac.mutation.Public(); ok {
+	if value, ok := _c.mutation.Public(); ok {
 		_spec.SetField(app.FieldPublic, field.TypeBool, value)
 		_node.Public = value
 	}
-	if value, ok := ac.mutation.BoundStoreAppID(); ok {
+	if value, ok := _c.mutation.BoundStoreAppID(); ok {
 		_spec.SetField(app.FieldBoundStoreAppID, field.TypeInt64, value)
 		_node.BoundStoreAppID = value
 	}
-	if value, ok := ac.mutation.StopStoreManage(); ok {
+	if value, ok := _c.mutation.StopStoreManage(); ok {
 		_spec.SetField(app.FieldStopStoreManage, field.TypeBool, value)
 		_node.StopStoreManage = value
 	}
-	if value, ok := ac.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := ac.mutation.GetType(); ok {
+	if value, ok := _c.mutation.GetType(); ok {
 		_spec.SetField(app.FieldType, field.TypeEnum, value)
 		_node.Type = value
 	}
-	if value, ok := ac.mutation.ShortDescription(); ok {
+	if value, ok := _c.mutation.ShortDescription(); ok {
 		_spec.SetField(app.FieldShortDescription, field.TypeString, value)
 		_node.ShortDescription = value
 	}
-	if value, ok := ac.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := ac.mutation.IconImageURL(); ok {
+	if value, ok := _c.mutation.IconImageURL(); ok {
 		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
 		_node.IconImageURL = value
 	}
-	if value, ok := ac.mutation.IconImageID(); ok {
+	if value, ok := _c.mutation.IconImageID(); ok {
 		_spec.SetField(app.FieldIconImageID, field.TypeInt64, value)
 		_node.IconImageID = value
 	}
-	if value, ok := ac.mutation.BackgroundImageURL(); ok {
+	if value, ok := _c.mutation.BackgroundImageURL(); ok {
 		_spec.SetField(app.FieldBackgroundImageURL, field.TypeString, value)
 		_node.BackgroundImageURL = value
 	}
-	if value, ok := ac.mutation.BackgroundImageID(); ok {
+	if value, ok := _c.mutation.BackgroundImageID(); ok {
 		_spec.SetField(app.FieldBackgroundImageID, field.TypeInt64, value)
 		_node.BackgroundImageID = value
 	}
-	if value, ok := ac.mutation.CoverImageURL(); ok {
+	if value, ok := _c.mutation.CoverImageURL(); ok {
 		_spec.SetField(app.FieldCoverImageURL, field.TypeString, value)
 		_node.CoverImageURL = value
 	}
-	if value, ok := ac.mutation.CoverImageID(); ok {
+	if value, ok := _c.mutation.CoverImageID(); ok {
 		_spec.SetField(app.FieldCoverImageID, field.TypeInt64, value)
 		_node.CoverImageID = value
 	}
-	if value, ok := ac.mutation.ReleaseDate(); ok {
+	if value, ok := _c.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
 		_node.ReleaseDate = value
 	}
-	if value, ok := ac.mutation.Developer(); ok {
+	if value, ok := _c.mutation.Developer(); ok {
 		_spec.SetField(app.FieldDeveloper, field.TypeString, value)
 		_node.Developer = value
 	}
-	if value, ok := ac.mutation.Publisher(); ok {
+	if value, ok := _c.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
 		_node.Publisher = value
 	}
-	if value, ok := ac.mutation.Tags(); ok {
+	if value, ok := _c.mutation.Tags(); ok {
 		_spec.SetField(app.FieldTags, field.TypeJSON, value)
 		_node.Tags = value
 	}
-	if value, ok := ac.mutation.AlternativeNames(); ok {
+	if value, ok := _c.mutation.AlternativeNames(); ok {
 		_spec.SetField(app.FieldAlternativeNames, field.TypeJSON, value)
 		_node.AlternativeNames = value
 	}
-	if value, ok := ac.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := ac.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -586,7 +586,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.DeviceIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.DeviceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -603,7 +603,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_node.CreatorDeviceID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.AppRunTimeIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppRunTimeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -619,7 +619,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.AppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -635,7 +635,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -670,10 +670,10 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 //			SetVersionNumber(v+v).
 //		}).
 //		Exec(ctx)
-func (ac *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
-	ac.conflict = opts
+func (_c *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
+	_c.conflict = opts
 	return &AppUpsertOne{
-		create: ac,
+		create: _c,
 	}
 }
 
@@ -683,10 +683,10 @@ func (ac *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
 //	client.App.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ac *AppCreate) OnConflictColumns(columns ...string) *AppUpsertOne {
-	ac.conflict = append(ac.conflict, sql.ConflictColumns(columns...))
+func (_c *AppCreate) OnConflictColumns(columns ...string) *AppUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppUpsertOne{
-		create: ac,
+		create: _c,
 	}
 }
 
@@ -1566,16 +1566,16 @@ type AppCreateBulk struct {
 }
 
 // Save creates the App entities in the database.
-func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
-	if acb.err != nil {
-		return nil, acb.err
+func (_c *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(acb.builders))
-	nodes := make([]*App, len(acb.builders))
-	mutators := make([]Mutator, len(acb.builders))
-	for i := range acb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*App, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := acb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppMutation)
@@ -1589,12 +1589,12 @@ func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, acb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = acb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, acb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1618,7 +1618,7 @@ func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, acb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1626,8 +1626,8 @@ func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acb *AppCreateBulk) SaveX(ctx context.Context) []*App {
-	v, err := acb.Save(ctx)
+func (_c *AppCreateBulk) SaveX(ctx context.Context) []*App {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1635,14 +1635,14 @@ func (acb *AppCreateBulk) SaveX(ctx context.Context) []*App {
 }
 
 // Exec executes the query.
-func (acb *AppCreateBulk) Exec(ctx context.Context) error {
-	_, err := acb.Save(ctx)
+func (_c *AppCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (acb *AppCreateBulk) ExecX(ctx context.Context) {
-	if err := acb.Exec(ctx); err != nil {
+func (_c *AppCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1662,10 +1662,10 @@ func (acb *AppCreateBulk) ExecX(ctx context.Context) {
 //			SetVersionNumber(v+v).
 //		}).
 //		Exec(ctx)
-func (acb *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk {
-	acb.conflict = opts
+func (_c *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk {
+	_c.conflict = opts
 	return &AppUpsertBulk{
-		create: acb,
+		create: _c,
 	}
 }
 
@@ -1675,10 +1675,10 @@ func (acb *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk 
 //	client.App.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (acb *AppCreateBulk) OnConflictColumns(columns ...string) *AppUpsertBulk {
-	acb.conflict = append(acb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppCreateBulk) OnConflictColumns(columns ...string) *AppUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppUpsertBulk{
-		create: acb,
+		create: _c,
 	}
 }
 

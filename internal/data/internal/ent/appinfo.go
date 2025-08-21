@@ -86,7 +86,7 @@ func (*AppInfo) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AppInfo fields.
-func (ai *AppInfo) assignValues(columns []string, values []any) error {
+func (_m *AppInfo) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -96,109 +96,109 @@ func (ai *AppInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				ai.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case appinfo.FieldSource:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
 			} else if value.Valid {
-				ai.Source = value.String
+				_m.Source = value.String
 			}
 		case appinfo.FieldSourceAppID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source_app_id", values[i])
 			} else if value.Valid {
-				ai.SourceAppID = value.String
+				_m.SourceAppID = value.String
 			}
 		case appinfo.FieldSourceURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source_url", values[i])
 			} else if value.Valid {
-				ai.SourceURL = value.String
+				_m.SourceURL = value.String
 			}
 		case appinfo.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				ai.Name = value.String
+				_m.Name = value.String
 			}
 		case appinfo.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				ai.Type = appinfo.Type(value.String)
+				_m.Type = appinfo.Type(value.String)
 			}
 		case appinfo.FieldShortDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field short_description", values[i])
 			} else if value.Valid {
-				ai.ShortDescription = value.String
+				_m.ShortDescription = value.String
 			}
 		case appinfo.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				ai.Description = value.String
+				_m.Description = value.String
 			}
 		case appinfo.FieldIconImageURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field icon_image_url", values[i])
 			} else if value.Valid {
-				ai.IconImageURL = value.String
+				_m.IconImageURL = value.String
 			}
 		case appinfo.FieldIconImageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field icon_image_id", values[i])
 			} else if value.Valid {
-				ai.IconImageID = model.InternalID(value.Int64)
+				_m.IconImageID = model.InternalID(value.Int64)
 			}
 		case appinfo.FieldBackgroundImageURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field background_image_url", values[i])
 			} else if value.Valid {
-				ai.BackgroundImageURL = value.String
+				_m.BackgroundImageURL = value.String
 			}
 		case appinfo.FieldBackgroundImageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field background_image_id", values[i])
 			} else if value.Valid {
-				ai.BackgroundImageID = model.InternalID(value.Int64)
+				_m.BackgroundImageID = model.InternalID(value.Int64)
 			}
 		case appinfo.FieldCoverImageURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field cover_image_url", values[i])
 			} else if value.Valid {
-				ai.CoverImageURL = value.String
+				_m.CoverImageURL = value.String
 			}
 		case appinfo.FieldCoverImageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field cover_image_id", values[i])
 			} else if value.Valid {
-				ai.CoverImageID = model.InternalID(value.Int64)
+				_m.CoverImageID = model.InternalID(value.Int64)
 			}
 		case appinfo.FieldReleaseDate:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field release_date", values[i])
 			} else if value.Valid {
-				ai.ReleaseDate = value.String
+				_m.ReleaseDate = value.String
 			}
 		case appinfo.FieldDeveloper:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field developer", values[i])
 			} else if value.Valid {
-				ai.Developer = value.String
+				_m.Developer = value.String
 			}
 		case appinfo.FieldPublisher:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field publisher", values[i])
 			} else if value.Valid {
-				ai.Publisher = value.String
+				_m.Publisher = value.String
 			}
 		case appinfo.FieldTags:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field tags", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &ai.Tags); err != nil {
+				if err := json.Unmarshal(*value, &_m.Tags); err != nil {
 					return fmt.Errorf("unmarshal field tags: %w", err)
 				}
 			}
@@ -206,7 +206,7 @@ func (ai *AppInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field alternative_names", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &ai.AlternativeNames); err != nil {
+				if err := json.Unmarshal(*value, &_m.AlternativeNames); err != nil {
 					return fmt.Errorf("unmarshal field alternative_names: %w", err)
 				}
 			}
@@ -214,22 +214,22 @@ func (ai *AppInfo) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field raw_data", values[i])
 			} else if value.Valid {
-				ai.RawData = value.String
+				_m.RawData = value.String
 			}
 		case appinfo.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ai.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case appinfo.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ai.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			ai.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -237,95 +237,95 @@ func (ai *AppInfo) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AppInfo.
 // This includes values selected through modifiers, order, etc.
-func (ai *AppInfo) Value(name string) (ent.Value, error) {
-	return ai.selectValues.Get(name)
+func (_m *AppInfo) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this AppInfo.
 // Note that you need to call AppInfo.Unwrap() before calling this method if this AppInfo
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ai *AppInfo) Update() *AppInfoUpdateOne {
-	return NewAppInfoClient(ai.config).UpdateOne(ai)
+func (_m *AppInfo) Update() *AppInfoUpdateOne {
+	return NewAppInfoClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AppInfo entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ai *AppInfo) Unwrap() *AppInfo {
-	_tx, ok := ai.config.driver.(*txDriver)
+func (_m *AppInfo) Unwrap() *AppInfo {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AppInfo is not a transactional entity")
 	}
-	ai.config.driver = _tx.drv
-	return ai
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ai *AppInfo) String() string {
+func (_m *AppInfo) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppInfo(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ai.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("source=")
-	builder.WriteString(ai.Source)
+	builder.WriteString(_m.Source)
 	builder.WriteString(", ")
 	builder.WriteString("source_app_id=")
-	builder.WriteString(ai.SourceAppID)
+	builder.WriteString(_m.SourceAppID)
 	builder.WriteString(", ")
 	builder.WriteString("source_url=")
-	builder.WriteString(ai.SourceURL)
+	builder.WriteString(_m.SourceURL)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(ai.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("type=")
-	builder.WriteString(fmt.Sprintf("%v", ai.Type))
+	builder.WriteString(fmt.Sprintf("%v", _m.Type))
 	builder.WriteString(", ")
 	builder.WriteString("short_description=")
-	builder.WriteString(ai.ShortDescription)
+	builder.WriteString(_m.ShortDescription)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(ai.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("icon_image_url=")
-	builder.WriteString(ai.IconImageURL)
+	builder.WriteString(_m.IconImageURL)
 	builder.WriteString(", ")
 	builder.WriteString("icon_image_id=")
-	builder.WriteString(fmt.Sprintf("%v", ai.IconImageID))
+	builder.WriteString(fmt.Sprintf("%v", _m.IconImageID))
 	builder.WriteString(", ")
 	builder.WriteString("background_image_url=")
-	builder.WriteString(ai.BackgroundImageURL)
+	builder.WriteString(_m.BackgroundImageURL)
 	builder.WriteString(", ")
 	builder.WriteString("background_image_id=")
-	builder.WriteString(fmt.Sprintf("%v", ai.BackgroundImageID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BackgroundImageID))
 	builder.WriteString(", ")
 	builder.WriteString("cover_image_url=")
-	builder.WriteString(ai.CoverImageURL)
+	builder.WriteString(_m.CoverImageURL)
 	builder.WriteString(", ")
 	builder.WriteString("cover_image_id=")
-	builder.WriteString(fmt.Sprintf("%v", ai.CoverImageID))
+	builder.WriteString(fmt.Sprintf("%v", _m.CoverImageID))
 	builder.WriteString(", ")
 	builder.WriteString("release_date=")
-	builder.WriteString(ai.ReleaseDate)
+	builder.WriteString(_m.ReleaseDate)
 	builder.WriteString(", ")
 	builder.WriteString("developer=")
-	builder.WriteString(ai.Developer)
+	builder.WriteString(_m.Developer)
 	builder.WriteString(", ")
 	builder.WriteString("publisher=")
-	builder.WriteString(ai.Publisher)
+	builder.WriteString(_m.Publisher)
 	builder.WriteString(", ")
 	builder.WriteString("tags=")
-	builder.WriteString(fmt.Sprintf("%v", ai.Tags))
+	builder.WriteString(fmt.Sprintf("%v", _m.Tags))
 	builder.WriteString(", ")
 	builder.WriteString("alternative_names=")
-	builder.WriteString(fmt.Sprintf("%v", ai.AlternativeNames))
+	builder.WriteString(fmt.Sprintf("%v", _m.AlternativeNames))
 	builder.WriteString(", ")
 	builder.WriteString("raw_data=")
-	builder.WriteString(ai.RawData)
+	builder.WriteString(_m.RawData)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ai.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ai.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

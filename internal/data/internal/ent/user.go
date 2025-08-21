@@ -232,7 +232,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the User fields.
-func (u *User) assignValues(columns []string, values []any) error {
+func (_m *User) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -242,52 +242,52 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				u.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case user.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
 			} else if value.Valid {
-				u.Username = value.String
+				_m.Username = value.String
 			}
 		case user.FieldPassword:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field password", values[i])
 			} else if value.Valid {
-				u.Password = value.String
+				_m.Password = value.String
 			}
 		case user.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				u.Status = user.Status(value.String)
+				_m.Status = user.Status(value.String)
 			}
 		case user.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				u.Type = user.Type(value.String)
+				_m.Type = user.Type(value.String)
 			}
 		case user.FieldCreatorID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field creator_id", values[i])
 			} else if value.Valid {
-				u.CreatorID = model.InternalID(value.Int64)
+				_m.CreatorID = model.InternalID(value.Int64)
 			}
 		case user.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				u.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case user.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				u.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			u.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -295,128 +295,128 @@ func (u *User) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the User.
 // This includes values selected through modifiers, order, etc.
-func (u *User) Value(name string) (ent.Value, error) {
-	return u.selectValues.Get(name)
+func (_m *User) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QuerySession queries the "session" edge of the User entity.
-func (u *User) QuerySession() *SessionQuery {
-	return NewUserClient(u.config).QuerySession(u)
+func (_m *User) QuerySession() *SessionQuery {
+	return NewUserClient(_m.config).QuerySession(_m)
 }
 
 // QueryAccount queries the "account" edge of the User entity.
-func (u *User) QueryAccount() *AccountQuery {
-	return NewUserClient(u.config).QueryAccount(u)
+func (_m *User) QueryAccount() *AccountQuery {
+	return NewUserClient(_m.config).QueryAccount(_m)
 }
 
 // QueryApp queries the "app" edge of the User entity.
-func (u *User) QueryApp() *AppQuery {
-	return NewUserClient(u.config).QueryApp(u)
+func (_m *User) QueryApp() *AppQuery {
+	return NewUserClient(_m.config).QueryApp(_m)
 }
 
 // QueryFeedConfig queries the "feed_config" edge of the User entity.
-func (u *User) QueryFeedConfig() *FeedConfigQuery {
-	return NewUserClient(u.config).QueryFeedConfig(u)
+func (_m *User) QueryFeedConfig() *FeedConfigQuery {
+	return NewUserClient(_m.config).QueryFeedConfig(_m)
 }
 
 // QueryFeedActionSet queries the "feed_action_set" edge of the User entity.
-func (u *User) QueryFeedActionSet() *FeedActionSetQuery {
-	return NewUserClient(u.config).QueryFeedActionSet(u)
+func (_m *User) QueryFeedActionSet() *FeedActionSetQuery {
+	return NewUserClient(_m.config).QueryFeedActionSet(_m)
 }
 
 // QueryFeedItemCollection queries the "feed_item_collection" edge of the User entity.
-func (u *User) QueryFeedItemCollection() *FeedItemCollectionQuery {
-	return NewUserClient(u.config).QueryFeedItemCollection(u)
+func (_m *User) QueryFeedItemCollection() *FeedItemCollectionQuery {
+	return NewUserClient(_m.config).QueryFeedItemCollection(_m)
 }
 
 // QueryNotifySource queries the "notify_source" edge of the User entity.
-func (u *User) QueryNotifySource() *NotifySourceQuery {
-	return NewUserClient(u.config).QueryNotifySource(u)
+func (_m *User) QueryNotifySource() *NotifySourceQuery {
+	return NewUserClient(_m.config).QueryNotifySource(_m)
 }
 
 // QueryNotifyTarget queries the "notify_target" edge of the User entity.
-func (u *User) QueryNotifyTarget() *NotifyTargetQuery {
-	return NewUserClient(u.config).QueryNotifyTarget(u)
+func (_m *User) QueryNotifyTarget() *NotifyTargetQuery {
+	return NewUserClient(_m.config).QueryNotifyTarget(_m)
 }
 
 // QueryNotifyFlow queries the "notify_flow" edge of the User entity.
-func (u *User) QueryNotifyFlow() *NotifyFlowQuery {
-	return NewUserClient(u.config).QueryNotifyFlow(u)
+func (_m *User) QueryNotifyFlow() *NotifyFlowQuery {
+	return NewUserClient(_m.config).QueryNotifyFlow(_m)
 }
 
 // QueryImage queries the "image" edge of the User entity.
-func (u *User) QueryImage() *ImageQuery {
-	return NewUserClient(u.config).QueryImage(u)
+func (_m *User) QueryImage() *ImageQuery {
+	return NewUserClient(_m.config).QueryImage(_m)
 }
 
 // QueryFile queries the "file" edge of the User entity.
-func (u *User) QueryFile() *FileQuery {
-	return NewUserClient(u.config).QueryFile(u)
+func (_m *User) QueryFile() *FileQuery {
+	return NewUserClient(_m.config).QueryFile(_m)
 }
 
 // QueryTag queries the "tag" edge of the User entity.
-func (u *User) QueryTag() *TagQuery {
-	return NewUserClient(u.config).QueryTag(u)
+func (_m *User) QueryTag() *TagQuery {
+	return NewUserClient(_m.config).QueryTag(_m)
 }
 
 // QueryPorterContext queries the "porter_context" edge of the User entity.
-func (u *User) QueryPorterContext() *PorterContextQuery {
-	return NewUserClient(u.config).QueryPorterContext(u)
+func (_m *User) QueryPorterContext() *PorterContextQuery {
+	return NewUserClient(_m.config).QueryPorterContext(_m)
 }
 
 // QueryCreator queries the "creator" edge of the User entity.
-func (u *User) QueryCreator() *UserQuery {
-	return NewUserClient(u.config).QueryCreator(u)
+func (_m *User) QueryCreator() *UserQuery {
+	return NewUserClient(_m.config).QueryCreator(_m)
 }
 
 // QueryCreatedUser queries the "created_user" edge of the User entity.
-func (u *User) QueryCreatedUser() *UserQuery {
-	return NewUserClient(u.config).QueryCreatedUser(u)
+func (_m *User) QueryCreatedUser() *UserQuery {
+	return NewUserClient(_m.config).QueryCreatedUser(_m)
 }
 
 // Update returns a builder for updating this User.
 // Note that you need to call User.Unwrap() before calling this method if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (u *User) Update() *UserUpdateOne {
-	return NewUserClient(u.config).UpdateOne(u)
+func (_m *User) Update() *UserUpdateOne {
+	return NewUserClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the User entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (u *User) Unwrap() *User {
-	_tx, ok := u.config.driver.(*txDriver)
+func (_m *User) Unwrap() *User {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: User is not a transactional entity")
 	}
-	u.config.driver = _tx.drv
-	return u
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (u *User) String() string {
+func (_m *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("username=")
-	builder.WriteString(u.Username)
+	builder.WriteString(_m.Username)
 	builder.WriteString(", ")
 	builder.WriteString("password=")
-	builder.WriteString(u.Password)
+	builder.WriteString(_m.Password)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", u.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("type=")
-	builder.WriteString(fmt.Sprintf("%v", u.Type))
+	builder.WriteString(fmt.Sprintf("%v", _m.Type))
 	builder.WriteString(", ")
 	builder.WriteString("creator_id=")
-	builder.WriteString(fmt.Sprintf("%v", u.CreatorID))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatorID))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -105,7 +105,7 @@ func (*NotifyTarget) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the NotifyTarget fields.
-func (nt *NotifyTarget) assignValues(columns []string, values []any) error {
+func (_m *NotifyTarget) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -115,25 +115,25 @@ func (nt *NotifyTarget) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				nt.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case notifytarget.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				nt.Name = value.String
+				_m.Name = value.String
 			}
 		case notifytarget.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				nt.Description = value.String
+				_m.Description = value.String
 			}
 		case notifytarget.FieldDestination:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field destination", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &nt.Destination); err != nil {
+				if err := json.Unmarshal(*value, &_m.Destination); err != nil {
 					return fmt.Errorf("unmarshal field destination: %w", err)
 				}
 			}
@@ -141,29 +141,29 @@ func (nt *NotifyTarget) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				nt.Status = notifytarget.Status(value.String)
+				_m.Status = notifytarget.Status(value.String)
 			}
 		case notifytarget.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				nt.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case notifytarget.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				nt.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case notifytarget.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_notify_target", values[i])
 			} else if value.Valid {
-				nt.user_notify_target = new(model.InternalID)
-				*nt.user_notify_target = model.InternalID(value.Int64)
+				_m.user_notify_target = new(model.InternalID)
+				*_m.user_notify_target = model.InternalID(value.Int64)
 			}
 		default:
-			nt.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -171,65 +171,65 @@ func (nt *NotifyTarget) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the NotifyTarget.
 // This includes values selected through modifiers, order, etc.
-func (nt *NotifyTarget) Value(name string) (ent.Value, error) {
-	return nt.selectValues.Get(name)
+func (_m *NotifyTarget) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the NotifyTarget entity.
-func (nt *NotifyTarget) QueryOwner() *UserQuery {
-	return NewNotifyTargetClient(nt.config).QueryOwner(nt)
+func (_m *NotifyTarget) QueryOwner() *UserQuery {
+	return NewNotifyTargetClient(_m.config).QueryOwner(_m)
 }
 
 // QueryNotifyFlow queries the "notify_flow" edge of the NotifyTarget entity.
-func (nt *NotifyTarget) QueryNotifyFlow() *NotifyFlowQuery {
-	return NewNotifyTargetClient(nt.config).QueryNotifyFlow(nt)
+func (_m *NotifyTarget) QueryNotifyFlow() *NotifyFlowQuery {
+	return NewNotifyTargetClient(_m.config).QueryNotifyFlow(_m)
 }
 
 // QueryNotifyFlowTarget queries the "notify_flow_target" edge of the NotifyTarget entity.
-func (nt *NotifyTarget) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
-	return NewNotifyTargetClient(nt.config).QueryNotifyFlowTarget(nt)
+func (_m *NotifyTarget) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
+	return NewNotifyTargetClient(_m.config).QueryNotifyFlowTarget(_m)
 }
 
 // Update returns a builder for updating this NotifyTarget.
 // Note that you need to call NotifyTarget.Unwrap() before calling this method if this NotifyTarget
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (nt *NotifyTarget) Update() *NotifyTargetUpdateOne {
-	return NewNotifyTargetClient(nt.config).UpdateOne(nt)
+func (_m *NotifyTarget) Update() *NotifyTargetUpdateOne {
+	return NewNotifyTargetClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the NotifyTarget entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (nt *NotifyTarget) Unwrap() *NotifyTarget {
-	_tx, ok := nt.config.driver.(*txDriver)
+func (_m *NotifyTarget) Unwrap() *NotifyTarget {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: NotifyTarget is not a transactional entity")
 	}
-	nt.config.driver = _tx.drv
-	return nt
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (nt *NotifyTarget) String() string {
+func (_m *NotifyTarget) String() string {
 	var builder strings.Builder
 	builder.WriteString("NotifyTarget(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", nt.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(nt.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(nt.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("destination=")
-	builder.WriteString(fmt.Sprintf("%v", nt.Destination))
+	builder.WriteString(fmt.Sprintf("%v", _m.Destination))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", nt.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(nt.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(nt.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

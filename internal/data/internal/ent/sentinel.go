@@ -96,7 +96,7 @@ func (*Sentinel) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Sentinel fields.
-func (s *Sentinel) assignValues(columns []string, values []any) error {
+func (_m *Sentinel) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -106,31 +106,31 @@ func (s *Sentinel) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				s.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case sentinel.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				s.Name = value.String
+				_m.Name = value.String
 			}
 		case sentinel.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				s.Description = value.String
+				_m.Description = value.String
 			}
 		case sentinel.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field url", values[i])
 			} else if value.Valid {
-				s.URL = value.String
+				_m.URL = value.String
 			}
 		case sentinel.FieldAlternativeUrls:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field alternative_urls", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &s.AlternativeUrls); err != nil {
+				if err := json.Unmarshal(*value, &_m.AlternativeUrls); err != nil {
 					return fmt.Errorf("unmarshal field alternative_urls: %w", err)
 				}
 			}
@@ -138,40 +138,40 @@ func (s *Sentinel) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field get_token_path", values[i])
 			} else if value.Valid {
-				s.GetTokenPath = value.String
+				_m.GetTokenPath = value.String
 			}
 		case sentinel.FieldDownloadFileBasePath:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field download_file_base_path", values[i])
 			} else if value.Valid {
-				s.DownloadFileBasePath = value.String
+				_m.DownloadFileBasePath = value.String
 			}
 		case sentinel.FieldCreatorID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field creator_id", values[i])
 			} else if value.Valid {
-				s.CreatorID = model.InternalID(value.Int64)
+				_m.CreatorID = model.InternalID(value.Int64)
 			}
 		case sentinel.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				s.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case sentinel.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				s.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case sentinel.FieldLibraryReportSequence:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field library_report_sequence", values[i])
 			} else if value.Valid {
-				s.LibraryReportSequence = value.Int64
+				_m.LibraryReportSequence = value.Int64
 			}
 		default:
-			s.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -179,72 +179,72 @@ func (s *Sentinel) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Sentinel.
 // This includes values selected through modifiers, order, etc.
-func (s *Sentinel) Value(name string) (ent.Value, error) {
-	return s.selectValues.Get(name)
+func (_m *Sentinel) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QuerySentinelSession queries the "sentinel_session" edge of the Sentinel entity.
-func (s *Sentinel) QuerySentinelSession() *SentinelSessionQuery {
-	return NewSentinelClient(s.config).QuerySentinelSession(s)
+func (_m *Sentinel) QuerySentinelSession() *SentinelSessionQuery {
+	return NewSentinelClient(_m.config).QuerySentinelSession(_m)
 }
 
 // QuerySentinelLibrary queries the "sentinel_library" edge of the Sentinel entity.
-func (s *Sentinel) QuerySentinelLibrary() *SentinelLibraryQuery {
-	return NewSentinelClient(s.config).QuerySentinelLibrary(s)
+func (_m *Sentinel) QuerySentinelLibrary() *SentinelLibraryQuery {
+	return NewSentinelClient(_m.config).QuerySentinelLibrary(_m)
 }
 
 // Update returns a builder for updating this Sentinel.
 // Note that you need to call Sentinel.Unwrap() before calling this method if this Sentinel
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (s *Sentinel) Update() *SentinelUpdateOne {
-	return NewSentinelClient(s.config).UpdateOne(s)
+func (_m *Sentinel) Update() *SentinelUpdateOne {
+	return NewSentinelClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Sentinel entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (s *Sentinel) Unwrap() *Sentinel {
-	_tx, ok := s.config.driver.(*txDriver)
+func (_m *Sentinel) Unwrap() *Sentinel {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Sentinel is not a transactional entity")
 	}
-	s.config.driver = _tx.drv
-	return s
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (s *Sentinel) String() string {
+func (_m *Sentinel) String() string {
 	var builder strings.Builder
 	builder.WriteString("Sentinel(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", s.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(s.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(s.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("url=")
-	builder.WriteString(s.URL)
+	builder.WriteString(_m.URL)
 	builder.WriteString(", ")
 	builder.WriteString("alternative_urls=")
-	builder.WriteString(fmt.Sprintf("%v", s.AlternativeUrls))
+	builder.WriteString(fmt.Sprintf("%v", _m.AlternativeUrls))
 	builder.WriteString(", ")
 	builder.WriteString("get_token_path=")
-	builder.WriteString(s.GetTokenPath)
+	builder.WriteString(_m.GetTokenPath)
 	builder.WriteString(", ")
 	builder.WriteString("download_file_base_path=")
-	builder.WriteString(s.DownloadFileBasePath)
+	builder.WriteString(_m.DownloadFileBasePath)
 	builder.WriteString(", ")
 	builder.WriteString("creator_id=")
-	builder.WriteString(fmt.Sprintf("%v", s.CreatorID))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatorID))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(s.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(s.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("library_report_sequence=")
-	builder.WriteString(fmt.Sprintf("%v", s.LibraryReportSequence))
+	builder.WriteString(fmt.Sprintf("%v", _m.LibraryReportSequence))
 	builder.WriteByte(')')
 	return builder.String()
 }

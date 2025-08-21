@@ -25,382 +25,382 @@ type AppInfoUpdate struct {
 }
 
 // Where appends a list predicates to the AppInfoUpdate builder.
-func (aiu *AppInfoUpdate) Where(ps ...predicate.AppInfo) *AppInfoUpdate {
-	aiu.mutation.Where(ps...)
-	return aiu
+func (_u *AppInfoUpdate) Where(ps ...predicate.AppInfo) *AppInfoUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetSource sets the "source" field.
-func (aiu *AppInfoUpdate) SetSource(s string) *AppInfoUpdate {
-	aiu.mutation.SetSource(s)
-	return aiu
+func (_u *AppInfoUpdate) SetSource(v string) *AppInfoUpdate {
+	_u.mutation.SetSource(v)
+	return _u
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableSource(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetSource(*s)
+func (_u *AppInfoUpdate) SetNillableSource(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetSource(*v)
 	}
-	return aiu
+	return _u
 }
 
 // SetSourceAppID sets the "source_app_id" field.
-func (aiu *AppInfoUpdate) SetSourceAppID(s string) *AppInfoUpdate {
-	aiu.mutation.SetSourceAppID(s)
-	return aiu
+func (_u *AppInfoUpdate) SetSourceAppID(v string) *AppInfoUpdate {
+	_u.mutation.SetSourceAppID(v)
+	return _u
 }
 
 // SetNillableSourceAppID sets the "source_app_id" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableSourceAppID(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetSourceAppID(*s)
+func (_u *AppInfoUpdate) SetNillableSourceAppID(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetSourceAppID(*v)
 	}
-	return aiu
+	return _u
 }
 
 // SetSourceURL sets the "source_url" field.
-func (aiu *AppInfoUpdate) SetSourceURL(s string) *AppInfoUpdate {
-	aiu.mutation.SetSourceURL(s)
-	return aiu
+func (_u *AppInfoUpdate) SetSourceURL(v string) *AppInfoUpdate {
+	_u.mutation.SetSourceURL(v)
+	return _u
 }
 
 // SetNillableSourceURL sets the "source_url" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableSourceURL(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetSourceURL(*s)
+func (_u *AppInfoUpdate) SetNillableSourceURL(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetSourceURL(*v)
 	}
-	return aiu
+	return _u
 }
 
 // ClearSourceURL clears the value of the "source_url" field.
-func (aiu *AppInfoUpdate) ClearSourceURL() *AppInfoUpdate {
-	aiu.mutation.ClearSourceURL()
-	return aiu
+func (_u *AppInfoUpdate) ClearSourceURL() *AppInfoUpdate {
+	_u.mutation.ClearSourceURL()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (aiu *AppInfoUpdate) SetName(s string) *AppInfoUpdate {
-	aiu.mutation.SetName(s)
-	return aiu
+func (_u *AppInfoUpdate) SetName(v string) *AppInfoUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableName(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetName(*s)
+func (_u *AppInfoUpdate) SetNillableName(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return aiu
+	return _u
 }
 
 // SetType sets the "type" field.
-func (aiu *AppInfoUpdate) SetType(a appinfo.Type) *AppInfoUpdate {
-	aiu.mutation.SetType(a)
-	return aiu
+func (_u *AppInfoUpdate) SetType(v appinfo.Type) *AppInfoUpdate {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableType(a *appinfo.Type) *AppInfoUpdate {
-	if a != nil {
-		aiu.SetType(*a)
+func (_u *AppInfoUpdate) SetNillableType(v *appinfo.Type) *AppInfoUpdate {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return aiu
+	return _u
 }
 
 // SetShortDescription sets the "short_description" field.
-func (aiu *AppInfoUpdate) SetShortDescription(s string) *AppInfoUpdate {
-	aiu.mutation.SetShortDescription(s)
-	return aiu
+func (_u *AppInfoUpdate) SetShortDescription(v string) *AppInfoUpdate {
+	_u.mutation.SetShortDescription(v)
+	return _u
 }
 
 // SetNillableShortDescription sets the "short_description" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableShortDescription(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetShortDescription(*s)
+func (_u *AppInfoUpdate) SetNillableShortDescription(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetShortDescription(*v)
 	}
-	return aiu
+	return _u
 }
 
 // ClearShortDescription clears the value of the "short_description" field.
-func (aiu *AppInfoUpdate) ClearShortDescription() *AppInfoUpdate {
-	aiu.mutation.ClearShortDescription()
-	return aiu
+func (_u *AppInfoUpdate) ClearShortDescription() *AppInfoUpdate {
+	_u.mutation.ClearShortDescription()
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (aiu *AppInfoUpdate) SetDescription(s string) *AppInfoUpdate {
-	aiu.mutation.SetDescription(s)
-	return aiu
+func (_u *AppInfoUpdate) SetDescription(v string) *AppInfoUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableDescription(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetDescription(*s)
+func (_u *AppInfoUpdate) SetNillableDescription(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return aiu
+	return _u
 }
 
 // ClearDescription clears the value of the "description" field.
-func (aiu *AppInfoUpdate) ClearDescription() *AppInfoUpdate {
-	aiu.mutation.ClearDescription()
-	return aiu
+func (_u *AppInfoUpdate) ClearDescription() *AppInfoUpdate {
+	_u.mutation.ClearDescription()
+	return _u
 }
 
 // SetIconImageURL sets the "icon_image_url" field.
-func (aiu *AppInfoUpdate) SetIconImageURL(s string) *AppInfoUpdate {
-	aiu.mutation.SetIconImageURL(s)
-	return aiu
+func (_u *AppInfoUpdate) SetIconImageURL(v string) *AppInfoUpdate {
+	_u.mutation.SetIconImageURL(v)
+	return _u
 }
 
 // SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableIconImageURL(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetIconImageURL(*s)
+func (_u *AppInfoUpdate) SetNillableIconImageURL(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetIconImageURL(*v)
 	}
-	return aiu
+	return _u
 }
 
 // ClearIconImageURL clears the value of the "icon_image_url" field.
-func (aiu *AppInfoUpdate) ClearIconImageURL() *AppInfoUpdate {
-	aiu.mutation.ClearIconImageURL()
-	return aiu
+func (_u *AppInfoUpdate) ClearIconImageURL() *AppInfoUpdate {
+	_u.mutation.ClearIconImageURL()
+	return _u
 }
 
 // SetIconImageID sets the "icon_image_id" field.
-func (aiu *AppInfoUpdate) SetIconImageID(mi model.InternalID) *AppInfoUpdate {
-	aiu.mutation.ResetIconImageID()
-	aiu.mutation.SetIconImageID(mi)
-	return aiu
+func (_u *AppInfoUpdate) SetIconImageID(v model.InternalID) *AppInfoUpdate {
+	_u.mutation.ResetIconImageID()
+	_u.mutation.SetIconImageID(v)
+	return _u
 }
 
 // SetNillableIconImageID sets the "icon_image_id" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableIconImageID(mi *model.InternalID) *AppInfoUpdate {
-	if mi != nil {
-		aiu.SetIconImageID(*mi)
+func (_u *AppInfoUpdate) SetNillableIconImageID(v *model.InternalID) *AppInfoUpdate {
+	if v != nil {
+		_u.SetIconImageID(*v)
 	}
-	return aiu
+	return _u
 }
 
-// AddIconImageID adds mi to the "icon_image_id" field.
-func (aiu *AppInfoUpdate) AddIconImageID(mi model.InternalID) *AppInfoUpdate {
-	aiu.mutation.AddIconImageID(mi)
-	return aiu
+// AddIconImageID adds value to the "icon_image_id" field.
+func (_u *AppInfoUpdate) AddIconImageID(v model.InternalID) *AppInfoUpdate {
+	_u.mutation.AddIconImageID(v)
+	return _u
 }
 
 // SetBackgroundImageURL sets the "background_image_url" field.
-func (aiu *AppInfoUpdate) SetBackgroundImageURL(s string) *AppInfoUpdate {
-	aiu.mutation.SetBackgroundImageURL(s)
-	return aiu
+func (_u *AppInfoUpdate) SetBackgroundImageURL(v string) *AppInfoUpdate {
+	_u.mutation.SetBackgroundImageURL(v)
+	return _u
 }
 
 // SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableBackgroundImageURL(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetBackgroundImageURL(*s)
+func (_u *AppInfoUpdate) SetNillableBackgroundImageURL(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetBackgroundImageURL(*v)
 	}
-	return aiu
+	return _u
 }
 
 // ClearBackgroundImageURL clears the value of the "background_image_url" field.
-func (aiu *AppInfoUpdate) ClearBackgroundImageURL() *AppInfoUpdate {
-	aiu.mutation.ClearBackgroundImageURL()
-	return aiu
+func (_u *AppInfoUpdate) ClearBackgroundImageURL() *AppInfoUpdate {
+	_u.mutation.ClearBackgroundImageURL()
+	return _u
 }
 
 // SetBackgroundImageID sets the "background_image_id" field.
-func (aiu *AppInfoUpdate) SetBackgroundImageID(mi model.InternalID) *AppInfoUpdate {
-	aiu.mutation.ResetBackgroundImageID()
-	aiu.mutation.SetBackgroundImageID(mi)
-	return aiu
+func (_u *AppInfoUpdate) SetBackgroundImageID(v model.InternalID) *AppInfoUpdate {
+	_u.mutation.ResetBackgroundImageID()
+	_u.mutation.SetBackgroundImageID(v)
+	return _u
 }
 
 // SetNillableBackgroundImageID sets the "background_image_id" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableBackgroundImageID(mi *model.InternalID) *AppInfoUpdate {
-	if mi != nil {
-		aiu.SetBackgroundImageID(*mi)
+func (_u *AppInfoUpdate) SetNillableBackgroundImageID(v *model.InternalID) *AppInfoUpdate {
+	if v != nil {
+		_u.SetBackgroundImageID(*v)
 	}
-	return aiu
+	return _u
 }
 
-// AddBackgroundImageID adds mi to the "background_image_id" field.
-func (aiu *AppInfoUpdate) AddBackgroundImageID(mi model.InternalID) *AppInfoUpdate {
-	aiu.mutation.AddBackgroundImageID(mi)
-	return aiu
+// AddBackgroundImageID adds value to the "background_image_id" field.
+func (_u *AppInfoUpdate) AddBackgroundImageID(v model.InternalID) *AppInfoUpdate {
+	_u.mutation.AddBackgroundImageID(v)
+	return _u
 }
 
 // SetCoverImageURL sets the "cover_image_url" field.
-func (aiu *AppInfoUpdate) SetCoverImageURL(s string) *AppInfoUpdate {
-	aiu.mutation.SetCoverImageURL(s)
-	return aiu
+func (_u *AppInfoUpdate) SetCoverImageURL(v string) *AppInfoUpdate {
+	_u.mutation.SetCoverImageURL(v)
+	return _u
 }
 
 // SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableCoverImageURL(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetCoverImageURL(*s)
+func (_u *AppInfoUpdate) SetNillableCoverImageURL(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetCoverImageURL(*v)
 	}
-	return aiu
+	return _u
 }
 
 // ClearCoverImageURL clears the value of the "cover_image_url" field.
-func (aiu *AppInfoUpdate) ClearCoverImageURL() *AppInfoUpdate {
-	aiu.mutation.ClearCoverImageURL()
-	return aiu
+func (_u *AppInfoUpdate) ClearCoverImageURL() *AppInfoUpdate {
+	_u.mutation.ClearCoverImageURL()
+	return _u
 }
 
 // SetCoverImageID sets the "cover_image_id" field.
-func (aiu *AppInfoUpdate) SetCoverImageID(mi model.InternalID) *AppInfoUpdate {
-	aiu.mutation.ResetCoverImageID()
-	aiu.mutation.SetCoverImageID(mi)
-	return aiu
+func (_u *AppInfoUpdate) SetCoverImageID(v model.InternalID) *AppInfoUpdate {
+	_u.mutation.ResetCoverImageID()
+	_u.mutation.SetCoverImageID(v)
+	return _u
 }
 
 // SetNillableCoverImageID sets the "cover_image_id" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableCoverImageID(mi *model.InternalID) *AppInfoUpdate {
-	if mi != nil {
-		aiu.SetCoverImageID(*mi)
+func (_u *AppInfoUpdate) SetNillableCoverImageID(v *model.InternalID) *AppInfoUpdate {
+	if v != nil {
+		_u.SetCoverImageID(*v)
 	}
-	return aiu
+	return _u
 }
 
-// AddCoverImageID adds mi to the "cover_image_id" field.
-func (aiu *AppInfoUpdate) AddCoverImageID(mi model.InternalID) *AppInfoUpdate {
-	aiu.mutation.AddCoverImageID(mi)
-	return aiu
+// AddCoverImageID adds value to the "cover_image_id" field.
+func (_u *AppInfoUpdate) AddCoverImageID(v model.InternalID) *AppInfoUpdate {
+	_u.mutation.AddCoverImageID(v)
+	return _u
 }
 
 // SetReleaseDate sets the "release_date" field.
-func (aiu *AppInfoUpdate) SetReleaseDate(s string) *AppInfoUpdate {
-	aiu.mutation.SetReleaseDate(s)
-	return aiu
+func (_u *AppInfoUpdate) SetReleaseDate(v string) *AppInfoUpdate {
+	_u.mutation.SetReleaseDate(v)
+	return _u
 }
 
 // SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableReleaseDate(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetReleaseDate(*s)
+func (_u *AppInfoUpdate) SetNillableReleaseDate(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetReleaseDate(*v)
 	}
-	return aiu
+	return _u
 }
 
 // ClearReleaseDate clears the value of the "release_date" field.
-func (aiu *AppInfoUpdate) ClearReleaseDate() *AppInfoUpdate {
-	aiu.mutation.ClearReleaseDate()
-	return aiu
+func (_u *AppInfoUpdate) ClearReleaseDate() *AppInfoUpdate {
+	_u.mutation.ClearReleaseDate()
+	return _u
 }
 
 // SetDeveloper sets the "developer" field.
-func (aiu *AppInfoUpdate) SetDeveloper(s string) *AppInfoUpdate {
-	aiu.mutation.SetDeveloper(s)
-	return aiu
+func (_u *AppInfoUpdate) SetDeveloper(v string) *AppInfoUpdate {
+	_u.mutation.SetDeveloper(v)
+	return _u
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableDeveloper(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetDeveloper(*s)
+func (_u *AppInfoUpdate) SetNillableDeveloper(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetDeveloper(*v)
 	}
-	return aiu
+	return _u
 }
 
 // ClearDeveloper clears the value of the "developer" field.
-func (aiu *AppInfoUpdate) ClearDeveloper() *AppInfoUpdate {
-	aiu.mutation.ClearDeveloper()
-	return aiu
+func (_u *AppInfoUpdate) ClearDeveloper() *AppInfoUpdate {
+	_u.mutation.ClearDeveloper()
+	return _u
 }
 
 // SetPublisher sets the "publisher" field.
-func (aiu *AppInfoUpdate) SetPublisher(s string) *AppInfoUpdate {
-	aiu.mutation.SetPublisher(s)
-	return aiu
+func (_u *AppInfoUpdate) SetPublisher(v string) *AppInfoUpdate {
+	_u.mutation.SetPublisher(v)
+	return _u
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillablePublisher(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetPublisher(*s)
+func (_u *AppInfoUpdate) SetNillablePublisher(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetPublisher(*v)
 	}
-	return aiu
+	return _u
 }
 
 // ClearPublisher clears the value of the "publisher" field.
-func (aiu *AppInfoUpdate) ClearPublisher() *AppInfoUpdate {
-	aiu.mutation.ClearPublisher()
-	return aiu
+func (_u *AppInfoUpdate) ClearPublisher() *AppInfoUpdate {
+	_u.mutation.ClearPublisher()
+	return _u
 }
 
 // SetTags sets the "tags" field.
-func (aiu *AppInfoUpdate) SetTags(s []string) *AppInfoUpdate {
-	aiu.mutation.SetTags(s)
-	return aiu
+func (_u *AppInfoUpdate) SetTags(v []string) *AppInfoUpdate {
+	_u.mutation.SetTags(v)
+	return _u
 }
 
-// AppendTags appends s to the "tags" field.
-func (aiu *AppInfoUpdate) AppendTags(s []string) *AppInfoUpdate {
-	aiu.mutation.AppendTags(s)
-	return aiu
+// AppendTags appends value to the "tags" field.
+func (_u *AppInfoUpdate) AppendTags(v []string) *AppInfoUpdate {
+	_u.mutation.AppendTags(v)
+	return _u
 }
 
 // SetAlternativeNames sets the "alternative_names" field.
-func (aiu *AppInfoUpdate) SetAlternativeNames(s []string) *AppInfoUpdate {
-	aiu.mutation.SetAlternativeNames(s)
-	return aiu
+func (_u *AppInfoUpdate) SetAlternativeNames(v []string) *AppInfoUpdate {
+	_u.mutation.SetAlternativeNames(v)
+	return _u
 }
 
-// AppendAlternativeNames appends s to the "alternative_names" field.
-func (aiu *AppInfoUpdate) AppendAlternativeNames(s []string) *AppInfoUpdate {
-	aiu.mutation.AppendAlternativeNames(s)
-	return aiu
+// AppendAlternativeNames appends value to the "alternative_names" field.
+func (_u *AppInfoUpdate) AppendAlternativeNames(v []string) *AppInfoUpdate {
+	_u.mutation.AppendAlternativeNames(v)
+	return _u
 }
 
 // SetRawData sets the "raw_data" field.
-func (aiu *AppInfoUpdate) SetRawData(s string) *AppInfoUpdate {
-	aiu.mutation.SetRawData(s)
-	return aiu
+func (_u *AppInfoUpdate) SetRawData(v string) *AppInfoUpdate {
+	_u.mutation.SetRawData(v)
+	return _u
 }
 
 // SetNillableRawData sets the "raw_data" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableRawData(s *string) *AppInfoUpdate {
-	if s != nil {
-		aiu.SetRawData(*s)
+func (_u *AppInfoUpdate) SetNillableRawData(v *string) *AppInfoUpdate {
+	if v != nil {
+		_u.SetRawData(*v)
 	}
-	return aiu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aiu *AppInfoUpdate) SetUpdatedAt(t time.Time) *AppInfoUpdate {
-	aiu.mutation.SetUpdatedAt(t)
-	return aiu
+func (_u *AppInfoUpdate) SetUpdatedAt(v time.Time) *AppInfoUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (aiu *AppInfoUpdate) SetCreatedAt(t time.Time) *AppInfoUpdate {
-	aiu.mutation.SetCreatedAt(t)
-	return aiu
+func (_u *AppInfoUpdate) SetCreatedAt(v time.Time) *AppInfoUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableCreatedAt(t *time.Time) *AppInfoUpdate {
-	if t != nil {
-		aiu.SetCreatedAt(*t)
+func (_u *AppInfoUpdate) SetNillableCreatedAt(v *time.Time) *AppInfoUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return aiu
+	return _u
 }
 
 // Mutation returns the AppInfoMutation object of the builder.
-func (aiu *AppInfoUpdate) Mutation() *AppInfoMutation {
-	return aiu.mutation
+func (_u *AppInfoUpdate) Mutation() *AppInfoMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (aiu *AppInfoUpdate) Save(ctx context.Context) (int, error) {
-	aiu.defaults()
-	return withHooks(ctx, aiu.sqlSave, aiu.mutation, aiu.hooks)
+func (_u *AppInfoUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aiu *AppInfoUpdate) SaveX(ctx context.Context) int {
-	affected, err := aiu.Save(ctx)
+func (_u *AppInfoUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -408,29 +408,29 @@ func (aiu *AppInfoUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (aiu *AppInfoUpdate) Exec(ctx context.Context) error {
-	_, err := aiu.Save(ctx)
+func (_u *AppInfoUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aiu *AppInfoUpdate) ExecX(ctx context.Context) {
-	if err := aiu.Exec(ctx); err != nil {
+func (_u *AppInfoUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (aiu *AppInfoUpdate) defaults() {
-	if _, ok := aiu.mutation.UpdatedAt(); !ok {
+func (_u *AppInfoUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := appinfo.UpdateDefaultUpdatedAt()
-		aiu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aiu *AppInfoUpdate) check() error {
-	if v, ok := aiu.mutation.GetType(); ok {
+func (_u *AppInfoUpdate) check() error {
+	if v, ok := _u.mutation.GetType(); ok {
 		if err := appinfo.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "AppInfo.type": %w`, err)}
 		}
@@ -438,128 +438,128 @@ func (aiu *AppInfoUpdate) check() error {
 	return nil
 }
 
-func (aiu *AppInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := aiu.check(); err != nil {
-		return n, err
+func (_u *AppInfoUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appinfo.Table, appinfo.Columns, sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64))
-	if ps := aiu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aiu.mutation.Source(); ok {
+	if value, ok := _u.mutation.Source(); ok {
 		_spec.SetField(appinfo.FieldSource, field.TypeString, value)
 	}
-	if value, ok := aiu.mutation.SourceAppID(); ok {
+	if value, ok := _u.mutation.SourceAppID(); ok {
 		_spec.SetField(appinfo.FieldSourceAppID, field.TypeString, value)
 	}
-	if value, ok := aiu.mutation.SourceURL(); ok {
+	if value, ok := _u.mutation.SourceURL(); ok {
 		_spec.SetField(appinfo.FieldSourceURL, field.TypeString, value)
 	}
-	if aiu.mutation.SourceURLCleared() {
+	if _u.mutation.SourceURLCleared() {
 		_spec.ClearField(appinfo.FieldSourceURL, field.TypeString)
 	}
-	if value, ok := aiu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appinfo.FieldName, field.TypeString, value)
 	}
-	if value, ok := aiu.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(appinfo.FieldType, field.TypeEnum, value)
 	}
-	if value, ok := aiu.mutation.ShortDescription(); ok {
+	if value, ok := _u.mutation.ShortDescription(); ok {
 		_spec.SetField(appinfo.FieldShortDescription, field.TypeString, value)
 	}
-	if aiu.mutation.ShortDescriptionCleared() {
+	if _u.mutation.ShortDescriptionCleared() {
 		_spec.ClearField(appinfo.FieldShortDescription, field.TypeString)
 	}
-	if value, ok := aiu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(appinfo.FieldDescription, field.TypeString, value)
 	}
-	if aiu.mutation.DescriptionCleared() {
+	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(appinfo.FieldDescription, field.TypeString)
 	}
-	if value, ok := aiu.mutation.IconImageURL(); ok {
+	if value, ok := _u.mutation.IconImageURL(); ok {
 		_spec.SetField(appinfo.FieldIconImageURL, field.TypeString, value)
 	}
-	if aiu.mutation.IconImageURLCleared() {
+	if _u.mutation.IconImageURLCleared() {
 		_spec.ClearField(appinfo.FieldIconImageURL, field.TypeString)
 	}
-	if value, ok := aiu.mutation.IconImageID(); ok {
+	if value, ok := _u.mutation.IconImageID(); ok {
 		_spec.SetField(appinfo.FieldIconImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiu.mutation.AddedIconImageID(); ok {
+	if value, ok := _u.mutation.AddedIconImageID(); ok {
 		_spec.AddField(appinfo.FieldIconImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiu.mutation.BackgroundImageURL(); ok {
+	if value, ok := _u.mutation.BackgroundImageURL(); ok {
 		_spec.SetField(appinfo.FieldBackgroundImageURL, field.TypeString, value)
 	}
-	if aiu.mutation.BackgroundImageURLCleared() {
+	if _u.mutation.BackgroundImageURLCleared() {
 		_spec.ClearField(appinfo.FieldBackgroundImageURL, field.TypeString)
 	}
-	if value, ok := aiu.mutation.BackgroundImageID(); ok {
+	if value, ok := _u.mutation.BackgroundImageID(); ok {
 		_spec.SetField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiu.mutation.AddedBackgroundImageID(); ok {
+	if value, ok := _u.mutation.AddedBackgroundImageID(); ok {
 		_spec.AddField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiu.mutation.CoverImageURL(); ok {
+	if value, ok := _u.mutation.CoverImageURL(); ok {
 		_spec.SetField(appinfo.FieldCoverImageURL, field.TypeString, value)
 	}
-	if aiu.mutation.CoverImageURLCleared() {
+	if _u.mutation.CoverImageURLCleared() {
 		_spec.ClearField(appinfo.FieldCoverImageURL, field.TypeString)
 	}
-	if value, ok := aiu.mutation.CoverImageID(); ok {
+	if value, ok := _u.mutation.CoverImageID(); ok {
 		_spec.SetField(appinfo.FieldCoverImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiu.mutation.AddedCoverImageID(); ok {
+	if value, ok := _u.mutation.AddedCoverImageID(); ok {
 		_spec.AddField(appinfo.FieldCoverImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiu.mutation.ReleaseDate(); ok {
+	if value, ok := _u.mutation.ReleaseDate(); ok {
 		_spec.SetField(appinfo.FieldReleaseDate, field.TypeString, value)
 	}
-	if aiu.mutation.ReleaseDateCleared() {
+	if _u.mutation.ReleaseDateCleared() {
 		_spec.ClearField(appinfo.FieldReleaseDate, field.TypeString)
 	}
-	if value, ok := aiu.mutation.Developer(); ok {
+	if value, ok := _u.mutation.Developer(); ok {
 		_spec.SetField(appinfo.FieldDeveloper, field.TypeString, value)
 	}
-	if aiu.mutation.DeveloperCleared() {
+	if _u.mutation.DeveloperCleared() {
 		_spec.ClearField(appinfo.FieldDeveloper, field.TypeString)
 	}
-	if value, ok := aiu.mutation.Publisher(); ok {
+	if value, ok := _u.mutation.Publisher(); ok {
 		_spec.SetField(appinfo.FieldPublisher, field.TypeString, value)
 	}
-	if aiu.mutation.PublisherCleared() {
+	if _u.mutation.PublisherCleared() {
 		_spec.ClearField(appinfo.FieldPublisher, field.TypeString)
 	}
-	if value, ok := aiu.mutation.Tags(); ok {
+	if value, ok := _u.mutation.Tags(); ok {
 		_spec.SetField(appinfo.FieldTags, field.TypeJSON, value)
 	}
-	if value, ok := aiu.mutation.AppendedTags(); ok {
+	if value, ok := _u.mutation.AppendedTags(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, appinfo.FieldTags, value)
 		})
 	}
-	if value, ok := aiu.mutation.AlternativeNames(); ok {
+	if value, ok := _u.mutation.AlternativeNames(); ok {
 		_spec.SetField(appinfo.FieldAlternativeNames, field.TypeJSON, value)
 	}
-	if value, ok := aiu.mutation.AppendedAlternativeNames(); ok {
+	if value, ok := _u.mutation.AppendedAlternativeNames(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, appinfo.FieldAlternativeNames, value)
 		})
 	}
-	if value, ok := aiu.mutation.RawData(); ok {
+	if value, ok := _u.mutation.RawData(); ok {
 		_spec.SetField(appinfo.FieldRawData, field.TypeString, value)
 	}
-	if value, ok := aiu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appinfo.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := aiu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(appinfo.FieldCreatedAt, field.TypeTime, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, aiu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appinfo.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -567,8 +567,8 @@ func (aiu *AppInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	aiu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppInfoUpdateOne is the builder for updating a single AppInfo entity.
@@ -580,389 +580,389 @@ type AppInfoUpdateOne struct {
 }
 
 // SetSource sets the "source" field.
-func (aiuo *AppInfoUpdateOne) SetSource(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetSource(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetSource(v string) *AppInfoUpdateOne {
+	_u.mutation.SetSource(v)
+	return _u
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableSource(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetSource(*s)
+func (_u *AppInfoUpdateOne) SetNillableSource(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetSource(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // SetSourceAppID sets the "source_app_id" field.
-func (aiuo *AppInfoUpdateOne) SetSourceAppID(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetSourceAppID(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetSourceAppID(v string) *AppInfoUpdateOne {
+	_u.mutation.SetSourceAppID(v)
+	return _u
 }
 
 // SetNillableSourceAppID sets the "source_app_id" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableSourceAppID(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetSourceAppID(*s)
+func (_u *AppInfoUpdateOne) SetNillableSourceAppID(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetSourceAppID(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // SetSourceURL sets the "source_url" field.
-func (aiuo *AppInfoUpdateOne) SetSourceURL(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetSourceURL(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetSourceURL(v string) *AppInfoUpdateOne {
+	_u.mutation.SetSourceURL(v)
+	return _u
 }
 
 // SetNillableSourceURL sets the "source_url" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableSourceURL(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetSourceURL(*s)
+func (_u *AppInfoUpdateOne) SetNillableSourceURL(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetSourceURL(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // ClearSourceURL clears the value of the "source_url" field.
-func (aiuo *AppInfoUpdateOne) ClearSourceURL() *AppInfoUpdateOne {
-	aiuo.mutation.ClearSourceURL()
-	return aiuo
+func (_u *AppInfoUpdateOne) ClearSourceURL() *AppInfoUpdateOne {
+	_u.mutation.ClearSourceURL()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (aiuo *AppInfoUpdateOne) SetName(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetName(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetName(v string) *AppInfoUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableName(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetName(*s)
+func (_u *AppInfoUpdateOne) SetNillableName(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // SetType sets the "type" field.
-func (aiuo *AppInfoUpdateOne) SetType(a appinfo.Type) *AppInfoUpdateOne {
-	aiuo.mutation.SetType(a)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetType(v appinfo.Type) *AppInfoUpdateOne {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableType(a *appinfo.Type) *AppInfoUpdateOne {
-	if a != nil {
-		aiuo.SetType(*a)
+func (_u *AppInfoUpdateOne) SetNillableType(v *appinfo.Type) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // SetShortDescription sets the "short_description" field.
-func (aiuo *AppInfoUpdateOne) SetShortDescription(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetShortDescription(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetShortDescription(v string) *AppInfoUpdateOne {
+	_u.mutation.SetShortDescription(v)
+	return _u
 }
 
 // SetNillableShortDescription sets the "short_description" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableShortDescription(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetShortDescription(*s)
+func (_u *AppInfoUpdateOne) SetNillableShortDescription(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetShortDescription(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // ClearShortDescription clears the value of the "short_description" field.
-func (aiuo *AppInfoUpdateOne) ClearShortDescription() *AppInfoUpdateOne {
-	aiuo.mutation.ClearShortDescription()
-	return aiuo
+func (_u *AppInfoUpdateOne) ClearShortDescription() *AppInfoUpdateOne {
+	_u.mutation.ClearShortDescription()
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (aiuo *AppInfoUpdateOne) SetDescription(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetDescription(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetDescription(v string) *AppInfoUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableDescription(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetDescription(*s)
+func (_u *AppInfoUpdateOne) SetNillableDescription(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // ClearDescription clears the value of the "description" field.
-func (aiuo *AppInfoUpdateOne) ClearDescription() *AppInfoUpdateOne {
-	aiuo.mutation.ClearDescription()
-	return aiuo
+func (_u *AppInfoUpdateOne) ClearDescription() *AppInfoUpdateOne {
+	_u.mutation.ClearDescription()
+	return _u
 }
 
 // SetIconImageURL sets the "icon_image_url" field.
-func (aiuo *AppInfoUpdateOne) SetIconImageURL(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetIconImageURL(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetIconImageURL(v string) *AppInfoUpdateOne {
+	_u.mutation.SetIconImageURL(v)
+	return _u
 }
 
 // SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableIconImageURL(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetIconImageURL(*s)
+func (_u *AppInfoUpdateOne) SetNillableIconImageURL(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetIconImageURL(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // ClearIconImageURL clears the value of the "icon_image_url" field.
-func (aiuo *AppInfoUpdateOne) ClearIconImageURL() *AppInfoUpdateOne {
-	aiuo.mutation.ClearIconImageURL()
-	return aiuo
+func (_u *AppInfoUpdateOne) ClearIconImageURL() *AppInfoUpdateOne {
+	_u.mutation.ClearIconImageURL()
+	return _u
 }
 
 // SetIconImageID sets the "icon_image_id" field.
-func (aiuo *AppInfoUpdateOne) SetIconImageID(mi model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.ResetIconImageID()
-	aiuo.mutation.SetIconImageID(mi)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetIconImageID(v model.InternalID) *AppInfoUpdateOne {
+	_u.mutation.ResetIconImageID()
+	_u.mutation.SetIconImageID(v)
+	return _u
 }
 
 // SetNillableIconImageID sets the "icon_image_id" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableIconImageID(mi *model.InternalID) *AppInfoUpdateOne {
-	if mi != nil {
-		aiuo.SetIconImageID(*mi)
+func (_u *AppInfoUpdateOne) SetNillableIconImageID(v *model.InternalID) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetIconImageID(*v)
 	}
-	return aiuo
+	return _u
 }
 
-// AddIconImageID adds mi to the "icon_image_id" field.
-func (aiuo *AppInfoUpdateOne) AddIconImageID(mi model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.AddIconImageID(mi)
-	return aiuo
+// AddIconImageID adds value to the "icon_image_id" field.
+func (_u *AppInfoUpdateOne) AddIconImageID(v model.InternalID) *AppInfoUpdateOne {
+	_u.mutation.AddIconImageID(v)
+	return _u
 }
 
 // SetBackgroundImageURL sets the "background_image_url" field.
-func (aiuo *AppInfoUpdateOne) SetBackgroundImageURL(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetBackgroundImageURL(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetBackgroundImageURL(v string) *AppInfoUpdateOne {
+	_u.mutation.SetBackgroundImageURL(v)
+	return _u
 }
 
 // SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableBackgroundImageURL(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetBackgroundImageURL(*s)
+func (_u *AppInfoUpdateOne) SetNillableBackgroundImageURL(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetBackgroundImageURL(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // ClearBackgroundImageURL clears the value of the "background_image_url" field.
-func (aiuo *AppInfoUpdateOne) ClearBackgroundImageURL() *AppInfoUpdateOne {
-	aiuo.mutation.ClearBackgroundImageURL()
-	return aiuo
+func (_u *AppInfoUpdateOne) ClearBackgroundImageURL() *AppInfoUpdateOne {
+	_u.mutation.ClearBackgroundImageURL()
+	return _u
 }
 
 // SetBackgroundImageID sets the "background_image_id" field.
-func (aiuo *AppInfoUpdateOne) SetBackgroundImageID(mi model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.ResetBackgroundImageID()
-	aiuo.mutation.SetBackgroundImageID(mi)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetBackgroundImageID(v model.InternalID) *AppInfoUpdateOne {
+	_u.mutation.ResetBackgroundImageID()
+	_u.mutation.SetBackgroundImageID(v)
+	return _u
 }
 
 // SetNillableBackgroundImageID sets the "background_image_id" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableBackgroundImageID(mi *model.InternalID) *AppInfoUpdateOne {
-	if mi != nil {
-		aiuo.SetBackgroundImageID(*mi)
+func (_u *AppInfoUpdateOne) SetNillableBackgroundImageID(v *model.InternalID) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetBackgroundImageID(*v)
 	}
-	return aiuo
+	return _u
 }
 
-// AddBackgroundImageID adds mi to the "background_image_id" field.
-func (aiuo *AppInfoUpdateOne) AddBackgroundImageID(mi model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.AddBackgroundImageID(mi)
-	return aiuo
+// AddBackgroundImageID adds value to the "background_image_id" field.
+func (_u *AppInfoUpdateOne) AddBackgroundImageID(v model.InternalID) *AppInfoUpdateOne {
+	_u.mutation.AddBackgroundImageID(v)
+	return _u
 }
 
 // SetCoverImageURL sets the "cover_image_url" field.
-func (aiuo *AppInfoUpdateOne) SetCoverImageURL(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetCoverImageURL(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetCoverImageURL(v string) *AppInfoUpdateOne {
+	_u.mutation.SetCoverImageURL(v)
+	return _u
 }
 
 // SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableCoverImageURL(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetCoverImageURL(*s)
+func (_u *AppInfoUpdateOne) SetNillableCoverImageURL(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetCoverImageURL(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // ClearCoverImageURL clears the value of the "cover_image_url" field.
-func (aiuo *AppInfoUpdateOne) ClearCoverImageURL() *AppInfoUpdateOne {
-	aiuo.mutation.ClearCoverImageURL()
-	return aiuo
+func (_u *AppInfoUpdateOne) ClearCoverImageURL() *AppInfoUpdateOne {
+	_u.mutation.ClearCoverImageURL()
+	return _u
 }
 
 // SetCoverImageID sets the "cover_image_id" field.
-func (aiuo *AppInfoUpdateOne) SetCoverImageID(mi model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.ResetCoverImageID()
-	aiuo.mutation.SetCoverImageID(mi)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetCoverImageID(v model.InternalID) *AppInfoUpdateOne {
+	_u.mutation.ResetCoverImageID()
+	_u.mutation.SetCoverImageID(v)
+	return _u
 }
 
 // SetNillableCoverImageID sets the "cover_image_id" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableCoverImageID(mi *model.InternalID) *AppInfoUpdateOne {
-	if mi != nil {
-		aiuo.SetCoverImageID(*mi)
+func (_u *AppInfoUpdateOne) SetNillableCoverImageID(v *model.InternalID) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetCoverImageID(*v)
 	}
-	return aiuo
+	return _u
 }
 
-// AddCoverImageID adds mi to the "cover_image_id" field.
-func (aiuo *AppInfoUpdateOne) AddCoverImageID(mi model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.AddCoverImageID(mi)
-	return aiuo
+// AddCoverImageID adds value to the "cover_image_id" field.
+func (_u *AppInfoUpdateOne) AddCoverImageID(v model.InternalID) *AppInfoUpdateOne {
+	_u.mutation.AddCoverImageID(v)
+	return _u
 }
 
 // SetReleaseDate sets the "release_date" field.
-func (aiuo *AppInfoUpdateOne) SetReleaseDate(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetReleaseDate(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetReleaseDate(v string) *AppInfoUpdateOne {
+	_u.mutation.SetReleaseDate(v)
+	return _u
 }
 
 // SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableReleaseDate(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetReleaseDate(*s)
+func (_u *AppInfoUpdateOne) SetNillableReleaseDate(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetReleaseDate(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // ClearReleaseDate clears the value of the "release_date" field.
-func (aiuo *AppInfoUpdateOne) ClearReleaseDate() *AppInfoUpdateOne {
-	aiuo.mutation.ClearReleaseDate()
-	return aiuo
+func (_u *AppInfoUpdateOne) ClearReleaseDate() *AppInfoUpdateOne {
+	_u.mutation.ClearReleaseDate()
+	return _u
 }
 
 // SetDeveloper sets the "developer" field.
-func (aiuo *AppInfoUpdateOne) SetDeveloper(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetDeveloper(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetDeveloper(v string) *AppInfoUpdateOne {
+	_u.mutation.SetDeveloper(v)
+	return _u
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableDeveloper(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetDeveloper(*s)
+func (_u *AppInfoUpdateOne) SetNillableDeveloper(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetDeveloper(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // ClearDeveloper clears the value of the "developer" field.
-func (aiuo *AppInfoUpdateOne) ClearDeveloper() *AppInfoUpdateOne {
-	aiuo.mutation.ClearDeveloper()
-	return aiuo
+func (_u *AppInfoUpdateOne) ClearDeveloper() *AppInfoUpdateOne {
+	_u.mutation.ClearDeveloper()
+	return _u
 }
 
 // SetPublisher sets the "publisher" field.
-func (aiuo *AppInfoUpdateOne) SetPublisher(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetPublisher(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetPublisher(v string) *AppInfoUpdateOne {
+	_u.mutation.SetPublisher(v)
+	return _u
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillablePublisher(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetPublisher(*s)
+func (_u *AppInfoUpdateOne) SetNillablePublisher(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetPublisher(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // ClearPublisher clears the value of the "publisher" field.
-func (aiuo *AppInfoUpdateOne) ClearPublisher() *AppInfoUpdateOne {
-	aiuo.mutation.ClearPublisher()
-	return aiuo
+func (_u *AppInfoUpdateOne) ClearPublisher() *AppInfoUpdateOne {
+	_u.mutation.ClearPublisher()
+	return _u
 }
 
 // SetTags sets the "tags" field.
-func (aiuo *AppInfoUpdateOne) SetTags(s []string) *AppInfoUpdateOne {
-	aiuo.mutation.SetTags(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetTags(v []string) *AppInfoUpdateOne {
+	_u.mutation.SetTags(v)
+	return _u
 }
 
-// AppendTags appends s to the "tags" field.
-func (aiuo *AppInfoUpdateOne) AppendTags(s []string) *AppInfoUpdateOne {
-	aiuo.mutation.AppendTags(s)
-	return aiuo
+// AppendTags appends value to the "tags" field.
+func (_u *AppInfoUpdateOne) AppendTags(v []string) *AppInfoUpdateOne {
+	_u.mutation.AppendTags(v)
+	return _u
 }
 
 // SetAlternativeNames sets the "alternative_names" field.
-func (aiuo *AppInfoUpdateOne) SetAlternativeNames(s []string) *AppInfoUpdateOne {
-	aiuo.mutation.SetAlternativeNames(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetAlternativeNames(v []string) *AppInfoUpdateOne {
+	_u.mutation.SetAlternativeNames(v)
+	return _u
 }
 
-// AppendAlternativeNames appends s to the "alternative_names" field.
-func (aiuo *AppInfoUpdateOne) AppendAlternativeNames(s []string) *AppInfoUpdateOne {
-	aiuo.mutation.AppendAlternativeNames(s)
-	return aiuo
+// AppendAlternativeNames appends value to the "alternative_names" field.
+func (_u *AppInfoUpdateOne) AppendAlternativeNames(v []string) *AppInfoUpdateOne {
+	_u.mutation.AppendAlternativeNames(v)
+	return _u
 }
 
 // SetRawData sets the "raw_data" field.
-func (aiuo *AppInfoUpdateOne) SetRawData(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetRawData(s)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetRawData(v string) *AppInfoUpdateOne {
+	_u.mutation.SetRawData(v)
+	return _u
 }
 
 // SetNillableRawData sets the "raw_data" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableRawData(s *string) *AppInfoUpdateOne {
-	if s != nil {
-		aiuo.SetRawData(*s)
+func (_u *AppInfoUpdateOne) SetNillableRawData(v *string) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetRawData(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (aiuo *AppInfoUpdateOne) SetUpdatedAt(t time.Time) *AppInfoUpdateOne {
-	aiuo.mutation.SetUpdatedAt(t)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetUpdatedAt(v time.Time) *AppInfoUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (aiuo *AppInfoUpdateOne) SetCreatedAt(t time.Time) *AppInfoUpdateOne {
-	aiuo.mutation.SetCreatedAt(t)
-	return aiuo
+func (_u *AppInfoUpdateOne) SetCreatedAt(v time.Time) *AppInfoUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableCreatedAt(t *time.Time) *AppInfoUpdateOne {
-	if t != nil {
-		aiuo.SetCreatedAt(*t)
+func (_u *AppInfoUpdateOne) SetNillableCreatedAt(v *time.Time) *AppInfoUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return aiuo
+	return _u
 }
 
 // Mutation returns the AppInfoMutation object of the builder.
-func (aiuo *AppInfoUpdateOne) Mutation() *AppInfoMutation {
-	return aiuo.mutation
+func (_u *AppInfoUpdateOne) Mutation() *AppInfoMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the AppInfoUpdate builder.
-func (aiuo *AppInfoUpdateOne) Where(ps ...predicate.AppInfo) *AppInfoUpdateOne {
-	aiuo.mutation.Where(ps...)
-	return aiuo
+func (_u *AppInfoUpdateOne) Where(ps ...predicate.AppInfo) *AppInfoUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (aiuo *AppInfoUpdateOne) Select(field string, fields ...string) *AppInfoUpdateOne {
-	aiuo.fields = append([]string{field}, fields...)
-	return aiuo
+func (_u *AppInfoUpdateOne) Select(field string, fields ...string) *AppInfoUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppInfo entity.
-func (aiuo *AppInfoUpdateOne) Save(ctx context.Context) (*AppInfo, error) {
-	aiuo.defaults()
-	return withHooks(ctx, aiuo.sqlSave, aiuo.mutation, aiuo.hooks)
+func (_u *AppInfoUpdateOne) Save(ctx context.Context) (*AppInfo, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aiuo *AppInfoUpdateOne) SaveX(ctx context.Context) *AppInfo {
-	node, err := aiuo.Save(ctx)
+func (_u *AppInfoUpdateOne) SaveX(ctx context.Context) *AppInfo {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -970,29 +970,29 @@ func (aiuo *AppInfoUpdateOne) SaveX(ctx context.Context) *AppInfo {
 }
 
 // Exec executes the query on the entity.
-func (aiuo *AppInfoUpdateOne) Exec(ctx context.Context) error {
-	_, err := aiuo.Save(ctx)
+func (_u *AppInfoUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aiuo *AppInfoUpdateOne) ExecX(ctx context.Context) {
-	if err := aiuo.Exec(ctx); err != nil {
+func (_u *AppInfoUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (aiuo *AppInfoUpdateOne) defaults() {
-	if _, ok := aiuo.mutation.UpdatedAt(); !ok {
+func (_u *AppInfoUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := appinfo.UpdateDefaultUpdatedAt()
-		aiuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aiuo *AppInfoUpdateOne) check() error {
-	if v, ok := aiuo.mutation.GetType(); ok {
+func (_u *AppInfoUpdateOne) check() error {
+	if v, ok := _u.mutation.GetType(); ok {
 		if err := appinfo.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "AppInfo.type": %w`, err)}
 		}
@@ -1000,17 +1000,17 @@ func (aiuo *AppInfoUpdateOne) check() error {
 	return nil
 }
 
-func (aiuo *AppInfoUpdateOne) sqlSave(ctx context.Context) (_node *AppInfo, err error) {
-	if err := aiuo.check(); err != nil {
+func (_u *AppInfoUpdateOne) sqlSave(ctx context.Context) (_node *AppInfo, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appinfo.Table, appinfo.Columns, sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64))
-	id, ok := aiuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppInfo.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := aiuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appinfo.FieldID)
 		for _, f := range fields {
@@ -1022,126 +1022,126 @@ func (aiuo *AppInfoUpdateOne) sqlSave(ctx context.Context) (_node *AppInfo, err 
 			}
 		}
 	}
-	if ps := aiuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := aiuo.mutation.Source(); ok {
+	if value, ok := _u.mutation.Source(); ok {
 		_spec.SetField(appinfo.FieldSource, field.TypeString, value)
 	}
-	if value, ok := aiuo.mutation.SourceAppID(); ok {
+	if value, ok := _u.mutation.SourceAppID(); ok {
 		_spec.SetField(appinfo.FieldSourceAppID, field.TypeString, value)
 	}
-	if value, ok := aiuo.mutation.SourceURL(); ok {
+	if value, ok := _u.mutation.SourceURL(); ok {
 		_spec.SetField(appinfo.FieldSourceURL, field.TypeString, value)
 	}
-	if aiuo.mutation.SourceURLCleared() {
+	if _u.mutation.SourceURLCleared() {
 		_spec.ClearField(appinfo.FieldSourceURL, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appinfo.FieldName, field.TypeString, value)
 	}
-	if value, ok := aiuo.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(appinfo.FieldType, field.TypeEnum, value)
 	}
-	if value, ok := aiuo.mutation.ShortDescription(); ok {
+	if value, ok := _u.mutation.ShortDescription(); ok {
 		_spec.SetField(appinfo.FieldShortDescription, field.TypeString, value)
 	}
-	if aiuo.mutation.ShortDescriptionCleared() {
+	if _u.mutation.ShortDescriptionCleared() {
 		_spec.ClearField(appinfo.FieldShortDescription, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(appinfo.FieldDescription, field.TypeString, value)
 	}
-	if aiuo.mutation.DescriptionCleared() {
+	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(appinfo.FieldDescription, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.IconImageURL(); ok {
+	if value, ok := _u.mutation.IconImageURL(); ok {
 		_spec.SetField(appinfo.FieldIconImageURL, field.TypeString, value)
 	}
-	if aiuo.mutation.IconImageURLCleared() {
+	if _u.mutation.IconImageURLCleared() {
 		_spec.ClearField(appinfo.FieldIconImageURL, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.IconImageID(); ok {
+	if value, ok := _u.mutation.IconImageID(); ok {
 		_spec.SetField(appinfo.FieldIconImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiuo.mutation.AddedIconImageID(); ok {
+	if value, ok := _u.mutation.AddedIconImageID(); ok {
 		_spec.AddField(appinfo.FieldIconImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiuo.mutation.BackgroundImageURL(); ok {
+	if value, ok := _u.mutation.BackgroundImageURL(); ok {
 		_spec.SetField(appinfo.FieldBackgroundImageURL, field.TypeString, value)
 	}
-	if aiuo.mutation.BackgroundImageURLCleared() {
+	if _u.mutation.BackgroundImageURLCleared() {
 		_spec.ClearField(appinfo.FieldBackgroundImageURL, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.BackgroundImageID(); ok {
+	if value, ok := _u.mutation.BackgroundImageID(); ok {
 		_spec.SetField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiuo.mutation.AddedBackgroundImageID(); ok {
+	if value, ok := _u.mutation.AddedBackgroundImageID(); ok {
 		_spec.AddField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiuo.mutation.CoverImageURL(); ok {
+	if value, ok := _u.mutation.CoverImageURL(); ok {
 		_spec.SetField(appinfo.FieldCoverImageURL, field.TypeString, value)
 	}
-	if aiuo.mutation.CoverImageURLCleared() {
+	if _u.mutation.CoverImageURLCleared() {
 		_spec.ClearField(appinfo.FieldCoverImageURL, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.CoverImageID(); ok {
+	if value, ok := _u.mutation.CoverImageID(); ok {
 		_spec.SetField(appinfo.FieldCoverImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiuo.mutation.AddedCoverImageID(); ok {
+	if value, ok := _u.mutation.AddedCoverImageID(); ok {
 		_spec.AddField(appinfo.FieldCoverImageID, field.TypeInt64, value)
 	}
-	if value, ok := aiuo.mutation.ReleaseDate(); ok {
+	if value, ok := _u.mutation.ReleaseDate(); ok {
 		_spec.SetField(appinfo.FieldReleaseDate, field.TypeString, value)
 	}
-	if aiuo.mutation.ReleaseDateCleared() {
+	if _u.mutation.ReleaseDateCleared() {
 		_spec.ClearField(appinfo.FieldReleaseDate, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.Developer(); ok {
+	if value, ok := _u.mutation.Developer(); ok {
 		_spec.SetField(appinfo.FieldDeveloper, field.TypeString, value)
 	}
-	if aiuo.mutation.DeveloperCleared() {
+	if _u.mutation.DeveloperCleared() {
 		_spec.ClearField(appinfo.FieldDeveloper, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.Publisher(); ok {
+	if value, ok := _u.mutation.Publisher(); ok {
 		_spec.SetField(appinfo.FieldPublisher, field.TypeString, value)
 	}
-	if aiuo.mutation.PublisherCleared() {
+	if _u.mutation.PublisherCleared() {
 		_spec.ClearField(appinfo.FieldPublisher, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.Tags(); ok {
+	if value, ok := _u.mutation.Tags(); ok {
 		_spec.SetField(appinfo.FieldTags, field.TypeJSON, value)
 	}
-	if value, ok := aiuo.mutation.AppendedTags(); ok {
+	if value, ok := _u.mutation.AppendedTags(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, appinfo.FieldTags, value)
 		})
 	}
-	if value, ok := aiuo.mutation.AlternativeNames(); ok {
+	if value, ok := _u.mutation.AlternativeNames(); ok {
 		_spec.SetField(appinfo.FieldAlternativeNames, field.TypeJSON, value)
 	}
-	if value, ok := aiuo.mutation.AppendedAlternativeNames(); ok {
+	if value, ok := _u.mutation.AppendedAlternativeNames(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, appinfo.FieldAlternativeNames, value)
 		})
 	}
-	if value, ok := aiuo.mutation.RawData(); ok {
+	if value, ok := _u.mutation.RawData(); ok {
 		_spec.SetField(appinfo.FieldRawData, field.TypeString, value)
 	}
-	if value, ok := aiuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appinfo.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := aiuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(appinfo.FieldCreatedAt, field.TypeTime, value)
 	}
-	_node = &AppInfo{config: aiuo.config}
+	_node = &AppInfo{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, aiuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appinfo.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1149,6 +1149,6 @@ func (aiuo *AppInfoUpdateOne) sqlSave(ctx context.Context) (_node *AppInfo, err 
 		}
 		return nil, err
 	}
-	aiuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

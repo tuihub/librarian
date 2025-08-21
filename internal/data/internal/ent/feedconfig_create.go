@@ -29,224 +29,224 @@ type FeedConfigCreate struct {
 }
 
 // SetUserFeedConfig sets the "user_feed_config" field.
-func (fcc *FeedConfigCreate) SetUserFeedConfig(mi model.InternalID) *FeedConfigCreate {
-	fcc.mutation.SetUserFeedConfig(mi)
-	return fcc
+func (_c *FeedConfigCreate) SetUserFeedConfig(v model.InternalID) *FeedConfigCreate {
+	_c.mutation.SetUserFeedConfig(v)
+	return _c
 }
 
 // SetName sets the "name" field.
-func (fcc *FeedConfigCreate) SetName(s string) *FeedConfigCreate {
-	fcc.mutation.SetName(s)
-	return fcc
+func (_c *FeedConfigCreate) SetName(v string) *FeedConfigCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (fcc *FeedConfigCreate) SetDescription(s string) *FeedConfigCreate {
-	fcc.mutation.SetDescription(s)
-	return fcc
+func (_c *FeedConfigCreate) SetDescription(v string) *FeedConfigCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetSource sets the "source" field.
-func (fcc *FeedConfigCreate) SetSource(mr *model.FeatureRequest) *FeedConfigCreate {
-	fcc.mutation.SetSource(mr)
-	return fcc
+func (_c *FeedConfigCreate) SetSource(v *model.FeatureRequest) *FeedConfigCreate {
+	_c.mutation.SetSource(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (fcc *FeedConfigCreate) SetStatus(f feedconfig.Status) *FeedConfigCreate {
-	fcc.mutation.SetStatus(f)
-	return fcc
+func (_c *FeedConfigCreate) SetStatus(v feedconfig.Status) *FeedConfigCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetCategory sets the "category" field.
-func (fcc *FeedConfigCreate) SetCategory(s string) *FeedConfigCreate {
-	fcc.mutation.SetCategory(s)
-	return fcc
+func (_c *FeedConfigCreate) SetCategory(v string) *FeedConfigCreate {
+	_c.mutation.SetCategory(v)
+	return _c
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (fcc *FeedConfigCreate) SetPullInterval(t time.Duration) *FeedConfigCreate {
-	fcc.mutation.SetPullInterval(t)
-	return fcc
+func (_c *FeedConfigCreate) SetPullInterval(v time.Duration) *FeedConfigCreate {
+	_c.mutation.SetPullInterval(v)
+	return _c
 }
 
 // SetHideItems sets the "hide_items" field.
-func (fcc *FeedConfigCreate) SetHideItems(b bool) *FeedConfigCreate {
-	fcc.mutation.SetHideItems(b)
-	return fcc
+func (_c *FeedConfigCreate) SetHideItems(v bool) *FeedConfigCreate {
+	_c.mutation.SetHideItems(v)
+	return _c
 }
 
 // SetNillableHideItems sets the "hide_items" field if the given value is not nil.
-func (fcc *FeedConfigCreate) SetNillableHideItems(b *bool) *FeedConfigCreate {
-	if b != nil {
-		fcc.SetHideItems(*b)
+func (_c *FeedConfigCreate) SetNillableHideItems(v *bool) *FeedConfigCreate {
+	if v != nil {
+		_c.SetHideItems(*v)
 	}
-	return fcc
+	return _c
 }
 
 // SetLatestPullAt sets the "latest_pull_at" field.
-func (fcc *FeedConfigCreate) SetLatestPullAt(t time.Time) *FeedConfigCreate {
-	fcc.mutation.SetLatestPullAt(t)
-	return fcc
+func (_c *FeedConfigCreate) SetLatestPullAt(v time.Time) *FeedConfigCreate {
+	_c.mutation.SetLatestPullAt(v)
+	return _c
 }
 
 // SetNillableLatestPullAt sets the "latest_pull_at" field if the given value is not nil.
-func (fcc *FeedConfigCreate) SetNillableLatestPullAt(t *time.Time) *FeedConfigCreate {
-	if t != nil {
-		fcc.SetLatestPullAt(*t)
+func (_c *FeedConfigCreate) SetNillableLatestPullAt(v *time.Time) *FeedConfigCreate {
+	if v != nil {
+		_c.SetLatestPullAt(*v)
 	}
-	return fcc
+	return _c
 }
 
 // SetLatestPullStatus sets the "latest_pull_status" field.
-func (fcc *FeedConfigCreate) SetLatestPullStatus(fps feedconfig.LatestPullStatus) *FeedConfigCreate {
-	fcc.mutation.SetLatestPullStatus(fps)
-	return fcc
+func (_c *FeedConfigCreate) SetLatestPullStatus(v feedconfig.LatestPullStatus) *FeedConfigCreate {
+	_c.mutation.SetLatestPullStatus(v)
+	return _c
 }
 
 // SetLatestPullMessage sets the "latest_pull_message" field.
-func (fcc *FeedConfigCreate) SetLatestPullMessage(s string) *FeedConfigCreate {
-	fcc.mutation.SetLatestPullMessage(s)
-	return fcc
+func (_c *FeedConfigCreate) SetLatestPullMessage(v string) *FeedConfigCreate {
+	_c.mutation.SetLatestPullMessage(v)
+	return _c
 }
 
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
-func (fcc *FeedConfigCreate) SetNextPullBeginAt(t time.Time) *FeedConfigCreate {
-	fcc.mutation.SetNextPullBeginAt(t)
-	return fcc
+func (_c *FeedConfigCreate) SetNextPullBeginAt(v time.Time) *FeedConfigCreate {
+	_c.mutation.SetNextPullBeginAt(v)
+	return _c
 }
 
 // SetNillableNextPullBeginAt sets the "next_pull_begin_at" field if the given value is not nil.
-func (fcc *FeedConfigCreate) SetNillableNextPullBeginAt(t *time.Time) *FeedConfigCreate {
-	if t != nil {
-		fcc.SetNextPullBeginAt(*t)
+func (_c *FeedConfigCreate) SetNillableNextPullBeginAt(v *time.Time) *FeedConfigCreate {
+	if v != nil {
+		_c.SetNextPullBeginAt(*v)
 	}
-	return fcc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fcc *FeedConfigCreate) SetUpdatedAt(t time.Time) *FeedConfigCreate {
-	fcc.mutation.SetUpdatedAt(t)
-	return fcc
+func (_c *FeedConfigCreate) SetUpdatedAt(v time.Time) *FeedConfigCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (fcc *FeedConfigCreate) SetNillableUpdatedAt(t *time.Time) *FeedConfigCreate {
-	if t != nil {
-		fcc.SetUpdatedAt(*t)
+func (_c *FeedConfigCreate) SetNillableUpdatedAt(v *time.Time) *FeedConfigCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return fcc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fcc *FeedConfigCreate) SetCreatedAt(t time.Time) *FeedConfigCreate {
-	fcc.mutation.SetCreatedAt(t)
-	return fcc
+func (_c *FeedConfigCreate) SetCreatedAt(v time.Time) *FeedConfigCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fcc *FeedConfigCreate) SetNillableCreatedAt(t *time.Time) *FeedConfigCreate {
-	if t != nil {
-		fcc.SetCreatedAt(*t)
+func (_c *FeedConfigCreate) SetNillableCreatedAt(v *time.Time) *FeedConfigCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return fcc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (fcc *FeedConfigCreate) SetID(mi model.InternalID) *FeedConfigCreate {
-	fcc.mutation.SetID(mi)
-	return fcc
+func (_c *FeedConfigCreate) SetID(v model.InternalID) *FeedConfigCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (fcc *FeedConfigCreate) SetOwnerID(id model.InternalID) *FeedConfigCreate {
-	fcc.mutation.SetOwnerID(id)
-	return fcc
+func (_c *FeedConfigCreate) SetOwnerID(id model.InternalID) *FeedConfigCreate {
+	_c.mutation.SetOwnerID(id)
+	return _c
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (fcc *FeedConfigCreate) SetOwner(u *User) *FeedConfigCreate {
-	return fcc.SetOwnerID(u.ID)
+func (_c *FeedConfigCreate) SetOwner(v *User) *FeedConfigCreate {
+	return _c.SetOwnerID(v.ID)
 }
 
 // SetFeedID sets the "feed" edge to the Feed entity by ID.
-func (fcc *FeedConfigCreate) SetFeedID(id model.InternalID) *FeedConfigCreate {
-	fcc.mutation.SetFeedID(id)
-	return fcc
+func (_c *FeedConfigCreate) SetFeedID(id model.InternalID) *FeedConfigCreate {
+	_c.mutation.SetFeedID(id)
+	return _c
 }
 
 // SetNillableFeedID sets the "feed" edge to the Feed entity by ID if the given value is not nil.
-func (fcc *FeedConfigCreate) SetNillableFeedID(id *model.InternalID) *FeedConfigCreate {
+func (_c *FeedConfigCreate) SetNillableFeedID(id *model.InternalID) *FeedConfigCreate {
 	if id != nil {
-		fcc = fcc.SetFeedID(*id)
+		_c = _c.SetFeedID(*id)
 	}
-	return fcc
+	return _c
 }
 
 // SetFeed sets the "feed" edge to the Feed entity.
-func (fcc *FeedConfigCreate) SetFeed(f *Feed) *FeedConfigCreate {
-	return fcc.SetFeedID(f.ID)
+func (_c *FeedConfigCreate) SetFeed(v *Feed) *FeedConfigCreate {
+	return _c.SetFeedID(v.ID)
 }
 
 // AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
-func (fcc *FeedConfigCreate) AddNotifySourceIDs(ids ...model.InternalID) *FeedConfigCreate {
-	fcc.mutation.AddNotifySourceIDs(ids...)
-	return fcc
+func (_c *FeedConfigCreate) AddNotifySourceIDs(ids ...model.InternalID) *FeedConfigCreate {
+	_c.mutation.AddNotifySourceIDs(ids...)
+	return _c
 }
 
 // AddNotifySource adds the "notify_source" edges to the NotifySource entity.
-func (fcc *FeedConfigCreate) AddNotifySource(n ...*NotifySource) *FeedConfigCreate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_c *FeedConfigCreate) AddNotifySource(v ...*NotifySource) *FeedConfigCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcc.AddNotifySourceIDs(ids...)
+	return _c.AddNotifySourceIDs(ids...)
 }
 
 // AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by IDs.
-func (fcc *FeedConfigCreate) AddFeedActionSetIDs(ids ...model.InternalID) *FeedConfigCreate {
-	fcc.mutation.AddFeedActionSetIDs(ids...)
-	return fcc
+func (_c *FeedConfigCreate) AddFeedActionSetIDs(ids ...model.InternalID) *FeedConfigCreate {
+	_c.mutation.AddFeedActionSetIDs(ids...)
+	return _c
 }
 
 // AddFeedActionSet adds the "feed_action_set" edges to the FeedActionSet entity.
-func (fcc *FeedConfigCreate) AddFeedActionSet(f ...*FeedActionSet) *FeedConfigCreate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_c *FeedConfigCreate) AddFeedActionSet(v ...*FeedActionSet) *FeedConfigCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcc.AddFeedActionSetIDs(ids...)
+	return _c.AddFeedActionSetIDs(ids...)
 }
 
 // AddFeedConfigActionIDs adds the "feed_config_action" edge to the FeedConfigAction entity by IDs.
-func (fcc *FeedConfigCreate) AddFeedConfigActionIDs(ids ...int) *FeedConfigCreate {
-	fcc.mutation.AddFeedConfigActionIDs(ids...)
-	return fcc
+func (_c *FeedConfigCreate) AddFeedConfigActionIDs(ids ...int) *FeedConfigCreate {
+	_c.mutation.AddFeedConfigActionIDs(ids...)
+	return _c
 }
 
 // AddFeedConfigAction adds the "feed_config_action" edges to the FeedConfigAction entity.
-func (fcc *FeedConfigCreate) AddFeedConfigAction(f ...*FeedConfigAction) *FeedConfigCreate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_c *FeedConfigCreate) AddFeedConfigAction(v ...*FeedConfigAction) *FeedConfigCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fcc.AddFeedConfigActionIDs(ids...)
+	return _c.AddFeedConfigActionIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
-func (fcc *FeedConfigCreate) Mutation() *FeedConfigMutation {
-	return fcc.mutation
+func (_c *FeedConfigCreate) Mutation() *FeedConfigMutation {
+	return _c.mutation
 }
 
 // Save creates the FeedConfig in the database.
-func (fcc *FeedConfigCreate) Save(ctx context.Context) (*FeedConfig, error) {
-	fcc.defaults()
-	return withHooks(ctx, fcc.sqlSave, fcc.mutation, fcc.hooks)
+func (_c *FeedConfigCreate) Save(ctx context.Context) (*FeedConfig, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (fcc *FeedConfigCreate) SaveX(ctx context.Context) *FeedConfig {
-	v, err := fcc.Save(ctx)
+func (_c *FeedConfigCreate) SaveX(ctx context.Context) *FeedConfig {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -254,108 +254,108 @@ func (fcc *FeedConfigCreate) SaveX(ctx context.Context) *FeedConfig {
 }
 
 // Exec executes the query.
-func (fcc *FeedConfigCreate) Exec(ctx context.Context) error {
-	_, err := fcc.Save(ctx)
+func (_c *FeedConfigCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fcc *FeedConfigCreate) ExecX(ctx context.Context) {
-	if err := fcc.Exec(ctx); err != nil {
+func (_c *FeedConfigCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fcc *FeedConfigCreate) defaults() {
-	if _, ok := fcc.mutation.HideItems(); !ok {
+func (_c *FeedConfigCreate) defaults() {
+	if _, ok := _c.mutation.HideItems(); !ok {
 		v := feedconfig.DefaultHideItems
-		fcc.mutation.SetHideItems(v)
+		_c.mutation.SetHideItems(v)
 	}
-	if _, ok := fcc.mutation.LatestPullAt(); !ok {
+	if _, ok := _c.mutation.LatestPullAt(); !ok {
 		v := feedconfig.DefaultLatestPullAt
-		fcc.mutation.SetLatestPullAt(v)
+		_c.mutation.SetLatestPullAt(v)
 	}
-	if _, ok := fcc.mutation.NextPullBeginAt(); !ok {
+	if _, ok := _c.mutation.NextPullBeginAt(); !ok {
 		v := feedconfig.DefaultNextPullBeginAt
-		fcc.mutation.SetNextPullBeginAt(v)
+		_c.mutation.SetNextPullBeginAt(v)
 	}
-	if _, ok := fcc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := feedconfig.DefaultUpdatedAt()
-		fcc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := fcc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := feedconfig.DefaultCreatedAt()
-		fcc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fcc *FeedConfigCreate) check() error {
-	if _, ok := fcc.mutation.UserFeedConfig(); !ok {
+func (_c *FeedConfigCreate) check() error {
+	if _, ok := _c.mutation.UserFeedConfig(); !ok {
 		return &ValidationError{Name: "user_feed_config", err: errors.New(`ent: missing required field "FeedConfig.user_feed_config"`)}
 	}
-	if _, ok := fcc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "FeedConfig.name"`)}
 	}
-	if _, ok := fcc.mutation.Description(); !ok {
+	if _, ok := _c.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "FeedConfig.description"`)}
 	}
-	if _, ok := fcc.mutation.Source(); !ok {
+	if _, ok := _c.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "FeedConfig.source"`)}
 	}
-	if _, ok := fcc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "FeedConfig.status"`)}
 	}
-	if v, ok := fcc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := feedconfig.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
-	if _, ok := fcc.mutation.Category(); !ok {
+	if _, ok := _c.mutation.Category(); !ok {
 		return &ValidationError{Name: "category", err: errors.New(`ent: missing required field "FeedConfig.category"`)}
 	}
-	if _, ok := fcc.mutation.PullInterval(); !ok {
+	if _, ok := _c.mutation.PullInterval(); !ok {
 		return &ValidationError{Name: "pull_interval", err: errors.New(`ent: missing required field "FeedConfig.pull_interval"`)}
 	}
-	if _, ok := fcc.mutation.HideItems(); !ok {
+	if _, ok := _c.mutation.HideItems(); !ok {
 		return &ValidationError{Name: "hide_items", err: errors.New(`ent: missing required field "FeedConfig.hide_items"`)}
 	}
-	if _, ok := fcc.mutation.LatestPullAt(); !ok {
+	if _, ok := _c.mutation.LatestPullAt(); !ok {
 		return &ValidationError{Name: "latest_pull_at", err: errors.New(`ent: missing required field "FeedConfig.latest_pull_at"`)}
 	}
-	if _, ok := fcc.mutation.LatestPullStatus(); !ok {
+	if _, ok := _c.mutation.LatestPullStatus(); !ok {
 		return &ValidationError{Name: "latest_pull_status", err: errors.New(`ent: missing required field "FeedConfig.latest_pull_status"`)}
 	}
-	if v, ok := fcc.mutation.LatestPullStatus(); ok {
+	if v, ok := _c.mutation.LatestPullStatus(); ok {
 		if err := feedconfig.LatestPullStatusValidator(v); err != nil {
 			return &ValidationError{Name: "latest_pull_status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.latest_pull_status": %w`, err)}
 		}
 	}
-	if _, ok := fcc.mutation.LatestPullMessage(); !ok {
+	if _, ok := _c.mutation.LatestPullMessage(); !ok {
 		return &ValidationError{Name: "latest_pull_message", err: errors.New(`ent: missing required field "FeedConfig.latest_pull_message"`)}
 	}
-	if _, ok := fcc.mutation.NextPullBeginAt(); !ok {
+	if _, ok := _c.mutation.NextPullBeginAt(); !ok {
 		return &ValidationError{Name: "next_pull_begin_at", err: errors.New(`ent: missing required field "FeedConfig.next_pull_begin_at"`)}
 	}
-	if _, ok := fcc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "FeedConfig.updated_at"`)}
 	}
-	if _, ok := fcc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedConfig.created_at"`)}
 	}
-	if len(fcc.mutation.OwnerIDs()) == 0 {
+	if len(_c.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "FeedConfig.owner"`)}
 	}
 	return nil
 }
 
-func (fcc *FeedConfigCreate) sqlSave(ctx context.Context) (*FeedConfig, error) {
-	if err := fcc.check(); err != nil {
+func (_c *FeedConfigCreate) sqlSave(ctx context.Context) (*FeedConfig, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := fcc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, fcc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -365,74 +365,74 @@ func (fcc *FeedConfigCreate) sqlSave(ctx context.Context) (*FeedConfig, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	fcc.mutation.id = &_node.ID
-	fcc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
+func (_c *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 	var (
-		_node = &FeedConfig{config: fcc.config}
+		_node = &FeedConfig{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(feedconfig.Table, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = fcc.conflict
-	if id, ok := fcc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := fcc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(feedconfig.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := fcc.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(feedconfig.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := fcc.mutation.Source(); ok {
+	if value, ok := _c.mutation.Source(); ok {
 		_spec.SetField(feedconfig.FieldSource, field.TypeJSON, value)
 		_node.Source = value
 	}
-	if value, ok := fcc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := fcc.mutation.Category(); ok {
+	if value, ok := _c.mutation.Category(); ok {
 		_spec.SetField(feedconfig.FieldCategory, field.TypeString, value)
 		_node.Category = value
 	}
-	if value, ok := fcc.mutation.PullInterval(); ok {
+	if value, ok := _c.mutation.PullInterval(); ok {
 		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 		_node.PullInterval = value
 	}
-	if value, ok := fcc.mutation.HideItems(); ok {
+	if value, ok := _c.mutation.HideItems(); ok {
 		_spec.SetField(feedconfig.FieldHideItems, field.TypeBool, value)
 		_node.HideItems = value
 	}
-	if value, ok := fcc.mutation.LatestPullAt(); ok {
+	if value, ok := _c.mutation.LatestPullAt(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
 		_node.LatestPullAt = value
 	}
-	if value, ok := fcc.mutation.LatestPullStatus(); ok {
+	if value, ok := _c.mutation.LatestPullStatus(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullStatus, field.TypeEnum, value)
 		_node.LatestPullStatus = value
 	}
-	if value, ok := fcc.mutation.LatestPullMessage(); ok {
+	if value, ok := _c.mutation.LatestPullMessage(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullMessage, field.TypeString, value)
 		_node.LatestPullMessage = value
 	}
-	if value, ok := fcc.mutation.NextPullBeginAt(); ok {
+	if value, ok := _c.mutation.NextPullBeginAt(); ok {
 		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)
 		_node.NextPullBeginAt = value
 	}
-	if value, ok := fcc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedconfig.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := fcc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := fcc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -449,7 +449,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		_node.UserFeedConfig = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fcc.mutation.FeedIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FeedIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: false,
@@ -465,7 +465,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fcc.mutation.NotifySourceIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -481,7 +481,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fcc.mutation.FeedActionSetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FeedActionSetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -495,13 +495,13 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &FeedConfigActionCreate{config: fcc.config, mutation: newFeedConfigActionMutation(fcc.config, OpCreate)}
+		createE := &FeedConfigActionCreate{config: _c.config, mutation: newFeedConfigActionMutation(_c.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fcc.mutation.FeedConfigActionIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FeedConfigActionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -536,10 +536,10 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 //			SetUserFeedConfig(v+v).
 //		}).
 //		Exec(ctx)
-func (fcc *FeedConfigCreate) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertOne {
-	fcc.conflict = opts
+func (_c *FeedConfigCreate) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertOne {
+	_c.conflict = opts
 	return &FeedConfigUpsertOne{
-		create: fcc,
+		create: _c,
 	}
 }
 
@@ -549,10 +549,10 @@ func (fcc *FeedConfigCreate) OnConflict(opts ...sql.ConflictOption) *FeedConfigU
 //	client.FeedConfig.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (fcc *FeedConfigCreate) OnConflictColumns(columns ...string) *FeedConfigUpsertOne {
-	fcc.conflict = append(fcc.conflict, sql.ConflictColumns(columns...))
+func (_c *FeedConfigCreate) OnConflictColumns(columns ...string) *FeedConfigUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FeedConfigUpsertOne{
-		create: fcc,
+		create: _c,
 	}
 }
 
@@ -1036,16 +1036,16 @@ type FeedConfigCreateBulk struct {
 }
 
 // Save creates the FeedConfig entities in the database.
-func (fccb *FeedConfigCreateBulk) Save(ctx context.Context) ([]*FeedConfig, error) {
-	if fccb.err != nil {
-		return nil, fccb.err
+func (_c *FeedConfigCreateBulk) Save(ctx context.Context) ([]*FeedConfig, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(fccb.builders))
-	nodes := make([]*FeedConfig, len(fccb.builders))
-	mutators := make([]Mutator, len(fccb.builders))
-	for i := range fccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*FeedConfig, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := fccb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FeedConfigMutation)
@@ -1059,12 +1059,12 @@ func (fccb *FeedConfigCreateBulk) Save(ctx context.Context) ([]*FeedConfig, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, fccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = fccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, fccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1088,7 +1088,7 @@ func (fccb *FeedConfigCreateBulk) Save(ctx context.Context) ([]*FeedConfig, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, fccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1096,8 +1096,8 @@ func (fccb *FeedConfigCreateBulk) Save(ctx context.Context) ([]*FeedConfig, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fccb *FeedConfigCreateBulk) SaveX(ctx context.Context) []*FeedConfig {
-	v, err := fccb.Save(ctx)
+func (_c *FeedConfigCreateBulk) SaveX(ctx context.Context) []*FeedConfig {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1105,14 +1105,14 @@ func (fccb *FeedConfigCreateBulk) SaveX(ctx context.Context) []*FeedConfig {
 }
 
 // Exec executes the query.
-func (fccb *FeedConfigCreateBulk) Exec(ctx context.Context) error {
-	_, err := fccb.Save(ctx)
+func (_c *FeedConfigCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fccb *FeedConfigCreateBulk) ExecX(ctx context.Context) {
-	if err := fccb.Exec(ctx); err != nil {
+func (_c *FeedConfigCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1132,10 +1132,10 @@ func (fccb *FeedConfigCreateBulk) ExecX(ctx context.Context) {
 //			SetUserFeedConfig(v+v).
 //		}).
 //		Exec(ctx)
-func (fccb *FeedConfigCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertBulk {
-	fccb.conflict = opts
+func (_c *FeedConfigCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertBulk {
+	_c.conflict = opts
 	return &FeedConfigUpsertBulk{
-		create: fccb,
+		create: _c,
 	}
 }
 
@@ -1145,10 +1145,10 @@ func (fccb *FeedConfigCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedCo
 //	client.FeedConfig.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (fccb *FeedConfigCreateBulk) OnConflictColumns(columns ...string) *FeedConfigUpsertBulk {
-	fccb.conflict = append(fccb.conflict, sql.ConflictColumns(columns...))
+func (_c *FeedConfigCreateBulk) OnConflictColumns(columns ...string) *FeedConfigUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FeedConfigUpsertBulk{
-		create: fccb,
+		create: _c,
 	}
 }
 

@@ -29,142 +29,142 @@ type NotifyFlowCreate struct {
 }
 
 // SetName sets the "name" field.
-func (nfc *NotifyFlowCreate) SetName(s string) *NotifyFlowCreate {
-	nfc.mutation.SetName(s)
-	return nfc
+func (_c *NotifyFlowCreate) SetName(v string) *NotifyFlowCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (nfc *NotifyFlowCreate) SetDescription(s string) *NotifyFlowCreate {
-	nfc.mutation.SetDescription(s)
-	return nfc
+func (_c *NotifyFlowCreate) SetDescription(v string) *NotifyFlowCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (nfc *NotifyFlowCreate) SetStatus(n notifyflow.Status) *NotifyFlowCreate {
-	nfc.mutation.SetStatus(n)
-	return nfc
+func (_c *NotifyFlowCreate) SetStatus(v notifyflow.Status) *NotifyFlowCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (nfc *NotifyFlowCreate) SetUpdatedAt(t time.Time) *NotifyFlowCreate {
-	nfc.mutation.SetUpdatedAt(t)
-	return nfc
+func (_c *NotifyFlowCreate) SetUpdatedAt(v time.Time) *NotifyFlowCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (nfc *NotifyFlowCreate) SetNillableUpdatedAt(t *time.Time) *NotifyFlowCreate {
-	if t != nil {
-		nfc.SetUpdatedAt(*t)
+func (_c *NotifyFlowCreate) SetNillableUpdatedAt(v *time.Time) *NotifyFlowCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return nfc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (nfc *NotifyFlowCreate) SetCreatedAt(t time.Time) *NotifyFlowCreate {
-	nfc.mutation.SetCreatedAt(t)
-	return nfc
+func (_c *NotifyFlowCreate) SetCreatedAt(v time.Time) *NotifyFlowCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (nfc *NotifyFlowCreate) SetNillableCreatedAt(t *time.Time) *NotifyFlowCreate {
-	if t != nil {
-		nfc.SetCreatedAt(*t)
+func (_c *NotifyFlowCreate) SetNillableCreatedAt(v *time.Time) *NotifyFlowCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return nfc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (nfc *NotifyFlowCreate) SetID(mi model.InternalID) *NotifyFlowCreate {
-	nfc.mutation.SetID(mi)
-	return nfc
+func (_c *NotifyFlowCreate) SetID(v model.InternalID) *NotifyFlowCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (nfc *NotifyFlowCreate) SetOwnerID(id model.InternalID) *NotifyFlowCreate {
-	nfc.mutation.SetOwnerID(id)
-	return nfc
+func (_c *NotifyFlowCreate) SetOwnerID(id model.InternalID) *NotifyFlowCreate {
+	_c.mutation.SetOwnerID(id)
+	return _c
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (nfc *NotifyFlowCreate) SetOwner(u *User) *NotifyFlowCreate {
-	return nfc.SetOwnerID(u.ID)
+func (_c *NotifyFlowCreate) SetOwner(v *User) *NotifyFlowCreate {
+	return _c.SetOwnerID(v.ID)
 }
 
 // AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by IDs.
-func (nfc *NotifyFlowCreate) AddNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowCreate {
-	nfc.mutation.AddNotifyTargetIDs(ids...)
-	return nfc
+func (_c *NotifyFlowCreate) AddNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowCreate {
+	_c.mutation.AddNotifyTargetIDs(ids...)
+	return _c
 }
 
 // AddNotifyTarget adds the "notify_target" edges to the NotifyTarget entity.
-func (nfc *NotifyFlowCreate) AddNotifyTarget(n ...*NotifyTarget) *NotifyFlowCreate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_c *NotifyFlowCreate) AddNotifyTarget(v ...*NotifyTarget) *NotifyFlowCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfc.AddNotifyTargetIDs(ids...)
+	return _c.AddNotifyTargetIDs(ids...)
 }
 
 // AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
-func (nfc *NotifyFlowCreate) AddNotifySourceIDs(ids ...model.InternalID) *NotifyFlowCreate {
-	nfc.mutation.AddNotifySourceIDs(ids...)
-	return nfc
+func (_c *NotifyFlowCreate) AddNotifySourceIDs(ids ...model.InternalID) *NotifyFlowCreate {
+	_c.mutation.AddNotifySourceIDs(ids...)
+	return _c
 }
 
 // AddNotifySource adds the "notify_source" edges to the NotifySource entity.
-func (nfc *NotifyFlowCreate) AddNotifySource(n ...*NotifySource) *NotifyFlowCreate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_c *NotifyFlowCreate) AddNotifySource(v ...*NotifySource) *NotifyFlowCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfc.AddNotifySourceIDs(ids...)
+	return _c.AddNotifySourceIDs(ids...)
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (nfc *NotifyFlowCreate) AddNotifyFlowTargetIDs(ids ...int) *NotifyFlowCreate {
-	nfc.mutation.AddNotifyFlowTargetIDs(ids...)
-	return nfc
+func (_c *NotifyFlowCreate) AddNotifyFlowTargetIDs(ids ...int) *NotifyFlowCreate {
+	_c.mutation.AddNotifyFlowTargetIDs(ids...)
+	return _c
 }
 
 // AddNotifyFlowTarget adds the "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (nfc *NotifyFlowCreate) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyFlowCreate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_c *NotifyFlowCreate) AddNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyFlowCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfc.AddNotifyFlowTargetIDs(ids...)
+	return _c.AddNotifyFlowTargetIDs(ids...)
 }
 
 // AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (nfc *NotifyFlowCreate) AddNotifyFlowSourceIDs(ids ...int) *NotifyFlowCreate {
-	nfc.mutation.AddNotifyFlowSourceIDs(ids...)
-	return nfc
+func (_c *NotifyFlowCreate) AddNotifyFlowSourceIDs(ids ...int) *NotifyFlowCreate {
+	_c.mutation.AddNotifyFlowSourceIDs(ids...)
+	return _c
 }
 
 // AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nfc *NotifyFlowCreate) AddNotifyFlowSource(n ...*NotifyFlowSource) *NotifyFlowCreate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_c *NotifyFlowCreate) AddNotifyFlowSource(v ...*NotifyFlowSource) *NotifyFlowCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfc.AddNotifyFlowSourceIDs(ids...)
+	return _c.AddNotifyFlowSourceIDs(ids...)
 }
 
 // Mutation returns the NotifyFlowMutation object of the builder.
-func (nfc *NotifyFlowCreate) Mutation() *NotifyFlowMutation {
-	return nfc.mutation
+func (_c *NotifyFlowCreate) Mutation() *NotifyFlowMutation {
+	return _c.mutation
 }
 
 // Save creates the NotifyFlow in the database.
-func (nfc *NotifyFlowCreate) Save(ctx context.Context) (*NotifyFlow, error) {
-	nfc.defaults()
-	return withHooks(ctx, nfc.sqlSave, nfc.mutation, nfc.hooks)
+func (_c *NotifyFlowCreate) Save(ctx context.Context) (*NotifyFlow, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (nfc *NotifyFlowCreate) SaveX(ctx context.Context) *NotifyFlow {
-	v, err := nfc.Save(ctx)
+func (_c *NotifyFlowCreate) SaveX(ctx context.Context) *NotifyFlow {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -172,64 +172,64 @@ func (nfc *NotifyFlowCreate) SaveX(ctx context.Context) *NotifyFlow {
 }
 
 // Exec executes the query.
-func (nfc *NotifyFlowCreate) Exec(ctx context.Context) error {
-	_, err := nfc.Save(ctx)
+func (_c *NotifyFlowCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nfc *NotifyFlowCreate) ExecX(ctx context.Context) {
-	if err := nfc.Exec(ctx); err != nil {
+func (_c *NotifyFlowCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (nfc *NotifyFlowCreate) defaults() {
-	if _, ok := nfc.mutation.UpdatedAt(); !ok {
+func (_c *NotifyFlowCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := notifyflow.DefaultUpdatedAt()
-		nfc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := nfc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := notifyflow.DefaultCreatedAt()
-		nfc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nfc *NotifyFlowCreate) check() error {
-	if _, ok := nfc.mutation.Name(); !ok {
+func (_c *NotifyFlowCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "NotifyFlow.name"`)}
 	}
-	if _, ok := nfc.mutation.Description(); !ok {
+	if _, ok := _c.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "NotifyFlow.description"`)}
 	}
-	if _, ok := nfc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "NotifyFlow.status"`)}
 	}
-	if v, ok := nfc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := notifyflow.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyFlow.status": %w`, err)}
 		}
 	}
-	if _, ok := nfc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "NotifyFlow.updated_at"`)}
 	}
-	if _, ok := nfc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "NotifyFlow.created_at"`)}
 	}
-	if len(nfc.mutation.OwnerIDs()) == 0 {
+	if len(_c.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "NotifyFlow.owner"`)}
 	}
 	return nil
 }
 
-func (nfc *NotifyFlowCreate) sqlSave(ctx context.Context) (*NotifyFlow, error) {
-	if err := nfc.check(); err != nil {
+func (_c *NotifyFlowCreate) sqlSave(ctx context.Context) (*NotifyFlow, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := nfc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, nfc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -239,42 +239,42 @@ func (nfc *NotifyFlowCreate) sqlSave(ctx context.Context) (*NotifyFlow, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	nfc.mutation.id = &_node.ID
-	nfc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
+func (_c *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 	var (
-		_node = &NotifyFlow{config: nfc.config}
+		_node = &NotifyFlow{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(notifyflow.Table, sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = nfc.conflict
-	if id, ok := nfc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := nfc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(notifyflow.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := nfc.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(notifyflow.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := nfc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(notifyflow.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := nfc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifyflow.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := nfc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(notifyflow.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := nfc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -291,7 +291,7 @@ func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 		_node.user_notify_flow = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nfc.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifyTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -305,13 +305,13 @@ func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowTargetCreate{config: nfc.config, mutation: newNotifyFlowTargetMutation(nfc.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _c.config, mutation: newNotifyFlowTargetMutation(_c.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nfc.mutation.NotifySourceIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -325,13 +325,13 @@ func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nfc.config, mutation: newNotifyFlowSourceMutation(nfc.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _c.config, mutation: newNotifyFlowSourceMutation(_c.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nfc.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -347,7 +347,7 @@ func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nfc.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -382,10 +382,10 @@ func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (nfc *NotifyFlowCreate) OnConflict(opts ...sql.ConflictOption) *NotifyFlowUpsertOne {
-	nfc.conflict = opts
+func (_c *NotifyFlowCreate) OnConflict(opts ...sql.ConflictOption) *NotifyFlowUpsertOne {
+	_c.conflict = opts
 	return &NotifyFlowUpsertOne{
-		create: nfc,
+		create: _c,
 	}
 }
 
@@ -395,10 +395,10 @@ func (nfc *NotifyFlowCreate) OnConflict(opts ...sql.ConflictOption) *NotifyFlowU
 //	client.NotifyFlow.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (nfc *NotifyFlowCreate) OnConflictColumns(columns ...string) *NotifyFlowUpsertOne {
-	nfc.conflict = append(nfc.conflict, sql.ConflictColumns(columns...))
+func (_c *NotifyFlowCreate) OnConflictColumns(columns ...string) *NotifyFlowUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NotifyFlowUpsertOne{
-		create: nfc,
+		create: _c,
 	}
 }
 
@@ -635,16 +635,16 @@ type NotifyFlowCreateBulk struct {
 }
 
 // Save creates the NotifyFlow entities in the database.
-func (nfcb *NotifyFlowCreateBulk) Save(ctx context.Context) ([]*NotifyFlow, error) {
-	if nfcb.err != nil {
-		return nil, nfcb.err
+func (_c *NotifyFlowCreateBulk) Save(ctx context.Context) ([]*NotifyFlow, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(nfcb.builders))
-	nodes := make([]*NotifyFlow, len(nfcb.builders))
-	mutators := make([]Mutator, len(nfcb.builders))
-	for i := range nfcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*NotifyFlow, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := nfcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*NotifyFlowMutation)
@@ -658,12 +658,12 @@ func (nfcb *NotifyFlowCreateBulk) Save(ctx context.Context) ([]*NotifyFlow, erro
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, nfcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = nfcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, nfcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -687,7 +687,7 @@ func (nfcb *NotifyFlowCreateBulk) Save(ctx context.Context) ([]*NotifyFlow, erro
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, nfcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -695,8 +695,8 @@ func (nfcb *NotifyFlowCreateBulk) Save(ctx context.Context) ([]*NotifyFlow, erro
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nfcb *NotifyFlowCreateBulk) SaveX(ctx context.Context) []*NotifyFlow {
-	v, err := nfcb.Save(ctx)
+func (_c *NotifyFlowCreateBulk) SaveX(ctx context.Context) []*NotifyFlow {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -704,14 +704,14 @@ func (nfcb *NotifyFlowCreateBulk) SaveX(ctx context.Context) []*NotifyFlow {
 }
 
 // Exec executes the query.
-func (nfcb *NotifyFlowCreateBulk) Exec(ctx context.Context) error {
-	_, err := nfcb.Save(ctx)
+func (_c *NotifyFlowCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nfcb *NotifyFlowCreateBulk) ExecX(ctx context.Context) {
-	if err := nfcb.Exec(ctx); err != nil {
+func (_c *NotifyFlowCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -731,10 +731,10 @@ func (nfcb *NotifyFlowCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (nfcb *NotifyFlowCreateBulk) OnConflict(opts ...sql.ConflictOption) *NotifyFlowUpsertBulk {
-	nfcb.conflict = opts
+func (_c *NotifyFlowCreateBulk) OnConflict(opts ...sql.ConflictOption) *NotifyFlowUpsertBulk {
+	_c.conflict = opts
 	return &NotifyFlowUpsertBulk{
-		create: nfcb,
+		create: _c,
 	}
 }
 
@@ -744,10 +744,10 @@ func (nfcb *NotifyFlowCreateBulk) OnConflict(opts ...sql.ConflictOption) *Notify
 //	client.NotifyFlow.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (nfcb *NotifyFlowCreateBulk) OnConflictColumns(columns ...string) *NotifyFlowUpsertBulk {
-	nfcb.conflict = append(nfcb.conflict, sql.ConflictColumns(columns...))
+func (_c *NotifyFlowCreateBulk) OnConflictColumns(columns ...string) *NotifyFlowUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NotifyFlowUpsertBulk{
-		create: nfcb,
+		create: _c,
 	}
 }
 

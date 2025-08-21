@@ -14,7 +14,7 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	pb "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/google/wire"

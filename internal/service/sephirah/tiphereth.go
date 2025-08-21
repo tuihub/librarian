@@ -6,9 +6,8 @@ import (
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
-	librarian "github.com/tuihub/protos/pkg/librarian/v1"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	pb "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 func (s *LibrarianSephirahService) GetToken(ctx context.Context, req *sephirah.GetTokenRequest) (
@@ -189,7 +188,7 @@ func (s *LibrarianSephirahService) ListLinkAccounts(ctx context.Context, req *se
 //		res[i].PorterInstance = *porters[i]
 //	}
 //	return &sephirah.ListPortersResponse{
-//		Paging:  &librarian.PagingResponse{TotalSize: total},
+//		Paging:  &pb.PagingResponse{TotalSize: total},
 //		Porters: converter.ToPBPorterList(res),
 //	}, nil
 //}
@@ -241,7 +240,7 @@ func (s *LibrarianSephirahService) ListPorterContexts(
 		return nil, err
 	}
 	return &sephirah.ListPorterContextsResponse{
-		Paging:   &librarian.PagingResponse{TotalSize: total},
+		Paging:   &pb.PagingResponse{TotalSize: total},
 		Contexts: converter.ToPBPorterContextList(contexts),
 	}, nil
 }
@@ -276,7 +275,7 @@ func (s *LibrarianSephirahService) ListPorterDigests(
 		return nil, err
 	}
 	return &sephirah.ListPorterDigestsResponse{
-		Paging:        &librarian.PagingResponse{TotalSize: total},
+		Paging:        &pb.PagingResponse{TotalSize: total},
 		PorterDigests: converter.ToPBPorterDigestList(groups),
 	}, nil
 }

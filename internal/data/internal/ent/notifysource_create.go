@@ -29,132 +29,132 @@ type NotifySourceCreate struct {
 }
 
 // SetFeedConfigID sets the "feed_config_id" field.
-func (nsc *NotifySourceCreate) SetFeedConfigID(mi model.InternalID) *NotifySourceCreate {
-	nsc.mutation.SetFeedConfigID(mi)
-	return nsc
+func (_c *NotifySourceCreate) SetFeedConfigID(v model.InternalID) *NotifySourceCreate {
+	_c.mutation.SetFeedConfigID(v)
+	return _c
 }
 
 // SetNillableFeedConfigID sets the "feed_config_id" field if the given value is not nil.
-func (nsc *NotifySourceCreate) SetNillableFeedConfigID(mi *model.InternalID) *NotifySourceCreate {
-	if mi != nil {
-		nsc.SetFeedConfigID(*mi)
+func (_c *NotifySourceCreate) SetNillableFeedConfigID(v *model.InternalID) *NotifySourceCreate {
+	if v != nil {
+		_c.SetFeedConfigID(*v)
 	}
-	return nsc
+	return _c
 }
 
 // SetFeedItemCollectionID sets the "feed_item_collection_id" field.
-func (nsc *NotifySourceCreate) SetFeedItemCollectionID(mi model.InternalID) *NotifySourceCreate {
-	nsc.mutation.SetFeedItemCollectionID(mi)
-	return nsc
+func (_c *NotifySourceCreate) SetFeedItemCollectionID(v model.InternalID) *NotifySourceCreate {
+	_c.mutation.SetFeedItemCollectionID(v)
+	return _c
 }
 
 // SetNillableFeedItemCollectionID sets the "feed_item_collection_id" field if the given value is not nil.
-func (nsc *NotifySourceCreate) SetNillableFeedItemCollectionID(mi *model.InternalID) *NotifySourceCreate {
-	if mi != nil {
-		nsc.SetFeedItemCollectionID(*mi)
+func (_c *NotifySourceCreate) SetNillableFeedItemCollectionID(v *model.InternalID) *NotifySourceCreate {
+	if v != nil {
+		_c.SetFeedItemCollectionID(*v)
 	}
-	return nsc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (nsc *NotifySourceCreate) SetUpdatedAt(t time.Time) *NotifySourceCreate {
-	nsc.mutation.SetUpdatedAt(t)
-	return nsc
+func (_c *NotifySourceCreate) SetUpdatedAt(v time.Time) *NotifySourceCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (nsc *NotifySourceCreate) SetNillableUpdatedAt(t *time.Time) *NotifySourceCreate {
-	if t != nil {
-		nsc.SetUpdatedAt(*t)
+func (_c *NotifySourceCreate) SetNillableUpdatedAt(v *time.Time) *NotifySourceCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return nsc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (nsc *NotifySourceCreate) SetCreatedAt(t time.Time) *NotifySourceCreate {
-	nsc.mutation.SetCreatedAt(t)
-	return nsc
+func (_c *NotifySourceCreate) SetCreatedAt(v time.Time) *NotifySourceCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (nsc *NotifySourceCreate) SetNillableCreatedAt(t *time.Time) *NotifySourceCreate {
-	if t != nil {
-		nsc.SetCreatedAt(*t)
+func (_c *NotifySourceCreate) SetNillableCreatedAt(v *time.Time) *NotifySourceCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return nsc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (nsc *NotifySourceCreate) SetID(mi model.InternalID) *NotifySourceCreate {
-	nsc.mutation.SetID(mi)
-	return nsc
+func (_c *NotifySourceCreate) SetID(v model.InternalID) *NotifySourceCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (nsc *NotifySourceCreate) SetOwnerID(id model.InternalID) *NotifySourceCreate {
-	nsc.mutation.SetOwnerID(id)
-	return nsc
+func (_c *NotifySourceCreate) SetOwnerID(id model.InternalID) *NotifySourceCreate {
+	_c.mutation.SetOwnerID(id)
+	return _c
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (nsc *NotifySourceCreate) SetOwner(u *User) *NotifySourceCreate {
-	return nsc.SetOwnerID(u.ID)
+func (_c *NotifySourceCreate) SetOwner(v *User) *NotifySourceCreate {
+	return _c.SetOwnerID(v.ID)
 }
 
 // AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (nsc *NotifySourceCreate) AddNotifyFlowIDs(ids ...model.InternalID) *NotifySourceCreate {
-	nsc.mutation.AddNotifyFlowIDs(ids...)
-	return nsc
+func (_c *NotifySourceCreate) AddNotifyFlowIDs(ids ...model.InternalID) *NotifySourceCreate {
+	_c.mutation.AddNotifyFlowIDs(ids...)
+	return _c
 }
 
 // AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
-func (nsc *NotifySourceCreate) AddNotifyFlow(n ...*NotifyFlow) *NotifySourceCreate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_c *NotifySourceCreate) AddNotifyFlow(v ...*NotifyFlow) *NotifySourceCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsc.AddNotifyFlowIDs(ids...)
+	return _c.AddNotifyFlowIDs(ids...)
 }
 
 // SetFeedConfig sets the "feed_config" edge to the FeedConfig entity.
-func (nsc *NotifySourceCreate) SetFeedConfig(f *FeedConfig) *NotifySourceCreate {
-	return nsc.SetFeedConfigID(f.ID)
+func (_c *NotifySourceCreate) SetFeedConfig(v *FeedConfig) *NotifySourceCreate {
+	return _c.SetFeedConfigID(v.ID)
 }
 
 // SetFeedItemCollection sets the "feed_item_collection" edge to the FeedItemCollection entity.
-func (nsc *NotifySourceCreate) SetFeedItemCollection(f *FeedItemCollection) *NotifySourceCreate {
-	return nsc.SetFeedItemCollectionID(f.ID)
+func (_c *NotifySourceCreate) SetFeedItemCollection(v *FeedItemCollection) *NotifySourceCreate {
+	return _c.SetFeedItemCollectionID(v.ID)
 }
 
 // AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (nsc *NotifySourceCreate) AddNotifyFlowSourceIDs(ids ...int) *NotifySourceCreate {
-	nsc.mutation.AddNotifyFlowSourceIDs(ids...)
-	return nsc
+func (_c *NotifySourceCreate) AddNotifyFlowSourceIDs(ids ...int) *NotifySourceCreate {
+	_c.mutation.AddNotifyFlowSourceIDs(ids...)
+	return _c
 }
 
 // AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nsc *NotifySourceCreate) AddNotifyFlowSource(n ...*NotifyFlowSource) *NotifySourceCreate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_c *NotifySourceCreate) AddNotifyFlowSource(v ...*NotifyFlowSource) *NotifySourceCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nsc.AddNotifyFlowSourceIDs(ids...)
+	return _c.AddNotifyFlowSourceIDs(ids...)
 }
 
 // Mutation returns the NotifySourceMutation object of the builder.
-func (nsc *NotifySourceCreate) Mutation() *NotifySourceMutation {
-	return nsc.mutation
+func (_c *NotifySourceCreate) Mutation() *NotifySourceMutation {
+	return _c.mutation
 }
 
 // Save creates the NotifySource in the database.
-func (nsc *NotifySourceCreate) Save(ctx context.Context) (*NotifySource, error) {
-	nsc.defaults()
-	return withHooks(ctx, nsc.sqlSave, nsc.mutation, nsc.hooks)
+func (_c *NotifySourceCreate) Save(ctx context.Context) (*NotifySource, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (nsc *NotifySourceCreate) SaveX(ctx context.Context) *NotifySource {
-	v, err := nsc.Save(ctx)
+func (_c *NotifySourceCreate) SaveX(ctx context.Context) *NotifySource {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -162,50 +162,50 @@ func (nsc *NotifySourceCreate) SaveX(ctx context.Context) *NotifySource {
 }
 
 // Exec executes the query.
-func (nsc *NotifySourceCreate) Exec(ctx context.Context) error {
-	_, err := nsc.Save(ctx)
+func (_c *NotifySourceCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nsc *NotifySourceCreate) ExecX(ctx context.Context) {
-	if err := nsc.Exec(ctx); err != nil {
+func (_c *NotifySourceCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (nsc *NotifySourceCreate) defaults() {
-	if _, ok := nsc.mutation.UpdatedAt(); !ok {
+func (_c *NotifySourceCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := notifysource.DefaultUpdatedAt()
-		nsc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := nsc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := notifysource.DefaultCreatedAt()
-		nsc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nsc *NotifySourceCreate) check() error {
-	if _, ok := nsc.mutation.UpdatedAt(); !ok {
+func (_c *NotifySourceCreate) check() error {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "NotifySource.updated_at"`)}
 	}
-	if _, ok := nsc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "NotifySource.created_at"`)}
 	}
-	if len(nsc.mutation.OwnerIDs()) == 0 {
+	if len(_c.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "NotifySource.owner"`)}
 	}
 	return nil
 }
 
-func (nsc *NotifySourceCreate) sqlSave(ctx context.Context) (*NotifySource, error) {
-	if err := nsc.check(); err != nil {
+func (_c *NotifySourceCreate) sqlSave(ctx context.Context) (*NotifySource, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := nsc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, nsc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -215,30 +215,30 @@ func (nsc *NotifySourceCreate) sqlSave(ctx context.Context) (*NotifySource, erro
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	nsc.mutation.id = &_node.ID
-	nsc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (nsc *NotifySourceCreate) createSpec() (*NotifySource, *sqlgraph.CreateSpec) {
+func (_c *NotifySourceCreate) createSpec() (*NotifySource, *sqlgraph.CreateSpec) {
 	var (
-		_node = &NotifySource{config: nsc.config}
+		_node = &NotifySource{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(notifysource.Table, sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = nsc.conflict
-	if id, ok := nsc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := nsc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifysource.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := nsc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(notifysource.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := nsc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -255,7 +255,7 @@ func (nsc *NotifySourceCreate) createSpec() (*NotifySource, *sqlgraph.CreateSpec
 		_node.user_notify_source = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nsc.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifyFlowIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -269,13 +269,13 @@ func (nsc *NotifySourceCreate) createSpec() (*NotifySource, *sqlgraph.CreateSpec
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nsc.config, mutation: newNotifyFlowSourceMutation(nsc.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _c.config, mutation: newNotifyFlowSourceMutation(_c.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nsc.mutation.FeedConfigIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FeedConfigIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -292,7 +292,7 @@ func (nsc *NotifySourceCreate) createSpec() (*NotifySource, *sqlgraph.CreateSpec
 		_node.FeedConfigID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nsc.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -309,7 +309,7 @@ func (nsc *NotifySourceCreate) createSpec() (*NotifySource, *sqlgraph.CreateSpec
 		_node.FeedItemCollectionID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nsc.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -344,10 +344,10 @@ func (nsc *NotifySourceCreate) createSpec() (*NotifySource, *sqlgraph.CreateSpec
 //			SetFeedConfigID(v+v).
 //		}).
 //		Exec(ctx)
-func (nsc *NotifySourceCreate) OnConflict(opts ...sql.ConflictOption) *NotifySourceUpsertOne {
-	nsc.conflict = opts
+func (_c *NotifySourceCreate) OnConflict(opts ...sql.ConflictOption) *NotifySourceUpsertOne {
+	_c.conflict = opts
 	return &NotifySourceUpsertOne{
-		create: nsc,
+		create: _c,
 	}
 }
 
@@ -357,10 +357,10 @@ func (nsc *NotifySourceCreate) OnConflict(opts ...sql.ConflictOption) *NotifySou
 //	client.NotifySource.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (nsc *NotifySourceCreate) OnConflictColumns(columns ...string) *NotifySourceUpsertOne {
-	nsc.conflict = append(nsc.conflict, sql.ConflictColumns(columns...))
+func (_c *NotifySourceCreate) OnConflictColumns(columns ...string) *NotifySourceUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NotifySourceUpsertOne{
-		create: nsc,
+		create: _c,
 	}
 }
 
@@ -597,16 +597,16 @@ type NotifySourceCreateBulk struct {
 }
 
 // Save creates the NotifySource entities in the database.
-func (nscb *NotifySourceCreateBulk) Save(ctx context.Context) ([]*NotifySource, error) {
-	if nscb.err != nil {
-		return nil, nscb.err
+func (_c *NotifySourceCreateBulk) Save(ctx context.Context) ([]*NotifySource, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(nscb.builders))
-	nodes := make([]*NotifySource, len(nscb.builders))
-	mutators := make([]Mutator, len(nscb.builders))
-	for i := range nscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*NotifySource, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := nscb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*NotifySourceMutation)
@@ -620,12 +620,12 @@ func (nscb *NotifySourceCreateBulk) Save(ctx context.Context) ([]*NotifySource, 
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, nscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = nscb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, nscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -649,7 +649,7 @@ func (nscb *NotifySourceCreateBulk) Save(ctx context.Context) ([]*NotifySource, 
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, nscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -657,8 +657,8 @@ func (nscb *NotifySourceCreateBulk) Save(ctx context.Context) ([]*NotifySource, 
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nscb *NotifySourceCreateBulk) SaveX(ctx context.Context) []*NotifySource {
-	v, err := nscb.Save(ctx)
+func (_c *NotifySourceCreateBulk) SaveX(ctx context.Context) []*NotifySource {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -666,14 +666,14 @@ func (nscb *NotifySourceCreateBulk) SaveX(ctx context.Context) []*NotifySource {
 }
 
 // Exec executes the query.
-func (nscb *NotifySourceCreateBulk) Exec(ctx context.Context) error {
-	_, err := nscb.Save(ctx)
+func (_c *NotifySourceCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nscb *NotifySourceCreateBulk) ExecX(ctx context.Context) {
-	if err := nscb.Exec(ctx); err != nil {
+func (_c *NotifySourceCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -693,10 +693,10 @@ func (nscb *NotifySourceCreateBulk) ExecX(ctx context.Context) {
 //			SetFeedConfigID(v+v).
 //		}).
 //		Exec(ctx)
-func (nscb *NotifySourceCreateBulk) OnConflict(opts ...sql.ConflictOption) *NotifySourceUpsertBulk {
-	nscb.conflict = opts
+func (_c *NotifySourceCreateBulk) OnConflict(opts ...sql.ConflictOption) *NotifySourceUpsertBulk {
+	_c.conflict = opts
 	return &NotifySourceUpsertBulk{
-		create: nscb,
+		create: _c,
 	}
 }
 
@@ -706,10 +706,10 @@ func (nscb *NotifySourceCreateBulk) OnConflict(opts ...sql.ConflictOption) *Noti
 //	client.NotifySource.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (nscb *NotifySourceCreateBulk) OnConflictColumns(columns ...string) *NotifySourceUpsertBulk {
-	nscb.conflict = append(nscb.conflict, sql.ConflictColumns(columns...))
+func (_c *NotifySourceCreateBulk) OnConflictColumns(columns ...string) *NotifySourceUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NotifySourceUpsertBulk{
-		create: nscb,
+		create: _c,
 	}
 }
 

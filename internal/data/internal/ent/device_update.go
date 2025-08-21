@@ -26,221 +26,221 @@ type DeviceUpdate struct {
 }
 
 // Where appends a list predicates to the DeviceUpdate builder.
-func (du *DeviceUpdate) Where(ps ...predicate.Device) *DeviceUpdate {
-	du.mutation.Where(ps...)
-	return du
+func (_u *DeviceUpdate) Where(ps ...predicate.Device) *DeviceUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetDeviceName sets the "device_name" field.
-func (du *DeviceUpdate) SetDeviceName(s string) *DeviceUpdate {
-	du.mutation.SetDeviceName(s)
-	return du
+func (_u *DeviceUpdate) SetDeviceName(v string) *DeviceUpdate {
+	_u.mutation.SetDeviceName(v)
+	return _u
 }
 
 // SetNillableDeviceName sets the "device_name" field if the given value is not nil.
-func (du *DeviceUpdate) SetNillableDeviceName(s *string) *DeviceUpdate {
-	if s != nil {
-		du.SetDeviceName(*s)
+func (_u *DeviceUpdate) SetNillableDeviceName(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetDeviceName(*v)
 	}
-	return du
+	return _u
 }
 
 // SetSystemType sets the "system_type" field.
-func (du *DeviceUpdate) SetSystemType(dt device.SystemType) *DeviceUpdate {
-	du.mutation.SetSystemType(dt)
-	return du
+func (_u *DeviceUpdate) SetSystemType(v device.SystemType) *DeviceUpdate {
+	_u.mutation.SetSystemType(v)
+	return _u
 }
 
 // SetNillableSystemType sets the "system_type" field if the given value is not nil.
-func (du *DeviceUpdate) SetNillableSystemType(dt *device.SystemType) *DeviceUpdate {
-	if dt != nil {
-		du.SetSystemType(*dt)
+func (_u *DeviceUpdate) SetNillableSystemType(v *device.SystemType) *DeviceUpdate {
+	if v != nil {
+		_u.SetSystemType(*v)
 	}
-	return du
+	return _u
 }
 
 // SetSystemVersion sets the "system_version" field.
-func (du *DeviceUpdate) SetSystemVersion(s string) *DeviceUpdate {
-	du.mutation.SetSystemVersion(s)
-	return du
+func (_u *DeviceUpdate) SetSystemVersion(v string) *DeviceUpdate {
+	_u.mutation.SetSystemVersion(v)
+	return _u
 }
 
 // SetNillableSystemVersion sets the "system_version" field if the given value is not nil.
-func (du *DeviceUpdate) SetNillableSystemVersion(s *string) *DeviceUpdate {
-	if s != nil {
-		du.SetSystemVersion(*s)
+func (_u *DeviceUpdate) SetNillableSystemVersion(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetSystemVersion(*v)
 	}
-	return du
+	return _u
 }
 
 // SetClientName sets the "client_name" field.
-func (du *DeviceUpdate) SetClientName(s string) *DeviceUpdate {
-	du.mutation.SetClientName(s)
-	return du
+func (_u *DeviceUpdate) SetClientName(v string) *DeviceUpdate {
+	_u.mutation.SetClientName(v)
+	return _u
 }
 
 // SetNillableClientName sets the "client_name" field if the given value is not nil.
-func (du *DeviceUpdate) SetNillableClientName(s *string) *DeviceUpdate {
-	if s != nil {
-		du.SetClientName(*s)
+func (_u *DeviceUpdate) SetNillableClientName(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetClientName(*v)
 	}
-	return du
+	return _u
 }
 
 // SetClientSourceCodeAddress sets the "client_source_code_address" field.
-func (du *DeviceUpdate) SetClientSourceCodeAddress(s string) *DeviceUpdate {
-	du.mutation.SetClientSourceCodeAddress(s)
-	return du
+func (_u *DeviceUpdate) SetClientSourceCodeAddress(v string) *DeviceUpdate {
+	_u.mutation.SetClientSourceCodeAddress(v)
+	return _u
 }
 
 // SetNillableClientSourceCodeAddress sets the "client_source_code_address" field if the given value is not nil.
-func (du *DeviceUpdate) SetNillableClientSourceCodeAddress(s *string) *DeviceUpdate {
-	if s != nil {
-		du.SetClientSourceCodeAddress(*s)
+func (_u *DeviceUpdate) SetNillableClientSourceCodeAddress(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetClientSourceCodeAddress(*v)
 	}
-	return du
+	return _u
 }
 
 // SetClientVersion sets the "client_version" field.
-func (du *DeviceUpdate) SetClientVersion(s string) *DeviceUpdate {
-	du.mutation.SetClientVersion(s)
-	return du
+func (_u *DeviceUpdate) SetClientVersion(v string) *DeviceUpdate {
+	_u.mutation.SetClientVersion(v)
+	return _u
 }
 
 // SetNillableClientVersion sets the "client_version" field if the given value is not nil.
-func (du *DeviceUpdate) SetNillableClientVersion(s *string) *DeviceUpdate {
-	if s != nil {
-		du.SetClientVersion(*s)
+func (_u *DeviceUpdate) SetNillableClientVersion(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetClientVersion(*v)
 	}
-	return du
+	return _u
 }
 
 // SetClientLocalID sets the "client_local_id" field.
-func (du *DeviceUpdate) SetClientLocalID(s string) *DeviceUpdate {
-	du.mutation.SetClientLocalID(s)
-	return du
+func (_u *DeviceUpdate) SetClientLocalID(v string) *DeviceUpdate {
+	_u.mutation.SetClientLocalID(v)
+	return _u
 }
 
 // SetNillableClientLocalID sets the "client_local_id" field if the given value is not nil.
-func (du *DeviceUpdate) SetNillableClientLocalID(s *string) *DeviceUpdate {
-	if s != nil {
-		du.SetClientLocalID(*s)
+func (_u *DeviceUpdate) SetNillableClientLocalID(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetClientLocalID(*v)
 	}
-	return du
+	return _u
 }
 
 // ClearClientLocalID clears the value of the "client_local_id" field.
-func (du *DeviceUpdate) ClearClientLocalID() *DeviceUpdate {
-	du.mutation.ClearClientLocalID()
-	return du
+func (_u *DeviceUpdate) ClearClientLocalID() *DeviceUpdate {
+	_u.mutation.ClearClientLocalID()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (du *DeviceUpdate) SetUpdatedAt(t time.Time) *DeviceUpdate {
-	du.mutation.SetUpdatedAt(t)
-	return du
+func (_u *DeviceUpdate) SetUpdatedAt(v time.Time) *DeviceUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (du *DeviceUpdate) SetCreatedAt(t time.Time) *DeviceUpdate {
-	du.mutation.SetCreatedAt(t)
-	return du
+func (_u *DeviceUpdate) SetCreatedAt(v time.Time) *DeviceUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (du *DeviceUpdate) SetNillableCreatedAt(t *time.Time) *DeviceUpdate {
-	if t != nil {
-		du.SetCreatedAt(*t)
+func (_u *DeviceUpdate) SetNillableCreatedAt(v *time.Time) *DeviceUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return du
+	return _u
 }
 
 // AddSessionIDs adds the "session" edge to the Session entity by IDs.
-func (du *DeviceUpdate) AddSessionIDs(ids ...model.InternalID) *DeviceUpdate {
-	du.mutation.AddSessionIDs(ids...)
-	return du
+func (_u *DeviceUpdate) AddSessionIDs(ids ...model.InternalID) *DeviceUpdate {
+	_u.mutation.AddSessionIDs(ids...)
+	return _u
 }
 
 // AddSession adds the "session" edges to the Session entity.
-func (du *DeviceUpdate) AddSession(s ...*Session) *DeviceUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *DeviceUpdate) AddSession(v ...*Session) *DeviceUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return du.AddSessionIDs(ids...)
+	return _u.AddSessionIDs(ids...)
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
-func (du *DeviceUpdate) AddAppIDs(ids ...model.InternalID) *DeviceUpdate {
-	du.mutation.AddAppIDs(ids...)
-	return du
+func (_u *DeviceUpdate) AddAppIDs(ids ...model.InternalID) *DeviceUpdate {
+	_u.mutation.AddAppIDs(ids...)
+	return _u
 }
 
 // AddApp adds the "app" edges to the App entity.
-func (du *DeviceUpdate) AddApp(a ...*App) *DeviceUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *DeviceUpdate) AddApp(v ...*App) *DeviceUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return du.AddAppIDs(ids...)
+	return _u.AddAppIDs(ids...)
 }
 
 // Mutation returns the DeviceMutation object of the builder.
-func (du *DeviceUpdate) Mutation() *DeviceMutation {
-	return du.mutation
+func (_u *DeviceUpdate) Mutation() *DeviceMutation {
+	return _u.mutation
 }
 
 // ClearSession clears all "session" edges to the Session entity.
-func (du *DeviceUpdate) ClearSession() *DeviceUpdate {
-	du.mutation.ClearSession()
-	return du
+func (_u *DeviceUpdate) ClearSession() *DeviceUpdate {
+	_u.mutation.ClearSession()
+	return _u
 }
 
 // RemoveSessionIDs removes the "session" edge to Session entities by IDs.
-func (du *DeviceUpdate) RemoveSessionIDs(ids ...model.InternalID) *DeviceUpdate {
-	du.mutation.RemoveSessionIDs(ids...)
-	return du
+func (_u *DeviceUpdate) RemoveSessionIDs(ids ...model.InternalID) *DeviceUpdate {
+	_u.mutation.RemoveSessionIDs(ids...)
+	return _u
 }
 
 // RemoveSession removes "session" edges to Session entities.
-func (du *DeviceUpdate) RemoveSession(s ...*Session) *DeviceUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *DeviceUpdate) RemoveSession(v ...*Session) *DeviceUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return du.RemoveSessionIDs(ids...)
+	return _u.RemoveSessionIDs(ids...)
 }
 
 // ClearApp clears all "app" edges to the App entity.
-func (du *DeviceUpdate) ClearApp() *DeviceUpdate {
-	du.mutation.ClearApp()
-	return du
+func (_u *DeviceUpdate) ClearApp() *DeviceUpdate {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (du *DeviceUpdate) RemoveAppIDs(ids ...model.InternalID) *DeviceUpdate {
-	du.mutation.RemoveAppIDs(ids...)
-	return du
+func (_u *DeviceUpdate) RemoveAppIDs(ids ...model.InternalID) *DeviceUpdate {
+	_u.mutation.RemoveAppIDs(ids...)
+	return _u
 }
 
 // RemoveApp removes "app" edges to App entities.
-func (du *DeviceUpdate) RemoveApp(a ...*App) *DeviceUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *DeviceUpdate) RemoveApp(v ...*App) *DeviceUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return du.RemoveAppIDs(ids...)
+	return _u.RemoveAppIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (du *DeviceUpdate) Save(ctx context.Context) (int, error) {
-	du.defaults()
-	return withHooks(ctx, du.sqlSave, du.mutation, du.hooks)
+func (_u *DeviceUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (du *DeviceUpdate) SaveX(ctx context.Context) int {
-	affected, err := du.Save(ctx)
+func (_u *DeviceUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -248,29 +248,29 @@ func (du *DeviceUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (du *DeviceUpdate) Exec(ctx context.Context) error {
-	_, err := du.Save(ctx)
+func (_u *DeviceUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (du *DeviceUpdate) ExecX(ctx context.Context) {
-	if err := du.Exec(ctx); err != nil {
+func (_u *DeviceUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (du *DeviceUpdate) defaults() {
-	if _, ok := du.mutation.UpdatedAt(); !ok {
+func (_u *DeviceUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := device.UpdateDefaultUpdatedAt()
-		du.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (du *DeviceUpdate) check() error {
-	if v, ok := du.mutation.SystemType(); ok {
+func (_u *DeviceUpdate) check() error {
+	if v, ok := _u.mutation.SystemType(); ok {
 		if err := device.SystemTypeValidator(v); err != nil {
 			return &ValidationError{Name: "system_type", err: fmt.Errorf(`ent: validator failed for field "Device.system_type": %w`, err)}
 		}
@@ -278,49 +278,49 @@ func (du *DeviceUpdate) check() error {
 	return nil
 }
 
-func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := du.check(); err != nil {
-		return n, err
+func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(device.Table, device.Columns, sqlgraph.NewFieldSpec(device.FieldID, field.TypeInt64))
-	if ps := du.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := du.mutation.DeviceName(); ok {
+	if value, ok := _u.mutation.DeviceName(); ok {
 		_spec.SetField(device.FieldDeviceName, field.TypeString, value)
 	}
-	if value, ok := du.mutation.SystemType(); ok {
+	if value, ok := _u.mutation.SystemType(); ok {
 		_spec.SetField(device.FieldSystemType, field.TypeEnum, value)
 	}
-	if value, ok := du.mutation.SystemVersion(); ok {
+	if value, ok := _u.mutation.SystemVersion(); ok {
 		_spec.SetField(device.FieldSystemVersion, field.TypeString, value)
 	}
-	if value, ok := du.mutation.ClientName(); ok {
+	if value, ok := _u.mutation.ClientName(); ok {
 		_spec.SetField(device.FieldClientName, field.TypeString, value)
 	}
-	if value, ok := du.mutation.ClientSourceCodeAddress(); ok {
+	if value, ok := _u.mutation.ClientSourceCodeAddress(); ok {
 		_spec.SetField(device.FieldClientSourceCodeAddress, field.TypeString, value)
 	}
-	if value, ok := du.mutation.ClientVersion(); ok {
+	if value, ok := _u.mutation.ClientVersion(); ok {
 		_spec.SetField(device.FieldClientVersion, field.TypeString, value)
 	}
-	if value, ok := du.mutation.ClientLocalID(); ok {
+	if value, ok := _u.mutation.ClientLocalID(); ok {
 		_spec.SetField(device.FieldClientLocalID, field.TypeString, value)
 	}
-	if du.mutation.ClientLocalIDCleared() {
+	if _u.mutation.ClientLocalIDCleared() {
 		_spec.ClearField(device.FieldClientLocalID, field.TypeString)
 	}
-	if value, ok := du.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(device.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := du.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(device.FieldCreatedAt, field.TypeTime, value)
 	}
-	if du.mutation.SessionCleared() {
+	if _u.mutation.SessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -333,7 +333,7 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := du.mutation.RemovedSessionIDs(); len(nodes) > 0 && !du.mutation.SessionCleared() {
+	if nodes := _u.mutation.RemovedSessionIDs(); len(nodes) > 0 && !_u.mutation.SessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -349,7 +349,7 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := du.mutation.SessionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -365,7 +365,7 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if du.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -378,7 +378,7 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := du.mutation.RemovedAppIDs(); len(nodes) > 0 && !du.mutation.AppCleared() {
+	if nodes := _u.mutation.RemovedAppIDs(); len(nodes) > 0 && !_u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -394,7 +394,7 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := du.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -410,7 +410,7 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, du.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{device.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -418,8 +418,8 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	du.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // DeviceUpdateOne is the builder for updating a single Device entity.
@@ -431,228 +431,228 @@ type DeviceUpdateOne struct {
 }
 
 // SetDeviceName sets the "device_name" field.
-func (duo *DeviceUpdateOne) SetDeviceName(s string) *DeviceUpdateOne {
-	duo.mutation.SetDeviceName(s)
-	return duo
+func (_u *DeviceUpdateOne) SetDeviceName(v string) *DeviceUpdateOne {
+	_u.mutation.SetDeviceName(v)
+	return _u
 }
 
 // SetNillableDeviceName sets the "device_name" field if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableDeviceName(s *string) *DeviceUpdateOne {
-	if s != nil {
-		duo.SetDeviceName(*s)
+func (_u *DeviceUpdateOne) SetNillableDeviceName(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetDeviceName(*v)
 	}
-	return duo
+	return _u
 }
 
 // SetSystemType sets the "system_type" field.
-func (duo *DeviceUpdateOne) SetSystemType(dt device.SystemType) *DeviceUpdateOne {
-	duo.mutation.SetSystemType(dt)
-	return duo
+func (_u *DeviceUpdateOne) SetSystemType(v device.SystemType) *DeviceUpdateOne {
+	_u.mutation.SetSystemType(v)
+	return _u
 }
 
 // SetNillableSystemType sets the "system_type" field if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableSystemType(dt *device.SystemType) *DeviceUpdateOne {
-	if dt != nil {
-		duo.SetSystemType(*dt)
+func (_u *DeviceUpdateOne) SetNillableSystemType(v *device.SystemType) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetSystemType(*v)
 	}
-	return duo
+	return _u
 }
 
 // SetSystemVersion sets the "system_version" field.
-func (duo *DeviceUpdateOne) SetSystemVersion(s string) *DeviceUpdateOne {
-	duo.mutation.SetSystemVersion(s)
-	return duo
+func (_u *DeviceUpdateOne) SetSystemVersion(v string) *DeviceUpdateOne {
+	_u.mutation.SetSystemVersion(v)
+	return _u
 }
 
 // SetNillableSystemVersion sets the "system_version" field if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableSystemVersion(s *string) *DeviceUpdateOne {
-	if s != nil {
-		duo.SetSystemVersion(*s)
+func (_u *DeviceUpdateOne) SetNillableSystemVersion(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetSystemVersion(*v)
 	}
-	return duo
+	return _u
 }
 
 // SetClientName sets the "client_name" field.
-func (duo *DeviceUpdateOne) SetClientName(s string) *DeviceUpdateOne {
-	duo.mutation.SetClientName(s)
-	return duo
+func (_u *DeviceUpdateOne) SetClientName(v string) *DeviceUpdateOne {
+	_u.mutation.SetClientName(v)
+	return _u
 }
 
 // SetNillableClientName sets the "client_name" field if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableClientName(s *string) *DeviceUpdateOne {
-	if s != nil {
-		duo.SetClientName(*s)
+func (_u *DeviceUpdateOne) SetNillableClientName(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetClientName(*v)
 	}
-	return duo
+	return _u
 }
 
 // SetClientSourceCodeAddress sets the "client_source_code_address" field.
-func (duo *DeviceUpdateOne) SetClientSourceCodeAddress(s string) *DeviceUpdateOne {
-	duo.mutation.SetClientSourceCodeAddress(s)
-	return duo
+func (_u *DeviceUpdateOne) SetClientSourceCodeAddress(v string) *DeviceUpdateOne {
+	_u.mutation.SetClientSourceCodeAddress(v)
+	return _u
 }
 
 // SetNillableClientSourceCodeAddress sets the "client_source_code_address" field if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableClientSourceCodeAddress(s *string) *DeviceUpdateOne {
-	if s != nil {
-		duo.SetClientSourceCodeAddress(*s)
+func (_u *DeviceUpdateOne) SetNillableClientSourceCodeAddress(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetClientSourceCodeAddress(*v)
 	}
-	return duo
+	return _u
 }
 
 // SetClientVersion sets the "client_version" field.
-func (duo *DeviceUpdateOne) SetClientVersion(s string) *DeviceUpdateOne {
-	duo.mutation.SetClientVersion(s)
-	return duo
+func (_u *DeviceUpdateOne) SetClientVersion(v string) *DeviceUpdateOne {
+	_u.mutation.SetClientVersion(v)
+	return _u
 }
 
 // SetNillableClientVersion sets the "client_version" field if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableClientVersion(s *string) *DeviceUpdateOne {
-	if s != nil {
-		duo.SetClientVersion(*s)
+func (_u *DeviceUpdateOne) SetNillableClientVersion(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetClientVersion(*v)
 	}
-	return duo
+	return _u
 }
 
 // SetClientLocalID sets the "client_local_id" field.
-func (duo *DeviceUpdateOne) SetClientLocalID(s string) *DeviceUpdateOne {
-	duo.mutation.SetClientLocalID(s)
-	return duo
+func (_u *DeviceUpdateOne) SetClientLocalID(v string) *DeviceUpdateOne {
+	_u.mutation.SetClientLocalID(v)
+	return _u
 }
 
 // SetNillableClientLocalID sets the "client_local_id" field if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableClientLocalID(s *string) *DeviceUpdateOne {
-	if s != nil {
-		duo.SetClientLocalID(*s)
+func (_u *DeviceUpdateOne) SetNillableClientLocalID(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetClientLocalID(*v)
 	}
-	return duo
+	return _u
 }
 
 // ClearClientLocalID clears the value of the "client_local_id" field.
-func (duo *DeviceUpdateOne) ClearClientLocalID() *DeviceUpdateOne {
-	duo.mutation.ClearClientLocalID()
-	return duo
+func (_u *DeviceUpdateOne) ClearClientLocalID() *DeviceUpdateOne {
+	_u.mutation.ClearClientLocalID()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (duo *DeviceUpdateOne) SetUpdatedAt(t time.Time) *DeviceUpdateOne {
-	duo.mutation.SetUpdatedAt(t)
-	return duo
+func (_u *DeviceUpdateOne) SetUpdatedAt(v time.Time) *DeviceUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (duo *DeviceUpdateOne) SetCreatedAt(t time.Time) *DeviceUpdateOne {
-	duo.mutation.SetCreatedAt(t)
-	return duo
+func (_u *DeviceUpdateOne) SetCreatedAt(v time.Time) *DeviceUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableCreatedAt(t *time.Time) *DeviceUpdateOne {
-	if t != nil {
-		duo.SetCreatedAt(*t)
+func (_u *DeviceUpdateOne) SetNillableCreatedAt(v *time.Time) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return duo
+	return _u
 }
 
 // AddSessionIDs adds the "session" edge to the Session entity by IDs.
-func (duo *DeviceUpdateOne) AddSessionIDs(ids ...model.InternalID) *DeviceUpdateOne {
-	duo.mutation.AddSessionIDs(ids...)
-	return duo
+func (_u *DeviceUpdateOne) AddSessionIDs(ids ...model.InternalID) *DeviceUpdateOne {
+	_u.mutation.AddSessionIDs(ids...)
+	return _u
 }
 
 // AddSession adds the "session" edges to the Session entity.
-func (duo *DeviceUpdateOne) AddSession(s ...*Session) *DeviceUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *DeviceUpdateOne) AddSession(v ...*Session) *DeviceUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return duo.AddSessionIDs(ids...)
+	return _u.AddSessionIDs(ids...)
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
-func (duo *DeviceUpdateOne) AddAppIDs(ids ...model.InternalID) *DeviceUpdateOne {
-	duo.mutation.AddAppIDs(ids...)
-	return duo
+func (_u *DeviceUpdateOne) AddAppIDs(ids ...model.InternalID) *DeviceUpdateOne {
+	_u.mutation.AddAppIDs(ids...)
+	return _u
 }
 
 // AddApp adds the "app" edges to the App entity.
-func (duo *DeviceUpdateOne) AddApp(a ...*App) *DeviceUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *DeviceUpdateOne) AddApp(v ...*App) *DeviceUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return duo.AddAppIDs(ids...)
+	return _u.AddAppIDs(ids...)
 }
 
 // Mutation returns the DeviceMutation object of the builder.
-func (duo *DeviceUpdateOne) Mutation() *DeviceMutation {
-	return duo.mutation
+func (_u *DeviceUpdateOne) Mutation() *DeviceMutation {
+	return _u.mutation
 }
 
 // ClearSession clears all "session" edges to the Session entity.
-func (duo *DeviceUpdateOne) ClearSession() *DeviceUpdateOne {
-	duo.mutation.ClearSession()
-	return duo
+func (_u *DeviceUpdateOne) ClearSession() *DeviceUpdateOne {
+	_u.mutation.ClearSession()
+	return _u
 }
 
 // RemoveSessionIDs removes the "session" edge to Session entities by IDs.
-func (duo *DeviceUpdateOne) RemoveSessionIDs(ids ...model.InternalID) *DeviceUpdateOne {
-	duo.mutation.RemoveSessionIDs(ids...)
-	return duo
+func (_u *DeviceUpdateOne) RemoveSessionIDs(ids ...model.InternalID) *DeviceUpdateOne {
+	_u.mutation.RemoveSessionIDs(ids...)
+	return _u
 }
 
 // RemoveSession removes "session" edges to Session entities.
-func (duo *DeviceUpdateOne) RemoveSession(s ...*Session) *DeviceUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *DeviceUpdateOne) RemoveSession(v ...*Session) *DeviceUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return duo.RemoveSessionIDs(ids...)
+	return _u.RemoveSessionIDs(ids...)
 }
 
 // ClearApp clears all "app" edges to the App entity.
-func (duo *DeviceUpdateOne) ClearApp() *DeviceUpdateOne {
-	duo.mutation.ClearApp()
-	return duo
+func (_u *DeviceUpdateOne) ClearApp() *DeviceUpdateOne {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (duo *DeviceUpdateOne) RemoveAppIDs(ids ...model.InternalID) *DeviceUpdateOne {
-	duo.mutation.RemoveAppIDs(ids...)
-	return duo
+func (_u *DeviceUpdateOne) RemoveAppIDs(ids ...model.InternalID) *DeviceUpdateOne {
+	_u.mutation.RemoveAppIDs(ids...)
+	return _u
 }
 
 // RemoveApp removes "app" edges to App entities.
-func (duo *DeviceUpdateOne) RemoveApp(a ...*App) *DeviceUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *DeviceUpdateOne) RemoveApp(v ...*App) *DeviceUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return duo.RemoveAppIDs(ids...)
+	return _u.RemoveAppIDs(ids...)
 }
 
 // Where appends a list predicates to the DeviceUpdate builder.
-func (duo *DeviceUpdateOne) Where(ps ...predicate.Device) *DeviceUpdateOne {
-	duo.mutation.Where(ps...)
-	return duo
+func (_u *DeviceUpdateOne) Where(ps ...predicate.Device) *DeviceUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (duo *DeviceUpdateOne) Select(field string, fields ...string) *DeviceUpdateOne {
-	duo.fields = append([]string{field}, fields...)
-	return duo
+func (_u *DeviceUpdateOne) Select(field string, fields ...string) *DeviceUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Device entity.
-func (duo *DeviceUpdateOne) Save(ctx context.Context) (*Device, error) {
-	duo.defaults()
-	return withHooks(ctx, duo.sqlSave, duo.mutation, duo.hooks)
+func (_u *DeviceUpdateOne) Save(ctx context.Context) (*Device, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (duo *DeviceUpdateOne) SaveX(ctx context.Context) *Device {
-	node, err := duo.Save(ctx)
+func (_u *DeviceUpdateOne) SaveX(ctx context.Context) *Device {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -660,29 +660,29 @@ func (duo *DeviceUpdateOne) SaveX(ctx context.Context) *Device {
 }
 
 // Exec executes the query on the entity.
-func (duo *DeviceUpdateOne) Exec(ctx context.Context) error {
-	_, err := duo.Save(ctx)
+func (_u *DeviceUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (duo *DeviceUpdateOne) ExecX(ctx context.Context) {
-	if err := duo.Exec(ctx); err != nil {
+func (_u *DeviceUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (duo *DeviceUpdateOne) defaults() {
-	if _, ok := duo.mutation.UpdatedAt(); !ok {
+func (_u *DeviceUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := device.UpdateDefaultUpdatedAt()
-		duo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (duo *DeviceUpdateOne) check() error {
-	if v, ok := duo.mutation.SystemType(); ok {
+func (_u *DeviceUpdateOne) check() error {
+	if v, ok := _u.mutation.SystemType(); ok {
 		if err := device.SystemTypeValidator(v); err != nil {
 			return &ValidationError{Name: "system_type", err: fmt.Errorf(`ent: validator failed for field "Device.system_type": %w`, err)}
 		}
@@ -690,17 +690,17 @@ func (duo *DeviceUpdateOne) check() error {
 	return nil
 }
 
-func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err error) {
-	if err := duo.check(); err != nil {
+func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(device.Table, device.Columns, sqlgraph.NewFieldSpec(device.FieldID, field.TypeInt64))
-	id, ok := duo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Device.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := duo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, device.FieldID)
 		for _, f := range fields {
@@ -712,44 +712,44 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 			}
 		}
 	}
-	if ps := duo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := duo.mutation.DeviceName(); ok {
+	if value, ok := _u.mutation.DeviceName(); ok {
 		_spec.SetField(device.FieldDeviceName, field.TypeString, value)
 	}
-	if value, ok := duo.mutation.SystemType(); ok {
+	if value, ok := _u.mutation.SystemType(); ok {
 		_spec.SetField(device.FieldSystemType, field.TypeEnum, value)
 	}
-	if value, ok := duo.mutation.SystemVersion(); ok {
+	if value, ok := _u.mutation.SystemVersion(); ok {
 		_spec.SetField(device.FieldSystemVersion, field.TypeString, value)
 	}
-	if value, ok := duo.mutation.ClientName(); ok {
+	if value, ok := _u.mutation.ClientName(); ok {
 		_spec.SetField(device.FieldClientName, field.TypeString, value)
 	}
-	if value, ok := duo.mutation.ClientSourceCodeAddress(); ok {
+	if value, ok := _u.mutation.ClientSourceCodeAddress(); ok {
 		_spec.SetField(device.FieldClientSourceCodeAddress, field.TypeString, value)
 	}
-	if value, ok := duo.mutation.ClientVersion(); ok {
+	if value, ok := _u.mutation.ClientVersion(); ok {
 		_spec.SetField(device.FieldClientVersion, field.TypeString, value)
 	}
-	if value, ok := duo.mutation.ClientLocalID(); ok {
+	if value, ok := _u.mutation.ClientLocalID(); ok {
 		_spec.SetField(device.FieldClientLocalID, field.TypeString, value)
 	}
-	if duo.mutation.ClientLocalIDCleared() {
+	if _u.mutation.ClientLocalIDCleared() {
 		_spec.ClearField(device.FieldClientLocalID, field.TypeString)
 	}
-	if value, ok := duo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(device.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := duo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(device.FieldCreatedAt, field.TypeTime, value)
 	}
-	if duo.mutation.SessionCleared() {
+	if _u.mutation.SessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -762,7 +762,7 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := duo.mutation.RemovedSessionIDs(); len(nodes) > 0 && !duo.mutation.SessionCleared() {
+	if nodes := _u.mutation.RemovedSessionIDs(); len(nodes) > 0 && !_u.mutation.SessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -778,7 +778,7 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := duo.mutation.SessionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -794,7 +794,7 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if duo.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -807,7 +807,7 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := duo.mutation.RemovedAppIDs(); len(nodes) > 0 && !duo.mutation.AppCleared() {
+	if nodes := _u.mutation.RemovedAppIDs(); len(nodes) > 0 && !_u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -823,7 +823,7 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := duo.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -839,10 +839,10 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Device{config: duo.config}
+	_node = &Device{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, duo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{device.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -850,6 +850,6 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 		}
 		return nil, err
 	}
-	duo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

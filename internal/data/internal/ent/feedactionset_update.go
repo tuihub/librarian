@@ -27,138 +27,138 @@ type FeedActionSetUpdate struct {
 }
 
 // Where appends a list predicates to the FeedActionSetUpdate builder.
-func (fasu *FeedActionSetUpdate) Where(ps ...predicate.FeedActionSet) *FeedActionSetUpdate {
-	fasu.mutation.Where(ps...)
-	return fasu
+func (_u *FeedActionSetUpdate) Where(ps ...predicate.FeedActionSet) *FeedActionSetUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (fasu *FeedActionSetUpdate) SetName(s string) *FeedActionSetUpdate {
-	fasu.mutation.SetName(s)
-	return fasu
+func (_u *FeedActionSetUpdate) SetName(v string) *FeedActionSetUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (fasu *FeedActionSetUpdate) SetNillableName(s *string) *FeedActionSetUpdate {
-	if s != nil {
-		fasu.SetName(*s)
+func (_u *FeedActionSetUpdate) SetNillableName(v *string) *FeedActionSetUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return fasu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (fasu *FeedActionSetUpdate) SetDescription(s string) *FeedActionSetUpdate {
-	fasu.mutation.SetDescription(s)
-	return fasu
+func (_u *FeedActionSetUpdate) SetDescription(v string) *FeedActionSetUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (fasu *FeedActionSetUpdate) SetNillableDescription(s *string) *FeedActionSetUpdate {
-	if s != nil {
-		fasu.SetDescription(*s)
+func (_u *FeedActionSetUpdate) SetNillableDescription(v *string) *FeedActionSetUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return fasu
+	return _u
 }
 
 // SetActions sets the "actions" field.
-func (fasu *FeedActionSetUpdate) SetActions(mr []*model.FeatureRequest) *FeedActionSetUpdate {
-	fasu.mutation.SetActions(mr)
-	return fasu
+func (_u *FeedActionSetUpdate) SetActions(v []*model.FeatureRequest) *FeedActionSetUpdate {
+	_u.mutation.SetActions(v)
+	return _u
 }
 
-// AppendActions appends mr to the "actions" field.
-func (fasu *FeedActionSetUpdate) AppendActions(mr []*model.FeatureRequest) *FeedActionSetUpdate {
-	fasu.mutation.AppendActions(mr)
-	return fasu
+// AppendActions appends value to the "actions" field.
+func (_u *FeedActionSetUpdate) AppendActions(v []*model.FeatureRequest) *FeedActionSetUpdate {
+	_u.mutation.AppendActions(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fasu *FeedActionSetUpdate) SetUpdatedAt(t time.Time) *FeedActionSetUpdate {
-	fasu.mutation.SetUpdatedAt(t)
-	return fasu
+func (_u *FeedActionSetUpdate) SetUpdatedAt(v time.Time) *FeedActionSetUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fasu *FeedActionSetUpdate) SetCreatedAt(t time.Time) *FeedActionSetUpdate {
-	fasu.mutation.SetCreatedAt(t)
-	return fasu
+func (_u *FeedActionSetUpdate) SetCreatedAt(v time.Time) *FeedActionSetUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fasu *FeedActionSetUpdate) SetNillableCreatedAt(t *time.Time) *FeedActionSetUpdate {
-	if t != nil {
-		fasu.SetCreatedAt(*t)
+func (_u *FeedActionSetUpdate) SetNillableCreatedAt(v *time.Time) *FeedActionSetUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return fasu
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (fasu *FeedActionSetUpdate) SetOwnerID(id model.InternalID) *FeedActionSetUpdate {
-	fasu.mutation.SetOwnerID(id)
-	return fasu
+func (_u *FeedActionSetUpdate) SetOwnerID(id model.InternalID) *FeedActionSetUpdate {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (fasu *FeedActionSetUpdate) SetOwner(u *User) *FeedActionSetUpdate {
-	return fasu.SetOwnerID(u.ID)
+func (_u *FeedActionSetUpdate) SetOwner(v *User) *FeedActionSetUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
-func (fasu *FeedActionSetUpdate) AddFeedConfigIDs(ids ...model.InternalID) *FeedActionSetUpdate {
-	fasu.mutation.AddFeedConfigIDs(ids...)
-	return fasu
+func (_u *FeedActionSetUpdate) AddFeedConfigIDs(ids ...model.InternalID) *FeedActionSetUpdate {
+	_u.mutation.AddFeedConfigIDs(ids...)
+	return _u
 }
 
 // AddFeedConfig adds the "feed_config" edges to the FeedConfig entity.
-func (fasu *FeedActionSetUpdate) AddFeedConfig(f ...*FeedConfig) *FeedActionSetUpdate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedActionSetUpdate) AddFeedConfig(v ...*FeedConfig) *FeedActionSetUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fasu.AddFeedConfigIDs(ids...)
+	return _u.AddFeedConfigIDs(ids...)
 }
 
 // Mutation returns the FeedActionSetMutation object of the builder.
-func (fasu *FeedActionSetUpdate) Mutation() *FeedActionSetMutation {
-	return fasu.mutation
+func (_u *FeedActionSetUpdate) Mutation() *FeedActionSetMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (fasu *FeedActionSetUpdate) ClearOwner() *FeedActionSetUpdate {
-	fasu.mutation.ClearOwner()
-	return fasu
+func (_u *FeedActionSetUpdate) ClearOwner() *FeedActionSetUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearFeedConfig clears all "feed_config" edges to the FeedConfig entity.
-func (fasu *FeedActionSetUpdate) ClearFeedConfig() *FeedActionSetUpdate {
-	fasu.mutation.ClearFeedConfig()
-	return fasu
+func (_u *FeedActionSetUpdate) ClearFeedConfig() *FeedActionSetUpdate {
+	_u.mutation.ClearFeedConfig()
+	return _u
 }
 
 // RemoveFeedConfigIDs removes the "feed_config" edge to FeedConfig entities by IDs.
-func (fasu *FeedActionSetUpdate) RemoveFeedConfigIDs(ids ...model.InternalID) *FeedActionSetUpdate {
-	fasu.mutation.RemoveFeedConfigIDs(ids...)
-	return fasu
+func (_u *FeedActionSetUpdate) RemoveFeedConfigIDs(ids ...model.InternalID) *FeedActionSetUpdate {
+	_u.mutation.RemoveFeedConfigIDs(ids...)
+	return _u
 }
 
 // RemoveFeedConfig removes "feed_config" edges to FeedConfig entities.
-func (fasu *FeedActionSetUpdate) RemoveFeedConfig(f ...*FeedConfig) *FeedActionSetUpdate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedActionSetUpdate) RemoveFeedConfig(v ...*FeedConfig) *FeedActionSetUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fasu.RemoveFeedConfigIDs(ids...)
+	return _u.RemoveFeedConfigIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (fasu *FeedActionSetUpdate) Save(ctx context.Context) (int, error) {
-	fasu.defaults()
-	return withHooks(ctx, fasu.sqlSave, fasu.mutation, fasu.hooks)
+func (_u *FeedActionSetUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fasu *FeedActionSetUpdate) SaveX(ctx context.Context) int {
-	affected, err := fasu.Save(ctx)
+func (_u *FeedActionSetUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -166,67 +166,67 @@ func (fasu *FeedActionSetUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (fasu *FeedActionSetUpdate) Exec(ctx context.Context) error {
-	_, err := fasu.Save(ctx)
+func (_u *FeedActionSetUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fasu *FeedActionSetUpdate) ExecX(ctx context.Context) {
-	if err := fasu.Exec(ctx); err != nil {
+func (_u *FeedActionSetUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fasu *FeedActionSetUpdate) defaults() {
-	if _, ok := fasu.mutation.UpdatedAt(); !ok {
+func (_u *FeedActionSetUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := feedactionset.UpdateDefaultUpdatedAt()
-		fasu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fasu *FeedActionSetUpdate) check() error {
-	if fasu.mutation.OwnerCleared() && len(fasu.mutation.OwnerIDs()) > 0 {
+func (_u *FeedActionSetUpdate) check() error {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedActionSet.owner"`)
 	}
 	return nil
 }
 
-func (fasu *FeedActionSetUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := fasu.check(); err != nil {
-		return n, err
+func (_u *FeedActionSetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(feedactionset.Table, feedactionset.Columns, sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64))
-	if ps := fasu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fasu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(feedactionset.FieldName, field.TypeString, value)
 	}
-	if value, ok := fasu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(feedactionset.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := fasu.mutation.Actions(); ok {
+	if value, ok := _u.mutation.Actions(); ok {
 		_spec.SetField(feedactionset.FieldActions, field.TypeJSON, value)
 	}
-	if value, ok := fasu.mutation.AppendedActions(); ok {
+	if value, ok := _u.mutation.AppendedActions(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, feedactionset.FieldActions, value)
 		})
 	}
-	if value, ok := fasu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedactionset.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := fasu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(feedactionset.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fasu.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -239,7 +239,7 @@ func (fasu *FeedActionSetUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fasu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -255,7 +255,7 @@ func (fasu *FeedActionSetUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fasu.mutation.FeedConfigCleared() {
+	if _u.mutation.FeedConfigCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -268,7 +268,7 @@ func (fasu *FeedActionSetUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fasu.mutation.RemovedFeedConfigIDs(); len(nodes) > 0 && !fasu.mutation.FeedConfigCleared() {
+	if nodes := _u.mutation.RemovedFeedConfigIDs(); len(nodes) > 0 && !_u.mutation.FeedConfigCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -284,7 +284,7 @@ func (fasu *FeedActionSetUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fasu.mutation.FeedConfigIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedConfigIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -300,7 +300,7 @@ func (fasu *FeedActionSetUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, fasu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{feedactionset.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -308,8 +308,8 @@ func (fasu *FeedActionSetUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		return 0, err
 	}
-	fasu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // FeedActionSetUpdateOne is the builder for updating a single FeedActionSet entity.
@@ -321,145 +321,145 @@ type FeedActionSetUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (fasuo *FeedActionSetUpdateOne) SetName(s string) *FeedActionSetUpdateOne {
-	fasuo.mutation.SetName(s)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) SetName(v string) *FeedActionSetUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (fasuo *FeedActionSetUpdateOne) SetNillableName(s *string) *FeedActionSetUpdateOne {
-	if s != nil {
-		fasuo.SetName(*s)
+func (_u *FeedActionSetUpdateOne) SetNillableName(v *string) *FeedActionSetUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return fasuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (fasuo *FeedActionSetUpdateOne) SetDescription(s string) *FeedActionSetUpdateOne {
-	fasuo.mutation.SetDescription(s)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) SetDescription(v string) *FeedActionSetUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (fasuo *FeedActionSetUpdateOne) SetNillableDescription(s *string) *FeedActionSetUpdateOne {
-	if s != nil {
-		fasuo.SetDescription(*s)
+func (_u *FeedActionSetUpdateOne) SetNillableDescription(v *string) *FeedActionSetUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return fasuo
+	return _u
 }
 
 // SetActions sets the "actions" field.
-func (fasuo *FeedActionSetUpdateOne) SetActions(mr []*model.FeatureRequest) *FeedActionSetUpdateOne {
-	fasuo.mutation.SetActions(mr)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) SetActions(v []*model.FeatureRequest) *FeedActionSetUpdateOne {
+	_u.mutation.SetActions(v)
+	return _u
 }
 
-// AppendActions appends mr to the "actions" field.
-func (fasuo *FeedActionSetUpdateOne) AppendActions(mr []*model.FeatureRequest) *FeedActionSetUpdateOne {
-	fasuo.mutation.AppendActions(mr)
-	return fasuo
+// AppendActions appends value to the "actions" field.
+func (_u *FeedActionSetUpdateOne) AppendActions(v []*model.FeatureRequest) *FeedActionSetUpdateOne {
+	_u.mutation.AppendActions(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fasuo *FeedActionSetUpdateOne) SetUpdatedAt(t time.Time) *FeedActionSetUpdateOne {
-	fasuo.mutation.SetUpdatedAt(t)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) SetUpdatedAt(v time.Time) *FeedActionSetUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fasuo *FeedActionSetUpdateOne) SetCreatedAt(t time.Time) *FeedActionSetUpdateOne {
-	fasuo.mutation.SetCreatedAt(t)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) SetCreatedAt(v time.Time) *FeedActionSetUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fasuo *FeedActionSetUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedActionSetUpdateOne {
-	if t != nil {
-		fasuo.SetCreatedAt(*t)
+func (_u *FeedActionSetUpdateOne) SetNillableCreatedAt(v *time.Time) *FeedActionSetUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return fasuo
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (fasuo *FeedActionSetUpdateOne) SetOwnerID(id model.InternalID) *FeedActionSetUpdateOne {
-	fasuo.mutation.SetOwnerID(id)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) SetOwnerID(id model.InternalID) *FeedActionSetUpdateOne {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (fasuo *FeedActionSetUpdateOne) SetOwner(u *User) *FeedActionSetUpdateOne {
-	return fasuo.SetOwnerID(u.ID)
+func (_u *FeedActionSetUpdateOne) SetOwner(v *User) *FeedActionSetUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
-func (fasuo *FeedActionSetUpdateOne) AddFeedConfigIDs(ids ...model.InternalID) *FeedActionSetUpdateOne {
-	fasuo.mutation.AddFeedConfigIDs(ids...)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) AddFeedConfigIDs(ids ...model.InternalID) *FeedActionSetUpdateOne {
+	_u.mutation.AddFeedConfigIDs(ids...)
+	return _u
 }
 
 // AddFeedConfig adds the "feed_config" edges to the FeedConfig entity.
-func (fasuo *FeedActionSetUpdateOne) AddFeedConfig(f ...*FeedConfig) *FeedActionSetUpdateOne {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedActionSetUpdateOne) AddFeedConfig(v ...*FeedConfig) *FeedActionSetUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fasuo.AddFeedConfigIDs(ids...)
+	return _u.AddFeedConfigIDs(ids...)
 }
 
 // Mutation returns the FeedActionSetMutation object of the builder.
-func (fasuo *FeedActionSetUpdateOne) Mutation() *FeedActionSetMutation {
-	return fasuo.mutation
+func (_u *FeedActionSetUpdateOne) Mutation() *FeedActionSetMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (fasuo *FeedActionSetUpdateOne) ClearOwner() *FeedActionSetUpdateOne {
-	fasuo.mutation.ClearOwner()
-	return fasuo
+func (_u *FeedActionSetUpdateOne) ClearOwner() *FeedActionSetUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearFeedConfig clears all "feed_config" edges to the FeedConfig entity.
-func (fasuo *FeedActionSetUpdateOne) ClearFeedConfig() *FeedActionSetUpdateOne {
-	fasuo.mutation.ClearFeedConfig()
-	return fasuo
+func (_u *FeedActionSetUpdateOne) ClearFeedConfig() *FeedActionSetUpdateOne {
+	_u.mutation.ClearFeedConfig()
+	return _u
 }
 
 // RemoveFeedConfigIDs removes the "feed_config" edge to FeedConfig entities by IDs.
-func (fasuo *FeedActionSetUpdateOne) RemoveFeedConfigIDs(ids ...model.InternalID) *FeedActionSetUpdateOne {
-	fasuo.mutation.RemoveFeedConfigIDs(ids...)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) RemoveFeedConfigIDs(ids ...model.InternalID) *FeedActionSetUpdateOne {
+	_u.mutation.RemoveFeedConfigIDs(ids...)
+	return _u
 }
 
 // RemoveFeedConfig removes "feed_config" edges to FeedConfig entities.
-func (fasuo *FeedActionSetUpdateOne) RemoveFeedConfig(f ...*FeedConfig) *FeedActionSetUpdateOne {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedActionSetUpdateOne) RemoveFeedConfig(v ...*FeedConfig) *FeedActionSetUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fasuo.RemoveFeedConfigIDs(ids...)
+	return _u.RemoveFeedConfigIDs(ids...)
 }
 
 // Where appends a list predicates to the FeedActionSetUpdate builder.
-func (fasuo *FeedActionSetUpdateOne) Where(ps ...predicate.FeedActionSet) *FeedActionSetUpdateOne {
-	fasuo.mutation.Where(ps...)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) Where(ps ...predicate.FeedActionSet) *FeedActionSetUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (fasuo *FeedActionSetUpdateOne) Select(field string, fields ...string) *FeedActionSetUpdateOne {
-	fasuo.fields = append([]string{field}, fields...)
-	return fasuo
+func (_u *FeedActionSetUpdateOne) Select(field string, fields ...string) *FeedActionSetUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated FeedActionSet entity.
-func (fasuo *FeedActionSetUpdateOne) Save(ctx context.Context) (*FeedActionSet, error) {
-	fasuo.defaults()
-	return withHooks(ctx, fasuo.sqlSave, fasuo.mutation, fasuo.hooks)
+func (_u *FeedActionSetUpdateOne) Save(ctx context.Context) (*FeedActionSet, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fasuo *FeedActionSetUpdateOne) SaveX(ctx context.Context) *FeedActionSet {
-	node, err := fasuo.Save(ctx)
+func (_u *FeedActionSetUpdateOne) SaveX(ctx context.Context) *FeedActionSet {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -467,45 +467,45 @@ func (fasuo *FeedActionSetUpdateOne) SaveX(ctx context.Context) *FeedActionSet {
 }
 
 // Exec executes the query on the entity.
-func (fasuo *FeedActionSetUpdateOne) Exec(ctx context.Context) error {
-	_, err := fasuo.Save(ctx)
+func (_u *FeedActionSetUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fasuo *FeedActionSetUpdateOne) ExecX(ctx context.Context) {
-	if err := fasuo.Exec(ctx); err != nil {
+func (_u *FeedActionSetUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fasuo *FeedActionSetUpdateOne) defaults() {
-	if _, ok := fasuo.mutation.UpdatedAt(); !ok {
+func (_u *FeedActionSetUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := feedactionset.UpdateDefaultUpdatedAt()
-		fasuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fasuo *FeedActionSetUpdateOne) check() error {
-	if fasuo.mutation.OwnerCleared() && len(fasuo.mutation.OwnerIDs()) > 0 {
+func (_u *FeedActionSetUpdateOne) check() error {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedActionSet.owner"`)
 	}
 	return nil
 }
 
-func (fasuo *FeedActionSetUpdateOne) sqlSave(ctx context.Context) (_node *FeedActionSet, err error) {
-	if err := fasuo.check(); err != nil {
+func (_u *FeedActionSetUpdateOne) sqlSave(ctx context.Context) (_node *FeedActionSet, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(feedactionset.Table, feedactionset.Columns, sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64))
-	id, ok := fasuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FeedActionSet.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := fasuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, feedactionset.FieldID)
 		for _, f := range fields {
@@ -517,34 +517,34 @@ func (fasuo *FeedActionSetUpdateOne) sqlSave(ctx context.Context) (_node *FeedAc
 			}
 		}
 	}
-	if ps := fasuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fasuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(feedactionset.FieldName, field.TypeString, value)
 	}
-	if value, ok := fasuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(feedactionset.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := fasuo.mutation.Actions(); ok {
+	if value, ok := _u.mutation.Actions(); ok {
 		_spec.SetField(feedactionset.FieldActions, field.TypeJSON, value)
 	}
-	if value, ok := fasuo.mutation.AppendedActions(); ok {
+	if value, ok := _u.mutation.AppendedActions(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, feedactionset.FieldActions, value)
 		})
 	}
-	if value, ok := fasuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedactionset.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := fasuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(feedactionset.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fasuo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -557,7 +557,7 @@ func (fasuo *FeedActionSetUpdateOne) sqlSave(ctx context.Context) (_node *FeedAc
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fasuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -573,7 +573,7 @@ func (fasuo *FeedActionSetUpdateOne) sqlSave(ctx context.Context) (_node *FeedAc
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fasuo.mutation.FeedConfigCleared() {
+	if _u.mutation.FeedConfigCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -586,7 +586,7 @@ func (fasuo *FeedActionSetUpdateOne) sqlSave(ctx context.Context) (_node *FeedAc
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fasuo.mutation.RemovedFeedConfigIDs(); len(nodes) > 0 && !fasuo.mutation.FeedConfigCleared() {
+	if nodes := _u.mutation.RemovedFeedConfigIDs(); len(nodes) > 0 && !_u.mutation.FeedConfigCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -602,7 +602,7 @@ func (fasuo *FeedActionSetUpdateOne) sqlSave(ctx context.Context) (_node *FeedAc
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fasuo.mutation.FeedConfigIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedConfigIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -618,10 +618,10 @@ func (fasuo *FeedActionSetUpdateOne) sqlSave(ctx context.Context) (_node *FeedAc
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &FeedActionSet{config: fasuo.config}
+	_node = &FeedActionSet{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, fasuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{feedactionset.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -629,6 +629,6 @@ func (fasuo *FeedActionSetUpdateOne) sqlSave(ctx context.Context) (_node *FeedAc
 		}
 		return nil, err
 	}
-	fasuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

@@ -25,74 +25,74 @@ type AppAppCategoryUpdate struct {
 }
 
 // Where appends a list predicates to the AppAppCategoryUpdate builder.
-func (aacu *AppAppCategoryUpdate) Where(ps ...predicate.AppAppCategory) *AppAppCategoryUpdate {
-	aacu.mutation.Where(ps...)
-	return aacu
+func (_u *AppAppCategoryUpdate) Where(ps ...predicate.AppAppCategory) *AppAppCategoryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetAppCategoryID sets the "app_category_id" field.
-func (aacu *AppAppCategoryUpdate) SetAppCategoryID(mi model.InternalID) *AppAppCategoryUpdate {
-	aacu.mutation.SetAppCategoryID(mi)
-	return aacu
+func (_u *AppAppCategoryUpdate) SetAppCategoryID(v model.InternalID) *AppAppCategoryUpdate {
+	_u.mutation.SetAppCategoryID(v)
+	return _u
 }
 
 // SetNillableAppCategoryID sets the "app_category_id" field if the given value is not nil.
-func (aacu *AppAppCategoryUpdate) SetNillableAppCategoryID(mi *model.InternalID) *AppAppCategoryUpdate {
-	if mi != nil {
-		aacu.SetAppCategoryID(*mi)
+func (_u *AppAppCategoryUpdate) SetNillableAppCategoryID(v *model.InternalID) *AppAppCategoryUpdate {
+	if v != nil {
+		_u.SetAppCategoryID(*v)
 	}
-	return aacu
+	return _u
 }
 
 // SetAppID sets the "app_id" field.
-func (aacu *AppAppCategoryUpdate) SetAppID(mi model.InternalID) *AppAppCategoryUpdate {
-	aacu.mutation.SetAppID(mi)
-	return aacu
+func (_u *AppAppCategoryUpdate) SetAppID(v model.InternalID) *AppAppCategoryUpdate {
+	_u.mutation.SetAppID(v)
+	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (aacu *AppAppCategoryUpdate) SetNillableAppID(mi *model.InternalID) *AppAppCategoryUpdate {
-	if mi != nil {
-		aacu.SetAppID(*mi)
+func (_u *AppAppCategoryUpdate) SetNillableAppID(v *model.InternalID) *AppAppCategoryUpdate {
+	if v != nil {
+		_u.SetAppID(*v)
 	}
-	return aacu
+	return _u
 }
 
 // SetAppCategory sets the "app_category" edge to the AppCategory entity.
-func (aacu *AppAppCategoryUpdate) SetAppCategory(a *AppCategory) *AppAppCategoryUpdate {
-	return aacu.SetAppCategoryID(a.ID)
+func (_u *AppAppCategoryUpdate) SetAppCategory(v *AppCategory) *AppAppCategoryUpdate {
+	return _u.SetAppCategoryID(v.ID)
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (aacu *AppAppCategoryUpdate) SetApp(a *App) *AppAppCategoryUpdate {
-	return aacu.SetAppID(a.ID)
+func (_u *AppAppCategoryUpdate) SetApp(v *App) *AppAppCategoryUpdate {
+	return _u.SetAppID(v.ID)
 }
 
 // Mutation returns the AppAppCategoryMutation object of the builder.
-func (aacu *AppAppCategoryUpdate) Mutation() *AppAppCategoryMutation {
-	return aacu.mutation
+func (_u *AppAppCategoryUpdate) Mutation() *AppAppCategoryMutation {
+	return _u.mutation
 }
 
 // ClearAppCategory clears the "app_category" edge to the AppCategory entity.
-func (aacu *AppAppCategoryUpdate) ClearAppCategory() *AppAppCategoryUpdate {
-	aacu.mutation.ClearAppCategory()
-	return aacu
+func (_u *AppAppCategoryUpdate) ClearAppCategory() *AppAppCategoryUpdate {
+	_u.mutation.ClearAppCategory()
+	return _u
 }
 
 // ClearApp clears the "app" edge to the App entity.
-func (aacu *AppAppCategoryUpdate) ClearApp() *AppAppCategoryUpdate {
-	aacu.mutation.ClearApp()
-	return aacu
+func (_u *AppAppCategoryUpdate) ClearApp() *AppAppCategoryUpdate {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (aacu *AppAppCategoryUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, aacu.sqlSave, aacu.mutation, aacu.hooks)
+func (_u *AppAppCategoryUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aacu *AppAppCategoryUpdate) SaveX(ctx context.Context) int {
-	affected, err := aacu.Save(ctx)
+func (_u *AppAppCategoryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -100,42 +100,42 @@ func (aacu *AppAppCategoryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (aacu *AppAppCategoryUpdate) Exec(ctx context.Context) error {
-	_, err := aacu.Save(ctx)
+func (_u *AppAppCategoryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aacu *AppAppCategoryUpdate) ExecX(ctx context.Context) {
-	if err := aacu.Exec(ctx); err != nil {
+func (_u *AppAppCategoryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aacu *AppAppCategoryUpdate) check() error {
-	if aacu.mutation.AppCategoryCleared() && len(aacu.mutation.AppCategoryIDs()) > 0 {
+func (_u *AppAppCategoryUpdate) check() error {
+	if _u.mutation.AppCategoryCleared() && len(_u.mutation.AppCategoryIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppAppCategory.app_category"`)
 	}
-	if aacu.mutation.AppCleared() && len(aacu.mutation.AppIDs()) > 0 {
+	if _u.mutation.AppCleared() && len(_u.mutation.AppIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppAppCategory.app"`)
 	}
 	return nil
 }
 
-func (aacu *AppAppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := aacu.check(); err != nil {
-		return n, err
+func (_u *AppAppCategoryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appappcategory.Table, appappcategory.Columns, sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt))
-	if ps := aacu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if aacu.mutation.AppCategoryCleared() {
+	if _u.mutation.AppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -148,7 +148,7 @@ func (aacu *AppAppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aacu.mutation.AppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -164,7 +164,7 @@ func (aacu *AppAppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if aacu.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -177,7 +177,7 @@ func (aacu *AppAppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aacu.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -193,7 +193,7 @@ func (aacu *AppAppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, aacu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appappcategory.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -201,8 +201,8 @@ func (aacu *AppAppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		return 0, err
 	}
-	aacu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppAppCategoryUpdateOne is the builder for updating a single AppAppCategory entity.
@@ -214,81 +214,81 @@ type AppAppCategoryUpdateOne struct {
 }
 
 // SetAppCategoryID sets the "app_category_id" field.
-func (aacuo *AppAppCategoryUpdateOne) SetAppCategoryID(mi model.InternalID) *AppAppCategoryUpdateOne {
-	aacuo.mutation.SetAppCategoryID(mi)
-	return aacuo
+func (_u *AppAppCategoryUpdateOne) SetAppCategoryID(v model.InternalID) *AppAppCategoryUpdateOne {
+	_u.mutation.SetAppCategoryID(v)
+	return _u
 }
 
 // SetNillableAppCategoryID sets the "app_category_id" field if the given value is not nil.
-func (aacuo *AppAppCategoryUpdateOne) SetNillableAppCategoryID(mi *model.InternalID) *AppAppCategoryUpdateOne {
-	if mi != nil {
-		aacuo.SetAppCategoryID(*mi)
+func (_u *AppAppCategoryUpdateOne) SetNillableAppCategoryID(v *model.InternalID) *AppAppCategoryUpdateOne {
+	if v != nil {
+		_u.SetAppCategoryID(*v)
 	}
-	return aacuo
+	return _u
 }
 
 // SetAppID sets the "app_id" field.
-func (aacuo *AppAppCategoryUpdateOne) SetAppID(mi model.InternalID) *AppAppCategoryUpdateOne {
-	aacuo.mutation.SetAppID(mi)
-	return aacuo
+func (_u *AppAppCategoryUpdateOne) SetAppID(v model.InternalID) *AppAppCategoryUpdateOne {
+	_u.mutation.SetAppID(v)
+	return _u
 }
 
 // SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (aacuo *AppAppCategoryUpdateOne) SetNillableAppID(mi *model.InternalID) *AppAppCategoryUpdateOne {
-	if mi != nil {
-		aacuo.SetAppID(*mi)
+func (_u *AppAppCategoryUpdateOne) SetNillableAppID(v *model.InternalID) *AppAppCategoryUpdateOne {
+	if v != nil {
+		_u.SetAppID(*v)
 	}
-	return aacuo
+	return _u
 }
 
 // SetAppCategory sets the "app_category" edge to the AppCategory entity.
-func (aacuo *AppAppCategoryUpdateOne) SetAppCategory(a *AppCategory) *AppAppCategoryUpdateOne {
-	return aacuo.SetAppCategoryID(a.ID)
+func (_u *AppAppCategoryUpdateOne) SetAppCategory(v *AppCategory) *AppAppCategoryUpdateOne {
+	return _u.SetAppCategoryID(v.ID)
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (aacuo *AppAppCategoryUpdateOne) SetApp(a *App) *AppAppCategoryUpdateOne {
-	return aacuo.SetAppID(a.ID)
+func (_u *AppAppCategoryUpdateOne) SetApp(v *App) *AppAppCategoryUpdateOne {
+	return _u.SetAppID(v.ID)
 }
 
 // Mutation returns the AppAppCategoryMutation object of the builder.
-func (aacuo *AppAppCategoryUpdateOne) Mutation() *AppAppCategoryMutation {
-	return aacuo.mutation
+func (_u *AppAppCategoryUpdateOne) Mutation() *AppAppCategoryMutation {
+	return _u.mutation
 }
 
 // ClearAppCategory clears the "app_category" edge to the AppCategory entity.
-func (aacuo *AppAppCategoryUpdateOne) ClearAppCategory() *AppAppCategoryUpdateOne {
-	aacuo.mutation.ClearAppCategory()
-	return aacuo
+func (_u *AppAppCategoryUpdateOne) ClearAppCategory() *AppAppCategoryUpdateOne {
+	_u.mutation.ClearAppCategory()
+	return _u
 }
 
 // ClearApp clears the "app" edge to the App entity.
-func (aacuo *AppAppCategoryUpdateOne) ClearApp() *AppAppCategoryUpdateOne {
-	aacuo.mutation.ClearApp()
-	return aacuo
+func (_u *AppAppCategoryUpdateOne) ClearApp() *AppAppCategoryUpdateOne {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // Where appends a list predicates to the AppAppCategoryUpdate builder.
-func (aacuo *AppAppCategoryUpdateOne) Where(ps ...predicate.AppAppCategory) *AppAppCategoryUpdateOne {
-	aacuo.mutation.Where(ps...)
-	return aacuo
+func (_u *AppAppCategoryUpdateOne) Where(ps ...predicate.AppAppCategory) *AppAppCategoryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (aacuo *AppAppCategoryUpdateOne) Select(field string, fields ...string) *AppAppCategoryUpdateOne {
-	aacuo.fields = append([]string{field}, fields...)
-	return aacuo
+func (_u *AppAppCategoryUpdateOne) Select(field string, fields ...string) *AppAppCategoryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppAppCategory entity.
-func (aacuo *AppAppCategoryUpdateOne) Save(ctx context.Context) (*AppAppCategory, error) {
-	return withHooks(ctx, aacuo.sqlSave, aacuo.mutation, aacuo.hooks)
+func (_u *AppAppCategoryUpdateOne) Save(ctx context.Context) (*AppAppCategory, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aacuo *AppAppCategoryUpdateOne) SaveX(ctx context.Context) *AppAppCategory {
-	node, err := aacuo.Save(ctx)
+func (_u *AppAppCategoryUpdateOne) SaveX(ctx context.Context) *AppAppCategory {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -296,40 +296,40 @@ func (aacuo *AppAppCategoryUpdateOne) SaveX(ctx context.Context) *AppAppCategory
 }
 
 // Exec executes the query on the entity.
-func (aacuo *AppAppCategoryUpdateOne) Exec(ctx context.Context) error {
-	_, err := aacuo.Save(ctx)
+func (_u *AppAppCategoryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aacuo *AppAppCategoryUpdateOne) ExecX(ctx context.Context) {
-	if err := aacuo.Exec(ctx); err != nil {
+func (_u *AppAppCategoryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aacuo *AppAppCategoryUpdateOne) check() error {
-	if aacuo.mutation.AppCategoryCleared() && len(aacuo.mutation.AppCategoryIDs()) > 0 {
+func (_u *AppAppCategoryUpdateOne) check() error {
+	if _u.mutation.AppCategoryCleared() && len(_u.mutation.AppCategoryIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppAppCategory.app_category"`)
 	}
-	if aacuo.mutation.AppCleared() && len(aacuo.mutation.AppIDs()) > 0 {
+	if _u.mutation.AppCleared() && len(_u.mutation.AppIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppAppCategory.app"`)
 	}
 	return nil
 }
 
-func (aacuo *AppAppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppAppCategory, err error) {
-	if err := aacuo.check(); err != nil {
+func (_u *AppAppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppAppCategory, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(appappcategory.Table, appappcategory.Columns, sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt))
-	id, ok := aacuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppAppCategory.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := aacuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appappcategory.FieldID)
 		for _, f := range fields {
@@ -341,14 +341,14 @@ func (aacuo *AppAppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppAp
 			}
 		}
 	}
-	if ps := aacuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if aacuo.mutation.AppCategoryCleared() {
+	if _u.mutation.AppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -361,7 +361,7 @@ func (aacuo *AppAppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppAp
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aacuo.mutation.AppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -377,7 +377,7 @@ func (aacuo *AppAppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppAp
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if aacuo.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -390,7 +390,7 @@ func (aacuo *AppAppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppAp
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := aacuo.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -406,10 +406,10 @@ func (aacuo *AppAppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppAp
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &AppAppCategory{config: aacuo.config}
+	_node = &AppAppCategory{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, aacuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appappcategory.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -417,6 +417,6 @@ func (aacuo *AppAppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppAp
 		}
 		return nil, err
 	}
-	aacuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

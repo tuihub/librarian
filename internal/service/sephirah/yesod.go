@@ -5,8 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
@@ -37,7 +36,7 @@ func (s *LibrarianSephirahService) ListFeedConfigs(
 	req *sephirah.ListFeedConfigsRequest,
 ) (*sephirah.ListFeedConfigsResponse, error) {
 	if req.GetPaging() == nil {
-		return nil, pb.ErrorErrorReasonBadRequest("")
+		return nil, librarian.ErrorErrorReasonBadRequest("")
 	}
 	feeds, total, err := s.y.ListFeeds(ctx,
 		model.ToBizPaging(req.GetPaging()),
@@ -80,7 +79,7 @@ func (s *LibrarianSephirahService) ListFeedActionSets(
 	req *sephirah.ListFeedActionSetsRequest,
 ) (*sephirah.ListFeedActionSetsResponse, error) {
 	if req.GetPaging() == nil {
-		return nil, pb.ErrorErrorReasonBadRequest("")
+		return nil, librarian.ErrorErrorReasonBadRequest("")
 	}
 	actions, total, err := s.y.ListFeedActionSets(ctx,
 		model.ToBizPaging(req.GetPaging()),
@@ -119,7 +118,7 @@ func (s *LibrarianSephirahService) ListFeedItems(
 	req *sephirah.ListFeedItemsRequest,
 ) (*sephirah.ListFeedItemsResponse, error) {
 	if req.GetPaging() == nil {
-		return nil, pb.ErrorErrorReasonBadRequest("")
+		return nil, librarian.ErrorErrorReasonBadRequest("")
 	}
 	items, total, err := s.y.ListFeedItems(ctx,
 		model.ToBizPaging(req.GetPaging()),
@@ -202,7 +201,7 @@ func (s *LibrarianSephirahService) ListFeedItemCollections(
 	req *sephirah.ListFeedItemCollectionsRequest,
 ) (*sephirah.ListFeedItemCollectionsResponse, error) {
 	if req.GetPaging() == nil {
-		return nil, pb.ErrorErrorReasonBadRequest("")
+		return nil, librarian.ErrorErrorReasonBadRequest("")
 	}
 	collections, total, err := s.y.ListFeedItemCollections(ctx,
 		model.ToBizPaging(req.GetPaging()),
@@ -252,7 +251,7 @@ func (s *LibrarianSephirahService) ListFeedItemsInCollection(
 	req *sephirah.ListFeedItemsInCollectionRequest,
 ) (*sephirah.ListFeedItemsInCollectionResponse, error) {
 	if req.GetPaging() == nil {
-		return nil, pb.ErrorErrorReasonBadRequest("")
+		return nil, librarian.ErrorErrorReasonBadRequest("")
 	}
 	items, total, err := s.y.ListFeedItemsInCollection(ctx,
 		model.ToBizPaging(req.GetPaging()),

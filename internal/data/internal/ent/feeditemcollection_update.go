@@ -27,176 +27,176 @@ type FeedItemCollectionUpdate struct {
 }
 
 // Where appends a list predicates to the FeedItemCollectionUpdate builder.
-func (ficu *FeedItemCollectionUpdate) Where(ps ...predicate.FeedItemCollection) *FeedItemCollectionUpdate {
-	ficu.mutation.Where(ps...)
-	return ficu
+func (_u *FeedItemCollectionUpdate) Where(ps ...predicate.FeedItemCollection) *FeedItemCollectionUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ficu *FeedItemCollectionUpdate) SetName(s string) *FeedItemCollectionUpdate {
-	ficu.mutation.SetName(s)
-	return ficu
+func (_u *FeedItemCollectionUpdate) SetName(v string) *FeedItemCollectionUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ficu *FeedItemCollectionUpdate) SetNillableName(s *string) *FeedItemCollectionUpdate {
-	if s != nil {
-		ficu.SetName(*s)
+func (_u *FeedItemCollectionUpdate) SetNillableName(v *string) *FeedItemCollectionUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ficu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (ficu *FeedItemCollectionUpdate) SetDescription(s string) *FeedItemCollectionUpdate {
-	ficu.mutation.SetDescription(s)
-	return ficu
+func (_u *FeedItemCollectionUpdate) SetDescription(v string) *FeedItemCollectionUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (ficu *FeedItemCollectionUpdate) SetNillableDescription(s *string) *FeedItemCollectionUpdate {
-	if s != nil {
-		ficu.SetDescription(*s)
+func (_u *FeedItemCollectionUpdate) SetNillableDescription(v *string) *FeedItemCollectionUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return ficu
+	return _u
 }
 
 // SetCategory sets the "category" field.
-func (ficu *FeedItemCollectionUpdate) SetCategory(s string) *FeedItemCollectionUpdate {
-	ficu.mutation.SetCategory(s)
-	return ficu
+func (_u *FeedItemCollectionUpdate) SetCategory(v string) *FeedItemCollectionUpdate {
+	_u.mutation.SetCategory(v)
+	return _u
 }
 
 // SetNillableCategory sets the "category" field if the given value is not nil.
-func (ficu *FeedItemCollectionUpdate) SetNillableCategory(s *string) *FeedItemCollectionUpdate {
-	if s != nil {
-		ficu.SetCategory(*s)
+func (_u *FeedItemCollectionUpdate) SetNillableCategory(v *string) *FeedItemCollectionUpdate {
+	if v != nil {
+		_u.SetCategory(*v)
 	}
-	return ficu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ficu *FeedItemCollectionUpdate) SetUpdatedAt(t time.Time) *FeedItemCollectionUpdate {
-	ficu.mutation.SetUpdatedAt(t)
-	return ficu
+func (_u *FeedItemCollectionUpdate) SetUpdatedAt(v time.Time) *FeedItemCollectionUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ficu *FeedItemCollectionUpdate) SetCreatedAt(t time.Time) *FeedItemCollectionUpdate {
-	ficu.mutation.SetCreatedAt(t)
-	return ficu
+func (_u *FeedItemCollectionUpdate) SetCreatedAt(v time.Time) *FeedItemCollectionUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ficu *FeedItemCollectionUpdate) SetNillableCreatedAt(t *time.Time) *FeedItemCollectionUpdate {
-	if t != nil {
-		ficu.SetCreatedAt(*t)
+func (_u *FeedItemCollectionUpdate) SetNillableCreatedAt(v *time.Time) *FeedItemCollectionUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return ficu
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ficu *FeedItemCollectionUpdate) SetOwnerID(id model.InternalID) *FeedItemCollectionUpdate {
-	ficu.mutation.SetOwnerID(id)
-	return ficu
+func (_u *FeedItemCollectionUpdate) SetOwnerID(id model.InternalID) *FeedItemCollectionUpdate {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (ficu *FeedItemCollectionUpdate) SetOwner(u *User) *FeedItemCollectionUpdate {
-	return ficu.SetOwnerID(u.ID)
+func (_u *FeedItemCollectionUpdate) SetOwner(v *User) *FeedItemCollectionUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddFeedItemIDs adds the "feed_item" edge to the FeedItem entity by IDs.
-func (ficu *FeedItemCollectionUpdate) AddFeedItemIDs(ids ...model.InternalID) *FeedItemCollectionUpdate {
-	ficu.mutation.AddFeedItemIDs(ids...)
-	return ficu
+func (_u *FeedItemCollectionUpdate) AddFeedItemIDs(ids ...model.InternalID) *FeedItemCollectionUpdate {
+	_u.mutation.AddFeedItemIDs(ids...)
+	return _u
 }
 
 // AddFeedItem adds the "feed_item" edges to the FeedItem entity.
-func (ficu *FeedItemCollectionUpdate) AddFeedItem(f ...*FeedItem) *FeedItemCollectionUpdate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedItemCollectionUpdate) AddFeedItem(v ...*FeedItem) *FeedItemCollectionUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ficu.AddFeedItemIDs(ids...)
+	return _u.AddFeedItemIDs(ids...)
 }
 
 // AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
-func (ficu *FeedItemCollectionUpdate) AddNotifySourceIDs(ids ...model.InternalID) *FeedItemCollectionUpdate {
-	ficu.mutation.AddNotifySourceIDs(ids...)
-	return ficu
+func (_u *FeedItemCollectionUpdate) AddNotifySourceIDs(ids ...model.InternalID) *FeedItemCollectionUpdate {
+	_u.mutation.AddNotifySourceIDs(ids...)
+	return _u
 }
 
 // AddNotifySource adds the "notify_source" edges to the NotifySource entity.
-func (ficu *FeedItemCollectionUpdate) AddNotifySource(n ...*NotifySource) *FeedItemCollectionUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *FeedItemCollectionUpdate) AddNotifySource(v ...*NotifySource) *FeedItemCollectionUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ficu.AddNotifySourceIDs(ids...)
+	return _u.AddNotifySourceIDs(ids...)
 }
 
 // Mutation returns the FeedItemCollectionMutation object of the builder.
-func (ficu *FeedItemCollectionUpdate) Mutation() *FeedItemCollectionMutation {
-	return ficu.mutation
+func (_u *FeedItemCollectionUpdate) Mutation() *FeedItemCollectionMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (ficu *FeedItemCollectionUpdate) ClearOwner() *FeedItemCollectionUpdate {
-	ficu.mutation.ClearOwner()
-	return ficu
+func (_u *FeedItemCollectionUpdate) ClearOwner() *FeedItemCollectionUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearFeedItem clears all "feed_item" edges to the FeedItem entity.
-func (ficu *FeedItemCollectionUpdate) ClearFeedItem() *FeedItemCollectionUpdate {
-	ficu.mutation.ClearFeedItem()
-	return ficu
+func (_u *FeedItemCollectionUpdate) ClearFeedItem() *FeedItemCollectionUpdate {
+	_u.mutation.ClearFeedItem()
+	return _u
 }
 
 // RemoveFeedItemIDs removes the "feed_item" edge to FeedItem entities by IDs.
-func (ficu *FeedItemCollectionUpdate) RemoveFeedItemIDs(ids ...model.InternalID) *FeedItemCollectionUpdate {
-	ficu.mutation.RemoveFeedItemIDs(ids...)
-	return ficu
+func (_u *FeedItemCollectionUpdate) RemoveFeedItemIDs(ids ...model.InternalID) *FeedItemCollectionUpdate {
+	_u.mutation.RemoveFeedItemIDs(ids...)
+	return _u
 }
 
 // RemoveFeedItem removes "feed_item" edges to FeedItem entities.
-func (ficu *FeedItemCollectionUpdate) RemoveFeedItem(f ...*FeedItem) *FeedItemCollectionUpdate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedItemCollectionUpdate) RemoveFeedItem(v ...*FeedItem) *FeedItemCollectionUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ficu.RemoveFeedItemIDs(ids...)
+	return _u.RemoveFeedItemIDs(ids...)
 }
 
 // ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
-func (ficu *FeedItemCollectionUpdate) ClearNotifySource() *FeedItemCollectionUpdate {
-	ficu.mutation.ClearNotifySource()
-	return ficu
+func (_u *FeedItemCollectionUpdate) ClearNotifySource() *FeedItemCollectionUpdate {
+	_u.mutation.ClearNotifySource()
+	return _u
 }
 
 // RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
-func (ficu *FeedItemCollectionUpdate) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedItemCollectionUpdate {
-	ficu.mutation.RemoveNotifySourceIDs(ids...)
-	return ficu
+func (_u *FeedItemCollectionUpdate) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedItemCollectionUpdate {
+	_u.mutation.RemoveNotifySourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifySource removes "notify_source" edges to NotifySource entities.
-func (ficu *FeedItemCollectionUpdate) RemoveNotifySource(n ...*NotifySource) *FeedItemCollectionUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *FeedItemCollectionUpdate) RemoveNotifySource(v ...*NotifySource) *FeedItemCollectionUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ficu.RemoveNotifySourceIDs(ids...)
+	return _u.RemoveNotifySourceIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ficu *FeedItemCollectionUpdate) Save(ctx context.Context) (int, error) {
-	ficu.defaults()
-	return withHooks(ctx, ficu.sqlSave, ficu.mutation, ficu.hooks)
+func (_u *FeedItemCollectionUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ficu *FeedItemCollectionUpdate) SaveX(ctx context.Context) int {
-	affected, err := ficu.Save(ctx)
+func (_u *FeedItemCollectionUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -204,62 +204,62 @@ func (ficu *FeedItemCollectionUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ficu *FeedItemCollectionUpdate) Exec(ctx context.Context) error {
-	_, err := ficu.Save(ctx)
+func (_u *FeedItemCollectionUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ficu *FeedItemCollectionUpdate) ExecX(ctx context.Context) {
-	if err := ficu.Exec(ctx); err != nil {
+func (_u *FeedItemCollectionUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ficu *FeedItemCollectionUpdate) defaults() {
-	if _, ok := ficu.mutation.UpdatedAt(); !ok {
+func (_u *FeedItemCollectionUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := feeditemcollection.UpdateDefaultUpdatedAt()
-		ficu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ficu *FeedItemCollectionUpdate) check() error {
-	if ficu.mutation.OwnerCleared() && len(ficu.mutation.OwnerIDs()) > 0 {
+func (_u *FeedItemCollectionUpdate) check() error {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedItemCollection.owner"`)
 	}
 	return nil
 }
 
-func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ficu.check(); err != nil {
-		return n, err
+func (_u *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(feeditemcollection.Table, feeditemcollection.Columns, sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64))
-	if ps := ficu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ficu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(feeditemcollection.FieldName, field.TypeString, value)
 	}
-	if value, ok := ficu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(feeditemcollection.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ficu.mutation.Category(); ok {
+	if value, ok := _u.mutation.Category(); ok {
 		_spec.SetField(feeditemcollection.FieldCategory, field.TypeString, value)
 	}
-	if value, ok := ficu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditemcollection.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := ficu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(feeditemcollection.FieldCreatedAt, field.TypeTime, value)
 	}
-	if ficu.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -272,7 +272,7 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -288,7 +288,7 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ficu.mutation.FeedItemCleared() {
+	if _u.mutation.FeedItemCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -301,7 +301,7 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficu.mutation.RemovedFeedItemIDs(); len(nodes) > 0 && !ficu.mutation.FeedItemCleared() {
+	if nodes := _u.mutation.RemovedFeedItemIDs(); len(nodes) > 0 && !_u.mutation.FeedItemCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -317,7 +317,7 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficu.mutation.FeedItemIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedItemIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -333,7 +333,7 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ficu.mutation.NotifySourceCleared() {
+	if _u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -346,7 +346,7 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficu.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !ficu.mutation.NotifySourceCleared() {
+	if nodes := _u.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !_u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -362,7 +362,7 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficu.mutation.NotifySourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -378,7 +378,7 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ficu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{feeditemcollection.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -386,8 +386,8 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		return 0, err
 	}
-	ficu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // FeedItemCollectionUpdateOne is the builder for updating a single FeedItemCollection entity.
@@ -399,183 +399,183 @@ type FeedItemCollectionUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (ficuo *FeedItemCollectionUpdateOne) SetName(s string) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.SetName(s)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) SetName(v string) *FeedItemCollectionUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ficuo *FeedItemCollectionUpdateOne) SetNillableName(s *string) *FeedItemCollectionUpdateOne {
-	if s != nil {
-		ficuo.SetName(*s)
+func (_u *FeedItemCollectionUpdateOne) SetNillableName(v *string) *FeedItemCollectionUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ficuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (ficuo *FeedItemCollectionUpdateOne) SetDescription(s string) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.SetDescription(s)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) SetDescription(v string) *FeedItemCollectionUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (ficuo *FeedItemCollectionUpdateOne) SetNillableDescription(s *string) *FeedItemCollectionUpdateOne {
-	if s != nil {
-		ficuo.SetDescription(*s)
+func (_u *FeedItemCollectionUpdateOne) SetNillableDescription(v *string) *FeedItemCollectionUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return ficuo
+	return _u
 }
 
 // SetCategory sets the "category" field.
-func (ficuo *FeedItemCollectionUpdateOne) SetCategory(s string) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.SetCategory(s)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) SetCategory(v string) *FeedItemCollectionUpdateOne {
+	_u.mutation.SetCategory(v)
+	return _u
 }
 
 // SetNillableCategory sets the "category" field if the given value is not nil.
-func (ficuo *FeedItemCollectionUpdateOne) SetNillableCategory(s *string) *FeedItemCollectionUpdateOne {
-	if s != nil {
-		ficuo.SetCategory(*s)
+func (_u *FeedItemCollectionUpdateOne) SetNillableCategory(v *string) *FeedItemCollectionUpdateOne {
+	if v != nil {
+		_u.SetCategory(*v)
 	}
-	return ficuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ficuo *FeedItemCollectionUpdateOne) SetUpdatedAt(t time.Time) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.SetUpdatedAt(t)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) SetUpdatedAt(v time.Time) *FeedItemCollectionUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ficuo *FeedItemCollectionUpdateOne) SetCreatedAt(t time.Time) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.SetCreatedAt(t)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) SetCreatedAt(v time.Time) *FeedItemCollectionUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ficuo *FeedItemCollectionUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedItemCollectionUpdateOne {
-	if t != nil {
-		ficuo.SetCreatedAt(*t)
+func (_u *FeedItemCollectionUpdateOne) SetNillableCreatedAt(v *time.Time) *FeedItemCollectionUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return ficuo
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ficuo *FeedItemCollectionUpdateOne) SetOwnerID(id model.InternalID) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.SetOwnerID(id)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) SetOwnerID(id model.InternalID) *FeedItemCollectionUpdateOne {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (ficuo *FeedItemCollectionUpdateOne) SetOwner(u *User) *FeedItemCollectionUpdateOne {
-	return ficuo.SetOwnerID(u.ID)
+func (_u *FeedItemCollectionUpdateOne) SetOwner(v *User) *FeedItemCollectionUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddFeedItemIDs adds the "feed_item" edge to the FeedItem entity by IDs.
-func (ficuo *FeedItemCollectionUpdateOne) AddFeedItemIDs(ids ...model.InternalID) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.AddFeedItemIDs(ids...)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) AddFeedItemIDs(ids ...model.InternalID) *FeedItemCollectionUpdateOne {
+	_u.mutation.AddFeedItemIDs(ids...)
+	return _u
 }
 
 // AddFeedItem adds the "feed_item" edges to the FeedItem entity.
-func (ficuo *FeedItemCollectionUpdateOne) AddFeedItem(f ...*FeedItem) *FeedItemCollectionUpdateOne {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedItemCollectionUpdateOne) AddFeedItem(v ...*FeedItem) *FeedItemCollectionUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ficuo.AddFeedItemIDs(ids...)
+	return _u.AddFeedItemIDs(ids...)
 }
 
 // AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
-func (ficuo *FeedItemCollectionUpdateOne) AddNotifySourceIDs(ids ...model.InternalID) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.AddNotifySourceIDs(ids...)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) AddNotifySourceIDs(ids ...model.InternalID) *FeedItemCollectionUpdateOne {
+	_u.mutation.AddNotifySourceIDs(ids...)
+	return _u
 }
 
 // AddNotifySource adds the "notify_source" edges to the NotifySource entity.
-func (ficuo *FeedItemCollectionUpdateOne) AddNotifySource(n ...*NotifySource) *FeedItemCollectionUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *FeedItemCollectionUpdateOne) AddNotifySource(v ...*NotifySource) *FeedItemCollectionUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ficuo.AddNotifySourceIDs(ids...)
+	return _u.AddNotifySourceIDs(ids...)
 }
 
 // Mutation returns the FeedItemCollectionMutation object of the builder.
-func (ficuo *FeedItemCollectionUpdateOne) Mutation() *FeedItemCollectionMutation {
-	return ficuo.mutation
+func (_u *FeedItemCollectionUpdateOne) Mutation() *FeedItemCollectionMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (ficuo *FeedItemCollectionUpdateOne) ClearOwner() *FeedItemCollectionUpdateOne {
-	ficuo.mutation.ClearOwner()
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) ClearOwner() *FeedItemCollectionUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearFeedItem clears all "feed_item" edges to the FeedItem entity.
-func (ficuo *FeedItemCollectionUpdateOne) ClearFeedItem() *FeedItemCollectionUpdateOne {
-	ficuo.mutation.ClearFeedItem()
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) ClearFeedItem() *FeedItemCollectionUpdateOne {
+	_u.mutation.ClearFeedItem()
+	return _u
 }
 
 // RemoveFeedItemIDs removes the "feed_item" edge to FeedItem entities by IDs.
-func (ficuo *FeedItemCollectionUpdateOne) RemoveFeedItemIDs(ids ...model.InternalID) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.RemoveFeedItemIDs(ids...)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) RemoveFeedItemIDs(ids ...model.InternalID) *FeedItemCollectionUpdateOne {
+	_u.mutation.RemoveFeedItemIDs(ids...)
+	return _u
 }
 
 // RemoveFeedItem removes "feed_item" edges to FeedItem entities.
-func (ficuo *FeedItemCollectionUpdateOne) RemoveFeedItem(f ...*FeedItem) *FeedItemCollectionUpdateOne {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_u *FeedItemCollectionUpdateOne) RemoveFeedItem(v ...*FeedItem) *FeedItemCollectionUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ficuo.RemoveFeedItemIDs(ids...)
+	return _u.RemoveFeedItemIDs(ids...)
 }
 
 // ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
-func (ficuo *FeedItemCollectionUpdateOne) ClearNotifySource() *FeedItemCollectionUpdateOne {
-	ficuo.mutation.ClearNotifySource()
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) ClearNotifySource() *FeedItemCollectionUpdateOne {
+	_u.mutation.ClearNotifySource()
+	return _u
 }
 
 // RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
-func (ficuo *FeedItemCollectionUpdateOne) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.RemoveNotifySourceIDs(ids...)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedItemCollectionUpdateOne {
+	_u.mutation.RemoveNotifySourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifySource removes "notify_source" edges to NotifySource entities.
-func (ficuo *FeedItemCollectionUpdateOne) RemoveNotifySource(n ...*NotifySource) *FeedItemCollectionUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *FeedItemCollectionUpdateOne) RemoveNotifySource(v ...*NotifySource) *FeedItemCollectionUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ficuo.RemoveNotifySourceIDs(ids...)
+	return _u.RemoveNotifySourceIDs(ids...)
 }
 
 // Where appends a list predicates to the FeedItemCollectionUpdate builder.
-func (ficuo *FeedItemCollectionUpdateOne) Where(ps ...predicate.FeedItemCollection) *FeedItemCollectionUpdateOne {
-	ficuo.mutation.Where(ps...)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) Where(ps ...predicate.FeedItemCollection) *FeedItemCollectionUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ficuo *FeedItemCollectionUpdateOne) Select(field string, fields ...string) *FeedItemCollectionUpdateOne {
-	ficuo.fields = append([]string{field}, fields...)
-	return ficuo
+func (_u *FeedItemCollectionUpdateOne) Select(field string, fields ...string) *FeedItemCollectionUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated FeedItemCollection entity.
-func (ficuo *FeedItemCollectionUpdateOne) Save(ctx context.Context) (*FeedItemCollection, error) {
-	ficuo.defaults()
-	return withHooks(ctx, ficuo.sqlSave, ficuo.mutation, ficuo.hooks)
+func (_u *FeedItemCollectionUpdateOne) Save(ctx context.Context) (*FeedItemCollection, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ficuo *FeedItemCollectionUpdateOne) SaveX(ctx context.Context) *FeedItemCollection {
-	node, err := ficuo.Save(ctx)
+func (_u *FeedItemCollectionUpdateOne) SaveX(ctx context.Context) *FeedItemCollection {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -583,45 +583,45 @@ func (ficuo *FeedItemCollectionUpdateOne) SaveX(ctx context.Context) *FeedItemCo
 }
 
 // Exec executes the query on the entity.
-func (ficuo *FeedItemCollectionUpdateOne) Exec(ctx context.Context) error {
-	_, err := ficuo.Save(ctx)
+func (_u *FeedItemCollectionUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ficuo *FeedItemCollectionUpdateOne) ExecX(ctx context.Context) {
-	if err := ficuo.Exec(ctx); err != nil {
+func (_u *FeedItemCollectionUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ficuo *FeedItemCollectionUpdateOne) defaults() {
-	if _, ok := ficuo.mutation.UpdatedAt(); !ok {
+func (_u *FeedItemCollectionUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := feeditemcollection.UpdateDefaultUpdatedAt()
-		ficuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ficuo *FeedItemCollectionUpdateOne) check() error {
-	if ficuo.mutation.OwnerCleared() && len(ficuo.mutation.OwnerIDs()) > 0 {
+func (_u *FeedItemCollectionUpdateOne) check() error {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedItemCollection.owner"`)
 	}
 	return nil
 }
 
-func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *FeedItemCollection, err error) {
-	if err := ficuo.check(); err != nil {
+func (_u *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *FeedItemCollection, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(feeditemcollection.Table, feeditemcollection.Columns, sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64))
-	id, ok := ficuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FeedItemCollection.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ficuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, feeditemcollection.FieldID)
 		for _, f := range fields {
@@ -633,29 +633,29 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 			}
 		}
 	}
-	if ps := ficuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ficuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(feeditemcollection.FieldName, field.TypeString, value)
 	}
-	if value, ok := ficuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(feeditemcollection.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ficuo.mutation.Category(); ok {
+	if value, ok := _u.mutation.Category(); ok {
 		_spec.SetField(feeditemcollection.FieldCategory, field.TypeString, value)
 	}
-	if value, ok := ficuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditemcollection.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := ficuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(feeditemcollection.FieldCreatedAt, field.TypeTime, value)
 	}
-	if ficuo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -668,7 +668,7 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -684,7 +684,7 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ficuo.mutation.FeedItemCleared() {
+	if _u.mutation.FeedItemCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -697,7 +697,7 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficuo.mutation.RemovedFeedItemIDs(); len(nodes) > 0 && !ficuo.mutation.FeedItemCleared() {
+	if nodes := _u.mutation.RemovedFeedItemIDs(); len(nodes) > 0 && !_u.mutation.FeedItemCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -713,7 +713,7 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficuo.mutation.FeedItemIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FeedItemIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -729,7 +729,7 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ficuo.mutation.NotifySourceCleared() {
+	if _u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -742,7 +742,7 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficuo.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !ficuo.mutation.NotifySourceCleared() {
+	if nodes := _u.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !_u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -758,7 +758,7 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ficuo.mutation.NotifySourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -774,10 +774,10 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &FeedItemCollection{config: ficuo.config}
+	_node = &FeedItemCollection{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ficuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{feeditemcollection.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -785,6 +785,6 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 		}
 		return nil, err
 	}
-	ficuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

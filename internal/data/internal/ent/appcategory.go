@@ -85,7 +85,7 @@ func (*AppCategory) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AppCategory fields.
-func (ac *AppCategory) assignValues(columns []string, values []any) error {
+func (_m *AppCategory) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -95,46 +95,46 @@ func (ac *AppCategory) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				ac.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case appcategory.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				ac.UserID = model.InternalID(value.Int64)
+				_m.UserID = model.InternalID(value.Int64)
 			}
 		case appcategory.FieldVersionNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field version_number", values[i])
 			} else if value.Valid {
-				ac.VersionNumber = uint64(value.Int64)
+				_m.VersionNumber = uint64(value.Int64)
 			}
 		case appcategory.FieldVersionDate:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field version_date", values[i])
 			} else if value.Valid {
-				ac.VersionDate = value.Time
+				_m.VersionDate = value.Time
 			}
 		case appcategory.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				ac.Name = value.String
+				_m.Name = value.String
 			}
 		case appcategory.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ac.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case appcategory.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ac.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			ac.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -142,60 +142,60 @@ func (ac *AppCategory) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AppCategory.
 // This includes values selected through modifiers, order, etc.
-func (ac *AppCategory) Value(name string) (ent.Value, error) {
-	return ac.selectValues.Get(name)
+func (_m *AppCategory) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppCategory entity.
-func (ac *AppCategory) QueryApp() *AppQuery {
-	return NewAppCategoryClient(ac.config).QueryApp(ac)
+func (_m *AppCategory) QueryApp() *AppQuery {
+	return NewAppCategoryClient(_m.config).QueryApp(_m)
 }
 
 // QueryAppAppCategory queries the "app_app_category" edge of the AppCategory entity.
-func (ac *AppCategory) QueryAppAppCategory() *AppAppCategoryQuery {
-	return NewAppCategoryClient(ac.config).QueryAppAppCategory(ac)
+func (_m *AppCategory) QueryAppAppCategory() *AppAppCategoryQuery {
+	return NewAppCategoryClient(_m.config).QueryAppAppCategory(_m)
 }
 
 // Update returns a builder for updating this AppCategory.
 // Note that you need to call AppCategory.Unwrap() before calling this method if this AppCategory
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ac *AppCategory) Update() *AppCategoryUpdateOne {
-	return NewAppCategoryClient(ac.config).UpdateOne(ac)
+func (_m *AppCategory) Update() *AppCategoryUpdateOne {
+	return NewAppCategoryClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AppCategory entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ac *AppCategory) Unwrap() *AppCategory {
-	_tx, ok := ac.config.driver.(*txDriver)
+func (_m *AppCategory) Unwrap() *AppCategory {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AppCategory is not a transactional entity")
 	}
-	ac.config.driver = _tx.drv
-	return ac
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ac *AppCategory) String() string {
+func (_m *AppCategory) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppCategory(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ac.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", ac.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("version_number=")
-	builder.WriteString(fmt.Sprintf("%v", ac.VersionNumber))
+	builder.WriteString(fmt.Sprintf("%v", _m.VersionNumber))
 	builder.WriteString(", ")
 	builder.WriteString("version_date=")
-	builder.WriteString(ac.VersionDate.Format(time.ANSIC))
+	builder.WriteString(_m.VersionDate.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(ac.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ac.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ac.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

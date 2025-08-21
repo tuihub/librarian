@@ -17,7 +17,8 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	"github.com/tuihub/protos/pkg/librarian/sephirah/v1/v1connect"
 
 	"github.com/google/wire"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -26,7 +27,7 @@ import (
 var ProviderSet = wire.NewSet(NewLibrarianSephirahService)
 
 type LibrarianSephirahService struct {
-	pb.UnimplementedLibrarianSephirahServiceServer
+	v1connect.UnimplementedLibrarianSephirahServiceHandler
 
 	a    *bizangela.Angela
 	k    *bizkether.Kether
@@ -53,10 +54,10 @@ func NewLibrarianSephirahService(
 	s *bizsupervisor.Supervisor,
 	app *libapp.Settings,
 	auth *libauth.Auth,
-) pb.LibrarianSephirahServiceServer {
+) v1connect.LibrarianSephirahServiceHandler {
 	t.CreateConfiguredAdmin()
 	res := &LibrarianSephirahService{
-		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
+		UnimplementedLibrarianSephirahServiceHandler: v1connect.UnimplementedLibrarianSephirahServiceHandler{},
 		a:    a,
 		k:    k,
 		t:    t,

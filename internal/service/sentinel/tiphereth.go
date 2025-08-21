@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/internal/lib/logger"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
+	pb "github.com/tuihub/protos/pkg/librarian/sentinel/v1"
 )
 
 func (s *LibrarianSentinelService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (

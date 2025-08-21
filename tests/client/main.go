@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"

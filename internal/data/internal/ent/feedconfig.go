@@ -145,7 +145,7 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the FeedConfig fields.
-func (fc *FeedConfig) assignValues(columns []string, values []any) error {
+func (_m *FeedConfig) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -155,31 +155,31 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				fc.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case feedconfig.FieldUserFeedConfig:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_feed_config", values[i])
 			} else if value.Valid {
-				fc.UserFeedConfig = model.InternalID(value.Int64)
+				_m.UserFeedConfig = model.InternalID(value.Int64)
 			}
 		case feedconfig.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				fc.Name = value.String
+				_m.Name = value.String
 			}
 		case feedconfig.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				fc.Description = value.String
+				_m.Description = value.String
 			}
 		case feedconfig.FieldSource:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &fc.Source); err != nil {
+				if err := json.Unmarshal(*value, &_m.Source); err != nil {
 					return fmt.Errorf("unmarshal field source: %w", err)
 				}
 			}
@@ -187,64 +187,64 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				fc.Status = feedconfig.Status(value.String)
+				_m.Status = feedconfig.Status(value.String)
 			}
 		case feedconfig.FieldCategory:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field category", values[i])
 			} else if value.Valid {
-				fc.Category = value.String
+				_m.Category = value.String
 			}
 		case feedconfig.FieldPullInterval:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field pull_interval", values[i])
 			} else if value.Valid {
-				fc.PullInterval = time.Duration(value.Int64)
+				_m.PullInterval = time.Duration(value.Int64)
 			}
 		case feedconfig.FieldHideItems:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field hide_items", values[i])
 			} else if value.Valid {
-				fc.HideItems = value.Bool
+				_m.HideItems = value.Bool
 			}
 		case feedconfig.FieldLatestPullAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field latest_pull_at", values[i])
 			} else if value.Valid {
-				fc.LatestPullAt = value.Time
+				_m.LatestPullAt = value.Time
 			}
 		case feedconfig.FieldLatestPullStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field latest_pull_status", values[i])
 			} else if value.Valid {
-				fc.LatestPullStatus = feedconfig.LatestPullStatus(value.String)
+				_m.LatestPullStatus = feedconfig.LatestPullStatus(value.String)
 			}
 		case feedconfig.FieldLatestPullMessage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field latest_pull_message", values[i])
 			} else if value.Valid {
-				fc.LatestPullMessage = value.String
+				_m.LatestPullMessage = value.String
 			}
 		case feedconfig.FieldNextPullBeginAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field next_pull_begin_at", values[i])
 			} else if value.Valid {
-				fc.NextPullBeginAt = value.Time
+				_m.NextPullBeginAt = value.Time
 			}
 		case feedconfig.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				fc.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case feedconfig.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				fc.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			fc.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -252,99 +252,99 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the FeedConfig.
 // This includes values selected through modifiers, order, etc.
-func (fc *FeedConfig) Value(name string) (ent.Value, error) {
-	return fc.selectValues.Get(name)
+func (_m *FeedConfig) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the FeedConfig entity.
-func (fc *FeedConfig) QueryOwner() *UserQuery {
-	return NewFeedConfigClient(fc.config).QueryOwner(fc)
+func (_m *FeedConfig) QueryOwner() *UserQuery {
+	return NewFeedConfigClient(_m.config).QueryOwner(_m)
 }
 
 // QueryFeed queries the "feed" edge of the FeedConfig entity.
-func (fc *FeedConfig) QueryFeed() *FeedQuery {
-	return NewFeedConfigClient(fc.config).QueryFeed(fc)
+func (_m *FeedConfig) QueryFeed() *FeedQuery {
+	return NewFeedConfigClient(_m.config).QueryFeed(_m)
 }
 
 // QueryNotifySource queries the "notify_source" edge of the FeedConfig entity.
-func (fc *FeedConfig) QueryNotifySource() *NotifySourceQuery {
-	return NewFeedConfigClient(fc.config).QueryNotifySource(fc)
+func (_m *FeedConfig) QueryNotifySource() *NotifySourceQuery {
+	return NewFeedConfigClient(_m.config).QueryNotifySource(_m)
 }
 
 // QueryFeedActionSet queries the "feed_action_set" edge of the FeedConfig entity.
-func (fc *FeedConfig) QueryFeedActionSet() *FeedActionSetQuery {
-	return NewFeedConfigClient(fc.config).QueryFeedActionSet(fc)
+func (_m *FeedConfig) QueryFeedActionSet() *FeedActionSetQuery {
+	return NewFeedConfigClient(_m.config).QueryFeedActionSet(_m)
 }
 
 // QueryFeedConfigAction queries the "feed_config_action" edge of the FeedConfig entity.
-func (fc *FeedConfig) QueryFeedConfigAction() *FeedConfigActionQuery {
-	return NewFeedConfigClient(fc.config).QueryFeedConfigAction(fc)
+func (_m *FeedConfig) QueryFeedConfigAction() *FeedConfigActionQuery {
+	return NewFeedConfigClient(_m.config).QueryFeedConfigAction(_m)
 }
 
 // Update returns a builder for updating this FeedConfig.
 // Note that you need to call FeedConfig.Unwrap() before calling this method if this FeedConfig
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (fc *FeedConfig) Update() *FeedConfigUpdateOne {
-	return NewFeedConfigClient(fc.config).UpdateOne(fc)
+func (_m *FeedConfig) Update() *FeedConfigUpdateOne {
+	return NewFeedConfigClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the FeedConfig entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (fc *FeedConfig) Unwrap() *FeedConfig {
-	_tx, ok := fc.config.driver.(*txDriver)
+func (_m *FeedConfig) Unwrap() *FeedConfig {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: FeedConfig is not a transactional entity")
 	}
-	fc.config.driver = _tx.drv
-	return fc
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (fc *FeedConfig) String() string {
+func (_m *FeedConfig) String() string {
 	var builder strings.Builder
 	builder.WriteString("FeedConfig(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", fc.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("user_feed_config=")
-	builder.WriteString(fmt.Sprintf("%v", fc.UserFeedConfig))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserFeedConfig))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(fc.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(fc.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("source=")
-	builder.WriteString(fmt.Sprintf("%v", fc.Source))
+	builder.WriteString(fmt.Sprintf("%v", _m.Source))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", fc.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("category=")
-	builder.WriteString(fc.Category)
+	builder.WriteString(_m.Category)
 	builder.WriteString(", ")
 	builder.WriteString("pull_interval=")
-	builder.WriteString(fmt.Sprintf("%v", fc.PullInterval))
+	builder.WriteString(fmt.Sprintf("%v", _m.PullInterval))
 	builder.WriteString(", ")
 	builder.WriteString("hide_items=")
-	builder.WriteString(fmt.Sprintf("%v", fc.HideItems))
+	builder.WriteString(fmt.Sprintf("%v", _m.HideItems))
 	builder.WriteString(", ")
 	builder.WriteString("latest_pull_at=")
-	builder.WriteString(fc.LatestPullAt.Format(time.ANSIC))
+	builder.WriteString(_m.LatestPullAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("latest_pull_status=")
-	builder.WriteString(fmt.Sprintf("%v", fc.LatestPullStatus))
+	builder.WriteString(fmt.Sprintf("%v", _m.LatestPullStatus))
 	builder.WriteString(", ")
 	builder.WriteString("latest_pull_message=")
-	builder.WriteString(fc.LatestPullMessage)
+	builder.WriteString(_m.LatestPullMessage)
 	builder.WriteString(", ")
 	builder.WriteString("next_pull_begin_at=")
-	builder.WriteString(fc.NextPullBeginAt.Format(time.ANSIC))
+	builder.WriteString(_m.NextPullBeginAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(fc.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(fc.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

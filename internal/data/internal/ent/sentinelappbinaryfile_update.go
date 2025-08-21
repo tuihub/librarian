@@ -24,190 +24,190 @@ type SentinelAppBinaryFileUpdate struct {
 }
 
 // Where appends a list predicates to the SentinelAppBinaryFileUpdate builder.
-func (sabfu *SentinelAppBinaryFileUpdate) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.Where(ps...)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelID(mi model.InternalID) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.ResetSentinelID()
-	sabfu.mutation.SetSentinelID(mi)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetSentinelID(v model.InternalID) *SentinelAppBinaryFileUpdate {
+	_u.mutation.ResetSentinelID()
+	_u.mutation.SetSentinelID(v)
+	return _u
 }
 
 // SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelID(mi *model.InternalID) *SentinelAppBinaryFileUpdate {
-	if mi != nil {
-		sabfu.SetSentinelID(*mi)
+func (_u *SentinelAppBinaryFileUpdate) SetNillableSentinelID(v *model.InternalID) *SentinelAppBinaryFileUpdate {
+	if v != nil {
+		_u.SetSentinelID(*v)
 	}
-	return sabfu
+	return _u
 }
 
-// AddSentinelID adds mi to the "sentinel_id" field.
-func (sabfu *SentinelAppBinaryFileUpdate) AddSentinelID(mi model.InternalID) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.AddSentinelID(mi)
-	return sabfu
+// AddSentinelID adds value to the "sentinel_id" field.
+func (_u *SentinelAppBinaryFileUpdate) AddSentinelID(v model.InternalID) *SentinelAppBinaryFileUpdate {
+	_u.mutation.AddSentinelID(v)
+	return _u
 }
 
 // SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.ResetSentinelLibraryReportedID()
-	sabfu.mutation.SetSentinelLibraryReportedID(i)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpdate {
+	_u.mutation.ResetSentinelLibraryReportedID()
+	_u.mutation.SetSentinelLibraryReportedID(v)
+	return _u
 }
 
 // SetNillableSentinelLibraryReportedID sets the "sentinel_library_reported_id" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelLibraryReportedID(i *int64) *SentinelAppBinaryFileUpdate {
-	if i != nil {
-		sabfu.SetSentinelLibraryReportedID(*i)
+func (_u *SentinelAppBinaryFileUpdate) SetNillableSentinelLibraryReportedID(v *int64) *SentinelAppBinaryFileUpdate {
+	if v != nil {
+		_u.SetSentinelLibraryReportedID(*v)
 	}
-	return sabfu
+	return _u
 }
 
-// AddSentinelLibraryReportedID adds i to the "sentinel_library_reported_id" field.
-func (sabfu *SentinelAppBinaryFileUpdate) AddSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.AddSentinelLibraryReportedID(i)
-	return sabfu
+// AddSentinelLibraryReportedID adds value to the "sentinel_library_reported_id" field.
+func (_u *SentinelAppBinaryFileUpdate) AddSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpdate {
+	_u.mutation.AddSentinelLibraryReportedID(v)
+	return _u
 }
 
 // SetLibrarySnapshot sets the "library_snapshot" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetLibrarySnapshot(t)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetLibrarySnapshot(v time.Time) *SentinelAppBinaryFileUpdate {
+	_u.mutation.SetLibrarySnapshot(v)
+	return _u
 }
 
 // SetNillableLibrarySnapshot sets the "library_snapshot" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableLibrarySnapshot(t *time.Time) *SentinelAppBinaryFileUpdate {
-	if t != nil {
-		sabfu.SetLibrarySnapshot(*t)
+func (_u *SentinelAppBinaryFileUpdate) SetNillableLibrarySnapshot(v *time.Time) *SentinelAppBinaryFileUpdate {
+	if v != nil {
+		_u.SetLibrarySnapshot(*v)
 	}
-	return sabfu
+	return _u
 }
 
 // SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelAppBinaryGeneratedID(s string) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetSentinelAppBinaryGeneratedID(s)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetSentinelAppBinaryGeneratedID(v string) *SentinelAppBinaryFileUpdate {
+	_u.mutation.SetSentinelAppBinaryGeneratedID(v)
+	return _u
 }
 
 // SetNillableSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelAppBinaryGeneratedID(s *string) *SentinelAppBinaryFileUpdate {
-	if s != nil {
-		sabfu.SetSentinelAppBinaryGeneratedID(*s)
+func (_u *SentinelAppBinaryFileUpdate) SetNillableSentinelAppBinaryGeneratedID(v *string) *SentinelAppBinaryFileUpdate {
+	if v != nil {
+		_u.SetSentinelAppBinaryGeneratedID(*v)
 	}
-	return sabfu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetName(s string) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetName(s)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetName(v string) *SentinelAppBinaryFileUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableName(s *string) *SentinelAppBinaryFileUpdate {
-	if s != nil {
-		sabfu.SetName(*s)
+func (_u *SentinelAppBinaryFileUpdate) SetNillableName(v *string) *SentinelAppBinaryFileUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return sabfu
+	return _u
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetSizeBytes(i int64) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.ResetSizeBytes()
-	sabfu.mutation.SetSizeBytes(i)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetSizeBytes(v int64) *SentinelAppBinaryFileUpdate {
+	_u.mutation.ResetSizeBytes()
+	_u.mutation.SetSizeBytes(v)
+	return _u
 }
 
 // SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSizeBytes(i *int64) *SentinelAppBinaryFileUpdate {
-	if i != nil {
-		sabfu.SetSizeBytes(*i)
+func (_u *SentinelAppBinaryFileUpdate) SetNillableSizeBytes(v *int64) *SentinelAppBinaryFileUpdate {
+	if v != nil {
+		_u.SetSizeBytes(*v)
 	}
-	return sabfu
+	return _u
 }
 
-// AddSizeBytes adds i to the "size_bytes" field.
-func (sabfu *SentinelAppBinaryFileUpdate) AddSizeBytes(i int64) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.AddSizeBytes(i)
-	return sabfu
+// AddSizeBytes adds value to the "size_bytes" field.
+func (_u *SentinelAppBinaryFileUpdate) AddSizeBytes(v int64) *SentinelAppBinaryFileUpdate {
+	_u.mutation.AddSizeBytes(v)
+	return _u
 }
 
 // SetSha256 sets the "sha256" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetSha256(b []byte) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetSha256(b)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetSha256(v []byte) *SentinelAppBinaryFileUpdate {
+	_u.mutation.SetSha256(v)
+	return _u
 }
 
 // SetServerFilePath sets the "server_file_path" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetServerFilePath(s string) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetServerFilePath(s)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetServerFilePath(v string) *SentinelAppBinaryFileUpdate {
+	_u.mutation.SetServerFilePath(v)
+	return _u
 }
 
 // SetNillableServerFilePath sets the "server_file_path" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableServerFilePath(s *string) *SentinelAppBinaryFileUpdate {
-	if s != nil {
-		sabfu.SetServerFilePath(*s)
+func (_u *SentinelAppBinaryFileUpdate) SetNillableServerFilePath(v *string) *SentinelAppBinaryFileUpdate {
+	if v != nil {
+		_u.SetServerFilePath(*v)
 	}
-	return sabfu
+	return _u
 }
 
 // SetChunksInfo sets the "chunks_info" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetChunksInfo(s string) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetChunksInfo(s)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetChunksInfo(v string) *SentinelAppBinaryFileUpdate {
+	_u.mutation.SetChunksInfo(v)
+	return _u
 }
 
 // SetNillableChunksInfo sets the "chunks_info" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableChunksInfo(s *string) *SentinelAppBinaryFileUpdate {
-	if s != nil {
-		sabfu.SetChunksInfo(*s)
+func (_u *SentinelAppBinaryFileUpdate) SetNillableChunksInfo(v *string) *SentinelAppBinaryFileUpdate {
+	if v != nil {
+		_u.SetChunksInfo(*v)
 	}
-	return sabfu
+	return _u
 }
 
 // ClearChunksInfo clears the value of the "chunks_info" field.
-func (sabfu *SentinelAppBinaryFileUpdate) ClearChunksInfo() *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.ClearChunksInfo()
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) ClearChunksInfo() *SentinelAppBinaryFileUpdate {
+	_u.mutation.ClearChunksInfo()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetUpdatedAt(t time.Time) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetUpdatedAt(t)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetUpdatedAt(v time.Time) *SentinelAppBinaryFileUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetCreatedAt(t time.Time) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetCreatedAt(t)
-	return sabfu
+func (_u *SentinelAppBinaryFileUpdate) SetCreatedAt(v time.Time) *SentinelAppBinaryFileUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableCreatedAt(t *time.Time) *SentinelAppBinaryFileUpdate {
-	if t != nil {
-		sabfu.SetCreatedAt(*t)
+func (_u *SentinelAppBinaryFileUpdate) SetNillableCreatedAt(v *time.Time) *SentinelAppBinaryFileUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return sabfu
+	return _u
 }
 
 // Mutation returns the SentinelAppBinaryFileMutation object of the builder.
-func (sabfu *SentinelAppBinaryFileUpdate) Mutation() *SentinelAppBinaryFileMutation {
-	return sabfu.mutation
+func (_u *SentinelAppBinaryFileUpdate) Mutation() *SentinelAppBinaryFileMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (sabfu *SentinelAppBinaryFileUpdate) Save(ctx context.Context) (int, error) {
-	sabfu.defaults()
-	return withHooks(ctx, sabfu.sqlSave, sabfu.mutation, sabfu.hooks)
+func (_u *SentinelAppBinaryFileUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sabfu *SentinelAppBinaryFileUpdate) SaveX(ctx context.Context) int {
-	affected, err := sabfu.Save(ctx)
+func (_u *SentinelAppBinaryFileUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -215,81 +215,81 @@ func (sabfu *SentinelAppBinaryFileUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (sabfu *SentinelAppBinaryFileUpdate) Exec(ctx context.Context) error {
-	_, err := sabfu.Save(ctx)
+func (_u *SentinelAppBinaryFileUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabfu *SentinelAppBinaryFileUpdate) ExecX(ctx context.Context) {
-	if err := sabfu.Exec(ctx); err != nil {
+func (_u *SentinelAppBinaryFileUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sabfu *SentinelAppBinaryFileUpdate) defaults() {
-	if _, ok := sabfu.mutation.UpdatedAt(); !ok {
+func (_u *SentinelAppBinaryFileUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinelappbinaryfile.UpdateDefaultUpdatedAt()
-		sabfu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
-	if ps := sabfu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := sabfu.mutation.SentinelID(); ok {
+	if value, ok := _u.mutation.SentinelID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabfu.mutation.AddedSentinelID(); ok {
+	if value, ok := _u.mutation.AddedSentinelID(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabfu.mutation.SentinelLibraryReportedID(); ok {
+	if value, ok := _u.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sabfu.mutation.AddedSentinelLibraryReportedID(); ok {
+	if value, ok := _u.mutation.AddedSentinelLibraryReportedID(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sabfu.mutation.LibrarySnapshot(); ok {
+	if value, ok := _u.mutation.LibrarySnapshot(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldLibrarySnapshot, field.TypeTime, value)
 	}
-	if value, ok := sabfu.mutation.SentinelAppBinaryGeneratedID(); ok {
+	if value, ok := _u.mutation.SentinelAppBinaryGeneratedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, field.TypeString, value)
 	}
-	if value, ok := sabfu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldName, field.TypeString, value)
 	}
-	if value, ok := sabfu.mutation.SizeBytes(); ok {
+	if value, ok := _u.mutation.SizeBytes(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := sabfu.mutation.AddedSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeBytes(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := sabfu.mutation.Sha256(); ok {
+	if value, ok := _u.mutation.Sha256(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSha256, field.TypeBytes, value)
 	}
-	if value, ok := sabfu.mutation.ServerFilePath(); ok {
+	if value, ok := _u.mutation.ServerFilePath(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldServerFilePath, field.TypeString, value)
 	}
-	if value, ok := sabfu.mutation.ChunksInfo(); ok {
+	if value, ok := _u.mutation.ChunksInfo(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldChunksInfo, field.TypeString, value)
 	}
-	if sabfu.mutation.ChunksInfoCleared() {
+	if _u.mutation.ChunksInfoCleared() {
 		_spec.ClearField(sentinelappbinaryfile.FieldChunksInfo, field.TypeString)
 	}
-	if value, ok := sabfu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := sabfu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldCreatedAt, field.TypeTime, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, sabfu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinelappbinaryfile.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -297,8 +297,8 @@ func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, e
 		}
 		return 0, err
 	}
-	sabfu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // SentinelAppBinaryFileUpdateOne is the builder for updating a single SentinelAppBinaryFile entity.
@@ -310,197 +310,197 @@ type SentinelAppBinaryFileUpdateOne struct {
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelID(mi model.InternalID) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.ResetSentinelID()
-	sabfuo.mutation.SetSentinelID(mi)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetSentinelID(v model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.ResetSentinelID()
+	_u.mutation.SetSentinelID(v)
+	return _u
 }
 
 // SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelID(mi *model.InternalID) *SentinelAppBinaryFileUpdateOne {
-	if mi != nil {
-		sabfuo.SetSentinelID(*mi)
+func (_u *SentinelAppBinaryFileUpdateOne) SetNillableSentinelID(v *model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	if v != nil {
+		_u.SetSentinelID(*v)
 	}
-	return sabfuo
+	return _u
 }
 
-// AddSentinelID adds mi to the "sentinel_id" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) AddSentinelID(mi model.InternalID) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.AddSentinelID(mi)
-	return sabfuo
+// AddSentinelID adds value to the "sentinel_id" field.
+func (_u *SentinelAppBinaryFileUpdateOne) AddSentinelID(v model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.AddSentinelID(v)
+	return _u
 }
 
 // SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.ResetSentinelLibraryReportedID()
-	sabfuo.mutation.SetSentinelLibraryReportedID(i)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.ResetSentinelLibraryReportedID()
+	_u.mutation.SetSentinelLibraryReportedID(v)
+	return _u
 }
 
 // SetNillableSentinelLibraryReportedID sets the "sentinel_library_reported_id" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelLibraryReportedID(i *int64) *SentinelAppBinaryFileUpdateOne {
-	if i != nil {
-		sabfuo.SetSentinelLibraryReportedID(*i)
+func (_u *SentinelAppBinaryFileUpdateOne) SetNillableSentinelLibraryReportedID(v *int64) *SentinelAppBinaryFileUpdateOne {
+	if v != nil {
+		_u.SetSentinelLibraryReportedID(*v)
 	}
-	return sabfuo
+	return _u
 }
 
-// AddSentinelLibraryReportedID adds i to the "sentinel_library_reported_id" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) AddSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.AddSentinelLibraryReportedID(i)
-	return sabfuo
+// AddSentinelLibraryReportedID adds value to the "sentinel_library_reported_id" field.
+func (_u *SentinelAppBinaryFileUpdateOne) AddSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.AddSentinelLibraryReportedID(v)
+	return _u
 }
 
 // SetLibrarySnapshot sets the "library_snapshot" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetLibrarySnapshot(t)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetLibrarySnapshot(v time.Time) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.SetLibrarySnapshot(v)
+	return _u
 }
 
 // SetNillableLibrarySnapshot sets the "library_snapshot" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableLibrarySnapshot(t *time.Time) *SentinelAppBinaryFileUpdateOne {
-	if t != nil {
-		sabfuo.SetLibrarySnapshot(*t)
+func (_u *SentinelAppBinaryFileUpdateOne) SetNillableLibrarySnapshot(v *time.Time) *SentinelAppBinaryFileUpdateOne {
+	if v != nil {
+		_u.SetLibrarySnapshot(*v)
 	}
-	return sabfuo
+	return _u
 }
 
 // SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelAppBinaryGeneratedID(s string) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetSentinelAppBinaryGeneratedID(s)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetSentinelAppBinaryGeneratedID(v string) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.SetSentinelAppBinaryGeneratedID(v)
+	return _u
 }
 
 // SetNillableSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelAppBinaryGeneratedID(s *string) *SentinelAppBinaryFileUpdateOne {
-	if s != nil {
-		sabfuo.SetSentinelAppBinaryGeneratedID(*s)
+func (_u *SentinelAppBinaryFileUpdateOne) SetNillableSentinelAppBinaryGeneratedID(v *string) *SentinelAppBinaryFileUpdateOne {
+	if v != nil {
+		_u.SetSentinelAppBinaryGeneratedID(*v)
 	}
-	return sabfuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetName(s string) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetName(s)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetName(v string) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableName(s *string) *SentinelAppBinaryFileUpdateOne {
-	if s != nil {
-		sabfuo.SetName(*s)
+func (_u *SentinelAppBinaryFileUpdateOne) SetNillableName(v *string) *SentinelAppBinaryFileUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return sabfuo
+	return _u
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSizeBytes(i int64) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.ResetSizeBytes()
-	sabfuo.mutation.SetSizeBytes(i)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetSizeBytes(v int64) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.ResetSizeBytes()
+	_u.mutation.SetSizeBytes(v)
+	return _u
 }
 
 // SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSizeBytes(i *int64) *SentinelAppBinaryFileUpdateOne {
-	if i != nil {
-		sabfuo.SetSizeBytes(*i)
+func (_u *SentinelAppBinaryFileUpdateOne) SetNillableSizeBytes(v *int64) *SentinelAppBinaryFileUpdateOne {
+	if v != nil {
+		_u.SetSizeBytes(*v)
 	}
-	return sabfuo
+	return _u
 }
 
-// AddSizeBytes adds i to the "size_bytes" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) AddSizeBytes(i int64) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.AddSizeBytes(i)
-	return sabfuo
+// AddSizeBytes adds value to the "size_bytes" field.
+func (_u *SentinelAppBinaryFileUpdateOne) AddSizeBytes(v int64) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.AddSizeBytes(v)
+	return _u
 }
 
 // SetSha256 sets the "sha256" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSha256(b []byte) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetSha256(b)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetSha256(v []byte) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.SetSha256(v)
+	return _u
 }
 
 // SetServerFilePath sets the "server_file_path" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetServerFilePath(s string) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetServerFilePath(s)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetServerFilePath(v string) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.SetServerFilePath(v)
+	return _u
 }
 
 // SetNillableServerFilePath sets the "server_file_path" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableServerFilePath(s *string) *SentinelAppBinaryFileUpdateOne {
-	if s != nil {
-		sabfuo.SetServerFilePath(*s)
+func (_u *SentinelAppBinaryFileUpdateOne) SetNillableServerFilePath(v *string) *SentinelAppBinaryFileUpdateOne {
+	if v != nil {
+		_u.SetServerFilePath(*v)
 	}
-	return sabfuo
+	return _u
 }
 
 // SetChunksInfo sets the "chunks_info" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetChunksInfo(s string) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetChunksInfo(s)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetChunksInfo(v string) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.SetChunksInfo(v)
+	return _u
 }
 
 // SetNillableChunksInfo sets the "chunks_info" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableChunksInfo(s *string) *SentinelAppBinaryFileUpdateOne {
-	if s != nil {
-		sabfuo.SetChunksInfo(*s)
+func (_u *SentinelAppBinaryFileUpdateOne) SetNillableChunksInfo(v *string) *SentinelAppBinaryFileUpdateOne {
+	if v != nil {
+		_u.SetChunksInfo(*v)
 	}
-	return sabfuo
+	return _u
 }
 
 // ClearChunksInfo clears the value of the "chunks_info" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) ClearChunksInfo() *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.ClearChunksInfo()
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) ClearChunksInfo() *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.ClearChunksInfo()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetUpdatedAt(t time.Time) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetUpdatedAt(t)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetUpdatedAt(v time.Time) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetCreatedAt(t time.Time) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetCreatedAt(t)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) SetCreatedAt(v time.Time) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableCreatedAt(t *time.Time) *SentinelAppBinaryFileUpdateOne {
-	if t != nil {
-		sabfuo.SetCreatedAt(*t)
+func (_u *SentinelAppBinaryFileUpdateOne) SetNillableCreatedAt(v *time.Time) *SentinelAppBinaryFileUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return sabfuo
+	return _u
 }
 
 // Mutation returns the SentinelAppBinaryFileMutation object of the builder.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) Mutation() *SentinelAppBinaryFileMutation {
-	return sabfuo.mutation
+func (_u *SentinelAppBinaryFileUpdateOne) Mutation() *SentinelAppBinaryFileMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the SentinelAppBinaryFileUpdate builder.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.Where(ps...)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) Select(field string, fields ...string) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.fields = append([]string{field}, fields...)
-	return sabfuo
+func (_u *SentinelAppBinaryFileUpdateOne) Select(field string, fields ...string) *SentinelAppBinaryFileUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated SentinelAppBinaryFile entity.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) Save(ctx context.Context) (*SentinelAppBinaryFile, error) {
-	sabfuo.defaults()
-	return withHooks(ctx, sabfuo.sqlSave, sabfuo.mutation, sabfuo.hooks)
+func (_u *SentinelAppBinaryFileUpdateOne) Save(ctx context.Context) (*SentinelAppBinaryFile, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SaveX(ctx context.Context) *SentinelAppBinaryFile {
-	node, err := sabfuo.Save(ctx)
+func (_u *SentinelAppBinaryFileUpdateOne) SaveX(ctx context.Context) *SentinelAppBinaryFile {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -508,34 +508,34 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) SaveX(ctx context.Context) *Sentin
 }
 
 // Exec executes the query on the entity.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) Exec(ctx context.Context) error {
-	_, err := sabfuo.Save(ctx)
+func (_u *SentinelAppBinaryFileUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) ExecX(ctx context.Context) {
-	if err := sabfuo.Exec(ctx); err != nil {
+func (_u *SentinelAppBinaryFileUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) defaults() {
-	if _, ok := sabfuo.mutation.UpdatedAt(); !ok {
+func (_u *SentinelAppBinaryFileUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinelappbinaryfile.UpdateDefaultUpdatedAt()
-		sabfuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_node *SentinelAppBinaryFile, err error) {
+func (_u *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_node *SentinelAppBinaryFile, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
-	id, ok := sabfuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelAppBinaryFile.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := sabfuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sentinelappbinaryfile.FieldID)
 		for _, f := range fields {
@@ -547,62 +547,62 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 			}
 		}
 	}
-	if ps := sabfuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := sabfuo.mutation.SentinelID(); ok {
+	if value, ok := _u.mutation.SentinelID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabfuo.mutation.AddedSentinelID(); ok {
+	if value, ok := _u.mutation.AddedSentinelID(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabfuo.mutation.SentinelLibraryReportedID(); ok {
+	if value, ok := _u.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sabfuo.mutation.AddedSentinelLibraryReportedID(); ok {
+	if value, ok := _u.mutation.AddedSentinelLibraryReportedID(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sabfuo.mutation.LibrarySnapshot(); ok {
+	if value, ok := _u.mutation.LibrarySnapshot(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldLibrarySnapshot, field.TypeTime, value)
 	}
-	if value, ok := sabfuo.mutation.SentinelAppBinaryGeneratedID(); ok {
+	if value, ok := _u.mutation.SentinelAppBinaryGeneratedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, field.TypeString, value)
 	}
-	if value, ok := sabfuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldName, field.TypeString, value)
 	}
-	if value, ok := sabfuo.mutation.SizeBytes(); ok {
+	if value, ok := _u.mutation.SizeBytes(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := sabfuo.mutation.AddedSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeBytes(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := sabfuo.mutation.Sha256(); ok {
+	if value, ok := _u.mutation.Sha256(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSha256, field.TypeBytes, value)
 	}
-	if value, ok := sabfuo.mutation.ServerFilePath(); ok {
+	if value, ok := _u.mutation.ServerFilePath(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldServerFilePath, field.TypeString, value)
 	}
-	if value, ok := sabfuo.mutation.ChunksInfo(); ok {
+	if value, ok := _u.mutation.ChunksInfo(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldChunksInfo, field.TypeString, value)
 	}
-	if sabfuo.mutation.ChunksInfoCleared() {
+	if _u.mutation.ChunksInfoCleared() {
 		_spec.ClearField(sentinelappbinaryfile.FieldChunksInfo, field.TypeString)
 	}
-	if value, ok := sabfuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := sabfuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldCreatedAt, field.TypeTime, value)
 	}
-	_node = &SentinelAppBinaryFile{config: sabfuo.config}
+	_node = &SentinelAppBinaryFile{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, sabfuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinelappbinaryfile.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -610,6 +610,6 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 		}
 		return nil, err
 	}
-	sabfuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

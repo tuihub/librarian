@@ -26,133 +26,133 @@ type DeviceCreate struct {
 }
 
 // SetDeviceName sets the "device_name" field.
-func (dc *DeviceCreate) SetDeviceName(s string) *DeviceCreate {
-	dc.mutation.SetDeviceName(s)
-	return dc
+func (_c *DeviceCreate) SetDeviceName(v string) *DeviceCreate {
+	_c.mutation.SetDeviceName(v)
+	return _c
 }
 
 // SetSystemType sets the "system_type" field.
-func (dc *DeviceCreate) SetSystemType(dt device.SystemType) *DeviceCreate {
-	dc.mutation.SetSystemType(dt)
-	return dc
+func (_c *DeviceCreate) SetSystemType(v device.SystemType) *DeviceCreate {
+	_c.mutation.SetSystemType(v)
+	return _c
 }
 
 // SetSystemVersion sets the "system_version" field.
-func (dc *DeviceCreate) SetSystemVersion(s string) *DeviceCreate {
-	dc.mutation.SetSystemVersion(s)
-	return dc
+func (_c *DeviceCreate) SetSystemVersion(v string) *DeviceCreate {
+	_c.mutation.SetSystemVersion(v)
+	return _c
 }
 
 // SetClientName sets the "client_name" field.
-func (dc *DeviceCreate) SetClientName(s string) *DeviceCreate {
-	dc.mutation.SetClientName(s)
-	return dc
+func (_c *DeviceCreate) SetClientName(v string) *DeviceCreate {
+	_c.mutation.SetClientName(v)
+	return _c
 }
 
 // SetClientSourceCodeAddress sets the "client_source_code_address" field.
-func (dc *DeviceCreate) SetClientSourceCodeAddress(s string) *DeviceCreate {
-	dc.mutation.SetClientSourceCodeAddress(s)
-	return dc
+func (_c *DeviceCreate) SetClientSourceCodeAddress(v string) *DeviceCreate {
+	_c.mutation.SetClientSourceCodeAddress(v)
+	return _c
 }
 
 // SetClientVersion sets the "client_version" field.
-func (dc *DeviceCreate) SetClientVersion(s string) *DeviceCreate {
-	dc.mutation.SetClientVersion(s)
-	return dc
+func (_c *DeviceCreate) SetClientVersion(v string) *DeviceCreate {
+	_c.mutation.SetClientVersion(v)
+	return _c
 }
 
 // SetClientLocalID sets the "client_local_id" field.
-func (dc *DeviceCreate) SetClientLocalID(s string) *DeviceCreate {
-	dc.mutation.SetClientLocalID(s)
-	return dc
+func (_c *DeviceCreate) SetClientLocalID(v string) *DeviceCreate {
+	_c.mutation.SetClientLocalID(v)
+	return _c
 }
 
 // SetNillableClientLocalID sets the "client_local_id" field if the given value is not nil.
-func (dc *DeviceCreate) SetNillableClientLocalID(s *string) *DeviceCreate {
-	if s != nil {
-		dc.SetClientLocalID(*s)
+func (_c *DeviceCreate) SetNillableClientLocalID(v *string) *DeviceCreate {
+	if v != nil {
+		_c.SetClientLocalID(*v)
 	}
-	return dc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (dc *DeviceCreate) SetUpdatedAt(t time.Time) *DeviceCreate {
-	dc.mutation.SetUpdatedAt(t)
-	return dc
+func (_c *DeviceCreate) SetUpdatedAt(v time.Time) *DeviceCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (dc *DeviceCreate) SetNillableUpdatedAt(t *time.Time) *DeviceCreate {
-	if t != nil {
-		dc.SetUpdatedAt(*t)
+func (_c *DeviceCreate) SetNillableUpdatedAt(v *time.Time) *DeviceCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return dc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (dc *DeviceCreate) SetCreatedAt(t time.Time) *DeviceCreate {
-	dc.mutation.SetCreatedAt(t)
-	return dc
+func (_c *DeviceCreate) SetCreatedAt(v time.Time) *DeviceCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (dc *DeviceCreate) SetNillableCreatedAt(t *time.Time) *DeviceCreate {
-	if t != nil {
-		dc.SetCreatedAt(*t)
+func (_c *DeviceCreate) SetNillableCreatedAt(v *time.Time) *DeviceCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return dc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (dc *DeviceCreate) SetID(mi model.InternalID) *DeviceCreate {
-	dc.mutation.SetID(mi)
-	return dc
+func (_c *DeviceCreate) SetID(v model.InternalID) *DeviceCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // AddSessionIDs adds the "session" edge to the Session entity by IDs.
-func (dc *DeviceCreate) AddSessionIDs(ids ...model.InternalID) *DeviceCreate {
-	dc.mutation.AddSessionIDs(ids...)
-	return dc
+func (_c *DeviceCreate) AddSessionIDs(ids ...model.InternalID) *DeviceCreate {
+	_c.mutation.AddSessionIDs(ids...)
+	return _c
 }
 
 // AddSession adds the "session" edges to the Session entity.
-func (dc *DeviceCreate) AddSession(s ...*Session) *DeviceCreate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_c *DeviceCreate) AddSession(v ...*Session) *DeviceCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return dc.AddSessionIDs(ids...)
+	return _c.AddSessionIDs(ids...)
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
-func (dc *DeviceCreate) AddAppIDs(ids ...model.InternalID) *DeviceCreate {
-	dc.mutation.AddAppIDs(ids...)
-	return dc
+func (_c *DeviceCreate) AddAppIDs(ids ...model.InternalID) *DeviceCreate {
+	_c.mutation.AddAppIDs(ids...)
+	return _c
 }
 
 // AddApp adds the "app" edges to the App entity.
-func (dc *DeviceCreate) AddApp(a ...*App) *DeviceCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_c *DeviceCreate) AddApp(v ...*App) *DeviceCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return dc.AddAppIDs(ids...)
+	return _c.AddAppIDs(ids...)
 }
 
 // Mutation returns the DeviceMutation object of the builder.
-func (dc *DeviceCreate) Mutation() *DeviceMutation {
-	return dc.mutation
+func (_c *DeviceCreate) Mutation() *DeviceMutation {
+	return _c.mutation
 }
 
 // Save creates the Device in the database.
-func (dc *DeviceCreate) Save(ctx context.Context) (*Device, error) {
-	dc.defaults()
-	return withHooks(ctx, dc.sqlSave, dc.mutation, dc.hooks)
+func (_c *DeviceCreate) Save(ctx context.Context) (*Device, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (dc *DeviceCreate) SaveX(ctx context.Context) *Device {
-	v, err := dc.Save(ctx)
+func (_c *DeviceCreate) SaveX(ctx context.Context) *Device {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -160,70 +160,70 @@ func (dc *DeviceCreate) SaveX(ctx context.Context) *Device {
 }
 
 // Exec executes the query.
-func (dc *DeviceCreate) Exec(ctx context.Context) error {
-	_, err := dc.Save(ctx)
+func (_c *DeviceCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (dc *DeviceCreate) ExecX(ctx context.Context) {
-	if err := dc.Exec(ctx); err != nil {
+func (_c *DeviceCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (dc *DeviceCreate) defaults() {
-	if _, ok := dc.mutation.UpdatedAt(); !ok {
+func (_c *DeviceCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := device.DefaultUpdatedAt()
-		dc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := dc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := device.DefaultCreatedAt()
-		dc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (dc *DeviceCreate) check() error {
-	if _, ok := dc.mutation.DeviceName(); !ok {
+func (_c *DeviceCreate) check() error {
+	if _, ok := _c.mutation.DeviceName(); !ok {
 		return &ValidationError{Name: "device_name", err: errors.New(`ent: missing required field "Device.device_name"`)}
 	}
-	if _, ok := dc.mutation.SystemType(); !ok {
+	if _, ok := _c.mutation.SystemType(); !ok {
 		return &ValidationError{Name: "system_type", err: errors.New(`ent: missing required field "Device.system_type"`)}
 	}
-	if v, ok := dc.mutation.SystemType(); ok {
+	if v, ok := _c.mutation.SystemType(); ok {
 		if err := device.SystemTypeValidator(v); err != nil {
 			return &ValidationError{Name: "system_type", err: fmt.Errorf(`ent: validator failed for field "Device.system_type": %w`, err)}
 		}
 	}
-	if _, ok := dc.mutation.SystemVersion(); !ok {
+	if _, ok := _c.mutation.SystemVersion(); !ok {
 		return &ValidationError{Name: "system_version", err: errors.New(`ent: missing required field "Device.system_version"`)}
 	}
-	if _, ok := dc.mutation.ClientName(); !ok {
+	if _, ok := _c.mutation.ClientName(); !ok {
 		return &ValidationError{Name: "client_name", err: errors.New(`ent: missing required field "Device.client_name"`)}
 	}
-	if _, ok := dc.mutation.ClientSourceCodeAddress(); !ok {
+	if _, ok := _c.mutation.ClientSourceCodeAddress(); !ok {
 		return &ValidationError{Name: "client_source_code_address", err: errors.New(`ent: missing required field "Device.client_source_code_address"`)}
 	}
-	if _, ok := dc.mutation.ClientVersion(); !ok {
+	if _, ok := _c.mutation.ClientVersion(); !ok {
 		return &ValidationError{Name: "client_version", err: errors.New(`ent: missing required field "Device.client_version"`)}
 	}
-	if _, ok := dc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Device.updated_at"`)}
 	}
-	if _, ok := dc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Device.created_at"`)}
 	}
 	return nil
 }
 
-func (dc *DeviceCreate) sqlSave(ctx context.Context) (*Device, error) {
-	if err := dc.check(); err != nil {
+func (_c *DeviceCreate) sqlSave(ctx context.Context) (*Device, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := dc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, dc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -233,58 +233,58 @@ func (dc *DeviceCreate) sqlSave(ctx context.Context) (*Device, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	dc.mutation.id = &_node.ID
-	dc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
+func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Device{config: dc.config}
+		_node = &Device{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(device.Table, sqlgraph.NewFieldSpec(device.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = dc.conflict
-	if id, ok := dc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := dc.mutation.DeviceName(); ok {
+	if value, ok := _c.mutation.DeviceName(); ok {
 		_spec.SetField(device.FieldDeviceName, field.TypeString, value)
 		_node.DeviceName = value
 	}
-	if value, ok := dc.mutation.SystemType(); ok {
+	if value, ok := _c.mutation.SystemType(); ok {
 		_spec.SetField(device.FieldSystemType, field.TypeEnum, value)
 		_node.SystemType = value
 	}
-	if value, ok := dc.mutation.SystemVersion(); ok {
+	if value, ok := _c.mutation.SystemVersion(); ok {
 		_spec.SetField(device.FieldSystemVersion, field.TypeString, value)
 		_node.SystemVersion = value
 	}
-	if value, ok := dc.mutation.ClientName(); ok {
+	if value, ok := _c.mutation.ClientName(); ok {
 		_spec.SetField(device.FieldClientName, field.TypeString, value)
 		_node.ClientName = value
 	}
-	if value, ok := dc.mutation.ClientSourceCodeAddress(); ok {
+	if value, ok := _c.mutation.ClientSourceCodeAddress(); ok {
 		_spec.SetField(device.FieldClientSourceCodeAddress, field.TypeString, value)
 		_node.ClientSourceCodeAddress = value
 	}
-	if value, ok := dc.mutation.ClientVersion(); ok {
+	if value, ok := _c.mutation.ClientVersion(); ok {
 		_spec.SetField(device.FieldClientVersion, field.TypeString, value)
 		_node.ClientVersion = value
 	}
-	if value, ok := dc.mutation.ClientLocalID(); ok {
+	if value, ok := _c.mutation.ClientLocalID(); ok {
 		_spec.SetField(device.FieldClientLocalID, field.TypeString, value)
 		_node.ClientLocalID = value
 	}
-	if value, ok := dc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(device.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := dc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(device.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := dc.mutation.SessionIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.SessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -300,7 +300,7 @@ func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := dc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -335,10 +335,10 @@ func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 //			SetDeviceName(v+v).
 //		}).
 //		Exec(ctx)
-func (dc *DeviceCreate) OnConflict(opts ...sql.ConflictOption) *DeviceUpsertOne {
-	dc.conflict = opts
+func (_c *DeviceCreate) OnConflict(opts ...sql.ConflictOption) *DeviceUpsertOne {
+	_c.conflict = opts
 	return &DeviceUpsertOne{
-		create: dc,
+		create: _c,
 	}
 }
 
@@ -348,10 +348,10 @@ func (dc *DeviceCreate) OnConflict(opts ...sql.ConflictOption) *DeviceUpsertOne 
 //	client.Device.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (dc *DeviceCreate) OnConflictColumns(columns ...string) *DeviceUpsertOne {
-	dc.conflict = append(dc.conflict, sql.ConflictColumns(columns...))
+func (_c *DeviceCreate) OnConflictColumns(columns ...string) *DeviceUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &DeviceUpsertOne{
-		create: dc,
+		create: _c,
 	}
 }
 
@@ -705,16 +705,16 @@ type DeviceCreateBulk struct {
 }
 
 // Save creates the Device entities in the database.
-func (dcb *DeviceCreateBulk) Save(ctx context.Context) ([]*Device, error) {
-	if dcb.err != nil {
-		return nil, dcb.err
+func (_c *DeviceCreateBulk) Save(ctx context.Context) ([]*Device, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(dcb.builders))
-	nodes := make([]*Device, len(dcb.builders))
-	mutators := make([]Mutator, len(dcb.builders))
-	for i := range dcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Device, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := dcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*DeviceMutation)
@@ -728,12 +728,12 @@ func (dcb *DeviceCreateBulk) Save(ctx context.Context) ([]*Device, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, dcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = dcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, dcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -757,7 +757,7 @@ func (dcb *DeviceCreateBulk) Save(ctx context.Context) ([]*Device, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, dcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -765,8 +765,8 @@ func (dcb *DeviceCreateBulk) Save(ctx context.Context) ([]*Device, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (dcb *DeviceCreateBulk) SaveX(ctx context.Context) []*Device {
-	v, err := dcb.Save(ctx)
+func (_c *DeviceCreateBulk) SaveX(ctx context.Context) []*Device {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -774,14 +774,14 @@ func (dcb *DeviceCreateBulk) SaveX(ctx context.Context) []*Device {
 }
 
 // Exec executes the query.
-func (dcb *DeviceCreateBulk) Exec(ctx context.Context) error {
-	_, err := dcb.Save(ctx)
+func (_c *DeviceCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (dcb *DeviceCreateBulk) ExecX(ctx context.Context) {
-	if err := dcb.Exec(ctx); err != nil {
+func (_c *DeviceCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -801,10 +801,10 @@ func (dcb *DeviceCreateBulk) ExecX(ctx context.Context) {
 //			SetDeviceName(v+v).
 //		}).
 //		Exec(ctx)
-func (dcb *DeviceCreateBulk) OnConflict(opts ...sql.ConflictOption) *DeviceUpsertBulk {
-	dcb.conflict = opts
+func (_c *DeviceCreateBulk) OnConflict(opts ...sql.ConflictOption) *DeviceUpsertBulk {
+	_c.conflict = opts
 	return &DeviceUpsertBulk{
-		create: dcb,
+		create: _c,
 	}
 }
 
@@ -814,10 +814,10 @@ func (dcb *DeviceCreateBulk) OnConflict(opts ...sql.ConflictOption) *DeviceUpser
 //	client.Device.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (dcb *DeviceCreateBulk) OnConflictColumns(columns ...string) *DeviceUpsertBulk {
-	dcb.conflict = append(dcb.conflict, sql.ConflictColumns(columns...))
+func (_c *DeviceCreateBulk) OnConflictColumns(columns ...string) *DeviceUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &DeviceUpsertBulk{
-		create: dcb,
+		create: _c,
 	}
 }
 

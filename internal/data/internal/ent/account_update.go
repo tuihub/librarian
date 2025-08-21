@@ -25,146 +25,146 @@ type AccountUpdate struct {
 }
 
 // Where appends a list predicates to the AccountUpdate builder.
-func (au *AccountUpdate) Where(ps ...predicate.Account) *AccountUpdate {
-	au.mutation.Where(ps...)
-	return au
+func (_u *AccountUpdate) Where(ps ...predicate.Account) *AccountUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetPlatform sets the "platform" field.
-func (au *AccountUpdate) SetPlatform(s string) *AccountUpdate {
-	au.mutation.SetPlatform(s)
-	return au
+func (_u *AccountUpdate) SetPlatform(v string) *AccountUpdate {
+	_u.mutation.SetPlatform(v)
+	return _u
 }
 
 // SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (au *AccountUpdate) SetNillablePlatform(s *string) *AccountUpdate {
-	if s != nil {
-		au.SetPlatform(*s)
+func (_u *AccountUpdate) SetNillablePlatform(v *string) *AccountUpdate {
+	if v != nil {
+		_u.SetPlatform(*v)
 	}
-	return au
+	return _u
 }
 
 // SetPlatformAccountID sets the "platform_account_id" field.
-func (au *AccountUpdate) SetPlatformAccountID(s string) *AccountUpdate {
-	au.mutation.SetPlatformAccountID(s)
-	return au
+func (_u *AccountUpdate) SetPlatformAccountID(v string) *AccountUpdate {
+	_u.mutation.SetPlatformAccountID(v)
+	return _u
 }
 
 // SetNillablePlatformAccountID sets the "platform_account_id" field if the given value is not nil.
-func (au *AccountUpdate) SetNillablePlatformAccountID(s *string) *AccountUpdate {
-	if s != nil {
-		au.SetPlatformAccountID(*s)
+func (_u *AccountUpdate) SetNillablePlatformAccountID(v *string) *AccountUpdate {
+	if v != nil {
+		_u.SetPlatformAccountID(*v)
 	}
-	return au
+	return _u
 }
 
 // SetBoundUserID sets the "bound_user_id" field.
-func (au *AccountUpdate) SetBoundUserID(mi model.InternalID) *AccountUpdate {
-	au.mutation.SetBoundUserID(mi)
-	return au
+func (_u *AccountUpdate) SetBoundUserID(v model.InternalID) *AccountUpdate {
+	_u.mutation.SetBoundUserID(v)
+	return _u
 }
 
 // SetNillableBoundUserID sets the "bound_user_id" field if the given value is not nil.
-func (au *AccountUpdate) SetNillableBoundUserID(mi *model.InternalID) *AccountUpdate {
-	if mi != nil {
-		au.SetBoundUserID(*mi)
+func (_u *AccountUpdate) SetNillableBoundUserID(v *model.InternalID) *AccountUpdate {
+	if v != nil {
+		_u.SetBoundUserID(*v)
 	}
-	return au
+	return _u
 }
 
 // ClearBoundUserID clears the value of the "bound_user_id" field.
-func (au *AccountUpdate) ClearBoundUserID() *AccountUpdate {
-	au.mutation.ClearBoundUserID()
-	return au
+func (_u *AccountUpdate) ClearBoundUserID() *AccountUpdate {
+	_u.mutation.ClearBoundUserID()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (au *AccountUpdate) SetName(s string) *AccountUpdate {
-	au.mutation.SetName(s)
-	return au
+func (_u *AccountUpdate) SetName(v string) *AccountUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (au *AccountUpdate) SetNillableName(s *string) *AccountUpdate {
-	if s != nil {
-		au.SetName(*s)
+func (_u *AccountUpdate) SetNillableName(v *string) *AccountUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return au
+	return _u
 }
 
 // SetProfileURL sets the "profile_url" field.
-func (au *AccountUpdate) SetProfileURL(s string) *AccountUpdate {
-	au.mutation.SetProfileURL(s)
-	return au
+func (_u *AccountUpdate) SetProfileURL(v string) *AccountUpdate {
+	_u.mutation.SetProfileURL(v)
+	return _u
 }
 
 // SetNillableProfileURL sets the "profile_url" field if the given value is not nil.
-func (au *AccountUpdate) SetNillableProfileURL(s *string) *AccountUpdate {
-	if s != nil {
-		au.SetProfileURL(*s)
+func (_u *AccountUpdate) SetNillableProfileURL(v *string) *AccountUpdate {
+	if v != nil {
+		_u.SetProfileURL(*v)
 	}
-	return au
+	return _u
 }
 
 // SetAvatarURL sets the "avatar_url" field.
-func (au *AccountUpdate) SetAvatarURL(s string) *AccountUpdate {
-	au.mutation.SetAvatarURL(s)
-	return au
+func (_u *AccountUpdate) SetAvatarURL(v string) *AccountUpdate {
+	_u.mutation.SetAvatarURL(v)
+	return _u
 }
 
 // SetNillableAvatarURL sets the "avatar_url" field if the given value is not nil.
-func (au *AccountUpdate) SetNillableAvatarURL(s *string) *AccountUpdate {
-	if s != nil {
-		au.SetAvatarURL(*s)
+func (_u *AccountUpdate) SetNillableAvatarURL(v *string) *AccountUpdate {
+	if v != nil {
+		_u.SetAvatarURL(*v)
 	}
-	return au
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (au *AccountUpdate) SetUpdatedAt(t time.Time) *AccountUpdate {
-	au.mutation.SetUpdatedAt(t)
-	return au
+func (_u *AccountUpdate) SetUpdatedAt(v time.Time) *AccountUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (au *AccountUpdate) SetCreatedAt(t time.Time) *AccountUpdate {
-	au.mutation.SetCreatedAt(t)
-	return au
+func (_u *AccountUpdate) SetCreatedAt(v time.Time) *AccountUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (au *AccountUpdate) SetNillableCreatedAt(t *time.Time) *AccountUpdate {
-	if t != nil {
-		au.SetCreatedAt(*t)
+func (_u *AccountUpdate) SetNillableCreatedAt(v *time.Time) *AccountUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return au
+	return _u
 }
 
 // SetBoundUser sets the "bound_user" edge to the User entity.
-func (au *AccountUpdate) SetBoundUser(u *User) *AccountUpdate {
-	return au.SetBoundUserID(u.ID)
+func (_u *AccountUpdate) SetBoundUser(v *User) *AccountUpdate {
+	return _u.SetBoundUserID(v.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
-func (au *AccountUpdate) Mutation() *AccountMutation {
-	return au.mutation
+func (_u *AccountUpdate) Mutation() *AccountMutation {
+	return _u.mutation
 }
 
 // ClearBoundUser clears the "bound_user" edge to the User entity.
-func (au *AccountUpdate) ClearBoundUser() *AccountUpdate {
-	au.mutation.ClearBoundUser()
-	return au
+func (_u *AccountUpdate) ClearBoundUser() *AccountUpdate {
+	_u.mutation.ClearBoundUser()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (au *AccountUpdate) Save(ctx context.Context) (int, error) {
-	au.defaults()
-	return withHooks(ctx, au.sqlSave, au.mutation, au.hooks)
+func (_u *AccountUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (au *AccountUpdate) SaveX(ctx context.Context) int {
-	affected, err := au.Save(ctx)
+func (_u *AccountUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -172,57 +172,57 @@ func (au *AccountUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (au *AccountUpdate) Exec(ctx context.Context) error {
-	_, err := au.Save(ctx)
+func (_u *AccountUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (au *AccountUpdate) ExecX(ctx context.Context) {
-	if err := au.Exec(ctx); err != nil {
+func (_u *AccountUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (au *AccountUpdate) defaults() {
-	if _, ok := au.mutation.UpdatedAt(); !ok {
+func (_u *AccountUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := account.UpdateDefaultUpdatedAt()
-		au.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *AccountUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(account.Table, account.Columns, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64))
-	if ps := au.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := au.mutation.Platform(); ok {
+	if value, ok := _u.mutation.Platform(); ok {
 		_spec.SetField(account.FieldPlatform, field.TypeString, value)
 	}
-	if value, ok := au.mutation.PlatformAccountID(); ok {
+	if value, ok := _u.mutation.PlatformAccountID(); ok {
 		_spec.SetField(account.FieldPlatformAccountID, field.TypeString, value)
 	}
-	if value, ok := au.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(account.FieldName, field.TypeString, value)
 	}
-	if value, ok := au.mutation.ProfileURL(); ok {
+	if value, ok := _u.mutation.ProfileURL(); ok {
 		_spec.SetField(account.FieldProfileURL, field.TypeString, value)
 	}
-	if value, ok := au.mutation.AvatarURL(); ok {
+	if value, ok := _u.mutation.AvatarURL(); ok {
 		_spec.SetField(account.FieldAvatarURL, field.TypeString, value)
 	}
-	if value, ok := au.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(account.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := au.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 	}
-	if au.mutation.BoundUserCleared() {
+	if _u.mutation.BoundUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -235,7 +235,7 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.BoundUserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BoundUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -251,7 +251,7 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{account.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -259,8 +259,8 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	au.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AccountUpdateOne is the builder for updating a single Account entity.
@@ -272,153 +272,153 @@ type AccountUpdateOne struct {
 }
 
 // SetPlatform sets the "platform" field.
-func (auo *AccountUpdateOne) SetPlatform(s string) *AccountUpdateOne {
-	auo.mutation.SetPlatform(s)
-	return auo
+func (_u *AccountUpdateOne) SetPlatform(v string) *AccountUpdateOne {
+	_u.mutation.SetPlatform(v)
+	return _u
 }
 
 // SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillablePlatform(s *string) *AccountUpdateOne {
-	if s != nil {
-		auo.SetPlatform(*s)
+func (_u *AccountUpdateOne) SetNillablePlatform(v *string) *AccountUpdateOne {
+	if v != nil {
+		_u.SetPlatform(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetPlatformAccountID sets the "platform_account_id" field.
-func (auo *AccountUpdateOne) SetPlatformAccountID(s string) *AccountUpdateOne {
-	auo.mutation.SetPlatformAccountID(s)
-	return auo
+func (_u *AccountUpdateOne) SetPlatformAccountID(v string) *AccountUpdateOne {
+	_u.mutation.SetPlatformAccountID(v)
+	return _u
 }
 
 // SetNillablePlatformAccountID sets the "platform_account_id" field if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillablePlatformAccountID(s *string) *AccountUpdateOne {
-	if s != nil {
-		auo.SetPlatformAccountID(*s)
+func (_u *AccountUpdateOne) SetNillablePlatformAccountID(v *string) *AccountUpdateOne {
+	if v != nil {
+		_u.SetPlatformAccountID(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetBoundUserID sets the "bound_user_id" field.
-func (auo *AccountUpdateOne) SetBoundUserID(mi model.InternalID) *AccountUpdateOne {
-	auo.mutation.SetBoundUserID(mi)
-	return auo
+func (_u *AccountUpdateOne) SetBoundUserID(v model.InternalID) *AccountUpdateOne {
+	_u.mutation.SetBoundUserID(v)
+	return _u
 }
 
 // SetNillableBoundUserID sets the "bound_user_id" field if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableBoundUserID(mi *model.InternalID) *AccountUpdateOne {
-	if mi != nil {
-		auo.SetBoundUserID(*mi)
+func (_u *AccountUpdateOne) SetNillableBoundUserID(v *model.InternalID) *AccountUpdateOne {
+	if v != nil {
+		_u.SetBoundUserID(*v)
 	}
-	return auo
+	return _u
 }
 
 // ClearBoundUserID clears the value of the "bound_user_id" field.
-func (auo *AccountUpdateOne) ClearBoundUserID() *AccountUpdateOne {
-	auo.mutation.ClearBoundUserID()
-	return auo
+func (_u *AccountUpdateOne) ClearBoundUserID() *AccountUpdateOne {
+	_u.mutation.ClearBoundUserID()
+	return _u
 }
 
 // SetName sets the "name" field.
-func (auo *AccountUpdateOne) SetName(s string) *AccountUpdateOne {
-	auo.mutation.SetName(s)
-	return auo
+func (_u *AccountUpdateOne) SetName(v string) *AccountUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableName(s *string) *AccountUpdateOne {
-	if s != nil {
-		auo.SetName(*s)
+func (_u *AccountUpdateOne) SetNillableName(v *string) *AccountUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetProfileURL sets the "profile_url" field.
-func (auo *AccountUpdateOne) SetProfileURL(s string) *AccountUpdateOne {
-	auo.mutation.SetProfileURL(s)
-	return auo
+func (_u *AccountUpdateOne) SetProfileURL(v string) *AccountUpdateOne {
+	_u.mutation.SetProfileURL(v)
+	return _u
 }
 
 // SetNillableProfileURL sets the "profile_url" field if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableProfileURL(s *string) *AccountUpdateOne {
-	if s != nil {
-		auo.SetProfileURL(*s)
+func (_u *AccountUpdateOne) SetNillableProfileURL(v *string) *AccountUpdateOne {
+	if v != nil {
+		_u.SetProfileURL(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetAvatarURL sets the "avatar_url" field.
-func (auo *AccountUpdateOne) SetAvatarURL(s string) *AccountUpdateOne {
-	auo.mutation.SetAvatarURL(s)
-	return auo
+func (_u *AccountUpdateOne) SetAvatarURL(v string) *AccountUpdateOne {
+	_u.mutation.SetAvatarURL(v)
+	return _u
 }
 
 // SetNillableAvatarURL sets the "avatar_url" field if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableAvatarURL(s *string) *AccountUpdateOne {
-	if s != nil {
-		auo.SetAvatarURL(*s)
+func (_u *AccountUpdateOne) SetNillableAvatarURL(v *string) *AccountUpdateOne {
+	if v != nil {
+		_u.SetAvatarURL(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (auo *AccountUpdateOne) SetUpdatedAt(t time.Time) *AccountUpdateOne {
-	auo.mutation.SetUpdatedAt(t)
-	return auo
+func (_u *AccountUpdateOne) SetUpdatedAt(v time.Time) *AccountUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (auo *AccountUpdateOne) SetCreatedAt(t time.Time) *AccountUpdateOne {
-	auo.mutation.SetCreatedAt(t)
-	return auo
+func (_u *AccountUpdateOne) SetCreatedAt(v time.Time) *AccountUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableCreatedAt(t *time.Time) *AccountUpdateOne {
-	if t != nil {
-		auo.SetCreatedAt(*t)
+func (_u *AccountUpdateOne) SetNillableCreatedAt(v *time.Time) *AccountUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return auo
+	return _u
 }
 
 // SetBoundUser sets the "bound_user" edge to the User entity.
-func (auo *AccountUpdateOne) SetBoundUser(u *User) *AccountUpdateOne {
-	return auo.SetBoundUserID(u.ID)
+func (_u *AccountUpdateOne) SetBoundUser(v *User) *AccountUpdateOne {
+	return _u.SetBoundUserID(v.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
-func (auo *AccountUpdateOne) Mutation() *AccountMutation {
-	return auo.mutation
+func (_u *AccountUpdateOne) Mutation() *AccountMutation {
+	return _u.mutation
 }
 
 // ClearBoundUser clears the "bound_user" edge to the User entity.
-func (auo *AccountUpdateOne) ClearBoundUser() *AccountUpdateOne {
-	auo.mutation.ClearBoundUser()
-	return auo
+func (_u *AccountUpdateOne) ClearBoundUser() *AccountUpdateOne {
+	_u.mutation.ClearBoundUser()
+	return _u
 }
 
 // Where appends a list predicates to the AccountUpdate builder.
-func (auo *AccountUpdateOne) Where(ps ...predicate.Account) *AccountUpdateOne {
-	auo.mutation.Where(ps...)
-	return auo
+func (_u *AccountUpdateOne) Where(ps ...predicate.Account) *AccountUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (auo *AccountUpdateOne) Select(field string, fields ...string) *AccountUpdateOne {
-	auo.fields = append([]string{field}, fields...)
-	return auo
+func (_u *AccountUpdateOne) Select(field string, fields ...string) *AccountUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Account entity.
-func (auo *AccountUpdateOne) Save(ctx context.Context) (*Account, error) {
-	auo.defaults()
-	return withHooks(ctx, auo.sqlSave, auo.mutation, auo.hooks)
+func (_u *AccountUpdateOne) Save(ctx context.Context) (*Account, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (auo *AccountUpdateOne) SaveX(ctx context.Context) *Account {
-	node, err := auo.Save(ctx)
+func (_u *AccountUpdateOne) SaveX(ctx context.Context) *Account {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -426,34 +426,34 @@ func (auo *AccountUpdateOne) SaveX(ctx context.Context) *Account {
 }
 
 // Exec executes the query on the entity.
-func (auo *AccountUpdateOne) Exec(ctx context.Context) error {
-	_, err := auo.Save(ctx)
+func (_u *AccountUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (auo *AccountUpdateOne) ExecX(ctx context.Context) {
-	if err := auo.Exec(ctx); err != nil {
+func (_u *AccountUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (auo *AccountUpdateOne) defaults() {
-	if _, ok := auo.mutation.UpdatedAt(); !ok {
+func (_u *AccountUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := account.UpdateDefaultUpdatedAt()
-		auo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err error) {
+func (_u *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err error) {
 	_spec := sqlgraph.NewUpdateSpec(account.Table, account.Columns, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64))
-	id, ok := auo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Account.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := auo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, account.FieldID)
 		for _, f := range fields {
@@ -465,35 +465,35 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 			}
 		}
 	}
-	if ps := auo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := auo.mutation.Platform(); ok {
+	if value, ok := _u.mutation.Platform(); ok {
 		_spec.SetField(account.FieldPlatform, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.PlatformAccountID(); ok {
+	if value, ok := _u.mutation.PlatformAccountID(); ok {
 		_spec.SetField(account.FieldPlatformAccountID, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(account.FieldName, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.ProfileURL(); ok {
+	if value, ok := _u.mutation.ProfileURL(); ok {
 		_spec.SetField(account.FieldProfileURL, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.AvatarURL(); ok {
+	if value, ok := _u.mutation.AvatarURL(); ok {
 		_spec.SetField(account.FieldAvatarURL, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(account.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := auo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 	}
-	if auo.mutation.BoundUserCleared() {
+	if _u.mutation.BoundUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -506,7 +506,7 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.BoundUserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.BoundUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -522,10 +522,10 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Account{config: auo.config}
+	_node = &Account{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, auo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{account.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -533,6 +533,6 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 		}
 		return nil, err
 	}
-	auo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

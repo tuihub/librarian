@@ -8,9 +8,9 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	porterpb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
-	sentinelpb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	porterpb "github.com/tuihub/protos/pkg/librarian/porter/v1"
+	sentinelpb "github.com/tuihub/protos/pkg/librarian/sentinel/v1"
+	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -27,7 +27,7 @@ func NewGRPCServer(
 	c *conf.Server,
 	auth *libauth.Auth,
 	sephirahserver pb.LibrarianSephirahServiceServer,
-	sentinelserver sentinelpb.LibrarianSentinelServiceServer,
+	sentinelserver sentinelpb.LibrarianSephirahSentinelServiceServer,
 	porterserver porterpb.LibrarianSephirahPorterServiceServer,
 	app *libapp.Settings,
 	inprocPorter *client.InprocPorter,
@@ -73,7 +73,7 @@ func NewGRPCServer(
 	}
 	srv := grpc.NewServer(opts...)
 	pb.RegisterLibrarianSephirahServiceServer(srv, sephirahserver)
-	sentinelpb.RegisterLibrarianSentinelServiceServer(srv, sentinelserver)
+	sentinelpb.RegisterLibrarianSephirahSentinelServiceServer(srv, sentinelserver)
 	porterpb.RegisterLibrarianSephirahPorterServiceServer(srv, porterserver)
 
 	inprocPorter.SetSephirahServer(porterserver, middlewares)

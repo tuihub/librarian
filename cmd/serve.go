@@ -12,13 +12,12 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libzap"
+	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/google/wire"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/zap"
@@ -56,8 +55,7 @@ var ProviderSet = wire.NewSet(
 )
 
 func newApp(
-	gs *grpc.Server,
-	hs *http.Server,
+	cs *server.ConnectServer,
 	aw *angelaweb.AngelaWeb,
 	sv *supervisor.SupervisorService,
 	mq *libmq.MQ,
@@ -73,7 +71,7 @@ func newApp(
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(append([]transport.Server{
-			gs, hs, aw, sv, mq, cron, s3, observe,
+			cs, aw, sv, mq, cron, s3, observe,
 		}, inprocPorter.Servers...)...),
 	}
 	r, err := libdiscovery.NewRegistrar(consul)

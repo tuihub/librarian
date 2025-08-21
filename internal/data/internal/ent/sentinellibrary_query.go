@@ -31,44 +31,44 @@ type SentinelLibraryQuery struct {
 }
 
 // Where adds a new predicate for the SentinelLibraryQuery builder.
-func (slq *SentinelLibraryQuery) Where(ps ...predicate.SentinelLibrary) *SentinelLibraryQuery {
-	slq.predicates = append(slq.predicates, ps...)
-	return slq
+func (_q *SentinelLibraryQuery) Where(ps ...predicate.SentinelLibrary) *SentinelLibraryQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (slq *SentinelLibraryQuery) Limit(limit int) *SentinelLibraryQuery {
-	slq.ctx.Limit = &limit
-	return slq
+func (_q *SentinelLibraryQuery) Limit(limit int) *SentinelLibraryQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (slq *SentinelLibraryQuery) Offset(offset int) *SentinelLibraryQuery {
-	slq.ctx.Offset = &offset
-	return slq
+func (_q *SentinelLibraryQuery) Offset(offset int) *SentinelLibraryQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (slq *SentinelLibraryQuery) Unique(unique bool) *SentinelLibraryQuery {
-	slq.ctx.Unique = &unique
-	return slq
+func (_q *SentinelLibraryQuery) Unique(unique bool) *SentinelLibraryQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (slq *SentinelLibraryQuery) Order(o ...sentinellibrary.OrderOption) *SentinelLibraryQuery {
-	slq.order = append(slq.order, o...)
-	return slq
+func (_q *SentinelLibraryQuery) Order(o ...sentinellibrary.OrderOption) *SentinelLibraryQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QuerySentinel chains the current query on the "sentinel" edge.
-func (slq *SentinelLibraryQuery) QuerySentinel() *SentinelQuery {
-	query := (&SentinelClient{config: slq.config}).Query()
+func (_q *SentinelLibraryQuery) QuerySentinel() *SentinelQuery {
+	query := (&SentinelClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := slq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := slq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -77,7 +77,7 @@ func (slq *SentinelLibraryQuery) QuerySentinel() *SentinelQuery {
 			sqlgraph.To(sentinel.Table, sentinel.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, sentinellibrary.SentinelTable, sentinellibrary.SentinelColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(slq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -85,8 +85,8 @@ func (slq *SentinelLibraryQuery) QuerySentinel() *SentinelQuery {
 
 // First returns the first SentinelLibrary entity from the query.
 // Returns a *NotFoundError when no SentinelLibrary was found.
-func (slq *SentinelLibraryQuery) First(ctx context.Context) (*SentinelLibrary, error) {
-	nodes, err := slq.Limit(1).All(setContextOp(ctx, slq.ctx, ent.OpQueryFirst))
+func (_q *SentinelLibraryQuery) First(ctx context.Context) (*SentinelLibrary, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +97,8 @@ func (slq *SentinelLibraryQuery) First(ctx context.Context) (*SentinelLibrary, e
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) FirstX(ctx context.Context) *SentinelLibrary {
-	node, err := slq.First(ctx)
+func (_q *SentinelLibraryQuery) FirstX(ctx context.Context) *SentinelLibrary {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -107,9 +107,9 @@ func (slq *SentinelLibraryQuery) FirstX(ctx context.Context) *SentinelLibrary {
 
 // FirstID returns the first SentinelLibrary ID from the query.
 // Returns a *NotFoundError when no SentinelLibrary ID was found.
-func (slq *SentinelLibraryQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *SentinelLibraryQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = slq.Limit(1).IDs(setContextOp(ctx, slq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -120,8 +120,8 @@ func (slq *SentinelLibraryQuery) FirstID(ctx context.Context) (id model.Internal
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := slq.FirstID(ctx)
+func (_q *SentinelLibraryQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -131,8 +131,8 @@ func (slq *SentinelLibraryQuery) FirstIDX(ctx context.Context) model.InternalID 
 // Only returns a single SentinelLibrary entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one SentinelLibrary entity is found.
 // Returns a *NotFoundError when no SentinelLibrary entities are found.
-func (slq *SentinelLibraryQuery) Only(ctx context.Context) (*SentinelLibrary, error) {
-	nodes, err := slq.Limit(2).All(setContextOp(ctx, slq.ctx, ent.OpQueryOnly))
+func (_q *SentinelLibraryQuery) Only(ctx context.Context) (*SentinelLibrary, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +147,8 @@ func (slq *SentinelLibraryQuery) Only(ctx context.Context) (*SentinelLibrary, er
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) OnlyX(ctx context.Context) *SentinelLibrary {
-	node, err := slq.Only(ctx)
+func (_q *SentinelLibraryQuery) OnlyX(ctx context.Context) *SentinelLibrary {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -158,9 +158,9 @@ func (slq *SentinelLibraryQuery) OnlyX(ctx context.Context) *SentinelLibrary {
 // OnlyID is like Only, but returns the only SentinelLibrary ID in the query.
 // Returns a *NotSingularError when more than one SentinelLibrary ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (slq *SentinelLibraryQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *SentinelLibraryQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = slq.Limit(2).IDs(setContextOp(ctx, slq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -175,8 +175,8 @@ func (slq *SentinelLibraryQuery) OnlyID(ctx context.Context) (id model.InternalI
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := slq.OnlyID(ctx)
+func (_q *SentinelLibraryQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -184,18 +184,18 @@ func (slq *SentinelLibraryQuery) OnlyIDX(ctx context.Context) model.InternalID {
 }
 
 // All executes the query and returns a list of SentinelLibraries.
-func (slq *SentinelLibraryQuery) All(ctx context.Context) ([]*SentinelLibrary, error) {
-	ctx = setContextOp(ctx, slq.ctx, ent.OpQueryAll)
-	if err := slq.prepareQuery(ctx); err != nil {
+func (_q *SentinelLibraryQuery) All(ctx context.Context) ([]*SentinelLibrary, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*SentinelLibrary, *SentinelLibraryQuery]()
-	return withInterceptors[[]*SentinelLibrary](ctx, slq, qr, slq.inters)
+	return withInterceptors[[]*SentinelLibrary](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) AllX(ctx context.Context) []*SentinelLibrary {
-	nodes, err := slq.All(ctx)
+func (_q *SentinelLibraryQuery) AllX(ctx context.Context) []*SentinelLibrary {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -203,20 +203,20 @@ func (slq *SentinelLibraryQuery) AllX(ctx context.Context) []*SentinelLibrary {
 }
 
 // IDs executes the query and returns a list of SentinelLibrary IDs.
-func (slq *SentinelLibraryQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if slq.ctx.Unique == nil && slq.path != nil {
-		slq.Unique(true)
+func (_q *SentinelLibraryQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, slq.ctx, ent.OpQueryIDs)
-	if err = slq.Select(sentinellibrary.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(sentinellibrary.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := slq.IDs(ctx)
+func (_q *SentinelLibraryQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -224,17 +224,17 @@ func (slq *SentinelLibraryQuery) IDsX(ctx context.Context) []model.InternalID {
 }
 
 // Count returns the count of the given query.
-func (slq *SentinelLibraryQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, slq.ctx, ent.OpQueryCount)
-	if err := slq.prepareQuery(ctx); err != nil {
+func (_q *SentinelLibraryQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, slq, querierCount[*SentinelLibraryQuery](), slq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*SentinelLibraryQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) CountX(ctx context.Context) int {
-	count, err := slq.Count(ctx)
+func (_q *SentinelLibraryQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -242,9 +242,9 @@ func (slq *SentinelLibraryQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (slq *SentinelLibraryQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, slq.ctx, ent.OpQueryExist)
-	switch _, err := slq.FirstID(ctx); {
+func (_q *SentinelLibraryQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -255,8 +255,8 @@ func (slq *SentinelLibraryQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) ExistX(ctx context.Context) bool {
-	exist, err := slq.Exist(ctx)
+func (_q *SentinelLibraryQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -265,32 +265,32 @@ func (slq *SentinelLibraryQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the SentinelLibraryQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (slq *SentinelLibraryQuery) Clone() *SentinelLibraryQuery {
-	if slq == nil {
+func (_q *SentinelLibraryQuery) Clone() *SentinelLibraryQuery {
+	if _q == nil {
 		return nil
 	}
 	return &SentinelLibraryQuery{
-		config:       slq.config,
-		ctx:          slq.ctx.Clone(),
-		order:        append([]sentinellibrary.OrderOption{}, slq.order...),
-		inters:       append([]Interceptor{}, slq.inters...),
-		predicates:   append([]predicate.SentinelLibrary{}, slq.predicates...),
-		withSentinel: slq.withSentinel.Clone(),
+		config:       _q.config,
+		ctx:          _q.ctx.Clone(),
+		order:        append([]sentinellibrary.OrderOption{}, _q.order...),
+		inters:       append([]Interceptor{}, _q.inters...),
+		predicates:   append([]predicate.SentinelLibrary{}, _q.predicates...),
+		withSentinel: _q.withSentinel.Clone(),
 		// clone intermediate query.
-		sql:  slq.sql.Clone(),
-		path: slq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithSentinel tells the query-builder to eager-load the nodes that are connected to
 // the "sentinel" edge. The optional arguments are used to configure the query builder of the edge.
-func (slq *SentinelLibraryQuery) WithSentinel(opts ...func(*SentinelQuery)) *SentinelLibraryQuery {
-	query := (&SentinelClient{config: slq.config}).Query()
+func (_q *SentinelLibraryQuery) WithSentinel(opts ...func(*SentinelQuery)) *SentinelLibraryQuery {
+	query := (&SentinelClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	slq.withSentinel = query
-	return slq
+	_q.withSentinel = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -307,10 +307,10 @@ func (slq *SentinelLibraryQuery) WithSentinel(opts ...func(*SentinelQuery)) *Sen
 //		GroupBy(sentinellibrary.FieldSentinelID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (slq *SentinelLibraryQuery) GroupBy(field string, fields ...string) *SentinelLibraryGroupBy {
-	slq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &SentinelLibraryGroupBy{build: slq}
-	grbuild.flds = &slq.ctx.Fields
+func (_q *SentinelLibraryQuery) GroupBy(field string, fields ...string) *SentinelLibraryGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &SentinelLibraryGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = sentinellibrary.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -328,58 +328,58 @@ func (slq *SentinelLibraryQuery) GroupBy(field string, fields ...string) *Sentin
 //	client.SentinelLibrary.Query().
 //		Select(sentinellibrary.FieldSentinelID).
 //		Scan(ctx, &v)
-func (slq *SentinelLibraryQuery) Select(fields ...string) *SentinelLibrarySelect {
-	slq.ctx.Fields = append(slq.ctx.Fields, fields...)
-	sbuild := &SentinelLibrarySelect{SentinelLibraryQuery: slq}
+func (_q *SentinelLibraryQuery) Select(fields ...string) *SentinelLibrarySelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &SentinelLibrarySelect{SentinelLibraryQuery: _q}
 	sbuild.label = sentinellibrary.Label
-	sbuild.flds, sbuild.scan = &slq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a SentinelLibrarySelect configured with the given aggregations.
-func (slq *SentinelLibraryQuery) Aggregate(fns ...AggregateFunc) *SentinelLibrarySelect {
-	return slq.Select().Aggregate(fns...)
+func (_q *SentinelLibraryQuery) Aggregate(fns ...AggregateFunc) *SentinelLibrarySelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (slq *SentinelLibraryQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range slq.inters {
+func (_q *SentinelLibraryQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, slq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range slq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !sentinellibrary.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if slq.path != nil {
-		prev, err := slq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		slq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (slq *SentinelLibraryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SentinelLibrary, error) {
+func (_q *SentinelLibraryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SentinelLibrary, error) {
 	var (
 		nodes       = []*SentinelLibrary{}
-		_spec       = slq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			slq.withSentinel != nil,
+			_q.withSentinel != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SentinelLibrary).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &SentinelLibrary{config: slq.config}
+		node := &SentinelLibrary{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -387,14 +387,14 @@ func (slq *SentinelLibraryQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, slq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := slq.withSentinel; query != nil {
-		if err := slq.loadSentinel(ctx, query, nodes, nil,
+	if query := _q.withSentinel; query != nil {
+		if err := _q.loadSentinel(ctx, query, nodes, nil,
 			func(n *SentinelLibrary, e *Sentinel) { n.Edges.Sentinel = e }); err != nil {
 			return nil, err
 		}
@@ -402,7 +402,7 @@ func (slq *SentinelLibraryQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	return nodes, nil
 }
 
-func (slq *SentinelLibraryQuery) loadSentinel(ctx context.Context, query *SentinelQuery, nodes []*SentinelLibrary, init func(*SentinelLibrary), assign func(*SentinelLibrary, *Sentinel)) error {
+func (_q *SentinelLibraryQuery) loadSentinel(ctx context.Context, query *SentinelQuery, nodes []*SentinelLibrary, init func(*SentinelLibrary), assign func(*SentinelLibrary, *Sentinel)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*SentinelLibrary)
 	for i := range nodes {
@@ -432,24 +432,24 @@ func (slq *SentinelLibraryQuery) loadSentinel(ctx context.Context, query *Sentin
 	return nil
 }
 
-func (slq *SentinelLibraryQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := slq.querySpec()
-	_spec.Node.Columns = slq.ctx.Fields
-	if len(slq.ctx.Fields) > 0 {
-		_spec.Unique = slq.ctx.Unique != nil && *slq.ctx.Unique
+func (_q *SentinelLibraryQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, slq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (slq *SentinelLibraryQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *SentinelLibraryQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
-	_spec.From = slq.sql
-	if unique := slq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if slq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := slq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sentinellibrary.FieldID)
 		for i := range fields {
@@ -457,24 +457,24 @@ func (slq *SentinelLibraryQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if slq.withSentinel != nil {
+		if _q.withSentinel != nil {
 			_spec.Node.AddColumnOnce(sentinellibrary.FieldSentinelID)
 		}
 	}
-	if ps := slq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := slq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := slq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := slq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -484,33 +484,33 @@ func (slq *SentinelLibraryQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (slq *SentinelLibraryQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(slq.driver.Dialect())
+func (_q *SentinelLibraryQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(sentinellibrary.Table)
-	columns := slq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = sentinellibrary.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if slq.sql != nil {
-		selector = slq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if slq.ctx.Unique != nil && *slq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range slq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range slq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := slq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := slq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -523,41 +523,41 @@ type SentinelLibraryGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (slgb *SentinelLibraryGroupBy) Aggregate(fns ...AggregateFunc) *SentinelLibraryGroupBy {
-	slgb.fns = append(slgb.fns, fns...)
-	return slgb
+func (_g *SentinelLibraryGroupBy) Aggregate(fns ...AggregateFunc) *SentinelLibraryGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (slgb *SentinelLibraryGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, slgb.build.ctx, ent.OpQueryGroupBy)
-	if err := slgb.build.prepareQuery(ctx); err != nil {
+func (_g *SentinelLibraryGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SentinelLibraryQuery, *SentinelLibraryGroupBy](ctx, slgb.build, slgb, slgb.build.inters, v)
+	return scanWithInterceptors[*SentinelLibraryQuery, *SentinelLibraryGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (slgb *SentinelLibraryGroupBy) sqlScan(ctx context.Context, root *SentinelLibraryQuery, v any) error {
+func (_g *SentinelLibraryGroupBy) sqlScan(ctx context.Context, root *SentinelLibraryQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(slgb.fns))
-	for _, fn := range slgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*slgb.flds)+len(slgb.fns))
-		for _, f := range *slgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*slgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := slgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -571,27 +571,27 @@ type SentinelLibrarySelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (sls *SentinelLibrarySelect) Aggregate(fns ...AggregateFunc) *SentinelLibrarySelect {
-	sls.fns = append(sls.fns, fns...)
-	return sls
+func (_s *SentinelLibrarySelect) Aggregate(fns ...AggregateFunc) *SentinelLibrarySelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (sls *SentinelLibrarySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, sls.ctx, ent.OpQuerySelect)
-	if err := sls.prepareQuery(ctx); err != nil {
+func (_s *SentinelLibrarySelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SentinelLibraryQuery, *SentinelLibrarySelect](ctx, sls.SentinelLibraryQuery, sls, sls.inters, v)
+	return scanWithInterceptors[*SentinelLibraryQuery, *SentinelLibrarySelect](ctx, _s.SentinelLibraryQuery, _s, _s.inters, v)
 }
 
-func (sls *SentinelLibrarySelect) sqlScan(ctx context.Context, root *SentinelLibraryQuery, v any) error {
+func (_s *SentinelLibrarySelect) sqlScan(ctx context.Context, root *SentinelLibraryQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(sls.fns))
-	for _, fn := range sls.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*sls.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -599,7 +599,7 @@ func (sls *SentinelLibrarySelect) sqlScan(ctx context.Context, root *SentinelLib
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := sls.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

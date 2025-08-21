@@ -5,10 +5,10 @@ package converter
 
 import (
 	modelgebura "github.com/tuihub/librarian/internal/model/modelgebura"
-	sentinel "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
+	v1 "github.com/tuihub/protos/pkg/librarian/sentinel/v1"
 )
 
-func ToBizSentinel(source *sentinel.ReportSentinelInformationRequest) *modelgebura.Sentinel {
+func ToBizSentinel(source *v1.ReportSentinelInformationRequest) *modelgebura.Sentinel {
 	var pModelgeburaSentinel *modelgebura.Sentinel
 	if source != nil {
 		var modelgeburaSentinel modelgebura.Sentinel
@@ -31,7 +31,7 @@ func ToBizSentinel(source *sentinel.ReportSentinelInformationRequest) *modelgebu
 	}
 	return pModelgeburaSentinel
 }
-func ToBizSentinelAppBinary(source *sentinel.SentinelLibraryAppBinary) *modelgebura.SentinelAppBinary {
+func ToBizSentinelAppBinary(source *v1.SentinelLibraryAppBinary) *modelgebura.SentinelAppBinary {
 	var pModelgeburaSentinelAppBinary *modelgebura.SentinelAppBinary
 	if source != nil {
 		var modelgeburaSentinelAppBinary modelgebura.SentinelAppBinary
@@ -53,7 +53,7 @@ func ToBizSentinelAppBinary(source *sentinel.SentinelLibraryAppBinary) *modelgeb
 	}
 	return pModelgeburaSentinelAppBinary
 }
-func ToBizSentinelAppBinaryFile(source *sentinel.SentinelLibraryAppBinaryFile) *modelgebura.SentinelAppBinaryFile {
+func ToBizSentinelAppBinaryFile(source *v1.SentinelLibraryAppBinaryFile) *modelgebura.SentinelAppBinaryFile {
 	var pModelgeburaSentinelAppBinaryFile *modelgebura.SentinelAppBinaryFile
 	if source != nil {
 		var modelgeburaSentinelAppBinaryFile modelgebura.SentinelAppBinaryFile
@@ -71,7 +71,7 @@ func ToBizSentinelAppBinaryFile(source *sentinel.SentinelLibraryAppBinaryFile) *
 	}
 	return pModelgeburaSentinelAppBinaryFile
 }
-func ToBizSentinelAppBinaryList(source []*sentinel.SentinelLibraryAppBinary) []*modelgebura.SentinelAppBinary {
+func ToBizSentinelAppBinaryList(source []*v1.SentinelLibraryAppBinary) []*modelgebura.SentinelAppBinary {
 	var pModelgeburaSentinelAppBinaryList []*modelgebura.SentinelAppBinary
 	if source != nil {
 		pModelgeburaSentinelAppBinaryList = make([]*modelgebura.SentinelAppBinary, len(source))
@@ -81,7 +81,7 @@ func ToBizSentinelAppBinaryList(source []*sentinel.SentinelLibraryAppBinary) []*
 	}
 	return pModelgeburaSentinelAppBinaryList
 }
-func ToBizSentinelLibrary(source *sentinel.SentinelLibrary) *modelgebura.SentinelLibrary {
+func ToBizSentinelLibrary(source *v1.SentinelLibrary) *modelgebura.SentinelLibrary {
 	var pModelgeburaSentinelLibrary *modelgebura.SentinelLibrary
 	if source != nil {
 		var modelgeburaSentinelLibrary modelgebura.SentinelLibrary

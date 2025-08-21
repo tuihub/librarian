@@ -9,7 +9,7 @@ import (
 
 	"github.com/tuihub/librarian/pkg/tuihub-go"
 	"github.com/tuihub/librarian/pkg/tuihub-rss/internal/converter"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
+	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/gorilla/feeds"

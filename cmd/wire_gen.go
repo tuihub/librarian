@@ -245,16 +245,10 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		return nil, nil, err
 	}
 	bizsupervisorSupervisor := bizsupervisor.NewSupervisor(settings, supervisorRepo, clientPorter, libauthAuth, idGenerator)
-	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(angela, kether, tiphereth, gebura, binah, yesod, netzach, chesed, bizsupervisorSupervisor, settings, libauthAuth)
-	librarianSentinelServiceServer := sentinel.NewLibrarianSentinelService(tiphereth, gebura)
-	librarianSephirahPorterServiceServer := porter.NewLibrarianSephirahPorterService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, settings, libauthAuth)
-	grpcServer, err := server.NewGRPCServer(confServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, librarianSephirahPorterServiceServer, settings, inprocPorter)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	httpServer, err := server.NewGrpcWebServer(grpcServer, confServer, libauthAuth, settings)
+	librarianSephirahServiceHandler := sephirah.NewLibrarianSephirahService(angela, kether, tiphereth, gebura, binah, yesod, netzach, chesed, bizsupervisorSupervisor, settings, libauthAuth)
+	librarianSephirahSentinelServiceHandler := sentinel.NewLibrarianSentinelService(tiphereth, gebura)
+	librarianSephirahPorterServiceHandler := porter.NewLibrarianSephirahPorterService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, settings, libauthAuth)
+	connectServer, err := server.NewConnectServer(confServer, libauthAuth, librarianSephirahServiceHandler, librarianSephirahSentinelServiceHandler, librarianSephirahPorterServiceHandler, settings)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -276,7 +270,7 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	app, err := newApp(grpcServer, httpServer, angelaWeb, supervisorService, libmqMQ, cron, consul, s3, inprocPorter, observe)
+	app, err := newApp(connectServer, angelaWeb, supervisorService, libmqMQ, cron, consul, s3, inprocPorter, observe)
 	if err != nil {
 		cleanup2()
 		cleanup()

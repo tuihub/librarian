@@ -9,8 +9,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/pkg/tuihub-go/internal"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	sephirahporter "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
+	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2"
@@ -79,8 +78,8 @@ func WithBackgroundServer(server transport.Server) PorterOption {
 
 func NewPorter(
 	ctx context.Context,
-	info *porter.GetPorterInformationResponse,
-	service porter.LibrarianPorterServiceServer,
+	info *pb.GetPorterInformationResponse,
+	service pb.LibrarianPorterServiceServer,
 	options ...PorterOption,
 ) (*Porter, error) {
 	porterName := "unknown"
@@ -155,7 +154,7 @@ func NewPorter(
 	return p, nil
 }
 
-func (p *Porter) SetSephirahPorterClient(client sephirahporter.LibrarianSephirahPorterServiceClient) {
+func (p *Porter) SetSephirahPorterClient(client pb.LibrarianSephirahPorterServiceClient) {
 	if p.wrapper == nil {
 		p.wrapper = new(serviceWrapper)
 	}
@@ -206,7 +205,7 @@ func WellKnownToString(e protoreflect.Enum) string {
 }
 
 type PorterClient struct {
-	sephirahporter.LibrarianSephirahPorterServiceClient
+	pb.LibrarianSephirahPorterServiceClient
 
 	accessToken string
 }
@@ -215,7 +214,7 @@ func (c *PorterClient) WithToken(ctx context.Context) context.Context {
 	return metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer "+c.accessToken)
 }
 
-func (p *Porter) GetPorterService() porter.LibrarianPorterServiceServer {
+func (p *Porter) GetPorterService() pb.LibrarianPorterServiceServer {
 	return p.wrapper
 }
 
@@ -253,7 +252,7 @@ func (p *Porter) AsUser(ctx context.Context, userID int64) (*LibrarianClient, er
 	}
 	resp, err := client.AcquireUserToken(
 		WithToken(ctx, p.wrapper.Token.AccessToken),
-		&sephirahporter.AcquireUserTokenRequest{
+		&pb.AcquireUserTokenRequest{
 			UserId: &librarian.InternalID{Id: userID},
 		},
 	)

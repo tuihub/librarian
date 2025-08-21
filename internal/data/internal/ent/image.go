@@ -95,64 +95,64 @@ func (*Image) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Image fields.
-func (i *Image) assignValues(columns []string, values []any) error {
+func (_m *Image) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
-	for j := range columns {
-		switch columns[j] {
+	for i := range columns {
+		switch columns[i] {
 		case image.FieldID:
-			if value, ok := values[j].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[j])
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				i.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case image.FieldName:
-			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field name", values[j])
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				i.Name = value.String
+				_m.Name = value.String
 			}
 		case image.FieldDescription:
-			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field description", values[j])
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				i.Description = value.String
+				_m.Description = value.String
 			}
 		case image.FieldStatus:
-			if value, ok := values[j].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field status", values[j])
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				i.Status = image.Status(value.String)
+				_m.Status = image.Status(value.String)
 			}
 		case image.FieldUpdatedAt:
-			if value, ok := values[j].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field updated_at", values[j])
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				i.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case image.FieldCreatedAt:
-			if value, ok := values[j].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[j])
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				i.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case image.ForeignKeys[0]:
-			if value, ok := values[j].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field file_image", values[j])
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field file_image", values[i])
 			} else if value.Valid {
-				i.file_image = new(model.InternalID)
-				*i.file_image = model.InternalID(value.Int64)
+				_m.file_image = new(model.InternalID)
+				*_m.file_image = model.InternalID(value.Int64)
 			}
 		case image.ForeignKeys[1]:
-			if value, ok := values[j].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_image", values[j])
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field user_image", values[i])
 			} else if value.Valid {
-				i.user_image = new(model.InternalID)
-				*i.user_image = model.InternalID(value.Int64)
+				_m.user_image = new(model.InternalID)
+				*_m.user_image = model.InternalID(value.Int64)
 			}
 		default:
-			i.selectValues.Set(columns[j], values[j])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -160,57 +160,57 @@ func (i *Image) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Image.
 // This includes values selected through modifiers, order, etc.
-func (i *Image) Value(name string) (ent.Value, error) {
-	return i.selectValues.Get(name)
+func (_m *Image) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the Image entity.
-func (i *Image) QueryOwner() *UserQuery {
-	return NewImageClient(i.config).QueryOwner(i)
+func (_m *Image) QueryOwner() *UserQuery {
+	return NewImageClient(_m.config).QueryOwner(_m)
 }
 
 // QueryFile queries the "file" edge of the Image entity.
-func (i *Image) QueryFile() *FileQuery {
-	return NewImageClient(i.config).QueryFile(i)
+func (_m *Image) QueryFile() *FileQuery {
+	return NewImageClient(_m.config).QueryFile(_m)
 }
 
 // Update returns a builder for updating this Image.
 // Note that you need to call Image.Unwrap() before calling this method if this Image
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (i *Image) Update() *ImageUpdateOne {
-	return NewImageClient(i.config).UpdateOne(i)
+func (_m *Image) Update() *ImageUpdateOne {
+	return NewImageClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Image entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (i *Image) Unwrap() *Image {
-	_tx, ok := i.config.driver.(*txDriver)
+func (_m *Image) Unwrap() *Image {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Image is not a transactional entity")
 	}
-	i.config.driver = _tx.drv
-	return i
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (i *Image) String() string {
+func (_m *Image) String() string {
 	var builder strings.Builder
 	builder.WriteString("Image(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", i.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(i.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(i.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", i.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(i.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(i.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

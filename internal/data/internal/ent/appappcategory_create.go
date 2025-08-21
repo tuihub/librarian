@@ -25,40 +25,40 @@ type AppAppCategoryCreate struct {
 }
 
 // SetAppCategoryID sets the "app_category_id" field.
-func (aacc *AppAppCategoryCreate) SetAppCategoryID(mi model.InternalID) *AppAppCategoryCreate {
-	aacc.mutation.SetAppCategoryID(mi)
-	return aacc
+func (_c *AppAppCategoryCreate) SetAppCategoryID(v model.InternalID) *AppAppCategoryCreate {
+	_c.mutation.SetAppCategoryID(v)
+	return _c
 }
 
 // SetAppID sets the "app_id" field.
-func (aacc *AppAppCategoryCreate) SetAppID(mi model.InternalID) *AppAppCategoryCreate {
-	aacc.mutation.SetAppID(mi)
-	return aacc
+func (_c *AppAppCategoryCreate) SetAppID(v model.InternalID) *AppAppCategoryCreate {
+	_c.mutation.SetAppID(v)
+	return _c
 }
 
 // SetAppCategory sets the "app_category" edge to the AppCategory entity.
-func (aacc *AppAppCategoryCreate) SetAppCategory(a *AppCategory) *AppAppCategoryCreate {
-	return aacc.SetAppCategoryID(a.ID)
+func (_c *AppAppCategoryCreate) SetAppCategory(v *AppCategory) *AppAppCategoryCreate {
+	return _c.SetAppCategoryID(v.ID)
 }
 
 // SetApp sets the "app" edge to the App entity.
-func (aacc *AppAppCategoryCreate) SetApp(a *App) *AppAppCategoryCreate {
-	return aacc.SetAppID(a.ID)
+func (_c *AppAppCategoryCreate) SetApp(v *App) *AppAppCategoryCreate {
+	return _c.SetAppID(v.ID)
 }
 
 // Mutation returns the AppAppCategoryMutation object of the builder.
-func (aacc *AppAppCategoryCreate) Mutation() *AppAppCategoryMutation {
-	return aacc.mutation
+func (_c *AppAppCategoryCreate) Mutation() *AppAppCategoryMutation {
+	return _c.mutation
 }
 
 // Save creates the AppAppCategory in the database.
-func (aacc *AppAppCategoryCreate) Save(ctx context.Context) (*AppAppCategory, error) {
-	return withHooks(ctx, aacc.sqlSave, aacc.mutation, aacc.hooks)
+func (_c *AppAppCategoryCreate) Save(ctx context.Context) (*AppAppCategory, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (aacc *AppAppCategoryCreate) SaveX(ctx context.Context) *AppAppCategory {
-	v, err := aacc.Save(ctx)
+func (_c *AppAppCategoryCreate) SaveX(ctx context.Context) *AppAppCategory {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -66,41 +66,41 @@ func (aacc *AppAppCategoryCreate) SaveX(ctx context.Context) *AppAppCategory {
 }
 
 // Exec executes the query.
-func (aacc *AppAppCategoryCreate) Exec(ctx context.Context) error {
-	_, err := aacc.Save(ctx)
+func (_c *AppAppCategoryCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aacc *AppAppCategoryCreate) ExecX(ctx context.Context) {
-	if err := aacc.Exec(ctx); err != nil {
+func (_c *AppAppCategoryCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (aacc *AppAppCategoryCreate) check() error {
-	if _, ok := aacc.mutation.AppCategoryID(); !ok {
+func (_c *AppAppCategoryCreate) check() error {
+	if _, ok := _c.mutation.AppCategoryID(); !ok {
 		return &ValidationError{Name: "app_category_id", err: errors.New(`ent: missing required field "AppAppCategory.app_category_id"`)}
 	}
-	if _, ok := aacc.mutation.AppID(); !ok {
+	if _, ok := _c.mutation.AppID(); !ok {
 		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppAppCategory.app_id"`)}
 	}
-	if len(aacc.mutation.AppCategoryIDs()) == 0 {
+	if len(_c.mutation.AppCategoryIDs()) == 0 {
 		return &ValidationError{Name: "app_category", err: errors.New(`ent: missing required edge "AppAppCategory.app_category"`)}
 	}
-	if len(aacc.mutation.AppIDs()) == 0 {
+	if len(_c.mutation.AppIDs()) == 0 {
 		return &ValidationError{Name: "app", err: errors.New(`ent: missing required edge "AppAppCategory.app"`)}
 	}
 	return nil
 }
 
-func (aacc *AppAppCategoryCreate) sqlSave(ctx context.Context) (*AppAppCategory, error) {
-	if err := aacc.check(); err != nil {
+func (_c *AppAppCategoryCreate) sqlSave(ctx context.Context) (*AppAppCategory, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := aacc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, aacc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -108,18 +108,18 @@ func (aacc *AppAppCategoryCreate) sqlSave(ctx context.Context) (*AppAppCategory,
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	aacc.mutation.id = &_node.ID
-	aacc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (aacc *AppAppCategoryCreate) createSpec() (*AppAppCategory, *sqlgraph.CreateSpec) {
+func (_c *AppAppCategoryCreate) createSpec() (*AppAppCategory, *sqlgraph.CreateSpec) {
 	var (
-		_node = &AppAppCategory{config: aacc.config}
+		_node = &AppAppCategory{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(appappcategory.Table, sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = aacc.conflict
-	if nodes := aacc.mutation.AppCategoryIDs(); len(nodes) > 0 {
+	_spec.OnConflict = _c.conflict
+	if nodes := _c.mutation.AppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -136,7 +136,7 @@ func (aacc *AppAppCategoryCreate) createSpec() (*AppAppCategory, *sqlgraph.Creat
 		_node.AppCategoryID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := aacc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -172,10 +172,10 @@ func (aacc *AppAppCategoryCreate) createSpec() (*AppAppCategory, *sqlgraph.Creat
 //			SetAppCategoryID(v+v).
 //		}).
 //		Exec(ctx)
-func (aacc *AppAppCategoryCreate) OnConflict(opts ...sql.ConflictOption) *AppAppCategoryUpsertOne {
-	aacc.conflict = opts
+func (_c *AppAppCategoryCreate) OnConflict(opts ...sql.ConflictOption) *AppAppCategoryUpsertOne {
+	_c.conflict = opts
 	return &AppAppCategoryUpsertOne{
-		create: aacc,
+		create: _c,
 	}
 }
 
@@ -185,10 +185,10 @@ func (aacc *AppAppCategoryCreate) OnConflict(opts ...sql.ConflictOption) *AppApp
 //	client.AppAppCategory.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (aacc *AppAppCategoryCreate) OnConflictColumns(columns ...string) *AppAppCategoryUpsertOne {
-	aacc.conflict = append(aacc.conflict, sql.ConflictColumns(columns...))
+func (_c *AppAppCategoryCreate) OnConflictColumns(columns ...string) *AppAppCategoryUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppAppCategoryUpsertOne{
-		create: aacc,
+		create: _c,
 	}
 }
 
@@ -339,16 +339,16 @@ type AppAppCategoryCreateBulk struct {
 }
 
 // Save creates the AppAppCategory entities in the database.
-func (aaccb *AppAppCategoryCreateBulk) Save(ctx context.Context) ([]*AppAppCategory, error) {
-	if aaccb.err != nil {
-		return nil, aaccb.err
+func (_c *AppAppCategoryCreateBulk) Save(ctx context.Context) ([]*AppAppCategory, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(aaccb.builders))
-	nodes := make([]*AppAppCategory, len(aaccb.builders))
-	mutators := make([]Mutator, len(aaccb.builders))
-	for i := range aaccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*AppAppCategory, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := aaccb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AppAppCategoryMutation)
 				if !ok {
@@ -361,12 +361,12 @@ func (aaccb *AppAppCategoryCreateBulk) Save(ctx context.Context) ([]*AppAppCateg
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, aaccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = aaccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, aaccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -390,7 +390,7 @@ func (aaccb *AppAppCategoryCreateBulk) Save(ctx context.Context) ([]*AppAppCateg
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, aaccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -398,8 +398,8 @@ func (aaccb *AppAppCategoryCreateBulk) Save(ctx context.Context) ([]*AppAppCateg
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (aaccb *AppAppCategoryCreateBulk) SaveX(ctx context.Context) []*AppAppCategory {
-	v, err := aaccb.Save(ctx)
+func (_c *AppAppCategoryCreateBulk) SaveX(ctx context.Context) []*AppAppCategory {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -407,14 +407,14 @@ func (aaccb *AppAppCategoryCreateBulk) SaveX(ctx context.Context) []*AppAppCateg
 }
 
 // Exec executes the query.
-func (aaccb *AppAppCategoryCreateBulk) Exec(ctx context.Context) error {
-	_, err := aaccb.Save(ctx)
+func (_c *AppAppCategoryCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aaccb *AppAppCategoryCreateBulk) ExecX(ctx context.Context) {
-	if err := aaccb.Exec(ctx); err != nil {
+func (_c *AppAppCategoryCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -434,10 +434,10 @@ func (aaccb *AppAppCategoryCreateBulk) ExecX(ctx context.Context) {
 //			SetAppCategoryID(v+v).
 //		}).
 //		Exec(ctx)
-func (aaccb *AppAppCategoryCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppAppCategoryUpsertBulk {
-	aaccb.conflict = opts
+func (_c *AppAppCategoryCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppAppCategoryUpsertBulk {
+	_c.conflict = opts
 	return &AppAppCategoryUpsertBulk{
-		create: aaccb,
+		create: _c,
 	}
 }
 
@@ -447,10 +447,10 @@ func (aaccb *AppAppCategoryCreateBulk) OnConflict(opts ...sql.ConflictOption) *A
 //	client.AppAppCategory.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (aaccb *AppAppCategoryCreateBulk) OnConflictColumns(columns ...string) *AppAppCategoryUpsertBulk {
-	aaccb.conflict = append(aaccb.conflict, sql.ConflictColumns(columns...))
+func (_c *AppAppCategoryCreateBulk) OnConflictColumns(columns ...string) *AppAppCategoryUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AppAppCategoryUpsertBulk{
-		create: aaccb,
+		create: _c,
 	}
 }
 

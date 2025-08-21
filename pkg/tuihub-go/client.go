@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/pkg/tuihub-go/internal"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	capi "github.com/hashicorp/consul/api"
 	"google.golang.org/grpc/metadata"

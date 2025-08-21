@@ -5,7 +5,8 @@ import (
 
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
+	pb "github.com/tuihub/protos/pkg/librarian/sentinel/v1"
+	"github.com/tuihub/protos/pkg/librarian/sentinel/v1/v1connect"
 
 	"github.com/google/wire"
 )
@@ -13,7 +14,7 @@ import (
 var ProviderSet = wire.NewSet(NewLibrarianSentinelService)
 
 type LibrarianSentinelService struct {
-	pb.UnimplementedLibrarianSentinelServiceServer
+	v1connect.UnimplementedLibrarianSephirahSentinelServiceHandler
 
 	t *biztiphereth.Tiphereth
 	g *bizgebura.Gebura
@@ -22,9 +23,9 @@ type LibrarianSentinelService struct {
 func NewLibrarianSentinelService(
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
-) pb.LibrarianSentinelServiceServer {
+) v1connect.LibrarianSephirahSentinelServiceHandler {
 	return &LibrarianSentinelService{
-		UnimplementedLibrarianSentinelServiceServer: pb.UnimplementedLibrarianSentinelServiceServer{},
+		UnimplementedLibrarianSephirahSentinelServiceHandler: v1connect.UnimplementedLibrarianSephirahSentinelServiceHandler{},
 		t: t,
 		g: g,
 	}

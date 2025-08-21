@@ -20,56 +20,56 @@ type PorterInstanceDelete struct {
 }
 
 // Where appends a list predicates to the PorterInstanceDelete builder.
-func (pid *PorterInstanceDelete) Where(ps ...predicate.PorterInstance) *PorterInstanceDelete {
-	pid.mutation.Where(ps...)
-	return pid
+func (_d *PorterInstanceDelete) Where(ps ...predicate.PorterInstance) *PorterInstanceDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (pid *PorterInstanceDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, pid.sqlExec, pid.mutation, pid.hooks)
+func (_d *PorterInstanceDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pid *PorterInstanceDelete) ExecX(ctx context.Context) int {
-	n, err := pid.Exec(ctx)
+func (_d *PorterInstanceDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (pid *PorterInstanceDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *PorterInstanceDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(porterinstance.Table, sqlgraph.NewFieldSpec(porterinstance.FieldID, field.TypeInt64))
-	if ps := pid.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, pid.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	pid.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // PorterInstanceDeleteOne is the builder for deleting a single PorterInstance entity.
 type PorterInstanceDeleteOne struct {
-	pid *PorterInstanceDelete
+	_d *PorterInstanceDelete
 }
 
 // Where appends a list predicates to the PorterInstanceDelete builder.
-func (pido *PorterInstanceDeleteOne) Where(ps ...predicate.PorterInstance) *PorterInstanceDeleteOne {
-	pido.pid.mutation.Where(ps...)
-	return pido
+func (_d *PorterInstanceDeleteOne) Where(ps ...predicate.PorterInstance) *PorterInstanceDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (pido *PorterInstanceDeleteOne) Exec(ctx context.Context) error {
-	n, err := pido.pid.Exec(ctx)
+func (_d *PorterInstanceDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (pido *PorterInstanceDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pido *PorterInstanceDeleteOne) ExecX(ctx context.Context) {
-	if err := pido.Exec(ctx); err != nil {
+func (_d *PorterInstanceDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

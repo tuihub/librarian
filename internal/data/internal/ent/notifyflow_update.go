@@ -29,248 +29,248 @@ type NotifyFlowUpdate struct {
 }
 
 // Where appends a list predicates to the NotifyFlowUpdate builder.
-func (nfu *NotifyFlowUpdate) Where(ps ...predicate.NotifyFlow) *NotifyFlowUpdate {
-	nfu.mutation.Where(ps...)
-	return nfu
+func (_u *NotifyFlowUpdate) Where(ps ...predicate.NotifyFlow) *NotifyFlowUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (nfu *NotifyFlowUpdate) SetName(s string) *NotifyFlowUpdate {
-	nfu.mutation.SetName(s)
-	return nfu
+func (_u *NotifyFlowUpdate) SetName(v string) *NotifyFlowUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (nfu *NotifyFlowUpdate) SetNillableName(s *string) *NotifyFlowUpdate {
-	if s != nil {
-		nfu.SetName(*s)
+func (_u *NotifyFlowUpdate) SetNillableName(v *string) *NotifyFlowUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return nfu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (nfu *NotifyFlowUpdate) SetDescription(s string) *NotifyFlowUpdate {
-	nfu.mutation.SetDescription(s)
-	return nfu
+func (_u *NotifyFlowUpdate) SetDescription(v string) *NotifyFlowUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (nfu *NotifyFlowUpdate) SetNillableDescription(s *string) *NotifyFlowUpdate {
-	if s != nil {
-		nfu.SetDescription(*s)
+func (_u *NotifyFlowUpdate) SetNillableDescription(v *string) *NotifyFlowUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return nfu
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (nfu *NotifyFlowUpdate) SetStatus(n notifyflow.Status) *NotifyFlowUpdate {
-	nfu.mutation.SetStatus(n)
-	return nfu
+func (_u *NotifyFlowUpdate) SetStatus(v notifyflow.Status) *NotifyFlowUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (nfu *NotifyFlowUpdate) SetNillableStatus(n *notifyflow.Status) *NotifyFlowUpdate {
-	if n != nil {
-		nfu.SetStatus(*n)
+func (_u *NotifyFlowUpdate) SetNillableStatus(v *notifyflow.Status) *NotifyFlowUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return nfu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (nfu *NotifyFlowUpdate) SetUpdatedAt(t time.Time) *NotifyFlowUpdate {
-	nfu.mutation.SetUpdatedAt(t)
-	return nfu
+func (_u *NotifyFlowUpdate) SetUpdatedAt(v time.Time) *NotifyFlowUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (nfu *NotifyFlowUpdate) SetCreatedAt(t time.Time) *NotifyFlowUpdate {
-	nfu.mutation.SetCreatedAt(t)
-	return nfu
+func (_u *NotifyFlowUpdate) SetCreatedAt(v time.Time) *NotifyFlowUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (nfu *NotifyFlowUpdate) SetNillableCreatedAt(t *time.Time) *NotifyFlowUpdate {
-	if t != nil {
-		nfu.SetCreatedAt(*t)
+func (_u *NotifyFlowUpdate) SetNillableCreatedAt(v *time.Time) *NotifyFlowUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return nfu
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (nfu *NotifyFlowUpdate) SetOwnerID(id model.InternalID) *NotifyFlowUpdate {
-	nfu.mutation.SetOwnerID(id)
-	return nfu
+func (_u *NotifyFlowUpdate) SetOwnerID(id model.InternalID) *NotifyFlowUpdate {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (nfu *NotifyFlowUpdate) SetOwner(u *User) *NotifyFlowUpdate {
-	return nfu.SetOwnerID(u.ID)
+func (_u *NotifyFlowUpdate) SetOwner(v *User) *NotifyFlowUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by IDs.
-func (nfu *NotifyFlowUpdate) AddNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowUpdate {
-	nfu.mutation.AddNotifyTargetIDs(ids...)
-	return nfu
+func (_u *NotifyFlowUpdate) AddNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowUpdate {
+	_u.mutation.AddNotifyTargetIDs(ids...)
+	return _u
 }
 
 // AddNotifyTarget adds the "notify_target" edges to the NotifyTarget entity.
-func (nfu *NotifyFlowUpdate) AddNotifyTarget(n ...*NotifyTarget) *NotifyFlowUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdate) AddNotifyTarget(v ...*NotifyTarget) *NotifyFlowUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfu.AddNotifyTargetIDs(ids...)
+	return _u.AddNotifyTargetIDs(ids...)
 }
 
 // AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
-func (nfu *NotifyFlowUpdate) AddNotifySourceIDs(ids ...model.InternalID) *NotifyFlowUpdate {
-	nfu.mutation.AddNotifySourceIDs(ids...)
-	return nfu
+func (_u *NotifyFlowUpdate) AddNotifySourceIDs(ids ...model.InternalID) *NotifyFlowUpdate {
+	_u.mutation.AddNotifySourceIDs(ids...)
+	return _u
 }
 
 // AddNotifySource adds the "notify_source" edges to the NotifySource entity.
-func (nfu *NotifyFlowUpdate) AddNotifySource(n ...*NotifySource) *NotifyFlowUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdate) AddNotifySource(v ...*NotifySource) *NotifyFlowUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfu.AddNotifySourceIDs(ids...)
+	return _u.AddNotifySourceIDs(ids...)
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (nfu *NotifyFlowUpdate) AddNotifyFlowTargetIDs(ids ...int) *NotifyFlowUpdate {
-	nfu.mutation.AddNotifyFlowTargetIDs(ids...)
-	return nfu
+func (_u *NotifyFlowUpdate) AddNotifyFlowTargetIDs(ids ...int) *NotifyFlowUpdate {
+	_u.mutation.AddNotifyFlowTargetIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlowTarget adds the "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (nfu *NotifyFlowUpdate) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyFlowUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdate) AddNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyFlowUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfu.AddNotifyFlowTargetIDs(ids...)
+	return _u.AddNotifyFlowTargetIDs(ids...)
 }
 
 // AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (nfu *NotifyFlowUpdate) AddNotifyFlowSourceIDs(ids ...int) *NotifyFlowUpdate {
-	nfu.mutation.AddNotifyFlowSourceIDs(ids...)
-	return nfu
+func (_u *NotifyFlowUpdate) AddNotifyFlowSourceIDs(ids ...int) *NotifyFlowUpdate {
+	_u.mutation.AddNotifyFlowSourceIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nfu *NotifyFlowUpdate) AddNotifyFlowSource(n ...*NotifyFlowSource) *NotifyFlowUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdate) AddNotifyFlowSource(v ...*NotifyFlowSource) *NotifyFlowUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfu.AddNotifyFlowSourceIDs(ids...)
+	return _u.AddNotifyFlowSourceIDs(ids...)
 }
 
 // Mutation returns the NotifyFlowMutation object of the builder.
-func (nfu *NotifyFlowUpdate) Mutation() *NotifyFlowMutation {
-	return nfu.mutation
+func (_u *NotifyFlowUpdate) Mutation() *NotifyFlowMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (nfu *NotifyFlowUpdate) ClearOwner() *NotifyFlowUpdate {
-	nfu.mutation.ClearOwner()
-	return nfu
+func (_u *NotifyFlowUpdate) ClearOwner() *NotifyFlowUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearNotifyTarget clears all "notify_target" edges to the NotifyTarget entity.
-func (nfu *NotifyFlowUpdate) ClearNotifyTarget() *NotifyFlowUpdate {
-	nfu.mutation.ClearNotifyTarget()
-	return nfu
+func (_u *NotifyFlowUpdate) ClearNotifyTarget() *NotifyFlowUpdate {
+	_u.mutation.ClearNotifyTarget()
+	return _u
 }
 
 // RemoveNotifyTargetIDs removes the "notify_target" edge to NotifyTarget entities by IDs.
-func (nfu *NotifyFlowUpdate) RemoveNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowUpdate {
-	nfu.mutation.RemoveNotifyTargetIDs(ids...)
-	return nfu
+func (_u *NotifyFlowUpdate) RemoveNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowUpdate {
+	_u.mutation.RemoveNotifyTargetIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyTarget removes "notify_target" edges to NotifyTarget entities.
-func (nfu *NotifyFlowUpdate) RemoveNotifyTarget(n ...*NotifyTarget) *NotifyFlowUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdate) RemoveNotifyTarget(v ...*NotifyTarget) *NotifyFlowUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfu.RemoveNotifyTargetIDs(ids...)
+	return _u.RemoveNotifyTargetIDs(ids...)
 }
 
 // ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
-func (nfu *NotifyFlowUpdate) ClearNotifySource() *NotifyFlowUpdate {
-	nfu.mutation.ClearNotifySource()
-	return nfu
+func (_u *NotifyFlowUpdate) ClearNotifySource() *NotifyFlowUpdate {
+	_u.mutation.ClearNotifySource()
+	return _u
 }
 
 // RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
-func (nfu *NotifyFlowUpdate) RemoveNotifySourceIDs(ids ...model.InternalID) *NotifyFlowUpdate {
-	nfu.mutation.RemoveNotifySourceIDs(ids...)
-	return nfu
+func (_u *NotifyFlowUpdate) RemoveNotifySourceIDs(ids ...model.InternalID) *NotifyFlowUpdate {
+	_u.mutation.RemoveNotifySourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifySource removes "notify_source" edges to NotifySource entities.
-func (nfu *NotifyFlowUpdate) RemoveNotifySource(n ...*NotifySource) *NotifyFlowUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdate) RemoveNotifySource(v ...*NotifySource) *NotifyFlowUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfu.RemoveNotifySourceIDs(ids...)
+	return _u.RemoveNotifySourceIDs(ids...)
 }
 
 // ClearNotifyFlowTarget clears all "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (nfu *NotifyFlowUpdate) ClearNotifyFlowTarget() *NotifyFlowUpdate {
-	nfu.mutation.ClearNotifyFlowTarget()
-	return nfu
+func (_u *NotifyFlowUpdate) ClearNotifyFlowTarget() *NotifyFlowUpdate {
+	_u.mutation.ClearNotifyFlowTarget()
+	return _u
 }
 
 // RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to NotifyFlowTarget entities by IDs.
-func (nfu *NotifyFlowUpdate) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyFlowUpdate {
-	nfu.mutation.RemoveNotifyFlowTargetIDs(ids...)
-	return nfu
+func (_u *NotifyFlowUpdate) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyFlowUpdate {
+	_u.mutation.RemoveNotifyFlowTargetIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlowTarget removes "notify_flow_target" edges to NotifyFlowTarget entities.
-func (nfu *NotifyFlowUpdate) RemoveNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyFlowUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdate) RemoveNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyFlowUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfu.RemoveNotifyFlowTargetIDs(ids...)
+	return _u.RemoveNotifyFlowTargetIDs(ids...)
 }
 
 // ClearNotifyFlowSource clears all "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nfu *NotifyFlowUpdate) ClearNotifyFlowSource() *NotifyFlowUpdate {
-	nfu.mutation.ClearNotifyFlowSource()
-	return nfu
+func (_u *NotifyFlowUpdate) ClearNotifyFlowSource() *NotifyFlowUpdate {
+	_u.mutation.ClearNotifyFlowSource()
+	return _u
 }
 
 // RemoveNotifyFlowSourceIDs removes the "notify_flow_source" edge to NotifyFlowSource entities by IDs.
-func (nfu *NotifyFlowUpdate) RemoveNotifyFlowSourceIDs(ids ...int) *NotifyFlowUpdate {
-	nfu.mutation.RemoveNotifyFlowSourceIDs(ids...)
-	return nfu
+func (_u *NotifyFlowUpdate) RemoveNotifyFlowSourceIDs(ids ...int) *NotifyFlowUpdate {
+	_u.mutation.RemoveNotifyFlowSourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlowSource removes "notify_flow_source" edges to NotifyFlowSource entities.
-func (nfu *NotifyFlowUpdate) RemoveNotifyFlowSource(n ...*NotifyFlowSource) *NotifyFlowUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdate) RemoveNotifyFlowSource(v ...*NotifyFlowSource) *NotifyFlowUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfu.RemoveNotifyFlowSourceIDs(ids...)
+	return _u.RemoveNotifyFlowSourceIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (nfu *NotifyFlowUpdate) Save(ctx context.Context) (int, error) {
-	nfu.defaults()
-	return withHooks(ctx, nfu.sqlSave, nfu.mutation, nfu.hooks)
+func (_u *NotifyFlowUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nfu *NotifyFlowUpdate) SaveX(ctx context.Context) int {
-	affected, err := nfu.Save(ctx)
+func (_u *NotifyFlowUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -278,67 +278,67 @@ func (nfu *NotifyFlowUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (nfu *NotifyFlowUpdate) Exec(ctx context.Context) error {
-	_, err := nfu.Save(ctx)
+func (_u *NotifyFlowUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nfu *NotifyFlowUpdate) ExecX(ctx context.Context) {
-	if err := nfu.Exec(ctx); err != nil {
+func (_u *NotifyFlowUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (nfu *NotifyFlowUpdate) defaults() {
-	if _, ok := nfu.mutation.UpdatedAt(); !ok {
+func (_u *NotifyFlowUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := notifyflow.UpdateDefaultUpdatedAt()
-		nfu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nfu *NotifyFlowUpdate) check() error {
-	if v, ok := nfu.mutation.Status(); ok {
+func (_u *NotifyFlowUpdate) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := notifyflow.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyFlow.status": %w`, err)}
 		}
 	}
-	if nfu.mutation.OwnerCleared() && len(nfu.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlow.owner"`)
 	}
 	return nil
 }
 
-func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := nfu.check(); err != nil {
-		return n, err
+func (_u *NotifyFlowUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(notifyflow.Table, notifyflow.Columns, sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64))
-	if ps := nfu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := nfu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(notifyflow.FieldName, field.TypeString, value)
 	}
-	if value, ok := nfu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(notifyflow.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := nfu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(notifyflow.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := nfu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifyflow.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := nfu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(notifyflow.FieldCreatedAt, field.TypeTime, value)
 	}
-	if nfu.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -351,7 +351,7 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -367,7 +367,7 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nfu.mutation.NotifyTargetCleared() {
+	if _u.mutation.NotifyTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -378,33 +378,13 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &NotifyFlowTargetCreate{config: nfu.config, mutation: newNotifyFlowTargetMutation(nfu.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfu.mutation.RemovedNotifyTargetIDs(); len(nodes) > 0 && !nfu.mutation.NotifyTargetCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   notifyflow.NotifyTargetTable,
-			Columns: notifyflow.NotifyTargetPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &NotifyFlowTargetCreate{config: nfu.config, mutation: newNotifyFlowTargetMutation(nfu.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := nfu.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedNotifyTargetIDs(); len(nodes) > 0 && !_u.mutation.NotifyTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -418,13 +398,33 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowTargetCreate{config: nfu.config, mutation: newNotifyFlowTargetMutation(nfu.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   notifyflow.NotifyTargetTable,
+			Columns: notifyflow.NotifyTargetPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nfu.mutation.NotifySourceCleared() {
+	if _u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -435,13 +435,13 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &NotifyFlowSourceCreate{config: nfu.config, mutation: newNotifyFlowSourceMutation(nfu.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfu.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !nfu.mutation.NotifySourceCleared() {
+	if nodes := _u.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !_u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -455,13 +455,13 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nfu.config, mutation: newNotifyFlowSourceMutation(nfu.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfu.mutation.NotifySourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -475,13 +475,13 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nfu.config, mutation: newNotifyFlowSourceMutation(nfu.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nfu.mutation.NotifyFlowTargetCleared() {
+	if _u.mutation.NotifyFlowTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -494,7 +494,7 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfu.mutation.RemovedNotifyFlowTargetIDs(); len(nodes) > 0 && !nfu.mutation.NotifyFlowTargetCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowTargetIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -510,7 +510,7 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfu.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -526,7 +526,7 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nfu.mutation.NotifyFlowSourceCleared() {
+	if _u.mutation.NotifyFlowSourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -539,7 +539,7 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfu.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !nfu.mutation.NotifyFlowSourceCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowSourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -555,7 +555,7 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfu.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -571,7 +571,7 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, nfu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{notifyflow.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -579,8 +579,8 @@ func (nfu *NotifyFlowUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	nfu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // NotifyFlowUpdateOne is the builder for updating a single NotifyFlow entity.
@@ -592,255 +592,255 @@ type NotifyFlowUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (nfuo *NotifyFlowUpdateOne) SetName(s string) *NotifyFlowUpdateOne {
-	nfuo.mutation.SetName(s)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) SetName(v string) *NotifyFlowUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (nfuo *NotifyFlowUpdateOne) SetNillableName(s *string) *NotifyFlowUpdateOne {
-	if s != nil {
-		nfuo.SetName(*s)
+func (_u *NotifyFlowUpdateOne) SetNillableName(v *string) *NotifyFlowUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return nfuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (nfuo *NotifyFlowUpdateOne) SetDescription(s string) *NotifyFlowUpdateOne {
-	nfuo.mutation.SetDescription(s)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) SetDescription(v string) *NotifyFlowUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (nfuo *NotifyFlowUpdateOne) SetNillableDescription(s *string) *NotifyFlowUpdateOne {
-	if s != nil {
-		nfuo.SetDescription(*s)
+func (_u *NotifyFlowUpdateOne) SetNillableDescription(v *string) *NotifyFlowUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return nfuo
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (nfuo *NotifyFlowUpdateOne) SetStatus(n notifyflow.Status) *NotifyFlowUpdateOne {
-	nfuo.mutation.SetStatus(n)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) SetStatus(v notifyflow.Status) *NotifyFlowUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (nfuo *NotifyFlowUpdateOne) SetNillableStatus(n *notifyflow.Status) *NotifyFlowUpdateOne {
-	if n != nil {
-		nfuo.SetStatus(*n)
+func (_u *NotifyFlowUpdateOne) SetNillableStatus(v *notifyflow.Status) *NotifyFlowUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return nfuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (nfuo *NotifyFlowUpdateOne) SetUpdatedAt(t time.Time) *NotifyFlowUpdateOne {
-	nfuo.mutation.SetUpdatedAt(t)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) SetUpdatedAt(v time.Time) *NotifyFlowUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (nfuo *NotifyFlowUpdateOne) SetCreatedAt(t time.Time) *NotifyFlowUpdateOne {
-	nfuo.mutation.SetCreatedAt(t)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) SetCreatedAt(v time.Time) *NotifyFlowUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (nfuo *NotifyFlowUpdateOne) SetNillableCreatedAt(t *time.Time) *NotifyFlowUpdateOne {
-	if t != nil {
-		nfuo.SetCreatedAt(*t)
+func (_u *NotifyFlowUpdateOne) SetNillableCreatedAt(v *time.Time) *NotifyFlowUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return nfuo
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (nfuo *NotifyFlowUpdateOne) SetOwnerID(id model.InternalID) *NotifyFlowUpdateOne {
-	nfuo.mutation.SetOwnerID(id)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) SetOwnerID(id model.InternalID) *NotifyFlowUpdateOne {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (nfuo *NotifyFlowUpdateOne) SetOwner(u *User) *NotifyFlowUpdateOne {
-	return nfuo.SetOwnerID(u.ID)
+func (_u *NotifyFlowUpdateOne) SetOwner(v *User) *NotifyFlowUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by IDs.
-func (nfuo *NotifyFlowUpdateOne) AddNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowUpdateOne {
-	nfuo.mutation.AddNotifyTargetIDs(ids...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) AddNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowUpdateOne {
+	_u.mutation.AddNotifyTargetIDs(ids...)
+	return _u
 }
 
 // AddNotifyTarget adds the "notify_target" edges to the NotifyTarget entity.
-func (nfuo *NotifyFlowUpdateOne) AddNotifyTarget(n ...*NotifyTarget) *NotifyFlowUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdateOne) AddNotifyTarget(v ...*NotifyTarget) *NotifyFlowUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfuo.AddNotifyTargetIDs(ids...)
+	return _u.AddNotifyTargetIDs(ids...)
 }
 
 // AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
-func (nfuo *NotifyFlowUpdateOne) AddNotifySourceIDs(ids ...model.InternalID) *NotifyFlowUpdateOne {
-	nfuo.mutation.AddNotifySourceIDs(ids...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) AddNotifySourceIDs(ids ...model.InternalID) *NotifyFlowUpdateOne {
+	_u.mutation.AddNotifySourceIDs(ids...)
+	return _u
 }
 
 // AddNotifySource adds the "notify_source" edges to the NotifySource entity.
-func (nfuo *NotifyFlowUpdateOne) AddNotifySource(n ...*NotifySource) *NotifyFlowUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdateOne) AddNotifySource(v ...*NotifySource) *NotifyFlowUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfuo.AddNotifySourceIDs(ids...)
+	return _u.AddNotifySourceIDs(ids...)
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (nfuo *NotifyFlowUpdateOne) AddNotifyFlowTargetIDs(ids ...int) *NotifyFlowUpdateOne {
-	nfuo.mutation.AddNotifyFlowTargetIDs(ids...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) AddNotifyFlowTargetIDs(ids ...int) *NotifyFlowUpdateOne {
+	_u.mutation.AddNotifyFlowTargetIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlowTarget adds the "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (nfuo *NotifyFlowUpdateOne) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyFlowUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdateOne) AddNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyFlowUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfuo.AddNotifyFlowTargetIDs(ids...)
+	return _u.AddNotifyFlowTargetIDs(ids...)
 }
 
 // AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (nfuo *NotifyFlowUpdateOne) AddNotifyFlowSourceIDs(ids ...int) *NotifyFlowUpdateOne {
-	nfuo.mutation.AddNotifyFlowSourceIDs(ids...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) AddNotifyFlowSourceIDs(ids ...int) *NotifyFlowUpdateOne {
+	_u.mutation.AddNotifyFlowSourceIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nfuo *NotifyFlowUpdateOne) AddNotifyFlowSource(n ...*NotifyFlowSource) *NotifyFlowUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdateOne) AddNotifyFlowSource(v ...*NotifyFlowSource) *NotifyFlowUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfuo.AddNotifyFlowSourceIDs(ids...)
+	return _u.AddNotifyFlowSourceIDs(ids...)
 }
 
 // Mutation returns the NotifyFlowMutation object of the builder.
-func (nfuo *NotifyFlowUpdateOne) Mutation() *NotifyFlowMutation {
-	return nfuo.mutation
+func (_u *NotifyFlowUpdateOne) Mutation() *NotifyFlowMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (nfuo *NotifyFlowUpdateOne) ClearOwner() *NotifyFlowUpdateOne {
-	nfuo.mutation.ClearOwner()
-	return nfuo
+func (_u *NotifyFlowUpdateOne) ClearOwner() *NotifyFlowUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearNotifyTarget clears all "notify_target" edges to the NotifyTarget entity.
-func (nfuo *NotifyFlowUpdateOne) ClearNotifyTarget() *NotifyFlowUpdateOne {
-	nfuo.mutation.ClearNotifyTarget()
-	return nfuo
+func (_u *NotifyFlowUpdateOne) ClearNotifyTarget() *NotifyFlowUpdateOne {
+	_u.mutation.ClearNotifyTarget()
+	return _u
 }
 
 // RemoveNotifyTargetIDs removes the "notify_target" edge to NotifyTarget entities by IDs.
-func (nfuo *NotifyFlowUpdateOne) RemoveNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowUpdateOne {
-	nfuo.mutation.RemoveNotifyTargetIDs(ids...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) RemoveNotifyTargetIDs(ids ...model.InternalID) *NotifyFlowUpdateOne {
+	_u.mutation.RemoveNotifyTargetIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyTarget removes "notify_target" edges to NotifyTarget entities.
-func (nfuo *NotifyFlowUpdateOne) RemoveNotifyTarget(n ...*NotifyTarget) *NotifyFlowUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdateOne) RemoveNotifyTarget(v ...*NotifyTarget) *NotifyFlowUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfuo.RemoveNotifyTargetIDs(ids...)
+	return _u.RemoveNotifyTargetIDs(ids...)
 }
 
 // ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
-func (nfuo *NotifyFlowUpdateOne) ClearNotifySource() *NotifyFlowUpdateOne {
-	nfuo.mutation.ClearNotifySource()
-	return nfuo
+func (_u *NotifyFlowUpdateOne) ClearNotifySource() *NotifyFlowUpdateOne {
+	_u.mutation.ClearNotifySource()
+	return _u
 }
 
 // RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
-func (nfuo *NotifyFlowUpdateOne) RemoveNotifySourceIDs(ids ...model.InternalID) *NotifyFlowUpdateOne {
-	nfuo.mutation.RemoveNotifySourceIDs(ids...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) RemoveNotifySourceIDs(ids ...model.InternalID) *NotifyFlowUpdateOne {
+	_u.mutation.RemoveNotifySourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifySource removes "notify_source" edges to NotifySource entities.
-func (nfuo *NotifyFlowUpdateOne) RemoveNotifySource(n ...*NotifySource) *NotifyFlowUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdateOne) RemoveNotifySource(v ...*NotifySource) *NotifyFlowUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfuo.RemoveNotifySourceIDs(ids...)
+	return _u.RemoveNotifySourceIDs(ids...)
 }
 
 // ClearNotifyFlowTarget clears all "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (nfuo *NotifyFlowUpdateOne) ClearNotifyFlowTarget() *NotifyFlowUpdateOne {
-	nfuo.mutation.ClearNotifyFlowTarget()
-	return nfuo
+func (_u *NotifyFlowUpdateOne) ClearNotifyFlowTarget() *NotifyFlowUpdateOne {
+	_u.mutation.ClearNotifyFlowTarget()
+	return _u
 }
 
 // RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to NotifyFlowTarget entities by IDs.
-func (nfuo *NotifyFlowUpdateOne) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyFlowUpdateOne {
-	nfuo.mutation.RemoveNotifyFlowTargetIDs(ids...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyFlowUpdateOne {
+	_u.mutation.RemoveNotifyFlowTargetIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlowTarget removes "notify_flow_target" edges to NotifyFlowTarget entities.
-func (nfuo *NotifyFlowUpdateOne) RemoveNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyFlowUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdateOne) RemoveNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyFlowUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfuo.RemoveNotifyFlowTargetIDs(ids...)
+	return _u.RemoveNotifyFlowTargetIDs(ids...)
 }
 
 // ClearNotifyFlowSource clears all "notify_flow_source" edges to the NotifyFlowSource entity.
-func (nfuo *NotifyFlowUpdateOne) ClearNotifyFlowSource() *NotifyFlowUpdateOne {
-	nfuo.mutation.ClearNotifyFlowSource()
-	return nfuo
+func (_u *NotifyFlowUpdateOne) ClearNotifyFlowSource() *NotifyFlowUpdateOne {
+	_u.mutation.ClearNotifyFlowSource()
+	return _u
 }
 
 // RemoveNotifyFlowSourceIDs removes the "notify_flow_source" edge to NotifyFlowSource entities by IDs.
-func (nfuo *NotifyFlowUpdateOne) RemoveNotifyFlowSourceIDs(ids ...int) *NotifyFlowUpdateOne {
-	nfuo.mutation.RemoveNotifyFlowSourceIDs(ids...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) RemoveNotifyFlowSourceIDs(ids ...int) *NotifyFlowUpdateOne {
+	_u.mutation.RemoveNotifyFlowSourceIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlowSource removes "notify_flow_source" edges to NotifyFlowSource entities.
-func (nfuo *NotifyFlowUpdateOne) RemoveNotifyFlowSource(n ...*NotifyFlowSource) *NotifyFlowUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyFlowUpdateOne) RemoveNotifyFlowSource(v ...*NotifyFlowSource) *NotifyFlowUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return nfuo.RemoveNotifyFlowSourceIDs(ids...)
+	return _u.RemoveNotifyFlowSourceIDs(ids...)
 }
 
 // Where appends a list predicates to the NotifyFlowUpdate builder.
-func (nfuo *NotifyFlowUpdateOne) Where(ps ...predicate.NotifyFlow) *NotifyFlowUpdateOne {
-	nfuo.mutation.Where(ps...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) Where(ps ...predicate.NotifyFlow) *NotifyFlowUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (nfuo *NotifyFlowUpdateOne) Select(field string, fields ...string) *NotifyFlowUpdateOne {
-	nfuo.fields = append([]string{field}, fields...)
-	return nfuo
+func (_u *NotifyFlowUpdateOne) Select(field string, fields ...string) *NotifyFlowUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated NotifyFlow entity.
-func (nfuo *NotifyFlowUpdateOne) Save(ctx context.Context) (*NotifyFlow, error) {
-	nfuo.defaults()
-	return withHooks(ctx, nfuo.sqlSave, nfuo.mutation, nfuo.hooks)
+func (_u *NotifyFlowUpdateOne) Save(ctx context.Context) (*NotifyFlow, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nfuo *NotifyFlowUpdateOne) SaveX(ctx context.Context) *NotifyFlow {
-	node, err := nfuo.Save(ctx)
+func (_u *NotifyFlowUpdateOne) SaveX(ctx context.Context) *NotifyFlow {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -848,50 +848,50 @@ func (nfuo *NotifyFlowUpdateOne) SaveX(ctx context.Context) *NotifyFlow {
 }
 
 // Exec executes the query on the entity.
-func (nfuo *NotifyFlowUpdateOne) Exec(ctx context.Context) error {
-	_, err := nfuo.Save(ctx)
+func (_u *NotifyFlowUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nfuo *NotifyFlowUpdateOne) ExecX(ctx context.Context) {
-	if err := nfuo.Exec(ctx); err != nil {
+func (_u *NotifyFlowUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (nfuo *NotifyFlowUpdateOne) defaults() {
-	if _, ok := nfuo.mutation.UpdatedAt(); !ok {
+func (_u *NotifyFlowUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := notifyflow.UpdateDefaultUpdatedAt()
-		nfuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nfuo *NotifyFlowUpdateOne) check() error {
-	if v, ok := nfuo.mutation.Status(); ok {
+func (_u *NotifyFlowUpdateOne) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := notifyflow.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyFlow.status": %w`, err)}
 		}
 	}
-	if nfuo.mutation.OwnerCleared() && len(nfuo.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlow.owner"`)
 	}
 	return nil
 }
 
-func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow, err error) {
-	if err := nfuo.check(); err != nil {
+func (_u *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(notifyflow.Table, notifyflow.Columns, sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64))
-	id, ok := nfuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "NotifyFlow.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := nfuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, notifyflow.FieldID)
 		for _, f := range fields {
@@ -903,29 +903,29 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 			}
 		}
 	}
-	if ps := nfuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := nfuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(notifyflow.FieldName, field.TypeString, value)
 	}
-	if value, ok := nfuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(notifyflow.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := nfuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(notifyflow.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := nfuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifyflow.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := nfuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(notifyflow.FieldCreatedAt, field.TypeTime, value)
 	}
-	if nfuo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -938,7 +938,7 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -954,7 +954,7 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nfuo.mutation.NotifyTargetCleared() {
+	if _u.mutation.NotifyTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -965,33 +965,13 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &NotifyFlowTargetCreate{config: nfuo.config, mutation: newNotifyFlowTargetMutation(nfuo.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfuo.mutation.RemovedNotifyTargetIDs(); len(nodes) > 0 && !nfuo.mutation.NotifyTargetCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   notifyflow.NotifyTargetTable,
-			Columns: notifyflow.NotifyTargetPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &NotifyFlowTargetCreate{config: nfuo.config, mutation: newNotifyFlowTargetMutation(nfuo.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := nfuo.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.RemovedNotifyTargetIDs(); len(nodes) > 0 && !_u.mutation.NotifyTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1005,13 +985,33 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowTargetCreate{config: nfuo.config, mutation: newNotifyFlowTargetMutation(nfuo.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   notifyflow.NotifyTargetTable,
+			Columns: notifyflow.NotifyTargetPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nfuo.mutation.NotifySourceCleared() {
+	if _u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1022,13 +1022,13 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &NotifyFlowSourceCreate{config: nfuo.config, mutation: newNotifyFlowSourceMutation(nfuo.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfuo.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !nfuo.mutation.NotifySourceCleared() {
+	if nodes := _u.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !_u.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1042,13 +1042,13 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nfuo.config, mutation: newNotifyFlowSourceMutation(nfuo.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfuo.mutation.NotifySourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -1062,13 +1062,13 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowSourceCreate{config: nfuo.config, mutation: newNotifyFlowSourceMutation(nfuo.config, OpCreate)}
+		createE := &NotifyFlowSourceCreate{config: _u.config, mutation: newNotifyFlowSourceMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nfuo.mutation.NotifyFlowTargetCleared() {
+	if _u.mutation.NotifyFlowTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1081,7 +1081,7 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfuo.mutation.RemovedNotifyFlowTargetIDs(); len(nodes) > 0 && !nfuo.mutation.NotifyFlowTargetCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowTargetIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1097,7 +1097,7 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfuo.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1113,7 +1113,7 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nfuo.mutation.NotifyFlowSourceCleared() {
+	if _u.mutation.NotifyFlowSourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1126,7 +1126,7 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfuo.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !nfuo.mutation.NotifyFlowSourceCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowSourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1142,7 +1142,7 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nfuo.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1158,10 +1158,10 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &NotifyFlow{config: nfuo.config}
+	_node = &NotifyFlow{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, nfuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{notifyflow.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1169,6 +1169,6 @@ func (nfuo *NotifyFlowUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlow
 		}
 		return nil, err
 	}
-	nfuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

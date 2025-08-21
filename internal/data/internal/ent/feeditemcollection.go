@@ -100,7 +100,7 @@ func (*FeedItemCollection) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the FeedItemCollection fields.
-func (fic *FeedItemCollection) assignValues(columns []string, values []any) error {
+func (_m *FeedItemCollection) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -110,47 +110,47 @@ func (fic *FeedItemCollection) assignValues(columns []string, values []any) erro
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				fic.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case feeditemcollection.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				fic.Name = value.String
+				_m.Name = value.String
 			}
 		case feeditemcollection.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				fic.Description = value.String
+				_m.Description = value.String
 			}
 		case feeditemcollection.FieldCategory:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field category", values[i])
 			} else if value.Valid {
-				fic.Category = value.String
+				_m.Category = value.String
 			}
 		case feeditemcollection.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				fic.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case feeditemcollection.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				fic.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case feeditemcollection.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_feed_item_collection", values[i])
 			} else if value.Valid {
-				fic.user_feed_item_collection = new(model.InternalID)
-				*fic.user_feed_item_collection = model.InternalID(value.Int64)
+				_m.user_feed_item_collection = new(model.InternalID)
+				*_m.user_feed_item_collection = model.InternalID(value.Int64)
 			}
 		default:
-			fic.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -158,62 +158,62 @@ func (fic *FeedItemCollection) assignValues(columns []string, values []any) erro
 
 // Value returns the ent.Value that was dynamically selected and assigned to the FeedItemCollection.
 // This includes values selected through modifiers, order, etc.
-func (fic *FeedItemCollection) Value(name string) (ent.Value, error) {
-	return fic.selectValues.Get(name)
+func (_m *FeedItemCollection) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the FeedItemCollection entity.
-func (fic *FeedItemCollection) QueryOwner() *UserQuery {
-	return NewFeedItemCollectionClient(fic.config).QueryOwner(fic)
+func (_m *FeedItemCollection) QueryOwner() *UserQuery {
+	return NewFeedItemCollectionClient(_m.config).QueryOwner(_m)
 }
 
 // QueryFeedItem queries the "feed_item" edge of the FeedItemCollection entity.
-func (fic *FeedItemCollection) QueryFeedItem() *FeedItemQuery {
-	return NewFeedItemCollectionClient(fic.config).QueryFeedItem(fic)
+func (_m *FeedItemCollection) QueryFeedItem() *FeedItemQuery {
+	return NewFeedItemCollectionClient(_m.config).QueryFeedItem(_m)
 }
 
 // QueryNotifySource queries the "notify_source" edge of the FeedItemCollection entity.
-func (fic *FeedItemCollection) QueryNotifySource() *NotifySourceQuery {
-	return NewFeedItemCollectionClient(fic.config).QueryNotifySource(fic)
+func (_m *FeedItemCollection) QueryNotifySource() *NotifySourceQuery {
+	return NewFeedItemCollectionClient(_m.config).QueryNotifySource(_m)
 }
 
 // Update returns a builder for updating this FeedItemCollection.
 // Note that you need to call FeedItemCollection.Unwrap() before calling this method if this FeedItemCollection
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (fic *FeedItemCollection) Update() *FeedItemCollectionUpdateOne {
-	return NewFeedItemCollectionClient(fic.config).UpdateOne(fic)
+func (_m *FeedItemCollection) Update() *FeedItemCollectionUpdateOne {
+	return NewFeedItemCollectionClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the FeedItemCollection entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (fic *FeedItemCollection) Unwrap() *FeedItemCollection {
-	_tx, ok := fic.config.driver.(*txDriver)
+func (_m *FeedItemCollection) Unwrap() *FeedItemCollection {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: FeedItemCollection is not a transactional entity")
 	}
-	fic.config.driver = _tx.drv
-	return fic
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (fic *FeedItemCollection) String() string {
+func (_m *FeedItemCollection) String() string {
 	var builder strings.Builder
 	builder.WriteString("FeedItemCollection(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", fic.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(fic.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(fic.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("category=")
-	builder.WriteString(fic.Category)
+	builder.WriteString(_m.Category)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(fic.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(fic.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

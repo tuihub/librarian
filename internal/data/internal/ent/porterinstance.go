@@ -77,7 +77,7 @@ func (*PorterInstance) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the PorterInstance fields.
-func (pi *PorterInstance) assignValues(columns []string, values []any) error {
+func (_m *PorterInstance) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -87,67 +87,67 @@ func (pi *PorterInstance) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				pi.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case porterinstance.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				pi.Name = value.String
+				_m.Name = value.String
 			}
 		case porterinstance.FieldVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field version", values[i])
 			} else if value.Valid {
-				pi.Version = value.String
+				_m.Version = value.String
 			}
 		case porterinstance.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				pi.Description = value.String
+				_m.Description = value.String
 			}
 		case porterinstance.FieldSourceCodeAddress:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source_code_address", values[i])
 			} else if value.Valid {
-				pi.SourceCodeAddress = value.String
+				_m.SourceCodeAddress = value.String
 			}
 		case porterinstance.FieldBuildVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field build_version", values[i])
 			} else if value.Valid {
-				pi.BuildVersion = value.String
+				_m.BuildVersion = value.String
 			}
 		case porterinstance.FieldBuildDate:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field build_date", values[i])
 			} else if value.Valid {
-				pi.BuildDate = value.String
+				_m.BuildDate = value.String
 			}
 		case porterinstance.FieldGlobalName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field global_name", values[i])
 			} else if value.Valid {
-				pi.GlobalName = value.String
+				_m.GlobalName = value.String
 			}
 		case porterinstance.FieldAddress:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field address", values[i])
 			} else if value.Valid {
-				pi.Address = value.String
+				_m.Address = value.String
 			}
 		case porterinstance.FieldRegion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field region", values[i])
 			} else if value.Valid {
-				pi.Region = value.String
+				_m.Region = value.String
 			}
 		case porterinstance.FieldFeatureSummary:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field feature_summary", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &pi.FeatureSummary); err != nil {
+				if err := json.Unmarshal(*value, &_m.FeatureSummary); err != nil {
 					return fmt.Errorf("unmarshal field feature_summary: %w", err)
 				}
 			}
@@ -155,40 +155,40 @@ func (pi *PorterInstance) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field context_json_schema", values[i])
 			} else if value.Valid {
-				pi.ContextJSONSchema = value.String
+				_m.ContextJSONSchema = value.String
 			}
 		case porterinstance.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				pi.Status = porterinstance.Status(value.String)
+				_m.Status = porterinstance.Status(value.String)
 			}
 		case porterinstance.FieldConnectionStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field connection_status", values[i])
 			} else if value.Valid {
-				pi.ConnectionStatus = porterinstance.ConnectionStatus(value.String)
+				_m.ConnectionStatus = porterinstance.ConnectionStatus(value.String)
 			}
 		case porterinstance.FieldConnectionStatusMessage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field connection_status_message", values[i])
 			} else if value.Valid {
-				pi.ConnectionStatusMessage = value.String
+				_m.ConnectionStatusMessage = value.String
 			}
 		case porterinstance.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				pi.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case porterinstance.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				pi.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			pi.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -196,80 +196,80 @@ func (pi *PorterInstance) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the PorterInstance.
 // This includes values selected through modifiers, order, etc.
-func (pi *PorterInstance) Value(name string) (ent.Value, error) {
-	return pi.selectValues.Get(name)
+func (_m *PorterInstance) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this PorterInstance.
 // Note that you need to call PorterInstance.Unwrap() before calling this method if this PorterInstance
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (pi *PorterInstance) Update() *PorterInstanceUpdateOne {
-	return NewPorterInstanceClient(pi.config).UpdateOne(pi)
+func (_m *PorterInstance) Update() *PorterInstanceUpdateOne {
+	return NewPorterInstanceClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the PorterInstance entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (pi *PorterInstance) Unwrap() *PorterInstance {
-	_tx, ok := pi.config.driver.(*txDriver)
+func (_m *PorterInstance) Unwrap() *PorterInstance {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: PorterInstance is not a transactional entity")
 	}
-	pi.config.driver = _tx.drv
-	return pi
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (pi *PorterInstance) String() string {
+func (_m *PorterInstance) String() string {
 	var builder strings.Builder
 	builder.WriteString("PorterInstance(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", pi.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(pi.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("version=")
-	builder.WriteString(pi.Version)
+	builder.WriteString(_m.Version)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(pi.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("source_code_address=")
-	builder.WriteString(pi.SourceCodeAddress)
+	builder.WriteString(_m.SourceCodeAddress)
 	builder.WriteString(", ")
 	builder.WriteString("build_version=")
-	builder.WriteString(pi.BuildVersion)
+	builder.WriteString(_m.BuildVersion)
 	builder.WriteString(", ")
 	builder.WriteString("build_date=")
-	builder.WriteString(pi.BuildDate)
+	builder.WriteString(_m.BuildDate)
 	builder.WriteString(", ")
 	builder.WriteString("global_name=")
-	builder.WriteString(pi.GlobalName)
+	builder.WriteString(_m.GlobalName)
 	builder.WriteString(", ")
 	builder.WriteString("address=")
-	builder.WriteString(pi.Address)
+	builder.WriteString(_m.Address)
 	builder.WriteString(", ")
 	builder.WriteString("region=")
-	builder.WriteString(pi.Region)
+	builder.WriteString(_m.Region)
 	builder.WriteString(", ")
 	builder.WriteString("feature_summary=")
-	builder.WriteString(fmt.Sprintf("%v", pi.FeatureSummary))
+	builder.WriteString(fmt.Sprintf("%v", _m.FeatureSummary))
 	builder.WriteString(", ")
 	builder.WriteString("context_json_schema=")
-	builder.WriteString(pi.ContextJSONSchema)
+	builder.WriteString(_m.ContextJSONSchema)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", pi.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("connection_status=")
-	builder.WriteString(fmt.Sprintf("%v", pi.ConnectionStatus))
+	builder.WriteString(fmt.Sprintf("%v", _m.ConnectionStatus))
 	builder.WriteString(", ")
 	builder.WriteString("connection_status_message=")
-	builder.WriteString(pi.ConnectionStatusMessage)
+	builder.WriteString(_m.ConnectionStatusMessage)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(pi.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(pi.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

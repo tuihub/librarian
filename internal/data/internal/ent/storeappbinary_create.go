@@ -26,75 +26,75 @@ type StoreAppBinaryCreate struct {
 }
 
 // SetStoreAppID sets the "store_app_id" field.
-func (sabc *StoreAppBinaryCreate) SetStoreAppID(mi model.InternalID) *StoreAppBinaryCreate {
-	sabc.mutation.SetStoreAppID(mi)
-	return sabc
+func (_c *StoreAppBinaryCreate) SetStoreAppID(v model.InternalID) *StoreAppBinaryCreate {
+	_c.mutation.SetStoreAppID(v)
+	return _c
 }
 
 // SetSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field.
-func (sabc *StoreAppBinaryCreate) SetSentinelAppBinaryUnionID(mi model.InternalID) *StoreAppBinaryCreate {
-	sabc.mutation.SetSentinelAppBinaryUnionID(mi)
-	return sabc
+func (_c *StoreAppBinaryCreate) SetSentinelAppBinaryUnionID(v model.InternalID) *StoreAppBinaryCreate {
+	_c.mutation.SetSentinelAppBinaryUnionID(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sabc *StoreAppBinaryCreate) SetUpdatedAt(t time.Time) *StoreAppBinaryCreate {
-	sabc.mutation.SetUpdatedAt(t)
-	return sabc
+func (_c *StoreAppBinaryCreate) SetUpdatedAt(v time.Time) *StoreAppBinaryCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (sabc *StoreAppBinaryCreate) SetNillableUpdatedAt(t *time.Time) *StoreAppBinaryCreate {
-	if t != nil {
-		sabc.SetUpdatedAt(*t)
+func (_c *StoreAppBinaryCreate) SetNillableUpdatedAt(v *time.Time) *StoreAppBinaryCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return sabc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sabc *StoreAppBinaryCreate) SetCreatedAt(t time.Time) *StoreAppBinaryCreate {
-	sabc.mutation.SetCreatedAt(t)
-	return sabc
+func (_c *StoreAppBinaryCreate) SetCreatedAt(v time.Time) *StoreAppBinaryCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sabc *StoreAppBinaryCreate) SetNillableCreatedAt(t *time.Time) *StoreAppBinaryCreate {
-	if t != nil {
-		sabc.SetCreatedAt(*t)
+func (_c *StoreAppBinaryCreate) SetNillableCreatedAt(v *time.Time) *StoreAppBinaryCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return sabc
+	return _c
 }
 
 // SetStoreApp sets the "store_app" edge to the StoreApp entity.
-func (sabc *StoreAppBinaryCreate) SetStoreApp(s *StoreApp) *StoreAppBinaryCreate {
-	return sabc.SetStoreAppID(s.ID)
+func (_c *StoreAppBinaryCreate) SetStoreApp(v *StoreApp) *StoreAppBinaryCreate {
+	return _c.SetStoreAppID(v.ID)
 }
 
 // SetSentinelAppBinaryID sets the "sentinel_app_binary" edge to the SentinelAppBinary entity by ID.
-func (sabc *StoreAppBinaryCreate) SetSentinelAppBinaryID(id model.InternalID) *StoreAppBinaryCreate {
-	sabc.mutation.SetSentinelAppBinaryID(id)
-	return sabc
+func (_c *StoreAppBinaryCreate) SetSentinelAppBinaryID(id model.InternalID) *StoreAppBinaryCreate {
+	_c.mutation.SetSentinelAppBinaryID(id)
+	return _c
 }
 
 // SetSentinelAppBinary sets the "sentinel_app_binary" edge to the SentinelAppBinary entity.
-func (sabc *StoreAppBinaryCreate) SetSentinelAppBinary(s *SentinelAppBinary) *StoreAppBinaryCreate {
-	return sabc.SetSentinelAppBinaryID(s.ID)
+func (_c *StoreAppBinaryCreate) SetSentinelAppBinary(v *SentinelAppBinary) *StoreAppBinaryCreate {
+	return _c.SetSentinelAppBinaryID(v.ID)
 }
 
 // Mutation returns the StoreAppBinaryMutation object of the builder.
-func (sabc *StoreAppBinaryCreate) Mutation() *StoreAppBinaryMutation {
-	return sabc.mutation
+func (_c *StoreAppBinaryCreate) Mutation() *StoreAppBinaryMutation {
+	return _c.mutation
 }
 
 // Save creates the StoreAppBinary in the database.
-func (sabc *StoreAppBinaryCreate) Save(ctx context.Context) (*StoreAppBinary, error) {
-	sabc.defaults()
-	return withHooks(ctx, sabc.sqlSave, sabc.mutation, sabc.hooks)
+func (_c *StoreAppBinaryCreate) Save(ctx context.Context) (*StoreAppBinary, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (sabc *StoreAppBinaryCreate) SaveX(ctx context.Context) *StoreAppBinary {
-	v, err := sabc.Save(ctx)
+func (_c *StoreAppBinaryCreate) SaveX(ctx context.Context) *StoreAppBinary {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -102,59 +102,59 @@ func (sabc *StoreAppBinaryCreate) SaveX(ctx context.Context) *StoreAppBinary {
 }
 
 // Exec executes the query.
-func (sabc *StoreAppBinaryCreate) Exec(ctx context.Context) error {
-	_, err := sabc.Save(ctx)
+func (_c *StoreAppBinaryCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabc *StoreAppBinaryCreate) ExecX(ctx context.Context) {
-	if err := sabc.Exec(ctx); err != nil {
+func (_c *StoreAppBinaryCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sabc *StoreAppBinaryCreate) defaults() {
-	if _, ok := sabc.mutation.UpdatedAt(); !ok {
+func (_c *StoreAppBinaryCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := storeappbinary.DefaultUpdatedAt()
-		sabc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := sabc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := storeappbinary.DefaultCreatedAt()
-		sabc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (sabc *StoreAppBinaryCreate) check() error {
-	if _, ok := sabc.mutation.StoreAppID(); !ok {
+func (_c *StoreAppBinaryCreate) check() error {
+	if _, ok := _c.mutation.StoreAppID(); !ok {
 		return &ValidationError{Name: "store_app_id", err: errors.New(`ent: missing required field "StoreAppBinary.store_app_id"`)}
 	}
-	if _, ok := sabc.mutation.SentinelAppBinaryUnionID(); !ok {
+	if _, ok := _c.mutation.SentinelAppBinaryUnionID(); !ok {
 		return &ValidationError{Name: "sentinel_app_binary_union_id", err: errors.New(`ent: missing required field "StoreAppBinary.sentinel_app_binary_union_id"`)}
 	}
-	if _, ok := sabc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "StoreAppBinary.updated_at"`)}
 	}
-	if _, ok := sabc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "StoreAppBinary.created_at"`)}
 	}
-	if len(sabc.mutation.StoreAppIDs()) == 0 {
+	if len(_c.mutation.StoreAppIDs()) == 0 {
 		return &ValidationError{Name: "store_app", err: errors.New(`ent: missing required edge "StoreAppBinary.store_app"`)}
 	}
-	if len(sabc.mutation.SentinelAppBinaryIDs()) == 0 {
+	if len(_c.mutation.SentinelAppBinaryIDs()) == 0 {
 		return &ValidationError{Name: "sentinel_app_binary", err: errors.New(`ent: missing required edge "StoreAppBinary.sentinel_app_binary"`)}
 	}
 	return nil
 }
 
-func (sabc *StoreAppBinaryCreate) sqlSave(ctx context.Context) (*StoreAppBinary, error) {
-	if err := sabc.check(); err != nil {
+func (_c *StoreAppBinaryCreate) sqlSave(ctx context.Context) (*StoreAppBinary, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := sabc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, sabc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -162,26 +162,26 @@ func (sabc *StoreAppBinaryCreate) sqlSave(ctx context.Context) (*StoreAppBinary,
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	sabc.mutation.id = &_node.ID
-	sabc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (sabc *StoreAppBinaryCreate) createSpec() (*StoreAppBinary, *sqlgraph.CreateSpec) {
+func (_c *StoreAppBinaryCreate) createSpec() (*StoreAppBinary, *sqlgraph.CreateSpec) {
 	var (
-		_node = &StoreAppBinary{config: sabc.config}
+		_node = &StoreAppBinary{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(storeappbinary.Table, sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = sabc.conflict
-	if value, ok := sabc.mutation.UpdatedAt(); ok {
+	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(storeappbinary.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := sabc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(storeappbinary.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := sabc.mutation.StoreAppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.StoreAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -198,7 +198,7 @@ func (sabc *StoreAppBinaryCreate) createSpec() (*StoreAppBinary, *sqlgraph.Creat
 		_node.StoreAppID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := sabc.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -234,10 +234,10 @@ func (sabc *StoreAppBinaryCreate) createSpec() (*StoreAppBinary, *sqlgraph.Creat
 //			SetStoreAppID(v+v).
 //		}).
 //		Exec(ctx)
-func (sabc *StoreAppBinaryCreate) OnConflict(opts ...sql.ConflictOption) *StoreAppBinaryUpsertOne {
-	sabc.conflict = opts
+func (_c *StoreAppBinaryCreate) OnConflict(opts ...sql.ConflictOption) *StoreAppBinaryUpsertOne {
+	_c.conflict = opts
 	return &StoreAppBinaryUpsertOne{
-		create: sabc,
+		create: _c,
 	}
 }
 
@@ -247,10 +247,10 @@ func (sabc *StoreAppBinaryCreate) OnConflict(opts ...sql.ConflictOption) *StoreA
 //	client.StoreAppBinary.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sabc *StoreAppBinaryCreate) OnConflictColumns(columns ...string) *StoreAppBinaryUpsertOne {
-	sabc.conflict = append(sabc.conflict, sql.ConflictColumns(columns...))
+func (_c *StoreAppBinaryCreate) OnConflictColumns(columns ...string) *StoreAppBinaryUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &StoreAppBinaryUpsertOne{
-		create: sabc,
+		create: _c,
 	}
 }
 
@@ -453,16 +453,16 @@ type StoreAppBinaryCreateBulk struct {
 }
 
 // Save creates the StoreAppBinary entities in the database.
-func (sabcb *StoreAppBinaryCreateBulk) Save(ctx context.Context) ([]*StoreAppBinary, error) {
-	if sabcb.err != nil {
-		return nil, sabcb.err
+func (_c *StoreAppBinaryCreateBulk) Save(ctx context.Context) ([]*StoreAppBinary, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(sabcb.builders))
-	nodes := make([]*StoreAppBinary, len(sabcb.builders))
-	mutators := make([]Mutator, len(sabcb.builders))
-	for i := range sabcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*StoreAppBinary, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := sabcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*StoreAppBinaryMutation)
@@ -476,12 +476,12 @@ func (sabcb *StoreAppBinaryCreateBulk) Save(ctx context.Context) ([]*StoreAppBin
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, sabcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = sabcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, sabcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -505,7 +505,7 @@ func (sabcb *StoreAppBinaryCreateBulk) Save(ctx context.Context) ([]*StoreAppBin
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, sabcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -513,8 +513,8 @@ func (sabcb *StoreAppBinaryCreateBulk) Save(ctx context.Context) ([]*StoreAppBin
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sabcb *StoreAppBinaryCreateBulk) SaveX(ctx context.Context) []*StoreAppBinary {
-	v, err := sabcb.Save(ctx)
+func (_c *StoreAppBinaryCreateBulk) SaveX(ctx context.Context) []*StoreAppBinary {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -522,14 +522,14 @@ func (sabcb *StoreAppBinaryCreateBulk) SaveX(ctx context.Context) []*StoreAppBin
 }
 
 // Exec executes the query.
-func (sabcb *StoreAppBinaryCreateBulk) Exec(ctx context.Context) error {
-	_, err := sabcb.Save(ctx)
+func (_c *StoreAppBinaryCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabcb *StoreAppBinaryCreateBulk) ExecX(ctx context.Context) {
-	if err := sabcb.Exec(ctx); err != nil {
+func (_c *StoreAppBinaryCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -549,10 +549,10 @@ func (sabcb *StoreAppBinaryCreateBulk) ExecX(ctx context.Context) {
 //			SetStoreAppID(v+v).
 //		}).
 //		Exec(ctx)
-func (sabcb *StoreAppBinaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *StoreAppBinaryUpsertBulk {
-	sabcb.conflict = opts
+func (_c *StoreAppBinaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *StoreAppBinaryUpsertBulk {
+	_c.conflict = opts
 	return &StoreAppBinaryUpsertBulk{
-		create: sabcb,
+		create: _c,
 	}
 }
 
@@ -562,10 +562,10 @@ func (sabcb *StoreAppBinaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *S
 //	client.StoreAppBinary.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sabcb *StoreAppBinaryCreateBulk) OnConflictColumns(columns ...string) *StoreAppBinaryUpsertBulk {
-	sabcb.conflict = append(sabcb.conflict, sql.ConflictColumns(columns...))
+func (_c *StoreAppBinaryCreateBulk) OnConflictColumns(columns ...string) *StoreAppBinaryUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &StoreAppBinaryUpsertBulk{
-		create: sabcb,
+		create: _c,
 	}
 }
 

@@ -27,119 +27,119 @@ type NotifyFlowTargetUpdate struct {
 }
 
 // Where appends a list predicates to the NotifyFlowTargetUpdate builder.
-func (nftu *NotifyFlowTargetUpdate) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetUpdate {
-	nftu.mutation.Where(ps...)
-	return nftu
+func (_u *NotifyFlowTargetUpdate) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetNotifyFlowID sets the "notify_flow_id" field.
-func (nftu *NotifyFlowTargetUpdate) SetNotifyFlowID(mi model.InternalID) *NotifyFlowTargetUpdate {
-	nftu.mutation.SetNotifyFlowID(mi)
-	return nftu
+func (_u *NotifyFlowTargetUpdate) SetNotifyFlowID(v model.InternalID) *NotifyFlowTargetUpdate {
+	_u.mutation.SetNotifyFlowID(v)
+	return _u
 }
 
 // SetNillableNotifyFlowID sets the "notify_flow_id" field if the given value is not nil.
-func (nftu *NotifyFlowTargetUpdate) SetNillableNotifyFlowID(mi *model.InternalID) *NotifyFlowTargetUpdate {
-	if mi != nil {
-		nftu.SetNotifyFlowID(*mi)
+func (_u *NotifyFlowTargetUpdate) SetNillableNotifyFlowID(v *model.InternalID) *NotifyFlowTargetUpdate {
+	if v != nil {
+		_u.SetNotifyFlowID(*v)
 	}
-	return nftu
+	return _u
 }
 
 // SetNotifyTargetID sets the "notify_target_id" field.
-func (nftu *NotifyFlowTargetUpdate) SetNotifyTargetID(mi model.InternalID) *NotifyFlowTargetUpdate {
-	nftu.mutation.SetNotifyTargetID(mi)
-	return nftu
+func (_u *NotifyFlowTargetUpdate) SetNotifyTargetID(v model.InternalID) *NotifyFlowTargetUpdate {
+	_u.mutation.SetNotifyTargetID(v)
+	return _u
 }
 
 // SetNillableNotifyTargetID sets the "notify_target_id" field if the given value is not nil.
-func (nftu *NotifyFlowTargetUpdate) SetNillableNotifyTargetID(mi *model.InternalID) *NotifyFlowTargetUpdate {
-	if mi != nil {
-		nftu.SetNotifyTargetID(*mi)
+func (_u *NotifyFlowTargetUpdate) SetNillableNotifyTargetID(v *model.InternalID) *NotifyFlowTargetUpdate {
+	if v != nil {
+		_u.SetNotifyTargetID(*v)
 	}
-	return nftu
+	return _u
 }
 
 // SetFilterIncludeKeywords sets the "filter_include_keywords" field.
-func (nftu *NotifyFlowTargetUpdate) SetFilterIncludeKeywords(s []string) *NotifyFlowTargetUpdate {
-	nftu.mutation.SetFilterIncludeKeywords(s)
-	return nftu
+func (_u *NotifyFlowTargetUpdate) SetFilterIncludeKeywords(v []string) *NotifyFlowTargetUpdate {
+	_u.mutation.SetFilterIncludeKeywords(v)
+	return _u
 }
 
-// AppendFilterIncludeKeywords appends s to the "filter_include_keywords" field.
-func (nftu *NotifyFlowTargetUpdate) AppendFilterIncludeKeywords(s []string) *NotifyFlowTargetUpdate {
-	nftu.mutation.AppendFilterIncludeKeywords(s)
-	return nftu
+// AppendFilterIncludeKeywords appends value to the "filter_include_keywords" field.
+func (_u *NotifyFlowTargetUpdate) AppendFilterIncludeKeywords(v []string) *NotifyFlowTargetUpdate {
+	_u.mutation.AppendFilterIncludeKeywords(v)
+	return _u
 }
 
 // SetFilterExcludeKeywords sets the "filter_exclude_keywords" field.
-func (nftu *NotifyFlowTargetUpdate) SetFilterExcludeKeywords(s []string) *NotifyFlowTargetUpdate {
-	nftu.mutation.SetFilterExcludeKeywords(s)
-	return nftu
+func (_u *NotifyFlowTargetUpdate) SetFilterExcludeKeywords(v []string) *NotifyFlowTargetUpdate {
+	_u.mutation.SetFilterExcludeKeywords(v)
+	return _u
 }
 
-// AppendFilterExcludeKeywords appends s to the "filter_exclude_keywords" field.
-func (nftu *NotifyFlowTargetUpdate) AppendFilterExcludeKeywords(s []string) *NotifyFlowTargetUpdate {
-	nftu.mutation.AppendFilterExcludeKeywords(s)
-	return nftu
+// AppendFilterExcludeKeywords appends value to the "filter_exclude_keywords" field.
+func (_u *NotifyFlowTargetUpdate) AppendFilterExcludeKeywords(v []string) *NotifyFlowTargetUpdate {
+	_u.mutation.AppendFilterExcludeKeywords(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (nftu *NotifyFlowTargetUpdate) SetUpdatedAt(t time.Time) *NotifyFlowTargetUpdate {
-	nftu.mutation.SetUpdatedAt(t)
-	return nftu
+func (_u *NotifyFlowTargetUpdate) SetUpdatedAt(v time.Time) *NotifyFlowTargetUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (nftu *NotifyFlowTargetUpdate) SetCreatedAt(t time.Time) *NotifyFlowTargetUpdate {
-	nftu.mutation.SetCreatedAt(t)
-	return nftu
+func (_u *NotifyFlowTargetUpdate) SetCreatedAt(v time.Time) *NotifyFlowTargetUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (nftu *NotifyFlowTargetUpdate) SetNillableCreatedAt(t *time.Time) *NotifyFlowTargetUpdate {
-	if t != nil {
-		nftu.SetCreatedAt(*t)
+func (_u *NotifyFlowTargetUpdate) SetNillableCreatedAt(v *time.Time) *NotifyFlowTargetUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return nftu
+	return _u
 }
 
 // SetNotifyFlow sets the "notify_flow" edge to the NotifyFlow entity.
-func (nftu *NotifyFlowTargetUpdate) SetNotifyFlow(n *NotifyFlow) *NotifyFlowTargetUpdate {
-	return nftu.SetNotifyFlowID(n.ID)
+func (_u *NotifyFlowTargetUpdate) SetNotifyFlow(v *NotifyFlow) *NotifyFlowTargetUpdate {
+	return _u.SetNotifyFlowID(v.ID)
 }
 
 // SetNotifyTarget sets the "notify_target" edge to the NotifyTarget entity.
-func (nftu *NotifyFlowTargetUpdate) SetNotifyTarget(n *NotifyTarget) *NotifyFlowTargetUpdate {
-	return nftu.SetNotifyTargetID(n.ID)
+func (_u *NotifyFlowTargetUpdate) SetNotifyTarget(v *NotifyTarget) *NotifyFlowTargetUpdate {
+	return _u.SetNotifyTargetID(v.ID)
 }
 
 // Mutation returns the NotifyFlowTargetMutation object of the builder.
-func (nftu *NotifyFlowTargetUpdate) Mutation() *NotifyFlowTargetMutation {
-	return nftu.mutation
+func (_u *NotifyFlowTargetUpdate) Mutation() *NotifyFlowTargetMutation {
+	return _u.mutation
 }
 
 // ClearNotifyFlow clears the "notify_flow" edge to the NotifyFlow entity.
-func (nftu *NotifyFlowTargetUpdate) ClearNotifyFlow() *NotifyFlowTargetUpdate {
-	nftu.mutation.ClearNotifyFlow()
-	return nftu
+func (_u *NotifyFlowTargetUpdate) ClearNotifyFlow() *NotifyFlowTargetUpdate {
+	_u.mutation.ClearNotifyFlow()
+	return _u
 }
 
 // ClearNotifyTarget clears the "notify_target" edge to the NotifyTarget entity.
-func (nftu *NotifyFlowTargetUpdate) ClearNotifyTarget() *NotifyFlowTargetUpdate {
-	nftu.mutation.ClearNotifyTarget()
-	return nftu
+func (_u *NotifyFlowTargetUpdate) ClearNotifyTarget() *NotifyFlowTargetUpdate {
+	_u.mutation.ClearNotifyTarget()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (nftu *NotifyFlowTargetUpdate) Save(ctx context.Context) (int, error) {
-	nftu.defaults()
-	return withHooks(ctx, nftu.sqlSave, nftu.mutation, nftu.hooks)
+func (_u *NotifyFlowTargetUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nftu *NotifyFlowTargetUpdate) SaveX(ctx context.Context) int {
-	affected, err := nftu.Save(ctx)
+func (_u *NotifyFlowTargetUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -147,72 +147,72 @@ func (nftu *NotifyFlowTargetUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (nftu *NotifyFlowTargetUpdate) Exec(ctx context.Context) error {
-	_, err := nftu.Save(ctx)
+func (_u *NotifyFlowTargetUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nftu *NotifyFlowTargetUpdate) ExecX(ctx context.Context) {
-	if err := nftu.Exec(ctx); err != nil {
+func (_u *NotifyFlowTargetUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (nftu *NotifyFlowTargetUpdate) defaults() {
-	if _, ok := nftu.mutation.UpdatedAt(); !ok {
+func (_u *NotifyFlowTargetUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := notifyflowtarget.UpdateDefaultUpdatedAt()
-		nftu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nftu *NotifyFlowTargetUpdate) check() error {
-	if nftu.mutation.NotifyFlowCleared() && len(nftu.mutation.NotifyFlowIDs()) > 0 {
+func (_u *NotifyFlowTargetUpdate) check() error {
+	if _u.mutation.NotifyFlowCleared() && len(_u.mutation.NotifyFlowIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowTarget.notify_flow"`)
 	}
-	if nftu.mutation.NotifyTargetCleared() && len(nftu.mutation.NotifyTargetIDs()) > 0 {
+	if _u.mutation.NotifyTargetCleared() && len(_u.mutation.NotifyTargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowTarget.notify_target"`)
 	}
 	return nil
 }
 
-func (nftu *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := nftu.check(); err != nil {
-		return n, err
+func (_u *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(notifyflowtarget.Table, notifyflowtarget.Columns, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
-	if ps := nftu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := nftu.mutation.FilterIncludeKeywords(); ok {
+	if value, ok := _u.mutation.FilterIncludeKeywords(); ok {
 		_spec.SetField(notifyflowtarget.FieldFilterIncludeKeywords, field.TypeJSON, value)
 	}
-	if value, ok := nftu.mutation.AppendedFilterIncludeKeywords(); ok {
+	if value, ok := _u.mutation.AppendedFilterIncludeKeywords(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, notifyflowtarget.FieldFilterIncludeKeywords, value)
 		})
 	}
-	if value, ok := nftu.mutation.FilterExcludeKeywords(); ok {
+	if value, ok := _u.mutation.FilterExcludeKeywords(); ok {
 		_spec.SetField(notifyflowtarget.FieldFilterExcludeKeywords, field.TypeJSON, value)
 	}
-	if value, ok := nftu.mutation.AppendedFilterExcludeKeywords(); ok {
+	if value, ok := _u.mutation.AppendedFilterExcludeKeywords(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, notifyflowtarget.FieldFilterExcludeKeywords, value)
 		})
 	}
-	if value, ok := nftu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifyflowtarget.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := nftu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(notifyflowtarget.FieldCreatedAt, field.TypeTime, value)
 	}
-	if nftu.mutation.NotifyFlowCleared() {
+	if _u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -225,7 +225,7 @@ func (nftu *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nftu.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -241,7 +241,7 @@ func (nftu *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nftu.mutation.NotifyTargetCleared() {
+	if _u.mutation.NotifyTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -254,7 +254,7 @@ func (nftu *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nftu.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -270,7 +270,7 @@ func (nftu *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, nftu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{notifyflowtarget.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -278,8 +278,8 @@ func (nftu *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		return 0, err
 	}
-	nftu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // NotifyFlowTargetUpdateOne is the builder for updating a single NotifyFlowTarget entity.
@@ -291,126 +291,126 @@ type NotifyFlowTargetUpdateOne struct {
 }
 
 // SetNotifyFlowID sets the "notify_flow_id" field.
-func (nftuo *NotifyFlowTargetUpdateOne) SetNotifyFlowID(mi model.InternalID) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.SetNotifyFlowID(mi)
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) SetNotifyFlowID(v model.InternalID) *NotifyFlowTargetUpdateOne {
+	_u.mutation.SetNotifyFlowID(v)
+	return _u
 }
 
 // SetNillableNotifyFlowID sets the "notify_flow_id" field if the given value is not nil.
-func (nftuo *NotifyFlowTargetUpdateOne) SetNillableNotifyFlowID(mi *model.InternalID) *NotifyFlowTargetUpdateOne {
-	if mi != nil {
-		nftuo.SetNotifyFlowID(*mi)
+func (_u *NotifyFlowTargetUpdateOne) SetNillableNotifyFlowID(v *model.InternalID) *NotifyFlowTargetUpdateOne {
+	if v != nil {
+		_u.SetNotifyFlowID(*v)
 	}
-	return nftuo
+	return _u
 }
 
 // SetNotifyTargetID sets the "notify_target_id" field.
-func (nftuo *NotifyFlowTargetUpdateOne) SetNotifyTargetID(mi model.InternalID) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.SetNotifyTargetID(mi)
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) SetNotifyTargetID(v model.InternalID) *NotifyFlowTargetUpdateOne {
+	_u.mutation.SetNotifyTargetID(v)
+	return _u
 }
 
 // SetNillableNotifyTargetID sets the "notify_target_id" field if the given value is not nil.
-func (nftuo *NotifyFlowTargetUpdateOne) SetNillableNotifyTargetID(mi *model.InternalID) *NotifyFlowTargetUpdateOne {
-	if mi != nil {
-		nftuo.SetNotifyTargetID(*mi)
+func (_u *NotifyFlowTargetUpdateOne) SetNillableNotifyTargetID(v *model.InternalID) *NotifyFlowTargetUpdateOne {
+	if v != nil {
+		_u.SetNotifyTargetID(*v)
 	}
-	return nftuo
+	return _u
 }
 
 // SetFilterIncludeKeywords sets the "filter_include_keywords" field.
-func (nftuo *NotifyFlowTargetUpdateOne) SetFilterIncludeKeywords(s []string) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.SetFilterIncludeKeywords(s)
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) SetFilterIncludeKeywords(v []string) *NotifyFlowTargetUpdateOne {
+	_u.mutation.SetFilterIncludeKeywords(v)
+	return _u
 }
 
-// AppendFilterIncludeKeywords appends s to the "filter_include_keywords" field.
-func (nftuo *NotifyFlowTargetUpdateOne) AppendFilterIncludeKeywords(s []string) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.AppendFilterIncludeKeywords(s)
-	return nftuo
+// AppendFilterIncludeKeywords appends value to the "filter_include_keywords" field.
+func (_u *NotifyFlowTargetUpdateOne) AppendFilterIncludeKeywords(v []string) *NotifyFlowTargetUpdateOne {
+	_u.mutation.AppendFilterIncludeKeywords(v)
+	return _u
 }
 
 // SetFilterExcludeKeywords sets the "filter_exclude_keywords" field.
-func (nftuo *NotifyFlowTargetUpdateOne) SetFilterExcludeKeywords(s []string) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.SetFilterExcludeKeywords(s)
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) SetFilterExcludeKeywords(v []string) *NotifyFlowTargetUpdateOne {
+	_u.mutation.SetFilterExcludeKeywords(v)
+	return _u
 }
 
-// AppendFilterExcludeKeywords appends s to the "filter_exclude_keywords" field.
-func (nftuo *NotifyFlowTargetUpdateOne) AppendFilterExcludeKeywords(s []string) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.AppendFilterExcludeKeywords(s)
-	return nftuo
+// AppendFilterExcludeKeywords appends value to the "filter_exclude_keywords" field.
+func (_u *NotifyFlowTargetUpdateOne) AppendFilterExcludeKeywords(v []string) *NotifyFlowTargetUpdateOne {
+	_u.mutation.AppendFilterExcludeKeywords(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (nftuo *NotifyFlowTargetUpdateOne) SetUpdatedAt(t time.Time) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.SetUpdatedAt(t)
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) SetUpdatedAt(v time.Time) *NotifyFlowTargetUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (nftuo *NotifyFlowTargetUpdateOne) SetCreatedAt(t time.Time) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.SetCreatedAt(t)
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) SetCreatedAt(v time.Time) *NotifyFlowTargetUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (nftuo *NotifyFlowTargetUpdateOne) SetNillableCreatedAt(t *time.Time) *NotifyFlowTargetUpdateOne {
-	if t != nil {
-		nftuo.SetCreatedAt(*t)
+func (_u *NotifyFlowTargetUpdateOne) SetNillableCreatedAt(v *time.Time) *NotifyFlowTargetUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return nftuo
+	return _u
 }
 
 // SetNotifyFlow sets the "notify_flow" edge to the NotifyFlow entity.
-func (nftuo *NotifyFlowTargetUpdateOne) SetNotifyFlow(n *NotifyFlow) *NotifyFlowTargetUpdateOne {
-	return nftuo.SetNotifyFlowID(n.ID)
+func (_u *NotifyFlowTargetUpdateOne) SetNotifyFlow(v *NotifyFlow) *NotifyFlowTargetUpdateOne {
+	return _u.SetNotifyFlowID(v.ID)
 }
 
 // SetNotifyTarget sets the "notify_target" edge to the NotifyTarget entity.
-func (nftuo *NotifyFlowTargetUpdateOne) SetNotifyTarget(n *NotifyTarget) *NotifyFlowTargetUpdateOne {
-	return nftuo.SetNotifyTargetID(n.ID)
+func (_u *NotifyFlowTargetUpdateOne) SetNotifyTarget(v *NotifyTarget) *NotifyFlowTargetUpdateOne {
+	return _u.SetNotifyTargetID(v.ID)
 }
 
 // Mutation returns the NotifyFlowTargetMutation object of the builder.
-func (nftuo *NotifyFlowTargetUpdateOne) Mutation() *NotifyFlowTargetMutation {
-	return nftuo.mutation
+func (_u *NotifyFlowTargetUpdateOne) Mutation() *NotifyFlowTargetMutation {
+	return _u.mutation
 }
 
 // ClearNotifyFlow clears the "notify_flow" edge to the NotifyFlow entity.
-func (nftuo *NotifyFlowTargetUpdateOne) ClearNotifyFlow() *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.ClearNotifyFlow()
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) ClearNotifyFlow() *NotifyFlowTargetUpdateOne {
+	_u.mutation.ClearNotifyFlow()
+	return _u
 }
 
 // ClearNotifyTarget clears the "notify_target" edge to the NotifyTarget entity.
-func (nftuo *NotifyFlowTargetUpdateOne) ClearNotifyTarget() *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.ClearNotifyTarget()
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) ClearNotifyTarget() *NotifyFlowTargetUpdateOne {
+	_u.mutation.ClearNotifyTarget()
+	return _u
 }
 
 // Where appends a list predicates to the NotifyFlowTargetUpdate builder.
-func (nftuo *NotifyFlowTargetUpdateOne) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.Where(ps...)
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (nftuo *NotifyFlowTargetUpdateOne) Select(field string, fields ...string) *NotifyFlowTargetUpdateOne {
-	nftuo.fields = append([]string{field}, fields...)
-	return nftuo
+func (_u *NotifyFlowTargetUpdateOne) Select(field string, fields ...string) *NotifyFlowTargetUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated NotifyFlowTarget entity.
-func (nftuo *NotifyFlowTargetUpdateOne) Save(ctx context.Context) (*NotifyFlowTarget, error) {
-	nftuo.defaults()
-	return withHooks(ctx, nftuo.sqlSave, nftuo.mutation, nftuo.hooks)
+func (_u *NotifyFlowTargetUpdateOne) Save(ctx context.Context) (*NotifyFlowTarget, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nftuo *NotifyFlowTargetUpdateOne) SaveX(ctx context.Context) *NotifyFlowTarget {
-	node, err := nftuo.Save(ctx)
+func (_u *NotifyFlowTargetUpdateOne) SaveX(ctx context.Context) *NotifyFlowTarget {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -418,48 +418,48 @@ func (nftuo *NotifyFlowTargetUpdateOne) SaveX(ctx context.Context) *NotifyFlowTa
 }
 
 // Exec executes the query on the entity.
-func (nftuo *NotifyFlowTargetUpdateOne) Exec(ctx context.Context) error {
-	_, err := nftuo.Save(ctx)
+func (_u *NotifyFlowTargetUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nftuo *NotifyFlowTargetUpdateOne) ExecX(ctx context.Context) {
-	if err := nftuo.Exec(ctx); err != nil {
+func (_u *NotifyFlowTargetUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (nftuo *NotifyFlowTargetUpdateOne) defaults() {
-	if _, ok := nftuo.mutation.UpdatedAt(); !ok {
+func (_u *NotifyFlowTargetUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := notifyflowtarget.UpdateDefaultUpdatedAt()
-		nftuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nftuo *NotifyFlowTargetUpdateOne) check() error {
-	if nftuo.mutation.NotifyFlowCleared() && len(nftuo.mutation.NotifyFlowIDs()) > 0 {
+func (_u *NotifyFlowTargetUpdateOne) check() error {
+	if _u.mutation.NotifyFlowCleared() && len(_u.mutation.NotifyFlowIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowTarget.notify_flow"`)
 	}
-	if nftuo.mutation.NotifyTargetCleared() && len(nftuo.mutation.NotifyTargetIDs()) > 0 {
+	if _u.mutation.NotifyTargetCleared() && len(_u.mutation.NotifyTargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowTarget.notify_target"`)
 	}
 	return nil
 }
 
-func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlowTarget, err error) {
-	if err := nftuo.check(); err != nil {
+func (_u *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyFlowTarget, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(notifyflowtarget.Table, notifyflowtarget.Columns, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
-	id, ok := nftuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "NotifyFlowTarget.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := nftuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, notifyflowtarget.FieldID)
 		for _, f := range fields {
@@ -471,36 +471,36 @@ func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *Not
 			}
 		}
 	}
-	if ps := nftuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := nftuo.mutation.FilterIncludeKeywords(); ok {
+	if value, ok := _u.mutation.FilterIncludeKeywords(); ok {
 		_spec.SetField(notifyflowtarget.FieldFilterIncludeKeywords, field.TypeJSON, value)
 	}
-	if value, ok := nftuo.mutation.AppendedFilterIncludeKeywords(); ok {
+	if value, ok := _u.mutation.AppendedFilterIncludeKeywords(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, notifyflowtarget.FieldFilterIncludeKeywords, value)
 		})
 	}
-	if value, ok := nftuo.mutation.FilterExcludeKeywords(); ok {
+	if value, ok := _u.mutation.FilterExcludeKeywords(); ok {
 		_spec.SetField(notifyflowtarget.FieldFilterExcludeKeywords, field.TypeJSON, value)
 	}
-	if value, ok := nftuo.mutation.AppendedFilterExcludeKeywords(); ok {
+	if value, ok := _u.mutation.AppendedFilterExcludeKeywords(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, notifyflowtarget.FieldFilterExcludeKeywords, value)
 		})
 	}
-	if value, ok := nftuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifyflowtarget.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := nftuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(notifyflowtarget.FieldCreatedAt, field.TypeTime, value)
 	}
-	if nftuo.mutation.NotifyFlowCleared() {
+	if _u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -513,7 +513,7 @@ func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *Not
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nftuo.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -529,7 +529,7 @@ func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *Not
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nftuo.mutation.NotifyTargetCleared() {
+	if _u.mutation.NotifyTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -542,7 +542,7 @@ func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *Not
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := nftuo.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -558,10 +558,10 @@ func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *Not
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &NotifyFlowTarget{config: nftuo.config}
+	_node = &NotifyFlowTarget{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, nftuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{notifyflowtarget.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -569,6 +569,6 @@ func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *Not
 		}
 		return nil, err
 	}
-	nftuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

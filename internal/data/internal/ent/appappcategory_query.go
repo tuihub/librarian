@@ -33,44 +33,44 @@ type AppAppCategoryQuery struct {
 }
 
 // Where adds a new predicate for the AppAppCategoryQuery builder.
-func (aacq *AppAppCategoryQuery) Where(ps ...predicate.AppAppCategory) *AppAppCategoryQuery {
-	aacq.predicates = append(aacq.predicates, ps...)
-	return aacq
+func (_q *AppAppCategoryQuery) Where(ps ...predicate.AppAppCategory) *AppAppCategoryQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (aacq *AppAppCategoryQuery) Limit(limit int) *AppAppCategoryQuery {
-	aacq.ctx.Limit = &limit
-	return aacq
+func (_q *AppAppCategoryQuery) Limit(limit int) *AppAppCategoryQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (aacq *AppAppCategoryQuery) Offset(offset int) *AppAppCategoryQuery {
-	aacq.ctx.Offset = &offset
-	return aacq
+func (_q *AppAppCategoryQuery) Offset(offset int) *AppAppCategoryQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (aacq *AppAppCategoryQuery) Unique(unique bool) *AppAppCategoryQuery {
-	aacq.ctx.Unique = &unique
-	return aacq
+func (_q *AppAppCategoryQuery) Unique(unique bool) *AppAppCategoryQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (aacq *AppAppCategoryQuery) Order(o ...appappcategory.OrderOption) *AppAppCategoryQuery {
-	aacq.order = append(aacq.order, o...)
-	return aacq
+func (_q *AppAppCategoryQuery) Order(o ...appappcategory.OrderOption) *AppAppCategoryQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryAppCategory chains the current query on the "app_category" edge.
-func (aacq *AppAppCategoryQuery) QueryAppCategory() *AppCategoryQuery {
-	query := (&AppCategoryClient{config: aacq.config}).Query()
+func (_q *AppAppCategoryQuery) QueryAppCategory() *AppCategoryQuery {
+	query := (&AppCategoryClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aacq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aacq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -79,20 +79,20 @@ func (aacq *AppAppCategoryQuery) QueryAppCategory() *AppCategoryQuery {
 			sqlgraph.To(appcategory.Table, appcategory.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, appappcategory.AppCategoryTable, appappcategory.AppCategoryColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aacq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryApp chains the current query on the "app" edge.
-func (aacq *AppAppCategoryQuery) QueryApp() *AppQuery {
-	query := (&AppClient{config: aacq.config}).Query()
+func (_q *AppAppCategoryQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aacq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := aacq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -101,7 +101,7 @@ func (aacq *AppAppCategoryQuery) QueryApp() *AppQuery {
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, appappcategory.AppTable, appappcategory.AppColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(aacq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -109,8 +109,8 @@ func (aacq *AppAppCategoryQuery) QueryApp() *AppQuery {
 
 // First returns the first AppAppCategory entity from the query.
 // Returns a *NotFoundError when no AppAppCategory was found.
-func (aacq *AppAppCategoryQuery) First(ctx context.Context) (*AppAppCategory, error) {
-	nodes, err := aacq.Limit(1).All(setContextOp(ctx, aacq.ctx, ent.OpQueryFirst))
+func (_q *AppAppCategoryQuery) First(ctx context.Context) (*AppAppCategory, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -121,8 +121,8 @@ func (aacq *AppAppCategoryQuery) First(ctx context.Context) (*AppAppCategory, er
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (aacq *AppAppCategoryQuery) FirstX(ctx context.Context) *AppAppCategory {
-	node, err := aacq.First(ctx)
+func (_q *AppAppCategoryQuery) FirstX(ctx context.Context) *AppAppCategory {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -131,9 +131,9 @@ func (aacq *AppAppCategoryQuery) FirstX(ctx context.Context) *AppAppCategory {
 
 // FirstID returns the first AppAppCategory ID from the query.
 // Returns a *NotFoundError when no AppAppCategory ID was found.
-func (aacq *AppAppCategoryQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *AppAppCategoryQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = aacq.Limit(1).IDs(setContextOp(ctx, aacq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -144,8 +144,8 @@ func (aacq *AppAppCategoryQuery) FirstID(ctx context.Context) (id int, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aacq *AppAppCategoryQuery) FirstIDX(ctx context.Context) int {
-	id, err := aacq.FirstID(ctx)
+func (_q *AppAppCategoryQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -155,8 +155,8 @@ func (aacq *AppAppCategoryQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single AppAppCategory entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one AppAppCategory entity is found.
 // Returns a *NotFoundError when no AppAppCategory entities are found.
-func (aacq *AppAppCategoryQuery) Only(ctx context.Context) (*AppAppCategory, error) {
-	nodes, err := aacq.Limit(2).All(setContextOp(ctx, aacq.ctx, ent.OpQueryOnly))
+func (_q *AppAppCategoryQuery) Only(ctx context.Context) (*AppAppCategory, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -171,8 +171,8 @@ func (aacq *AppAppCategoryQuery) Only(ctx context.Context) (*AppAppCategory, err
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (aacq *AppAppCategoryQuery) OnlyX(ctx context.Context) *AppAppCategory {
-	node, err := aacq.Only(ctx)
+func (_q *AppAppCategoryQuery) OnlyX(ctx context.Context) *AppAppCategory {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -182,9 +182,9 @@ func (aacq *AppAppCategoryQuery) OnlyX(ctx context.Context) *AppAppCategory {
 // OnlyID is like Only, but returns the only AppAppCategory ID in the query.
 // Returns a *NotSingularError when more than one AppAppCategory ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (aacq *AppAppCategoryQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *AppAppCategoryQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = aacq.Limit(2).IDs(setContextOp(ctx, aacq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -199,8 +199,8 @@ func (aacq *AppAppCategoryQuery) OnlyID(ctx context.Context) (id int, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aacq *AppAppCategoryQuery) OnlyIDX(ctx context.Context) int {
-	id, err := aacq.OnlyID(ctx)
+func (_q *AppAppCategoryQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -208,18 +208,18 @@ func (aacq *AppAppCategoryQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of AppAppCategories.
-func (aacq *AppAppCategoryQuery) All(ctx context.Context) ([]*AppAppCategory, error) {
-	ctx = setContextOp(ctx, aacq.ctx, ent.OpQueryAll)
-	if err := aacq.prepareQuery(ctx); err != nil {
+func (_q *AppAppCategoryQuery) All(ctx context.Context) ([]*AppAppCategory, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*AppAppCategory, *AppAppCategoryQuery]()
-	return withInterceptors[[]*AppAppCategory](ctx, aacq, qr, aacq.inters)
+	return withInterceptors[[]*AppAppCategory](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (aacq *AppAppCategoryQuery) AllX(ctx context.Context) []*AppAppCategory {
-	nodes, err := aacq.All(ctx)
+func (_q *AppAppCategoryQuery) AllX(ctx context.Context) []*AppAppCategory {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -227,20 +227,20 @@ func (aacq *AppAppCategoryQuery) AllX(ctx context.Context) []*AppAppCategory {
 }
 
 // IDs executes the query and returns a list of AppAppCategory IDs.
-func (aacq *AppAppCategoryQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if aacq.ctx.Unique == nil && aacq.path != nil {
-		aacq.Unique(true)
+func (_q *AppAppCategoryQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, aacq.ctx, ent.OpQueryIDs)
-	if err = aacq.Select(appappcategory.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(appappcategory.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aacq *AppAppCategoryQuery) IDsX(ctx context.Context) []int {
-	ids, err := aacq.IDs(ctx)
+func (_q *AppAppCategoryQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -248,17 +248,17 @@ func (aacq *AppAppCategoryQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (aacq *AppAppCategoryQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, aacq.ctx, ent.OpQueryCount)
-	if err := aacq.prepareQuery(ctx); err != nil {
+func (_q *AppAppCategoryQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, aacq, querierCount[*AppAppCategoryQuery](), aacq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*AppAppCategoryQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (aacq *AppAppCategoryQuery) CountX(ctx context.Context) int {
-	count, err := aacq.Count(ctx)
+func (_q *AppAppCategoryQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -266,9 +266,9 @@ func (aacq *AppAppCategoryQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (aacq *AppAppCategoryQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, aacq.ctx, ent.OpQueryExist)
-	switch _, err := aacq.FirstID(ctx); {
+func (_q *AppAppCategoryQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -279,8 +279,8 @@ func (aacq *AppAppCategoryQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (aacq *AppAppCategoryQuery) ExistX(ctx context.Context) bool {
-	exist, err := aacq.Exist(ctx)
+func (_q *AppAppCategoryQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -289,44 +289,44 @@ func (aacq *AppAppCategoryQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the AppAppCategoryQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (aacq *AppAppCategoryQuery) Clone() *AppAppCategoryQuery {
-	if aacq == nil {
+func (_q *AppAppCategoryQuery) Clone() *AppAppCategoryQuery {
+	if _q == nil {
 		return nil
 	}
 	return &AppAppCategoryQuery{
-		config:          aacq.config,
-		ctx:             aacq.ctx.Clone(),
-		order:           append([]appappcategory.OrderOption{}, aacq.order...),
-		inters:          append([]Interceptor{}, aacq.inters...),
-		predicates:      append([]predicate.AppAppCategory{}, aacq.predicates...),
-		withAppCategory: aacq.withAppCategory.Clone(),
-		withApp:         aacq.withApp.Clone(),
+		config:          _q.config,
+		ctx:             _q.ctx.Clone(),
+		order:           append([]appappcategory.OrderOption{}, _q.order...),
+		inters:          append([]Interceptor{}, _q.inters...),
+		predicates:      append([]predicate.AppAppCategory{}, _q.predicates...),
+		withAppCategory: _q.withAppCategory.Clone(),
+		withApp:         _q.withApp.Clone(),
 		// clone intermediate query.
-		sql:  aacq.sql.Clone(),
-		path: aacq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithAppCategory tells the query-builder to eager-load the nodes that are connected to
 // the "app_category" edge. The optional arguments are used to configure the query builder of the edge.
-func (aacq *AppAppCategoryQuery) WithAppCategory(opts ...func(*AppCategoryQuery)) *AppAppCategoryQuery {
-	query := (&AppCategoryClient{config: aacq.config}).Query()
+func (_q *AppAppCategoryQuery) WithAppCategory(opts ...func(*AppCategoryQuery)) *AppAppCategoryQuery {
+	query := (&AppCategoryClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aacq.withAppCategory = query
-	return aacq
+	_q.withAppCategory = query
+	return _q
 }
 
 // WithApp tells the query-builder to eager-load the nodes that are connected to
 // the "app" edge. The optional arguments are used to configure the query builder of the edge.
-func (aacq *AppAppCategoryQuery) WithApp(opts ...func(*AppQuery)) *AppAppCategoryQuery {
-	query := (&AppClient{config: aacq.config}).Query()
+func (_q *AppAppCategoryQuery) WithApp(opts ...func(*AppQuery)) *AppAppCategoryQuery {
+	query := (&AppClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aacq.withApp = query
-	return aacq
+	_q.withApp = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -343,10 +343,10 @@ func (aacq *AppAppCategoryQuery) WithApp(opts ...func(*AppQuery)) *AppAppCategor
 //		GroupBy(appappcategory.FieldAppCategoryID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (aacq *AppAppCategoryQuery) GroupBy(field string, fields ...string) *AppAppCategoryGroupBy {
-	aacq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &AppAppCategoryGroupBy{build: aacq}
-	grbuild.flds = &aacq.ctx.Fields
+func (_q *AppAppCategoryQuery) GroupBy(field string, fields ...string) *AppAppCategoryGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppAppCategoryGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = appappcategory.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -364,59 +364,59 @@ func (aacq *AppAppCategoryQuery) GroupBy(field string, fields ...string) *AppApp
 //	client.AppAppCategory.Query().
 //		Select(appappcategory.FieldAppCategoryID).
 //		Scan(ctx, &v)
-func (aacq *AppAppCategoryQuery) Select(fields ...string) *AppAppCategorySelect {
-	aacq.ctx.Fields = append(aacq.ctx.Fields, fields...)
-	sbuild := &AppAppCategorySelect{AppAppCategoryQuery: aacq}
+func (_q *AppAppCategoryQuery) Select(fields ...string) *AppAppCategorySelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &AppAppCategorySelect{AppAppCategoryQuery: _q}
 	sbuild.label = appappcategory.Label
-	sbuild.flds, sbuild.scan = &aacq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a AppAppCategorySelect configured with the given aggregations.
-func (aacq *AppAppCategoryQuery) Aggregate(fns ...AggregateFunc) *AppAppCategorySelect {
-	return aacq.Select().Aggregate(fns...)
+func (_q *AppAppCategoryQuery) Aggregate(fns ...AggregateFunc) *AppAppCategorySelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (aacq *AppAppCategoryQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range aacq.inters {
+func (_q *AppAppCategoryQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, aacq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range aacq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !appappcategory.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if aacq.path != nil {
-		prev, err := aacq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		aacq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (aacq *AppAppCategoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppAppCategory, error) {
+func (_q *AppAppCategoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppAppCategory, error) {
 	var (
 		nodes       = []*AppAppCategory{}
-		_spec       = aacq.querySpec()
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			aacq.withAppCategory != nil,
-			aacq.withApp != nil,
+			_q.withAppCategory != nil,
+			_q.withApp != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppAppCategory).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &AppAppCategory{config: aacq.config}
+		node := &AppAppCategory{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -424,20 +424,20 @@ func (aacq *AppAppCategoryQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, aacq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := aacq.withAppCategory; query != nil {
-		if err := aacq.loadAppCategory(ctx, query, nodes, nil,
+	if query := _q.withAppCategory; query != nil {
+		if err := _q.loadAppCategory(ctx, query, nodes, nil,
 			func(n *AppAppCategory, e *AppCategory) { n.Edges.AppCategory = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aacq.withApp; query != nil {
-		if err := aacq.loadApp(ctx, query, nodes, nil,
+	if query := _q.withApp; query != nil {
+		if err := _q.loadApp(ctx, query, nodes, nil,
 			func(n *AppAppCategory, e *App) { n.Edges.App = e }); err != nil {
 			return nil, err
 		}
@@ -445,7 +445,7 @@ func (aacq *AppAppCategoryQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	return nodes, nil
 }
 
-func (aacq *AppAppCategoryQuery) loadAppCategory(ctx context.Context, query *AppCategoryQuery, nodes []*AppAppCategory, init func(*AppAppCategory), assign func(*AppAppCategory, *AppCategory)) error {
+func (_q *AppAppCategoryQuery) loadAppCategory(ctx context.Context, query *AppCategoryQuery, nodes []*AppAppCategory, init func(*AppAppCategory), assign func(*AppAppCategory, *AppCategory)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*AppAppCategory)
 	for i := range nodes {
@@ -474,7 +474,7 @@ func (aacq *AppAppCategoryQuery) loadAppCategory(ctx context.Context, query *App
 	}
 	return nil
 }
-func (aacq *AppAppCategoryQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppAppCategory, init func(*AppAppCategory), assign func(*AppAppCategory, *App)) error {
+func (_q *AppAppCategoryQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppAppCategory, init func(*AppAppCategory), assign func(*AppAppCategory, *App)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*AppAppCategory)
 	for i := range nodes {
@@ -504,24 +504,24 @@ func (aacq *AppAppCategoryQuery) loadApp(ctx context.Context, query *AppQuery, n
 	return nil
 }
 
-func (aacq *AppAppCategoryQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := aacq.querySpec()
-	_spec.Node.Columns = aacq.ctx.Fields
-	if len(aacq.ctx.Fields) > 0 {
-		_spec.Unique = aacq.ctx.Unique != nil && *aacq.ctx.Unique
+func (_q *AppAppCategoryQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, aacq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (aacq *AppAppCategoryQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *AppAppCategoryQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(appappcategory.Table, appappcategory.Columns, sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt))
-	_spec.From = aacq.sql
-	if unique := aacq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if aacq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := aacq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appappcategory.FieldID)
 		for i := range fields {
@@ -529,27 +529,27 @@ func (aacq *AppAppCategoryQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if aacq.withAppCategory != nil {
+		if _q.withAppCategory != nil {
 			_spec.Node.AddColumnOnce(appappcategory.FieldAppCategoryID)
 		}
-		if aacq.withApp != nil {
+		if _q.withApp != nil {
 			_spec.Node.AddColumnOnce(appappcategory.FieldAppID)
 		}
 	}
-	if ps := aacq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := aacq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := aacq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := aacq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -559,33 +559,33 @@ func (aacq *AppAppCategoryQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (aacq *AppAppCategoryQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(aacq.driver.Dialect())
+func (_q *AppAppCategoryQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(appappcategory.Table)
-	columns := aacq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = appappcategory.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if aacq.sql != nil {
-		selector = aacq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if aacq.ctx.Unique != nil && *aacq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range aacq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range aacq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := aacq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := aacq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -598,41 +598,41 @@ type AppAppCategoryGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (aacgb *AppAppCategoryGroupBy) Aggregate(fns ...AggregateFunc) *AppAppCategoryGroupBy {
-	aacgb.fns = append(aacgb.fns, fns...)
-	return aacgb
+func (_g *AppAppCategoryGroupBy) Aggregate(fns ...AggregateFunc) *AppAppCategoryGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (aacgb *AppAppCategoryGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, aacgb.build.ctx, ent.OpQueryGroupBy)
-	if err := aacgb.build.prepareQuery(ctx); err != nil {
+func (_g *AppAppCategoryGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppAppCategoryQuery, *AppAppCategoryGroupBy](ctx, aacgb.build, aacgb, aacgb.build.inters, v)
+	return scanWithInterceptors[*AppAppCategoryQuery, *AppAppCategoryGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (aacgb *AppAppCategoryGroupBy) sqlScan(ctx context.Context, root *AppAppCategoryQuery, v any) error {
+func (_g *AppAppCategoryGroupBy) sqlScan(ctx context.Context, root *AppAppCategoryQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(aacgb.fns))
-	for _, fn := range aacgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*aacgb.flds)+len(aacgb.fns))
-		for _, f := range *aacgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*aacgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := aacgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -646,27 +646,27 @@ type AppAppCategorySelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (aacs *AppAppCategorySelect) Aggregate(fns ...AggregateFunc) *AppAppCategorySelect {
-	aacs.fns = append(aacs.fns, fns...)
-	return aacs
+func (_s *AppAppCategorySelect) Aggregate(fns ...AggregateFunc) *AppAppCategorySelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (aacs *AppAppCategorySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, aacs.ctx, ent.OpQuerySelect)
-	if err := aacs.prepareQuery(ctx); err != nil {
+func (_s *AppAppCategorySelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*AppAppCategoryQuery, *AppAppCategorySelect](ctx, aacs.AppAppCategoryQuery, aacs, aacs.inters, v)
+	return scanWithInterceptors[*AppAppCategoryQuery, *AppAppCategorySelect](ctx, _s.AppAppCategoryQuery, _s, _s.inters, v)
 }
 
-func (aacs *AppAppCategorySelect) sqlScan(ctx context.Context, root *AppAppCategoryQuery, v any) error {
+func (_s *AppAppCategorySelect) sqlScan(ctx context.Context, root *AppAppCategoryQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(aacs.fns))
-	for _, fn := range aacs.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*aacs.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -674,7 +674,7 @@ func (aacs *AppAppCategorySelect) sqlScan(ctx context.Context, root *AppAppCateg
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := aacs.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

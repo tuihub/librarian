@@ -167,7 +167,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the App fields.
-func (a *App) assignValues(columns []string, values []any) error {
+func (_m *App) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -177,37 +177,37 @@ func (a *App) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				a.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case app.FieldVersionNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field version_number", values[i])
 			} else if value.Valid {
-				a.VersionNumber = uint64(value.Int64)
+				_m.VersionNumber = uint64(value.Int64)
 			}
 		case app.FieldVersionDate:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field version_date", values[i])
 			} else if value.Valid {
-				a.VersionDate = value.Time
+				_m.VersionDate = value.Time
 			}
 		case app.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				a.UserID = model.InternalID(value.Int64)
+				_m.UserID = model.InternalID(value.Int64)
 			}
 		case app.FieldCreatorDeviceID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field creator_device_id", values[i])
 			} else if value.Valid {
-				a.CreatorDeviceID = model.InternalID(value.Int64)
+				_m.CreatorDeviceID = model.InternalID(value.Int64)
 			}
 		case app.FieldAppSources:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field app_sources", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &a.AppSources); err != nil {
+				if err := json.Unmarshal(*value, &_m.AppSources); err != nil {
 					return fmt.Errorf("unmarshal field app_sources: %w", err)
 				}
 			}
@@ -215,103 +215,103 @@ func (a *App) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field public", values[i])
 			} else if value.Valid {
-				a.Public = value.Bool
+				_m.Public = value.Bool
 			}
 		case app.FieldBoundStoreAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bound_store_app_id", values[i])
 			} else if value.Valid {
-				a.BoundStoreAppID = model.InternalID(value.Int64)
+				_m.BoundStoreAppID = model.InternalID(value.Int64)
 			}
 		case app.FieldStopStoreManage:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field stop_store_manage", values[i])
 			} else if value.Valid {
-				a.StopStoreManage = value.Bool
+				_m.StopStoreManage = value.Bool
 			}
 		case app.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				a.Name = value.String
+				_m.Name = value.String
 			}
 		case app.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				a.Type = app.Type(value.String)
+				_m.Type = app.Type(value.String)
 			}
 		case app.FieldShortDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field short_description", values[i])
 			} else if value.Valid {
-				a.ShortDescription = value.String
+				_m.ShortDescription = value.String
 			}
 		case app.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				a.Description = value.String
+				_m.Description = value.String
 			}
 		case app.FieldIconImageURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field icon_image_url", values[i])
 			} else if value.Valid {
-				a.IconImageURL = value.String
+				_m.IconImageURL = value.String
 			}
 		case app.FieldIconImageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field icon_image_id", values[i])
 			} else if value.Valid {
-				a.IconImageID = model.InternalID(value.Int64)
+				_m.IconImageID = model.InternalID(value.Int64)
 			}
 		case app.FieldBackgroundImageURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field background_image_url", values[i])
 			} else if value.Valid {
-				a.BackgroundImageURL = value.String
+				_m.BackgroundImageURL = value.String
 			}
 		case app.FieldBackgroundImageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field background_image_id", values[i])
 			} else if value.Valid {
-				a.BackgroundImageID = model.InternalID(value.Int64)
+				_m.BackgroundImageID = model.InternalID(value.Int64)
 			}
 		case app.FieldCoverImageURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field cover_image_url", values[i])
 			} else if value.Valid {
-				a.CoverImageURL = value.String
+				_m.CoverImageURL = value.String
 			}
 		case app.FieldCoverImageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field cover_image_id", values[i])
 			} else if value.Valid {
-				a.CoverImageID = model.InternalID(value.Int64)
+				_m.CoverImageID = model.InternalID(value.Int64)
 			}
 		case app.FieldReleaseDate:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field release_date", values[i])
 			} else if value.Valid {
-				a.ReleaseDate = value.String
+				_m.ReleaseDate = value.String
 			}
 		case app.FieldDeveloper:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field developer", values[i])
 			} else if value.Valid {
-				a.Developer = value.String
+				_m.Developer = value.String
 			}
 		case app.FieldPublisher:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field publisher", values[i])
 			} else if value.Valid {
-				a.Publisher = value.String
+				_m.Publisher = value.String
 			}
 		case app.FieldTags:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field tags", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &a.Tags); err != nil {
+				if err := json.Unmarshal(*value, &_m.Tags); err != nil {
 					return fmt.Errorf("unmarshal field tags: %w", err)
 				}
 			}
@@ -319,7 +319,7 @@ func (a *App) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field alternative_names", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &a.AlternativeNames); err != nil {
+				if err := json.Unmarshal(*value, &_m.AlternativeNames); err != nil {
 					return fmt.Errorf("unmarshal field alternative_names: %w", err)
 				}
 			}
@@ -327,16 +327,16 @@ func (a *App) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				a.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case app.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				a.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			a.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -344,132 +344,132 @@ func (a *App) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the App.
 // This includes values selected through modifiers, order, etc.
-func (a *App) Value(name string) (ent.Value, error) {
-	return a.selectValues.Get(name)
+func (_m *App) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the App entity.
-func (a *App) QueryUser() *UserQuery {
-	return NewAppClient(a.config).QueryUser(a)
+func (_m *App) QueryUser() *UserQuery {
+	return NewAppClient(_m.config).QueryUser(_m)
 }
 
 // QueryDevice queries the "device" edge of the App entity.
-func (a *App) QueryDevice() *DeviceQuery {
-	return NewAppClient(a.config).QueryDevice(a)
+func (_m *App) QueryDevice() *DeviceQuery {
+	return NewAppClient(_m.config).QueryDevice(_m)
 }
 
 // QueryAppRunTime queries the "app_run_time" edge of the App entity.
-func (a *App) QueryAppRunTime() *AppRunTimeQuery {
-	return NewAppClient(a.config).QueryAppRunTime(a)
+func (_m *App) QueryAppRunTime() *AppRunTimeQuery {
+	return NewAppClient(_m.config).QueryAppRunTime(_m)
 }
 
 // QueryAppCategory queries the "app_category" edge of the App entity.
-func (a *App) QueryAppCategory() *AppCategoryQuery {
-	return NewAppClient(a.config).QueryAppCategory(a)
+func (_m *App) QueryAppCategory() *AppCategoryQuery {
+	return NewAppClient(_m.config).QueryAppCategory(_m)
 }
 
 // QueryAppAppCategory queries the "app_app_category" edge of the App entity.
-func (a *App) QueryAppAppCategory() *AppAppCategoryQuery {
-	return NewAppClient(a.config).QueryAppAppCategory(a)
+func (_m *App) QueryAppAppCategory() *AppAppCategoryQuery {
+	return NewAppClient(_m.config).QueryAppAppCategory(_m)
 }
 
 // Update returns a builder for updating this App.
 // Note that you need to call App.Unwrap() before calling this method if this App
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (a *App) Update() *AppUpdateOne {
-	return NewAppClient(a.config).UpdateOne(a)
+func (_m *App) Update() *AppUpdateOne {
+	return NewAppClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the App entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (a *App) Unwrap() *App {
-	_tx, ok := a.config.driver.(*txDriver)
+func (_m *App) Unwrap() *App {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: App is not a transactional entity")
 	}
-	a.config.driver = _tx.drv
-	return a
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (a *App) String() string {
+func (_m *App) String() string {
 	var builder strings.Builder
 	builder.WriteString("App(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("version_number=")
-	builder.WriteString(fmt.Sprintf("%v", a.VersionNumber))
+	builder.WriteString(fmt.Sprintf("%v", _m.VersionNumber))
 	builder.WriteString(", ")
 	builder.WriteString("version_date=")
-	builder.WriteString(a.VersionDate.Format(time.ANSIC))
+	builder.WriteString(_m.VersionDate.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("creator_device_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.CreatorDeviceID))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatorDeviceID))
 	builder.WriteString(", ")
 	builder.WriteString("app_sources=")
-	builder.WriteString(fmt.Sprintf("%v", a.AppSources))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppSources))
 	builder.WriteString(", ")
 	builder.WriteString("public=")
-	builder.WriteString(fmt.Sprintf("%v", a.Public))
+	builder.WriteString(fmt.Sprintf("%v", _m.Public))
 	builder.WriteString(", ")
 	builder.WriteString("bound_store_app_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.BoundStoreAppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BoundStoreAppID))
 	builder.WriteString(", ")
 	builder.WriteString("stop_store_manage=")
-	builder.WriteString(fmt.Sprintf("%v", a.StopStoreManage))
+	builder.WriteString(fmt.Sprintf("%v", _m.StopStoreManage))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(a.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("type=")
-	builder.WriteString(fmt.Sprintf("%v", a.Type))
+	builder.WriteString(fmt.Sprintf("%v", _m.Type))
 	builder.WriteString(", ")
 	builder.WriteString("short_description=")
-	builder.WriteString(a.ShortDescription)
+	builder.WriteString(_m.ShortDescription)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(a.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("icon_image_url=")
-	builder.WriteString(a.IconImageURL)
+	builder.WriteString(_m.IconImageURL)
 	builder.WriteString(", ")
 	builder.WriteString("icon_image_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.IconImageID))
+	builder.WriteString(fmt.Sprintf("%v", _m.IconImageID))
 	builder.WriteString(", ")
 	builder.WriteString("background_image_url=")
-	builder.WriteString(a.BackgroundImageURL)
+	builder.WriteString(_m.BackgroundImageURL)
 	builder.WriteString(", ")
 	builder.WriteString("background_image_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.BackgroundImageID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BackgroundImageID))
 	builder.WriteString(", ")
 	builder.WriteString("cover_image_url=")
-	builder.WriteString(a.CoverImageURL)
+	builder.WriteString(_m.CoverImageURL)
 	builder.WriteString(", ")
 	builder.WriteString("cover_image_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.CoverImageID))
+	builder.WriteString(fmt.Sprintf("%v", _m.CoverImageID))
 	builder.WriteString(", ")
 	builder.WriteString("release_date=")
-	builder.WriteString(a.ReleaseDate)
+	builder.WriteString(_m.ReleaseDate)
 	builder.WriteString(", ")
 	builder.WriteString("developer=")
-	builder.WriteString(a.Developer)
+	builder.WriteString(_m.Developer)
 	builder.WriteString(", ")
 	builder.WriteString("publisher=")
-	builder.WriteString(a.Publisher)
+	builder.WriteString(_m.Publisher)
 	builder.WriteString(", ")
 	builder.WriteString("tags=")
-	builder.WriteString(fmt.Sprintf("%v", a.Tags))
+	builder.WriteString(fmt.Sprintf("%v", _m.Tags))
 	builder.WriteString(", ")
 	builder.WriteString("alternative_names=")
-	builder.WriteString(fmt.Sprintf("%v", a.AlternativeNames))
+	builder.WriteString(fmt.Sprintf("%v", _m.AlternativeNames))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(a.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(a.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

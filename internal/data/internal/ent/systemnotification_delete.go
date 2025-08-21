@@ -20,56 +20,56 @@ type SystemNotificationDelete struct {
 }
 
 // Where appends a list predicates to the SystemNotificationDelete builder.
-func (snd *SystemNotificationDelete) Where(ps ...predicate.SystemNotification) *SystemNotificationDelete {
-	snd.mutation.Where(ps...)
-	return snd
+func (_d *SystemNotificationDelete) Where(ps ...predicate.SystemNotification) *SystemNotificationDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (snd *SystemNotificationDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, snd.sqlExec, snd.mutation, snd.hooks)
+func (_d *SystemNotificationDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (snd *SystemNotificationDelete) ExecX(ctx context.Context) int {
-	n, err := snd.Exec(ctx)
+func (_d *SystemNotificationDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (snd *SystemNotificationDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *SystemNotificationDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(systemnotification.Table, sqlgraph.NewFieldSpec(systemnotification.FieldID, field.TypeInt64))
-	if ps := snd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, snd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	snd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // SystemNotificationDeleteOne is the builder for deleting a single SystemNotification entity.
 type SystemNotificationDeleteOne struct {
-	snd *SystemNotificationDelete
+	_d *SystemNotificationDelete
 }
 
 // Where appends a list predicates to the SystemNotificationDelete builder.
-func (sndo *SystemNotificationDeleteOne) Where(ps ...predicate.SystemNotification) *SystemNotificationDeleteOne {
-	sndo.snd.mutation.Where(ps...)
-	return sndo
+func (_d *SystemNotificationDeleteOne) Where(ps ...predicate.SystemNotification) *SystemNotificationDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (sndo *SystemNotificationDeleteOne) Exec(ctx context.Context) error {
-	n, err := sndo.snd.Exec(ctx)
+func (_d *SystemNotificationDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (sndo *SystemNotificationDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sndo *SystemNotificationDeleteOne) ExecX(ctx context.Context) {
-	if err := sndo.Exec(ctx); err != nil {
+func (_d *SystemNotificationDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

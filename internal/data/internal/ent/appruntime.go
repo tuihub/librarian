@@ -77,7 +77,7 @@ func (*AppRunTime) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the AppRunTime fields.
-func (art *AppRunTime) assignValues(columns []string, values []any) error {
+func (_m *AppRunTime) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -87,52 +87,52 @@ func (art *AppRunTime) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				art.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case appruntime.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				art.UserID = model.InternalID(value.Int64)
+				_m.UserID = model.InternalID(value.Int64)
 			}
 		case appruntime.FieldAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
-				art.AppID = model.InternalID(value.Int64)
+				_m.AppID = model.InternalID(value.Int64)
 			}
 		case appruntime.FieldDeviceID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field device_id", values[i])
 			} else if value.Valid {
-				art.DeviceID = model.InternalID(value.Int64)
+				_m.DeviceID = model.InternalID(value.Int64)
 			}
 		case appruntime.FieldStartTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field start_time", values[i])
 			} else if value.Valid {
-				art.StartTime = value.Time
+				_m.StartTime = value.Time
 			}
 		case appruntime.FieldDuration:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field duration", values[i])
 			} else if value.Valid {
-				art.Duration = time.Duration(value.Int64)
+				_m.Duration = time.Duration(value.Int64)
 			}
 		case appruntime.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				art.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case appruntime.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				art.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			art.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -140,58 +140,58 @@ func (art *AppRunTime) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the AppRunTime.
 // This includes values selected through modifiers, order, etc.
-func (art *AppRunTime) Value(name string) (ent.Value, error) {
-	return art.selectValues.Get(name)
+func (_m *AppRunTime) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppRunTime entity.
-func (art *AppRunTime) QueryApp() *AppQuery {
-	return NewAppRunTimeClient(art.config).QueryApp(art)
+func (_m *AppRunTime) QueryApp() *AppQuery {
+	return NewAppRunTimeClient(_m.config).QueryApp(_m)
 }
 
 // Update returns a builder for updating this AppRunTime.
 // Note that you need to call AppRunTime.Unwrap() before calling this method if this AppRunTime
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (art *AppRunTime) Update() *AppRunTimeUpdateOne {
-	return NewAppRunTimeClient(art.config).UpdateOne(art)
+func (_m *AppRunTime) Update() *AppRunTimeUpdateOne {
+	return NewAppRunTimeClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the AppRunTime entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (art *AppRunTime) Unwrap() *AppRunTime {
-	_tx, ok := art.config.driver.(*txDriver)
+func (_m *AppRunTime) Unwrap() *AppRunTime {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: AppRunTime is not a transactional entity")
 	}
-	art.config.driver = _tx.drv
-	return art
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (art *AppRunTime) String() string {
+func (_m *AppRunTime) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppRunTime(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", art.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", art.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", art.AppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.AppID))
 	builder.WriteString(", ")
 	builder.WriteString("device_id=")
-	builder.WriteString(fmt.Sprintf("%v", art.DeviceID))
+	builder.WriteString(fmt.Sprintf("%v", _m.DeviceID))
 	builder.WriteString(", ")
 	builder.WriteString("start_time=")
-	builder.WriteString(art.StartTime.Format(time.ANSIC))
+	builder.WriteString(_m.StartTime.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("duration=")
-	builder.WriteString(fmt.Sprintf("%v", art.Duration))
+	builder.WriteString(fmt.Sprintf("%v", _m.Duration))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(art.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(art.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

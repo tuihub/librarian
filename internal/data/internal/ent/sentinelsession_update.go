@@ -25,173 +25,173 @@ type SentinelSessionUpdate struct {
 }
 
 // Where appends a list predicates to the SentinelSessionUpdate builder.
-func (ssu *SentinelSessionUpdate) Where(ps ...predicate.SentinelSession) *SentinelSessionUpdate {
-	ssu.mutation.Where(ps...)
-	return ssu
+func (_u *SentinelSessionUpdate) Where(ps ...predicate.SentinelSession) *SentinelSessionUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (ssu *SentinelSessionUpdate) SetSentinelID(mi model.InternalID) *SentinelSessionUpdate {
-	ssu.mutation.SetSentinelID(mi)
-	return ssu
+func (_u *SentinelSessionUpdate) SetSentinelID(v model.InternalID) *SentinelSessionUpdate {
+	_u.mutation.SetSentinelID(v)
+	return _u
 }
 
 // SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
-func (ssu *SentinelSessionUpdate) SetNillableSentinelID(mi *model.InternalID) *SentinelSessionUpdate {
-	if mi != nil {
-		ssu.SetSentinelID(*mi)
+func (_u *SentinelSessionUpdate) SetNillableSentinelID(v *model.InternalID) *SentinelSessionUpdate {
+	if v != nil {
+		_u.SetSentinelID(*v)
 	}
-	return ssu
+	return _u
 }
 
 // SetRefreshToken sets the "refresh_token" field.
-func (ssu *SentinelSessionUpdate) SetRefreshToken(s string) *SentinelSessionUpdate {
-	ssu.mutation.SetRefreshToken(s)
-	return ssu
+func (_u *SentinelSessionUpdate) SetRefreshToken(v string) *SentinelSessionUpdate {
+	_u.mutation.SetRefreshToken(v)
+	return _u
 }
 
 // SetNillableRefreshToken sets the "refresh_token" field if the given value is not nil.
-func (ssu *SentinelSessionUpdate) SetNillableRefreshToken(s *string) *SentinelSessionUpdate {
-	if s != nil {
-		ssu.SetRefreshToken(*s)
+func (_u *SentinelSessionUpdate) SetNillableRefreshToken(v *string) *SentinelSessionUpdate {
+	if v != nil {
+		_u.SetRefreshToken(*v)
 	}
-	return ssu
+	return _u
 }
 
 // SetExpireAt sets the "expire_at" field.
-func (ssu *SentinelSessionUpdate) SetExpireAt(t time.Time) *SentinelSessionUpdate {
-	ssu.mutation.SetExpireAt(t)
-	return ssu
+func (_u *SentinelSessionUpdate) SetExpireAt(v time.Time) *SentinelSessionUpdate {
+	_u.mutation.SetExpireAt(v)
+	return _u
 }
 
 // SetNillableExpireAt sets the "expire_at" field if the given value is not nil.
-func (ssu *SentinelSessionUpdate) SetNillableExpireAt(t *time.Time) *SentinelSessionUpdate {
-	if t != nil {
-		ssu.SetExpireAt(*t)
+func (_u *SentinelSessionUpdate) SetNillableExpireAt(v *time.Time) *SentinelSessionUpdate {
+	if v != nil {
+		_u.SetExpireAt(*v)
 	}
-	return ssu
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ssu *SentinelSessionUpdate) SetStatus(s sentinelsession.Status) *SentinelSessionUpdate {
-	ssu.mutation.SetStatus(s)
-	return ssu
+func (_u *SentinelSessionUpdate) SetStatus(v sentinelsession.Status) *SentinelSessionUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ssu *SentinelSessionUpdate) SetNillableStatus(s *sentinelsession.Status) *SentinelSessionUpdate {
-	if s != nil {
-		ssu.SetStatus(*s)
+func (_u *SentinelSessionUpdate) SetNillableStatus(v *sentinelsession.Status) *SentinelSessionUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ssu
+	return _u
 }
 
 // SetLastUsedAt sets the "last_used_at" field.
-func (ssu *SentinelSessionUpdate) SetLastUsedAt(t time.Time) *SentinelSessionUpdate {
-	ssu.mutation.SetLastUsedAt(t)
-	return ssu
+func (_u *SentinelSessionUpdate) SetLastUsedAt(v time.Time) *SentinelSessionUpdate {
+	_u.mutation.SetLastUsedAt(v)
+	return _u
 }
 
 // SetNillableLastUsedAt sets the "last_used_at" field if the given value is not nil.
-func (ssu *SentinelSessionUpdate) SetNillableLastUsedAt(t *time.Time) *SentinelSessionUpdate {
-	if t != nil {
-		ssu.SetLastUsedAt(*t)
+func (_u *SentinelSessionUpdate) SetNillableLastUsedAt(v *time.Time) *SentinelSessionUpdate {
+	if v != nil {
+		_u.SetLastUsedAt(*v)
 	}
-	return ssu
+	return _u
 }
 
 // ClearLastUsedAt clears the value of the "last_used_at" field.
-func (ssu *SentinelSessionUpdate) ClearLastUsedAt() *SentinelSessionUpdate {
-	ssu.mutation.ClearLastUsedAt()
-	return ssu
+func (_u *SentinelSessionUpdate) ClearLastUsedAt() *SentinelSessionUpdate {
+	_u.mutation.ClearLastUsedAt()
+	return _u
 }
 
 // SetLastRefreshedAt sets the "last_refreshed_at" field.
-func (ssu *SentinelSessionUpdate) SetLastRefreshedAt(t time.Time) *SentinelSessionUpdate {
-	ssu.mutation.SetLastRefreshedAt(t)
-	return ssu
+func (_u *SentinelSessionUpdate) SetLastRefreshedAt(v time.Time) *SentinelSessionUpdate {
+	_u.mutation.SetLastRefreshedAt(v)
+	return _u
 }
 
 // SetNillableLastRefreshedAt sets the "last_refreshed_at" field if the given value is not nil.
-func (ssu *SentinelSessionUpdate) SetNillableLastRefreshedAt(t *time.Time) *SentinelSessionUpdate {
-	if t != nil {
-		ssu.SetLastRefreshedAt(*t)
+func (_u *SentinelSessionUpdate) SetNillableLastRefreshedAt(v *time.Time) *SentinelSessionUpdate {
+	if v != nil {
+		_u.SetLastRefreshedAt(*v)
 	}
-	return ssu
+	return _u
 }
 
 // ClearLastRefreshedAt clears the value of the "last_refreshed_at" field.
-func (ssu *SentinelSessionUpdate) ClearLastRefreshedAt() *SentinelSessionUpdate {
-	ssu.mutation.ClearLastRefreshedAt()
-	return ssu
+func (_u *SentinelSessionUpdate) ClearLastRefreshedAt() *SentinelSessionUpdate {
+	_u.mutation.ClearLastRefreshedAt()
+	return _u
 }
 
 // SetRefreshCount sets the "refresh_count" field.
-func (ssu *SentinelSessionUpdate) SetRefreshCount(i int64) *SentinelSessionUpdate {
-	ssu.mutation.ResetRefreshCount()
-	ssu.mutation.SetRefreshCount(i)
-	return ssu
+func (_u *SentinelSessionUpdate) SetRefreshCount(v int64) *SentinelSessionUpdate {
+	_u.mutation.ResetRefreshCount()
+	_u.mutation.SetRefreshCount(v)
+	return _u
 }
 
 // SetNillableRefreshCount sets the "refresh_count" field if the given value is not nil.
-func (ssu *SentinelSessionUpdate) SetNillableRefreshCount(i *int64) *SentinelSessionUpdate {
-	if i != nil {
-		ssu.SetRefreshCount(*i)
+func (_u *SentinelSessionUpdate) SetNillableRefreshCount(v *int64) *SentinelSessionUpdate {
+	if v != nil {
+		_u.SetRefreshCount(*v)
 	}
-	return ssu
+	return _u
 }
 
-// AddRefreshCount adds i to the "refresh_count" field.
-func (ssu *SentinelSessionUpdate) AddRefreshCount(i int64) *SentinelSessionUpdate {
-	ssu.mutation.AddRefreshCount(i)
-	return ssu
+// AddRefreshCount adds value to the "refresh_count" field.
+func (_u *SentinelSessionUpdate) AddRefreshCount(v int64) *SentinelSessionUpdate {
+	_u.mutation.AddRefreshCount(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ssu *SentinelSessionUpdate) SetUpdatedAt(t time.Time) *SentinelSessionUpdate {
-	ssu.mutation.SetUpdatedAt(t)
-	return ssu
+func (_u *SentinelSessionUpdate) SetUpdatedAt(v time.Time) *SentinelSessionUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ssu *SentinelSessionUpdate) SetCreatedAt(t time.Time) *SentinelSessionUpdate {
-	ssu.mutation.SetCreatedAt(t)
-	return ssu
+func (_u *SentinelSessionUpdate) SetCreatedAt(v time.Time) *SentinelSessionUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ssu *SentinelSessionUpdate) SetNillableCreatedAt(t *time.Time) *SentinelSessionUpdate {
-	if t != nil {
-		ssu.SetCreatedAt(*t)
+func (_u *SentinelSessionUpdate) SetNillableCreatedAt(v *time.Time) *SentinelSessionUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return ssu
+	return _u
 }
 
 // SetSentinel sets the "sentinel" edge to the Sentinel entity.
-func (ssu *SentinelSessionUpdate) SetSentinel(s *Sentinel) *SentinelSessionUpdate {
-	return ssu.SetSentinelID(s.ID)
+func (_u *SentinelSessionUpdate) SetSentinel(v *Sentinel) *SentinelSessionUpdate {
+	return _u.SetSentinelID(v.ID)
 }
 
 // Mutation returns the SentinelSessionMutation object of the builder.
-func (ssu *SentinelSessionUpdate) Mutation() *SentinelSessionMutation {
-	return ssu.mutation
+func (_u *SentinelSessionUpdate) Mutation() *SentinelSessionMutation {
+	return _u.mutation
 }
 
 // ClearSentinel clears the "sentinel" edge to the Sentinel entity.
-func (ssu *SentinelSessionUpdate) ClearSentinel() *SentinelSessionUpdate {
-	ssu.mutation.ClearSentinel()
-	return ssu
+func (_u *SentinelSessionUpdate) ClearSentinel() *SentinelSessionUpdate {
+	_u.mutation.ClearSentinel()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ssu *SentinelSessionUpdate) Save(ctx context.Context) (int, error) {
-	ssu.defaults()
-	return withHooks(ctx, ssu.sqlSave, ssu.mutation, ssu.hooks)
+func (_u *SentinelSessionUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ssu *SentinelSessionUpdate) SaveX(ctx context.Context) int {
-	affected, err := ssu.Save(ctx)
+func (_u *SentinelSessionUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -199,85 +199,85 @@ func (ssu *SentinelSessionUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ssu *SentinelSessionUpdate) Exec(ctx context.Context) error {
-	_, err := ssu.Save(ctx)
+func (_u *SentinelSessionUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ssu *SentinelSessionUpdate) ExecX(ctx context.Context) {
-	if err := ssu.Exec(ctx); err != nil {
+func (_u *SentinelSessionUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ssu *SentinelSessionUpdate) defaults() {
-	if _, ok := ssu.mutation.UpdatedAt(); !ok {
+func (_u *SentinelSessionUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinelsession.UpdateDefaultUpdatedAt()
-		ssu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ssu *SentinelSessionUpdate) check() error {
-	if v, ok := ssu.mutation.Status(); ok {
+func (_u *SentinelSessionUpdate) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := sentinelsession.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SentinelSession.status": %w`, err)}
 		}
 	}
-	if ssu.mutation.SentinelCleared() && len(ssu.mutation.SentinelIDs()) > 0 {
+	if _u.mutation.SentinelCleared() && len(_u.mutation.SentinelIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "SentinelSession.sentinel"`)
 	}
 	return nil
 }
 
-func (ssu *SentinelSessionUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ssu.check(); err != nil {
-		return n, err
+func (_u *SentinelSessionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(sentinelsession.Table, sentinelsession.Columns, sqlgraph.NewFieldSpec(sentinelsession.FieldID, field.TypeInt64))
-	if ps := ssu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ssu.mutation.RefreshToken(); ok {
+	if value, ok := _u.mutation.RefreshToken(); ok {
 		_spec.SetField(sentinelsession.FieldRefreshToken, field.TypeString, value)
 	}
-	if value, ok := ssu.mutation.ExpireAt(); ok {
+	if value, ok := _u.mutation.ExpireAt(); ok {
 		_spec.SetField(sentinelsession.FieldExpireAt, field.TypeTime, value)
 	}
-	if value, ok := ssu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(sentinelsession.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := ssu.mutation.LastUsedAt(); ok {
+	if value, ok := _u.mutation.LastUsedAt(); ok {
 		_spec.SetField(sentinelsession.FieldLastUsedAt, field.TypeTime, value)
 	}
-	if ssu.mutation.LastUsedAtCleared() {
+	if _u.mutation.LastUsedAtCleared() {
 		_spec.ClearField(sentinelsession.FieldLastUsedAt, field.TypeTime)
 	}
-	if value, ok := ssu.mutation.LastRefreshedAt(); ok {
+	if value, ok := _u.mutation.LastRefreshedAt(); ok {
 		_spec.SetField(sentinelsession.FieldLastRefreshedAt, field.TypeTime, value)
 	}
-	if ssu.mutation.LastRefreshedAtCleared() {
+	if _u.mutation.LastRefreshedAtCleared() {
 		_spec.ClearField(sentinelsession.FieldLastRefreshedAt, field.TypeTime)
 	}
-	if value, ok := ssu.mutation.RefreshCount(); ok {
+	if value, ok := _u.mutation.RefreshCount(); ok {
 		_spec.SetField(sentinelsession.FieldRefreshCount, field.TypeInt64, value)
 	}
-	if value, ok := ssu.mutation.AddedRefreshCount(); ok {
+	if value, ok := _u.mutation.AddedRefreshCount(); ok {
 		_spec.AddField(sentinelsession.FieldRefreshCount, field.TypeInt64, value)
 	}
-	if value, ok := ssu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinelsession.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := ssu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelsession.FieldCreatedAt, field.TypeTime, value)
 	}
-	if ssu.mutation.SentinelCleared() {
+	if _u.mutation.SentinelCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -290,7 +290,7 @@ func (ssu *SentinelSessionUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ssu.mutation.SentinelIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SentinelIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -306,7 +306,7 @@ func (ssu *SentinelSessionUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ssu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinelsession.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -314,8 +314,8 @@ func (ssu *SentinelSessionUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		return 0, err
 	}
-	ssu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // SentinelSessionUpdateOne is the builder for updating a single SentinelSession entity.
@@ -327,180 +327,180 @@ type SentinelSessionUpdateOne struct {
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (ssuo *SentinelSessionUpdateOne) SetSentinelID(mi model.InternalID) *SentinelSessionUpdateOne {
-	ssuo.mutation.SetSentinelID(mi)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) SetSentinelID(v model.InternalID) *SentinelSessionUpdateOne {
+	_u.mutation.SetSentinelID(v)
+	return _u
 }
 
 // SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
-func (ssuo *SentinelSessionUpdateOne) SetNillableSentinelID(mi *model.InternalID) *SentinelSessionUpdateOne {
-	if mi != nil {
-		ssuo.SetSentinelID(*mi)
+func (_u *SentinelSessionUpdateOne) SetNillableSentinelID(v *model.InternalID) *SentinelSessionUpdateOne {
+	if v != nil {
+		_u.SetSentinelID(*v)
 	}
-	return ssuo
+	return _u
 }
 
 // SetRefreshToken sets the "refresh_token" field.
-func (ssuo *SentinelSessionUpdateOne) SetRefreshToken(s string) *SentinelSessionUpdateOne {
-	ssuo.mutation.SetRefreshToken(s)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) SetRefreshToken(v string) *SentinelSessionUpdateOne {
+	_u.mutation.SetRefreshToken(v)
+	return _u
 }
 
 // SetNillableRefreshToken sets the "refresh_token" field if the given value is not nil.
-func (ssuo *SentinelSessionUpdateOne) SetNillableRefreshToken(s *string) *SentinelSessionUpdateOne {
-	if s != nil {
-		ssuo.SetRefreshToken(*s)
+func (_u *SentinelSessionUpdateOne) SetNillableRefreshToken(v *string) *SentinelSessionUpdateOne {
+	if v != nil {
+		_u.SetRefreshToken(*v)
 	}
-	return ssuo
+	return _u
 }
 
 // SetExpireAt sets the "expire_at" field.
-func (ssuo *SentinelSessionUpdateOne) SetExpireAt(t time.Time) *SentinelSessionUpdateOne {
-	ssuo.mutation.SetExpireAt(t)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) SetExpireAt(v time.Time) *SentinelSessionUpdateOne {
+	_u.mutation.SetExpireAt(v)
+	return _u
 }
 
 // SetNillableExpireAt sets the "expire_at" field if the given value is not nil.
-func (ssuo *SentinelSessionUpdateOne) SetNillableExpireAt(t *time.Time) *SentinelSessionUpdateOne {
-	if t != nil {
-		ssuo.SetExpireAt(*t)
+func (_u *SentinelSessionUpdateOne) SetNillableExpireAt(v *time.Time) *SentinelSessionUpdateOne {
+	if v != nil {
+		_u.SetExpireAt(*v)
 	}
-	return ssuo
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ssuo *SentinelSessionUpdateOne) SetStatus(s sentinelsession.Status) *SentinelSessionUpdateOne {
-	ssuo.mutation.SetStatus(s)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) SetStatus(v sentinelsession.Status) *SentinelSessionUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ssuo *SentinelSessionUpdateOne) SetNillableStatus(s *sentinelsession.Status) *SentinelSessionUpdateOne {
-	if s != nil {
-		ssuo.SetStatus(*s)
+func (_u *SentinelSessionUpdateOne) SetNillableStatus(v *sentinelsession.Status) *SentinelSessionUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ssuo
+	return _u
 }
 
 // SetLastUsedAt sets the "last_used_at" field.
-func (ssuo *SentinelSessionUpdateOne) SetLastUsedAt(t time.Time) *SentinelSessionUpdateOne {
-	ssuo.mutation.SetLastUsedAt(t)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) SetLastUsedAt(v time.Time) *SentinelSessionUpdateOne {
+	_u.mutation.SetLastUsedAt(v)
+	return _u
 }
 
 // SetNillableLastUsedAt sets the "last_used_at" field if the given value is not nil.
-func (ssuo *SentinelSessionUpdateOne) SetNillableLastUsedAt(t *time.Time) *SentinelSessionUpdateOne {
-	if t != nil {
-		ssuo.SetLastUsedAt(*t)
+func (_u *SentinelSessionUpdateOne) SetNillableLastUsedAt(v *time.Time) *SentinelSessionUpdateOne {
+	if v != nil {
+		_u.SetLastUsedAt(*v)
 	}
-	return ssuo
+	return _u
 }
 
 // ClearLastUsedAt clears the value of the "last_used_at" field.
-func (ssuo *SentinelSessionUpdateOne) ClearLastUsedAt() *SentinelSessionUpdateOne {
-	ssuo.mutation.ClearLastUsedAt()
-	return ssuo
+func (_u *SentinelSessionUpdateOne) ClearLastUsedAt() *SentinelSessionUpdateOne {
+	_u.mutation.ClearLastUsedAt()
+	return _u
 }
 
 // SetLastRefreshedAt sets the "last_refreshed_at" field.
-func (ssuo *SentinelSessionUpdateOne) SetLastRefreshedAt(t time.Time) *SentinelSessionUpdateOne {
-	ssuo.mutation.SetLastRefreshedAt(t)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) SetLastRefreshedAt(v time.Time) *SentinelSessionUpdateOne {
+	_u.mutation.SetLastRefreshedAt(v)
+	return _u
 }
 
 // SetNillableLastRefreshedAt sets the "last_refreshed_at" field if the given value is not nil.
-func (ssuo *SentinelSessionUpdateOne) SetNillableLastRefreshedAt(t *time.Time) *SentinelSessionUpdateOne {
-	if t != nil {
-		ssuo.SetLastRefreshedAt(*t)
+func (_u *SentinelSessionUpdateOne) SetNillableLastRefreshedAt(v *time.Time) *SentinelSessionUpdateOne {
+	if v != nil {
+		_u.SetLastRefreshedAt(*v)
 	}
-	return ssuo
+	return _u
 }
 
 // ClearLastRefreshedAt clears the value of the "last_refreshed_at" field.
-func (ssuo *SentinelSessionUpdateOne) ClearLastRefreshedAt() *SentinelSessionUpdateOne {
-	ssuo.mutation.ClearLastRefreshedAt()
-	return ssuo
+func (_u *SentinelSessionUpdateOne) ClearLastRefreshedAt() *SentinelSessionUpdateOne {
+	_u.mutation.ClearLastRefreshedAt()
+	return _u
 }
 
 // SetRefreshCount sets the "refresh_count" field.
-func (ssuo *SentinelSessionUpdateOne) SetRefreshCount(i int64) *SentinelSessionUpdateOne {
-	ssuo.mutation.ResetRefreshCount()
-	ssuo.mutation.SetRefreshCount(i)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) SetRefreshCount(v int64) *SentinelSessionUpdateOne {
+	_u.mutation.ResetRefreshCount()
+	_u.mutation.SetRefreshCount(v)
+	return _u
 }
 
 // SetNillableRefreshCount sets the "refresh_count" field if the given value is not nil.
-func (ssuo *SentinelSessionUpdateOne) SetNillableRefreshCount(i *int64) *SentinelSessionUpdateOne {
-	if i != nil {
-		ssuo.SetRefreshCount(*i)
+func (_u *SentinelSessionUpdateOne) SetNillableRefreshCount(v *int64) *SentinelSessionUpdateOne {
+	if v != nil {
+		_u.SetRefreshCount(*v)
 	}
-	return ssuo
+	return _u
 }
 
-// AddRefreshCount adds i to the "refresh_count" field.
-func (ssuo *SentinelSessionUpdateOne) AddRefreshCount(i int64) *SentinelSessionUpdateOne {
-	ssuo.mutation.AddRefreshCount(i)
-	return ssuo
+// AddRefreshCount adds value to the "refresh_count" field.
+func (_u *SentinelSessionUpdateOne) AddRefreshCount(v int64) *SentinelSessionUpdateOne {
+	_u.mutation.AddRefreshCount(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ssuo *SentinelSessionUpdateOne) SetUpdatedAt(t time.Time) *SentinelSessionUpdateOne {
-	ssuo.mutation.SetUpdatedAt(t)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) SetUpdatedAt(v time.Time) *SentinelSessionUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ssuo *SentinelSessionUpdateOne) SetCreatedAt(t time.Time) *SentinelSessionUpdateOne {
-	ssuo.mutation.SetCreatedAt(t)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) SetCreatedAt(v time.Time) *SentinelSessionUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ssuo *SentinelSessionUpdateOne) SetNillableCreatedAt(t *time.Time) *SentinelSessionUpdateOne {
-	if t != nil {
-		ssuo.SetCreatedAt(*t)
+func (_u *SentinelSessionUpdateOne) SetNillableCreatedAt(v *time.Time) *SentinelSessionUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return ssuo
+	return _u
 }
 
 // SetSentinel sets the "sentinel" edge to the Sentinel entity.
-func (ssuo *SentinelSessionUpdateOne) SetSentinel(s *Sentinel) *SentinelSessionUpdateOne {
-	return ssuo.SetSentinelID(s.ID)
+func (_u *SentinelSessionUpdateOne) SetSentinel(v *Sentinel) *SentinelSessionUpdateOne {
+	return _u.SetSentinelID(v.ID)
 }
 
 // Mutation returns the SentinelSessionMutation object of the builder.
-func (ssuo *SentinelSessionUpdateOne) Mutation() *SentinelSessionMutation {
-	return ssuo.mutation
+func (_u *SentinelSessionUpdateOne) Mutation() *SentinelSessionMutation {
+	return _u.mutation
 }
 
 // ClearSentinel clears the "sentinel" edge to the Sentinel entity.
-func (ssuo *SentinelSessionUpdateOne) ClearSentinel() *SentinelSessionUpdateOne {
-	ssuo.mutation.ClearSentinel()
-	return ssuo
+func (_u *SentinelSessionUpdateOne) ClearSentinel() *SentinelSessionUpdateOne {
+	_u.mutation.ClearSentinel()
+	return _u
 }
 
 // Where appends a list predicates to the SentinelSessionUpdate builder.
-func (ssuo *SentinelSessionUpdateOne) Where(ps ...predicate.SentinelSession) *SentinelSessionUpdateOne {
-	ssuo.mutation.Where(ps...)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) Where(ps ...predicate.SentinelSession) *SentinelSessionUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ssuo *SentinelSessionUpdateOne) Select(field string, fields ...string) *SentinelSessionUpdateOne {
-	ssuo.fields = append([]string{field}, fields...)
-	return ssuo
+func (_u *SentinelSessionUpdateOne) Select(field string, fields ...string) *SentinelSessionUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated SentinelSession entity.
-func (ssuo *SentinelSessionUpdateOne) Save(ctx context.Context) (*SentinelSession, error) {
-	ssuo.defaults()
-	return withHooks(ctx, ssuo.sqlSave, ssuo.mutation, ssuo.hooks)
+func (_u *SentinelSessionUpdateOne) Save(ctx context.Context) (*SentinelSession, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ssuo *SentinelSessionUpdateOne) SaveX(ctx context.Context) *SentinelSession {
-	node, err := ssuo.Save(ctx)
+func (_u *SentinelSessionUpdateOne) SaveX(ctx context.Context) *SentinelSession {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -508,50 +508,50 @@ func (ssuo *SentinelSessionUpdateOne) SaveX(ctx context.Context) *SentinelSessio
 }
 
 // Exec executes the query on the entity.
-func (ssuo *SentinelSessionUpdateOne) Exec(ctx context.Context) error {
-	_, err := ssuo.Save(ctx)
+func (_u *SentinelSessionUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ssuo *SentinelSessionUpdateOne) ExecX(ctx context.Context) {
-	if err := ssuo.Exec(ctx); err != nil {
+func (_u *SentinelSessionUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ssuo *SentinelSessionUpdateOne) defaults() {
-	if _, ok := ssuo.mutation.UpdatedAt(); !ok {
+func (_u *SentinelSessionUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinelsession.UpdateDefaultUpdatedAt()
-		ssuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ssuo *SentinelSessionUpdateOne) check() error {
-	if v, ok := ssuo.mutation.Status(); ok {
+func (_u *SentinelSessionUpdateOne) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := sentinelsession.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SentinelSession.status": %w`, err)}
 		}
 	}
-	if ssuo.mutation.SentinelCleared() && len(ssuo.mutation.SentinelIDs()) > 0 {
+	if _u.mutation.SentinelCleared() && len(_u.mutation.SentinelIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "SentinelSession.sentinel"`)
 	}
 	return nil
 }
 
-func (ssuo *SentinelSessionUpdateOne) sqlSave(ctx context.Context) (_node *SentinelSession, err error) {
-	if err := ssuo.check(); err != nil {
+func (_u *SentinelSessionUpdateOne) sqlSave(ctx context.Context) (_node *SentinelSession, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(sentinelsession.Table, sentinelsession.Columns, sqlgraph.NewFieldSpec(sentinelsession.FieldID, field.TypeInt64))
-	id, ok := ssuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelSession.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ssuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sentinelsession.FieldID)
 		for _, f := range fields {
@@ -563,47 +563,47 @@ func (ssuo *SentinelSessionUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 			}
 		}
 	}
-	if ps := ssuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ssuo.mutation.RefreshToken(); ok {
+	if value, ok := _u.mutation.RefreshToken(); ok {
 		_spec.SetField(sentinelsession.FieldRefreshToken, field.TypeString, value)
 	}
-	if value, ok := ssuo.mutation.ExpireAt(); ok {
+	if value, ok := _u.mutation.ExpireAt(); ok {
 		_spec.SetField(sentinelsession.FieldExpireAt, field.TypeTime, value)
 	}
-	if value, ok := ssuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(sentinelsession.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := ssuo.mutation.LastUsedAt(); ok {
+	if value, ok := _u.mutation.LastUsedAt(); ok {
 		_spec.SetField(sentinelsession.FieldLastUsedAt, field.TypeTime, value)
 	}
-	if ssuo.mutation.LastUsedAtCleared() {
+	if _u.mutation.LastUsedAtCleared() {
 		_spec.ClearField(sentinelsession.FieldLastUsedAt, field.TypeTime)
 	}
-	if value, ok := ssuo.mutation.LastRefreshedAt(); ok {
+	if value, ok := _u.mutation.LastRefreshedAt(); ok {
 		_spec.SetField(sentinelsession.FieldLastRefreshedAt, field.TypeTime, value)
 	}
-	if ssuo.mutation.LastRefreshedAtCleared() {
+	if _u.mutation.LastRefreshedAtCleared() {
 		_spec.ClearField(sentinelsession.FieldLastRefreshedAt, field.TypeTime)
 	}
-	if value, ok := ssuo.mutation.RefreshCount(); ok {
+	if value, ok := _u.mutation.RefreshCount(); ok {
 		_spec.SetField(sentinelsession.FieldRefreshCount, field.TypeInt64, value)
 	}
-	if value, ok := ssuo.mutation.AddedRefreshCount(); ok {
+	if value, ok := _u.mutation.AddedRefreshCount(); ok {
 		_spec.AddField(sentinelsession.FieldRefreshCount, field.TypeInt64, value)
 	}
-	if value, ok := ssuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinelsession.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := ssuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelsession.FieldCreatedAt, field.TypeTime, value)
 	}
-	if ssuo.mutation.SentinelCleared() {
+	if _u.mutation.SentinelCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -616,7 +616,7 @@ func (ssuo *SentinelSessionUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ssuo.mutation.SentinelIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SentinelIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -632,10 +632,10 @@ func (ssuo *SentinelSessionUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &SentinelSession{config: ssuo.config}
+	_node = &SentinelSession{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ssuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinelsession.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -643,6 +643,6 @@ func (ssuo *SentinelSessionUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 		}
 		return nil, err
 	}
-	ssuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

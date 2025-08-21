@@ -58,44 +58,44 @@ func NewTokenMatcher(auth *libauth.Auth) []middleware.Middleware {
 
 func allowAnonymous() map[string]bool {
 	return map[string]bool{
-		"/grpc.health.v1.Health/Check": true,
-		"/grpc.health.v1.Health/Watch": true,
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/GetServerInformation": true,
+		"/grpc.health.v1.Health/Check":                                         true,
+		"/grpc.health.v1.Health/Watch":                                         true,
+		"/librarian.sephirah.v1.LibrarianSephirahService/GetServerInformation": true,
 	}
 }
 
 func register() map[string]bool {
 	return map[string]bool{
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/RegisterUser": true,
+		"/librarian.sephirah.v1.LibrarianSephirahService/RegisterUser": true,
 	}
 }
 
 func login() map[string]bool {
 	return map[string]bool{
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/GetToken": true,
+		"/librarian.sephirah.v1.LibrarianSephirahService/GetToken": true,
 	}
 }
 
 func refreshTokenProtected() map[string]bool {
 	return map[string]bool{
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/RefreshToken":     true,
-		"/librarian.sephirah.v1.porter.LibrarianSephirahPorterService/RefreshToken": true,
-		"/librarian.sephirah.v1.sentinel.LibrarianSentinelService/RefreshToken":     true,
+		"/librarian.sephirah.v1.LibrarianSephirahService/RefreshToken":     true,
+		"/librarian.porter.v1.LibrarianSephirahPorterService/RefreshToken": true,
+		"/librarian.sentinel.v1.LibrarianSentinelService/RefreshToken":     true,
 	}
 }
 
 func uploadTokenProtected() map[string]bool {
 	return map[string]bool{
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/SimpleUploadFile":          true,
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/PresignedUploadFile":       true,
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/PresignedUploadFileStatus": true,
+		"/librarian.sephirah.v1.LibrarianSephirahService/SimpleUploadFile":          true,
+		"/librarian.sephirah.v1.LibrarianSephirahService/PresignedUploadFile":       true,
+		"/librarian.sephirah.v1.LibrarianSephirahService/PresignedUploadFileStatus": true,
 	}
 }
 
 func downloadTokenProtected() map[string]bool {
 	return map[string]bool{
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/SimpleDownloadFile":    true,
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/PresignedDownloadFile": true,
+		"/librarian.sephirah.v1.LibrarianSephirahService/SimpleDownloadFile":    true,
+		"/librarian.sephirah.v1.LibrarianSephirahService/PresignedDownloadFile": true,
 	}
 }
 

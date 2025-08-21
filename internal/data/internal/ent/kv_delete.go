@@ -20,56 +20,56 @@ type KVDelete struct {
 }
 
 // Where appends a list predicates to the KVDelete builder.
-func (kd *KVDelete) Where(ps ...predicate.KV) *KVDelete {
-	kd.mutation.Where(ps...)
-	return kd
+func (_d *KVDelete) Where(ps ...predicate.KV) *KVDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (kd *KVDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, kd.sqlExec, kd.mutation, kd.hooks)
+func (_d *KVDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (kd *KVDelete) ExecX(ctx context.Context) int {
-	n, err := kd.Exec(ctx)
+func (_d *KVDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (kd *KVDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *KVDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(kv.Table, sqlgraph.NewFieldSpec(kv.FieldID, field.TypeInt))
-	if ps := kd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, kd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	kd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // KVDeleteOne is the builder for deleting a single KV entity.
 type KVDeleteOne struct {
-	kd *KVDelete
+	_d *KVDelete
 }
 
 // Where appends a list predicates to the KVDelete builder.
-func (kdo *KVDeleteOne) Where(ps ...predicate.KV) *KVDeleteOne {
-	kdo.kd.mutation.Where(ps...)
-	return kdo
+func (_d *KVDeleteOne) Where(ps ...predicate.KV) *KVDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (kdo *KVDeleteOne) Exec(ctx context.Context) error {
-	n, err := kdo.kd.Exec(ctx)
+func (_d *KVDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (kdo *KVDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (kdo *KVDeleteOne) ExecX(ctx context.Context) {
-	if err := kdo.Exec(ctx); err != nil {
+func (_d *KVDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -26,129 +26,129 @@ type ImageUpdate struct {
 }
 
 // Where appends a list predicates to the ImageUpdate builder.
-func (iu *ImageUpdate) Where(ps ...predicate.Image) *ImageUpdate {
-	iu.mutation.Where(ps...)
-	return iu
+func (_u *ImageUpdate) Where(ps ...predicate.Image) *ImageUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (iu *ImageUpdate) SetName(s string) *ImageUpdate {
-	iu.mutation.SetName(s)
-	return iu
+func (_u *ImageUpdate) SetName(v string) *ImageUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (iu *ImageUpdate) SetNillableName(s *string) *ImageUpdate {
-	if s != nil {
-		iu.SetName(*s)
+func (_u *ImageUpdate) SetNillableName(v *string) *ImageUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return iu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (iu *ImageUpdate) SetDescription(s string) *ImageUpdate {
-	iu.mutation.SetDescription(s)
-	return iu
+func (_u *ImageUpdate) SetDescription(v string) *ImageUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (iu *ImageUpdate) SetNillableDescription(s *string) *ImageUpdate {
-	if s != nil {
-		iu.SetDescription(*s)
+func (_u *ImageUpdate) SetNillableDescription(v *string) *ImageUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return iu
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (iu *ImageUpdate) SetStatus(i image.Status) *ImageUpdate {
-	iu.mutation.SetStatus(i)
-	return iu
+func (_u *ImageUpdate) SetStatus(v image.Status) *ImageUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (iu *ImageUpdate) SetNillableStatus(i *image.Status) *ImageUpdate {
-	if i != nil {
-		iu.SetStatus(*i)
+func (_u *ImageUpdate) SetNillableStatus(v *image.Status) *ImageUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return iu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (iu *ImageUpdate) SetUpdatedAt(t time.Time) *ImageUpdate {
-	iu.mutation.SetUpdatedAt(t)
-	return iu
+func (_u *ImageUpdate) SetUpdatedAt(v time.Time) *ImageUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (iu *ImageUpdate) SetCreatedAt(t time.Time) *ImageUpdate {
-	iu.mutation.SetCreatedAt(t)
-	return iu
+func (_u *ImageUpdate) SetCreatedAt(v time.Time) *ImageUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (iu *ImageUpdate) SetNillableCreatedAt(t *time.Time) *ImageUpdate {
-	if t != nil {
-		iu.SetCreatedAt(*t)
+func (_u *ImageUpdate) SetNillableCreatedAt(v *time.Time) *ImageUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return iu
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (iu *ImageUpdate) SetOwnerID(id model.InternalID) *ImageUpdate {
-	iu.mutation.SetOwnerID(id)
-	return iu
+func (_u *ImageUpdate) SetOwnerID(id model.InternalID) *ImageUpdate {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (iu *ImageUpdate) SetOwner(u *User) *ImageUpdate {
-	return iu.SetOwnerID(u.ID)
+func (_u *ImageUpdate) SetOwner(v *User) *ImageUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // SetFileID sets the "file" edge to the File entity by ID.
-func (iu *ImageUpdate) SetFileID(id model.InternalID) *ImageUpdate {
-	iu.mutation.SetFileID(id)
-	return iu
+func (_u *ImageUpdate) SetFileID(id model.InternalID) *ImageUpdate {
+	_u.mutation.SetFileID(id)
+	return _u
 }
 
 // SetNillableFileID sets the "file" edge to the File entity by ID if the given value is not nil.
-func (iu *ImageUpdate) SetNillableFileID(id *model.InternalID) *ImageUpdate {
+func (_u *ImageUpdate) SetNillableFileID(id *model.InternalID) *ImageUpdate {
 	if id != nil {
-		iu = iu.SetFileID(*id)
+		_u = _u.SetFileID(*id)
 	}
-	return iu
+	return _u
 }
 
 // SetFile sets the "file" edge to the File entity.
-func (iu *ImageUpdate) SetFile(f *File) *ImageUpdate {
-	return iu.SetFileID(f.ID)
+func (_u *ImageUpdate) SetFile(v *File) *ImageUpdate {
+	return _u.SetFileID(v.ID)
 }
 
 // Mutation returns the ImageMutation object of the builder.
-func (iu *ImageUpdate) Mutation() *ImageMutation {
-	return iu.mutation
+func (_u *ImageUpdate) Mutation() *ImageMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (iu *ImageUpdate) ClearOwner() *ImageUpdate {
-	iu.mutation.ClearOwner()
-	return iu
+func (_u *ImageUpdate) ClearOwner() *ImageUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearFile clears the "file" edge to the File entity.
-func (iu *ImageUpdate) ClearFile() *ImageUpdate {
-	iu.mutation.ClearFile()
-	return iu
+func (_u *ImageUpdate) ClearFile() *ImageUpdate {
+	_u.mutation.ClearFile()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (iu *ImageUpdate) Save(ctx context.Context) (int, error) {
-	iu.defaults()
-	return withHooks(ctx, iu.sqlSave, iu.mutation, iu.hooks)
+func (_u *ImageUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (iu *ImageUpdate) SaveX(ctx context.Context) int {
-	affected, err := iu.Save(ctx)
+func (_u *ImageUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -156,67 +156,67 @@ func (iu *ImageUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (iu *ImageUpdate) Exec(ctx context.Context) error {
-	_, err := iu.Save(ctx)
+func (_u *ImageUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iu *ImageUpdate) ExecX(ctx context.Context) {
-	if err := iu.Exec(ctx); err != nil {
+func (_u *ImageUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (iu *ImageUpdate) defaults() {
-	if _, ok := iu.mutation.UpdatedAt(); !ok {
+func (_u *ImageUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := image.UpdateDefaultUpdatedAt()
-		iu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (iu *ImageUpdate) check() error {
-	if v, ok := iu.mutation.Status(); ok {
+func (_u *ImageUpdate) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := image.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Image.status": %w`, err)}
 		}
 	}
-	if iu.mutation.OwnerCleared() && len(iu.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Image.owner"`)
 	}
 	return nil
 }
 
-func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := iu.check(); err != nil {
-		return n, err
+func (_u *ImageUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64))
-	if ps := iu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := iu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(image.FieldName, field.TypeString, value)
 	}
-	if value, ok := iu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(image.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := iu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(image.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := iu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(image.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := iu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(image.FieldCreatedAt, field.TypeTime, value)
 	}
-	if iu.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -229,7 +229,7 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := iu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -245,7 +245,7 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if iu.mutation.FileCleared() {
+	if _u.mutation.FileCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -258,7 +258,7 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := iu.mutation.FileIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -274,7 +274,7 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, iu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{image.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -282,8 +282,8 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	iu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // ImageUpdateOne is the builder for updating a single Image entity.
@@ -295,136 +295,136 @@ type ImageUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (iuo *ImageUpdateOne) SetName(s string) *ImageUpdateOne {
-	iuo.mutation.SetName(s)
-	return iuo
+func (_u *ImageUpdateOne) SetName(v string) *ImageUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillableName(s *string) *ImageUpdateOne {
-	if s != nil {
-		iuo.SetName(*s)
+func (_u *ImageUpdateOne) SetNillableName(v *string) *ImageUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return iuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (iuo *ImageUpdateOne) SetDescription(s string) *ImageUpdateOne {
-	iuo.mutation.SetDescription(s)
-	return iuo
+func (_u *ImageUpdateOne) SetDescription(v string) *ImageUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillableDescription(s *string) *ImageUpdateOne {
-	if s != nil {
-		iuo.SetDescription(*s)
+func (_u *ImageUpdateOne) SetNillableDescription(v *string) *ImageUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return iuo
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (iuo *ImageUpdateOne) SetStatus(i image.Status) *ImageUpdateOne {
-	iuo.mutation.SetStatus(i)
-	return iuo
+func (_u *ImageUpdateOne) SetStatus(v image.Status) *ImageUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillableStatus(i *image.Status) *ImageUpdateOne {
-	if i != nil {
-		iuo.SetStatus(*i)
+func (_u *ImageUpdateOne) SetNillableStatus(v *image.Status) *ImageUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return iuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (iuo *ImageUpdateOne) SetUpdatedAt(t time.Time) *ImageUpdateOne {
-	iuo.mutation.SetUpdatedAt(t)
-	return iuo
+func (_u *ImageUpdateOne) SetUpdatedAt(v time.Time) *ImageUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (iuo *ImageUpdateOne) SetCreatedAt(t time.Time) *ImageUpdateOne {
-	iuo.mutation.SetCreatedAt(t)
-	return iuo
+func (_u *ImageUpdateOne) SetCreatedAt(v time.Time) *ImageUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillableCreatedAt(t *time.Time) *ImageUpdateOne {
-	if t != nil {
-		iuo.SetCreatedAt(*t)
+func (_u *ImageUpdateOne) SetNillableCreatedAt(v *time.Time) *ImageUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return iuo
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (iuo *ImageUpdateOne) SetOwnerID(id model.InternalID) *ImageUpdateOne {
-	iuo.mutation.SetOwnerID(id)
-	return iuo
+func (_u *ImageUpdateOne) SetOwnerID(id model.InternalID) *ImageUpdateOne {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (iuo *ImageUpdateOne) SetOwner(u *User) *ImageUpdateOne {
-	return iuo.SetOwnerID(u.ID)
+func (_u *ImageUpdateOne) SetOwner(v *User) *ImageUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // SetFileID sets the "file" edge to the File entity by ID.
-func (iuo *ImageUpdateOne) SetFileID(id model.InternalID) *ImageUpdateOne {
-	iuo.mutation.SetFileID(id)
-	return iuo
+func (_u *ImageUpdateOne) SetFileID(id model.InternalID) *ImageUpdateOne {
+	_u.mutation.SetFileID(id)
+	return _u
 }
 
 // SetNillableFileID sets the "file" edge to the File entity by ID if the given value is not nil.
-func (iuo *ImageUpdateOne) SetNillableFileID(id *model.InternalID) *ImageUpdateOne {
+func (_u *ImageUpdateOne) SetNillableFileID(id *model.InternalID) *ImageUpdateOne {
 	if id != nil {
-		iuo = iuo.SetFileID(*id)
+		_u = _u.SetFileID(*id)
 	}
-	return iuo
+	return _u
 }
 
 // SetFile sets the "file" edge to the File entity.
-func (iuo *ImageUpdateOne) SetFile(f *File) *ImageUpdateOne {
-	return iuo.SetFileID(f.ID)
+func (_u *ImageUpdateOne) SetFile(v *File) *ImageUpdateOne {
+	return _u.SetFileID(v.ID)
 }
 
 // Mutation returns the ImageMutation object of the builder.
-func (iuo *ImageUpdateOne) Mutation() *ImageMutation {
-	return iuo.mutation
+func (_u *ImageUpdateOne) Mutation() *ImageMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (iuo *ImageUpdateOne) ClearOwner() *ImageUpdateOne {
-	iuo.mutation.ClearOwner()
-	return iuo
+func (_u *ImageUpdateOne) ClearOwner() *ImageUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearFile clears the "file" edge to the File entity.
-func (iuo *ImageUpdateOne) ClearFile() *ImageUpdateOne {
-	iuo.mutation.ClearFile()
-	return iuo
+func (_u *ImageUpdateOne) ClearFile() *ImageUpdateOne {
+	_u.mutation.ClearFile()
+	return _u
 }
 
 // Where appends a list predicates to the ImageUpdate builder.
-func (iuo *ImageUpdateOne) Where(ps ...predicate.Image) *ImageUpdateOne {
-	iuo.mutation.Where(ps...)
-	return iuo
+func (_u *ImageUpdateOne) Where(ps ...predicate.Image) *ImageUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (iuo *ImageUpdateOne) Select(field string, fields ...string) *ImageUpdateOne {
-	iuo.fields = append([]string{field}, fields...)
-	return iuo
+func (_u *ImageUpdateOne) Select(field string, fields ...string) *ImageUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Image entity.
-func (iuo *ImageUpdateOne) Save(ctx context.Context) (*Image, error) {
-	iuo.defaults()
-	return withHooks(ctx, iuo.sqlSave, iuo.mutation, iuo.hooks)
+func (_u *ImageUpdateOne) Save(ctx context.Context) (*Image, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (iuo *ImageUpdateOne) SaveX(ctx context.Context) *Image {
-	node, err := iuo.Save(ctx)
+func (_u *ImageUpdateOne) SaveX(ctx context.Context) *Image {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -432,50 +432,50 @@ func (iuo *ImageUpdateOne) SaveX(ctx context.Context) *Image {
 }
 
 // Exec executes the query on the entity.
-func (iuo *ImageUpdateOne) Exec(ctx context.Context) error {
-	_, err := iuo.Save(ctx)
+func (_u *ImageUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (iuo *ImageUpdateOne) ExecX(ctx context.Context) {
-	if err := iuo.Exec(ctx); err != nil {
+func (_u *ImageUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (iuo *ImageUpdateOne) defaults() {
-	if _, ok := iuo.mutation.UpdatedAt(); !ok {
+func (_u *ImageUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := image.UpdateDefaultUpdatedAt()
-		iuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (iuo *ImageUpdateOne) check() error {
-	if v, ok := iuo.mutation.Status(); ok {
+func (_u *ImageUpdateOne) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := image.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Image.status": %w`, err)}
 		}
 	}
-	if iuo.mutation.OwnerCleared() && len(iuo.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Image.owner"`)
 	}
 	return nil
 }
 
-func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error) {
-	if err := iuo.check(); err != nil {
+func (_u *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64))
-	id, ok := iuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Image.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := iuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, image.FieldID)
 		for _, f := range fields {
@@ -487,29 +487,29 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 			}
 		}
 	}
-	if ps := iuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := iuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(image.FieldName, field.TypeString, value)
 	}
-	if value, ok := iuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(image.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := iuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(image.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := iuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(image.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := iuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(image.FieldCreatedAt, field.TypeTime, value)
 	}
-	if iuo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -522,7 +522,7 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := iuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -538,7 +538,7 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if iuo.mutation.FileCleared() {
+	if _u.mutation.FileCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -551,7 +551,7 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := iuo.mutation.FileIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -567,10 +567,10 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Image{config: iuo.config}
+	_node = &Image{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, iuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{image.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -578,6 +578,6 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 		}
 		return nil, err
 	}
-	iuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

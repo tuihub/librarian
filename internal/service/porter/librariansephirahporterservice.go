@@ -10,7 +10,7 @@ import (
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
+	"github.com/tuihub/protos/pkg/librarian/porter/v1/v1connect"
 
 	"github.com/google/wire"
 )
@@ -18,7 +18,7 @@ import (
 var ProviderSet = wire.NewSet(NewLibrarianSephirahPorterService)
 
 type LibrarianSephirahPorterService struct {
-	pb.UnimplementedLibrarianSephirahPorterServiceServer
+	v1connect.UnimplementedLibrarianSephirahPorterServiceHandler
 
 	a    *bizkether.Kether
 	t    *biztiphereth.Tiphereth
@@ -41,9 +41,9 @@ func NewLibrarianSephirahPorterService(
 	c *bizchesed.Chesed,
 	app *libapp.Settings,
 	auth *libauth.Auth,
-) pb.LibrarianSephirahPorterServiceServer {
+) v1connect.LibrarianSephirahPorterServiceHandler {
 	res := &LibrarianSephirahPorterService{
-		UnimplementedLibrarianSephirahPorterServiceServer: pb.UnimplementedLibrarianSephirahPorterServiceServer{},
+		UnimplementedLibrarianSephirahPorterServiceHandler: v1connect.UnimplementedLibrarianSephirahPorterServiceHandler{},
 		a:    a,
 		t:    t,
 		g:    g,

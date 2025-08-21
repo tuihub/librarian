@@ -5,7 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 

@@ -87,7 +87,7 @@ func (*FeedConfigAction) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the FeedConfigAction fields.
-func (fca *FeedConfigAction) assignValues(columns []string, values []any) error {
+func (_m *FeedConfigAction) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -98,39 +98,39 @@ func (fca *FeedConfigAction) assignValues(columns []string, values []any) error 
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			fca.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case feedconfigaction.FieldFeedConfigID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_config_id", values[i])
 			} else if value.Valid {
-				fca.FeedConfigID = model.InternalID(value.Int64)
+				_m.FeedConfigID = model.InternalID(value.Int64)
 			}
 		case feedconfigaction.FieldFeedActionSetID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_action_set_id", values[i])
 			} else if value.Valid {
-				fca.FeedActionSetID = model.InternalID(value.Int64)
+				_m.FeedActionSetID = model.InternalID(value.Int64)
 			}
 		case feedconfigaction.FieldIndex:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field index", values[i])
 			} else if value.Valid {
-				fca.Index = value.Int64
+				_m.Index = value.Int64
 			}
 		case feedconfigaction.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				fca.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case feedconfigaction.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				fca.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			fca.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -138,57 +138,57 @@ func (fca *FeedConfigAction) assignValues(columns []string, values []any) error 
 
 // Value returns the ent.Value that was dynamically selected and assigned to the FeedConfigAction.
 // This includes values selected through modifiers, order, etc.
-func (fca *FeedConfigAction) Value(name string) (ent.Value, error) {
-	return fca.selectValues.Get(name)
+func (_m *FeedConfigAction) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryFeedConfig queries the "feed_config" edge of the FeedConfigAction entity.
-func (fca *FeedConfigAction) QueryFeedConfig() *FeedConfigQuery {
-	return NewFeedConfigActionClient(fca.config).QueryFeedConfig(fca)
+func (_m *FeedConfigAction) QueryFeedConfig() *FeedConfigQuery {
+	return NewFeedConfigActionClient(_m.config).QueryFeedConfig(_m)
 }
 
 // QueryFeedActionSet queries the "feed_action_set" edge of the FeedConfigAction entity.
-func (fca *FeedConfigAction) QueryFeedActionSet() *FeedActionSetQuery {
-	return NewFeedConfigActionClient(fca.config).QueryFeedActionSet(fca)
+func (_m *FeedConfigAction) QueryFeedActionSet() *FeedActionSetQuery {
+	return NewFeedConfigActionClient(_m.config).QueryFeedActionSet(_m)
 }
 
 // Update returns a builder for updating this FeedConfigAction.
 // Note that you need to call FeedConfigAction.Unwrap() before calling this method if this FeedConfigAction
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (fca *FeedConfigAction) Update() *FeedConfigActionUpdateOne {
-	return NewFeedConfigActionClient(fca.config).UpdateOne(fca)
+func (_m *FeedConfigAction) Update() *FeedConfigActionUpdateOne {
+	return NewFeedConfigActionClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the FeedConfigAction entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (fca *FeedConfigAction) Unwrap() *FeedConfigAction {
-	_tx, ok := fca.config.driver.(*txDriver)
+func (_m *FeedConfigAction) Unwrap() *FeedConfigAction {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: FeedConfigAction is not a transactional entity")
 	}
-	fca.config.driver = _tx.drv
-	return fca
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (fca *FeedConfigAction) String() string {
+func (_m *FeedConfigAction) String() string {
 	var builder strings.Builder
 	builder.WriteString("FeedConfigAction(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", fca.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("feed_config_id=")
-	builder.WriteString(fmt.Sprintf("%v", fca.FeedConfigID))
+	builder.WriteString(fmt.Sprintf("%v", _m.FeedConfigID))
 	builder.WriteString(", ")
 	builder.WriteString("feed_action_set_id=")
-	builder.WriteString(fmt.Sprintf("%v", fca.FeedActionSetID))
+	builder.WriteString(fmt.Sprintf("%v", _m.FeedActionSetID))
 	builder.WriteString(", ")
 	builder.WriteString("index=")
-	builder.WriteString(fmt.Sprintf("%v", fca.Index))
+	builder.WriteString(fmt.Sprintf("%v", _m.Index))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(fca.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(fca.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

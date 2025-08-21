@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/internal/service/sentinel/converter"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
+	pb "github.com/tuihub/protos/pkg/librarian/sentinel/v1"
 
 	"github.com/samber/lo"
 )

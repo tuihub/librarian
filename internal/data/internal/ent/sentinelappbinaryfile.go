@@ -65,7 +65,7 @@ func (*SentinelAppBinaryFile) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the SentinelAppBinaryFile fields.
-func (sabf *SentinelAppBinaryFile) assignValues(columns []string, values []any) error {
+func (_m *SentinelAppBinaryFile) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -75,76 +75,76 @@ func (sabf *SentinelAppBinaryFile) assignValues(columns []string, values []any) 
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				sabf.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case sentinelappbinaryfile.FieldSentinelID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_id", values[i])
 			} else if value.Valid {
-				sabf.SentinelID = model.InternalID(value.Int64)
+				_m.SentinelID = model.InternalID(value.Int64)
 			}
 		case sentinelappbinaryfile.FieldSentinelLibraryReportedID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_library_reported_id", values[i])
 			} else if value.Valid {
-				sabf.SentinelLibraryReportedID = value.Int64
+				_m.SentinelLibraryReportedID = value.Int64
 			}
 		case sentinelappbinaryfile.FieldLibrarySnapshot:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field library_snapshot", values[i])
 			} else if value.Valid {
-				sabf.LibrarySnapshot = value.Time
+				_m.LibrarySnapshot = value.Time
 			}
 		case sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_app_binary_generated_id", values[i])
 			} else if value.Valid {
-				sabf.SentinelAppBinaryGeneratedID = value.String
+				_m.SentinelAppBinaryGeneratedID = value.String
 			}
 		case sentinelappbinaryfile.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				sabf.Name = value.String
+				_m.Name = value.String
 			}
 		case sentinelappbinaryfile.FieldSizeBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field size_bytes", values[i])
 			} else if value.Valid {
-				sabf.SizeBytes = value.Int64
+				_m.SizeBytes = value.Int64
 			}
 		case sentinelappbinaryfile.FieldSha256:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field sha256", values[i])
 			} else if value != nil {
-				sabf.Sha256 = *value
+				_m.Sha256 = *value
 			}
 		case sentinelappbinaryfile.FieldServerFilePath:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field server_file_path", values[i])
 			} else if value.Valid {
-				sabf.ServerFilePath = value.String
+				_m.ServerFilePath = value.String
 			}
 		case sentinelappbinaryfile.FieldChunksInfo:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field chunks_info", values[i])
 			} else if value.Valid {
-				sabf.ChunksInfo = value.String
+				_m.ChunksInfo = value.String
 			}
 		case sentinelappbinaryfile.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				sabf.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case sentinelappbinaryfile.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				sabf.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			sabf.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -152,65 +152,65 @@ func (sabf *SentinelAppBinaryFile) assignValues(columns []string, values []any) 
 
 // Value returns the ent.Value that was dynamically selected and assigned to the SentinelAppBinaryFile.
 // This includes values selected through modifiers, order, etc.
-func (sabf *SentinelAppBinaryFile) Value(name string) (ent.Value, error) {
-	return sabf.selectValues.Get(name)
+func (_m *SentinelAppBinaryFile) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this SentinelAppBinaryFile.
 // Note that you need to call SentinelAppBinaryFile.Unwrap() before calling this method if this SentinelAppBinaryFile
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (sabf *SentinelAppBinaryFile) Update() *SentinelAppBinaryFileUpdateOne {
-	return NewSentinelAppBinaryFileClient(sabf.config).UpdateOne(sabf)
+func (_m *SentinelAppBinaryFile) Update() *SentinelAppBinaryFileUpdateOne {
+	return NewSentinelAppBinaryFileClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the SentinelAppBinaryFile entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (sabf *SentinelAppBinaryFile) Unwrap() *SentinelAppBinaryFile {
-	_tx, ok := sabf.config.driver.(*txDriver)
+func (_m *SentinelAppBinaryFile) Unwrap() *SentinelAppBinaryFile {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: SentinelAppBinaryFile is not a transactional entity")
 	}
-	sabf.config.driver = _tx.drv
-	return sabf
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (sabf *SentinelAppBinaryFile) String() string {
+func (_m *SentinelAppBinaryFile) String() string {
 	var builder strings.Builder
 	builder.WriteString("SentinelAppBinaryFile(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", sabf.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("sentinel_id=")
-	builder.WriteString(fmt.Sprintf("%v", sabf.SentinelID))
+	builder.WriteString(fmt.Sprintf("%v", _m.SentinelID))
 	builder.WriteString(", ")
 	builder.WriteString("sentinel_library_reported_id=")
-	builder.WriteString(fmt.Sprintf("%v", sabf.SentinelLibraryReportedID))
+	builder.WriteString(fmt.Sprintf("%v", _m.SentinelLibraryReportedID))
 	builder.WriteString(", ")
 	builder.WriteString("library_snapshot=")
-	builder.WriteString(sabf.LibrarySnapshot.Format(time.ANSIC))
+	builder.WriteString(_m.LibrarySnapshot.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("sentinel_app_binary_generated_id=")
-	builder.WriteString(sabf.SentinelAppBinaryGeneratedID)
+	builder.WriteString(_m.SentinelAppBinaryGeneratedID)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(sabf.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("size_bytes=")
-	builder.WriteString(fmt.Sprintf("%v", sabf.SizeBytes))
+	builder.WriteString(fmt.Sprintf("%v", _m.SizeBytes))
 	builder.WriteString(", ")
 	builder.WriteString("sha256=")
-	builder.WriteString(fmt.Sprintf("%v", sabf.Sha256))
+	builder.WriteString(fmt.Sprintf("%v", _m.Sha256))
 	builder.WriteString(", ")
 	builder.WriteString("server_file_path=")
-	builder.WriteString(sabf.ServerFilePath)
+	builder.WriteString(_m.ServerFilePath)
 	builder.WriteString(", ")
 	builder.WriteString("chunks_info=")
-	builder.WriteString(sabf.ChunksInfo)
+	builder.WriteString(_m.ChunksInfo)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(sabf.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(sabf.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

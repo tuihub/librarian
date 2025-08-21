@@ -6,8 +6,7 @@ import (
 	tuihubrss "github.com/tuihub/librarian/pkg/tuihub-rss"
 	tuihubsteam "github.com/tuihub/librarian/pkg/tuihub-steam"
 	tuihubtelegram "github.com/tuihub/librarian/pkg/tuihub-telegram"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
+	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/fullstorydev/grpchan/inprocgrpc"
 	"github.com/go-kratos/kratos/v2/middleware"
@@ -17,7 +16,7 @@ import (
 
 type InprocPorter struct {
 	porters   []*tuihub.Porter
-	Instances map[string]porter.LibrarianPorterServiceServer
+	Instances map[string]pb.LibrarianPorterServiceServer
 	Servers   []transport.Server
 }
 
@@ -38,7 +37,7 @@ func NewInprocPorter() (*InprocPorter, error) {
 		porters: []*tuihub.Porter{
 			rss, steam, telegram,
 		},
-		Instances: map[string]porter.LibrarianPorterServiceServer{
+		Instances: map[string]pb.LibrarianPorterServiceServer{
 			"inproc://tuihub-rss":      rss.GetPorterService(),
 			"inproc://tuihub-steam":    steam.GetPorterService(),
 			"inproc://tuihub-telegram": telegram.GetPorterService(),

@@ -27,255 +27,255 @@ type FeedItemCreate struct {
 }
 
 // SetFeedID sets the "feed_id" field.
-func (fic *FeedItemCreate) SetFeedID(mi model.InternalID) *FeedItemCreate {
-	fic.mutation.SetFeedID(mi)
-	return fic
+func (_c *FeedItemCreate) SetFeedID(v model.InternalID) *FeedItemCreate {
+	_c.mutation.SetFeedID(v)
+	return _c
 }
 
 // SetTitle sets the "title" field.
-func (fic *FeedItemCreate) SetTitle(s string) *FeedItemCreate {
-	fic.mutation.SetTitle(s)
-	return fic
+func (_c *FeedItemCreate) SetTitle(v string) *FeedItemCreate {
+	_c.mutation.SetTitle(v)
+	return _c
 }
 
 // SetNillableTitle sets the "title" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableTitle(s *string) *FeedItemCreate {
-	if s != nil {
-		fic.SetTitle(*s)
+func (_c *FeedItemCreate) SetNillableTitle(v *string) *FeedItemCreate {
+	if v != nil {
+		_c.SetTitle(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetAuthors sets the "authors" field.
-func (fic *FeedItemCreate) SetAuthors(m []*modelfeed.Person) *FeedItemCreate {
-	fic.mutation.SetAuthors(m)
-	return fic
+func (_c *FeedItemCreate) SetAuthors(v []*modelfeed.Person) *FeedItemCreate {
+	_c.mutation.SetAuthors(v)
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (fic *FeedItemCreate) SetDescription(s string) *FeedItemCreate {
-	fic.mutation.SetDescription(s)
-	return fic
+func (_c *FeedItemCreate) SetDescription(v string) *FeedItemCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableDescription(s *string) *FeedItemCreate {
-	if s != nil {
-		fic.SetDescription(*s)
+func (_c *FeedItemCreate) SetNillableDescription(v *string) *FeedItemCreate {
+	if v != nil {
+		_c.SetDescription(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetContent sets the "content" field.
-func (fic *FeedItemCreate) SetContent(s string) *FeedItemCreate {
-	fic.mutation.SetContent(s)
-	return fic
+func (_c *FeedItemCreate) SetContent(v string) *FeedItemCreate {
+	_c.mutation.SetContent(v)
+	return _c
 }
 
 // SetNillableContent sets the "content" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableContent(s *string) *FeedItemCreate {
-	if s != nil {
-		fic.SetContent(*s)
+func (_c *FeedItemCreate) SetNillableContent(v *string) *FeedItemCreate {
+	if v != nil {
+		_c.SetContent(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetGUID sets the "guid" field.
-func (fic *FeedItemCreate) SetGUID(s string) *FeedItemCreate {
-	fic.mutation.SetGUID(s)
-	return fic
+func (_c *FeedItemCreate) SetGUID(v string) *FeedItemCreate {
+	_c.mutation.SetGUID(v)
+	return _c
 }
 
 // SetLink sets the "link" field.
-func (fic *FeedItemCreate) SetLink(s string) *FeedItemCreate {
-	fic.mutation.SetLink(s)
-	return fic
+func (_c *FeedItemCreate) SetLink(v string) *FeedItemCreate {
+	_c.mutation.SetLink(v)
+	return _c
 }
 
 // SetNillableLink sets the "link" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableLink(s *string) *FeedItemCreate {
-	if s != nil {
-		fic.SetLink(*s)
+func (_c *FeedItemCreate) SetNillableLink(v *string) *FeedItemCreate {
+	if v != nil {
+		_c.SetLink(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetImage sets the "image" field.
-func (fic *FeedItemCreate) SetImage(m *modelfeed.Image) *FeedItemCreate {
-	fic.mutation.SetImage(m)
-	return fic
+func (_c *FeedItemCreate) SetImage(v *modelfeed.Image) *FeedItemCreate {
+	_c.mutation.SetImage(v)
+	return _c
 }
 
 // SetPublished sets the "published" field.
-func (fic *FeedItemCreate) SetPublished(s string) *FeedItemCreate {
-	fic.mutation.SetPublished(s)
-	return fic
+func (_c *FeedItemCreate) SetPublished(v string) *FeedItemCreate {
+	_c.mutation.SetPublished(v)
+	return _c
 }
 
 // SetNillablePublished sets the "published" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillablePublished(s *string) *FeedItemCreate {
-	if s != nil {
-		fic.SetPublished(*s)
+func (_c *FeedItemCreate) SetNillablePublished(v *string) *FeedItemCreate {
+	if v != nil {
+		_c.SetPublished(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetPublishedParsed sets the "published_parsed" field.
-func (fic *FeedItemCreate) SetPublishedParsed(t time.Time) *FeedItemCreate {
-	fic.mutation.SetPublishedParsed(t)
-	return fic
+func (_c *FeedItemCreate) SetPublishedParsed(v time.Time) *FeedItemCreate {
+	_c.mutation.SetPublishedParsed(v)
+	return _c
 }
 
 // SetUpdated sets the "updated" field.
-func (fic *FeedItemCreate) SetUpdated(s string) *FeedItemCreate {
-	fic.mutation.SetUpdated(s)
-	return fic
+func (_c *FeedItemCreate) SetUpdated(v string) *FeedItemCreate {
+	_c.mutation.SetUpdated(v)
+	return _c
 }
 
 // SetNillableUpdated sets the "updated" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableUpdated(s *string) *FeedItemCreate {
-	if s != nil {
-		fic.SetUpdated(*s)
+func (_c *FeedItemCreate) SetNillableUpdated(v *string) *FeedItemCreate {
+	if v != nil {
+		_c.SetUpdated(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetUpdatedParsed sets the "updated_parsed" field.
-func (fic *FeedItemCreate) SetUpdatedParsed(t time.Time) *FeedItemCreate {
-	fic.mutation.SetUpdatedParsed(t)
-	return fic
+func (_c *FeedItemCreate) SetUpdatedParsed(v time.Time) *FeedItemCreate {
+	_c.mutation.SetUpdatedParsed(v)
+	return _c
 }
 
 // SetNillableUpdatedParsed sets the "updated_parsed" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableUpdatedParsed(t *time.Time) *FeedItemCreate {
-	if t != nil {
-		fic.SetUpdatedParsed(*t)
+func (_c *FeedItemCreate) SetNillableUpdatedParsed(v *time.Time) *FeedItemCreate {
+	if v != nil {
+		_c.SetUpdatedParsed(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetEnclosures sets the "enclosures" field.
-func (fic *FeedItemCreate) SetEnclosures(m []*modelfeed.Enclosure) *FeedItemCreate {
-	fic.mutation.SetEnclosures(m)
-	return fic
+func (_c *FeedItemCreate) SetEnclosures(v []*modelfeed.Enclosure) *FeedItemCreate {
+	_c.mutation.SetEnclosures(v)
+	return _c
 }
 
 // SetPublishPlatform sets the "publish_platform" field.
-func (fic *FeedItemCreate) SetPublishPlatform(s string) *FeedItemCreate {
-	fic.mutation.SetPublishPlatform(s)
-	return fic
+func (_c *FeedItemCreate) SetPublishPlatform(v string) *FeedItemCreate {
+	_c.mutation.SetPublishPlatform(v)
+	return _c
 }
 
 // SetNillablePublishPlatform sets the "publish_platform" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillablePublishPlatform(s *string) *FeedItemCreate {
-	if s != nil {
-		fic.SetPublishPlatform(*s)
+func (_c *FeedItemCreate) SetNillablePublishPlatform(v *string) *FeedItemCreate {
+	if v != nil {
+		_c.SetPublishPlatform(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetReadCount sets the "read_count" field.
-func (fic *FeedItemCreate) SetReadCount(i int64) *FeedItemCreate {
-	fic.mutation.SetReadCount(i)
-	return fic
+func (_c *FeedItemCreate) SetReadCount(v int64) *FeedItemCreate {
+	_c.mutation.SetReadCount(v)
+	return _c
 }
 
 // SetNillableReadCount sets the "read_count" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableReadCount(i *int64) *FeedItemCreate {
-	if i != nil {
-		fic.SetReadCount(*i)
+func (_c *FeedItemCreate) SetNillableReadCount(v *int64) *FeedItemCreate {
+	if v != nil {
+		_c.SetReadCount(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetDigestDescription sets the "digest_description" field.
-func (fic *FeedItemCreate) SetDigestDescription(s string) *FeedItemCreate {
-	fic.mutation.SetDigestDescription(s)
-	return fic
+func (_c *FeedItemCreate) SetDigestDescription(v string) *FeedItemCreate {
+	_c.mutation.SetDigestDescription(v)
+	return _c
 }
 
 // SetNillableDigestDescription sets the "digest_description" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableDigestDescription(s *string) *FeedItemCreate {
-	if s != nil {
-		fic.SetDigestDescription(*s)
+func (_c *FeedItemCreate) SetNillableDigestDescription(v *string) *FeedItemCreate {
+	if v != nil {
+		_c.SetDigestDescription(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetDigestImages sets the "digest_images" field.
-func (fic *FeedItemCreate) SetDigestImages(m []*modelfeed.Image) *FeedItemCreate {
-	fic.mutation.SetDigestImages(m)
-	return fic
+func (_c *FeedItemCreate) SetDigestImages(v []*modelfeed.Image) *FeedItemCreate {
+	_c.mutation.SetDigestImages(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (fic *FeedItemCreate) SetUpdatedAt(t time.Time) *FeedItemCreate {
-	fic.mutation.SetUpdatedAt(t)
-	return fic
+func (_c *FeedItemCreate) SetUpdatedAt(v time.Time) *FeedItemCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableUpdatedAt(t *time.Time) *FeedItemCreate {
-	if t != nil {
-		fic.SetUpdatedAt(*t)
+func (_c *FeedItemCreate) SetNillableUpdatedAt(v *time.Time) *FeedItemCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fic *FeedItemCreate) SetCreatedAt(t time.Time) *FeedItemCreate {
-	fic.mutation.SetCreatedAt(t)
-	return fic
+func (_c *FeedItemCreate) SetCreatedAt(v time.Time) *FeedItemCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillableCreatedAt(t *time.Time) *FeedItemCreate {
-	if t != nil {
-		fic.SetCreatedAt(*t)
+func (_c *FeedItemCreate) SetNillableCreatedAt(v *time.Time) *FeedItemCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return fic
+	return _c
 }
 
 // SetID sets the "id" field.
-func (fic *FeedItemCreate) SetID(mi model.InternalID) *FeedItemCreate {
-	fic.mutation.SetID(mi)
-	return fic
+func (_c *FeedItemCreate) SetID(v model.InternalID) *FeedItemCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetFeed sets the "feed" edge to the Feed entity.
-func (fic *FeedItemCreate) SetFeed(f *Feed) *FeedItemCreate {
-	return fic.SetFeedID(f.ID)
+func (_c *FeedItemCreate) SetFeed(v *Feed) *FeedItemCreate {
+	return _c.SetFeedID(v.ID)
 }
 
 // AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
-func (fic *FeedItemCreate) AddFeedItemCollectionIDs(ids ...model.InternalID) *FeedItemCreate {
-	fic.mutation.AddFeedItemCollectionIDs(ids...)
-	return fic
+func (_c *FeedItemCreate) AddFeedItemCollectionIDs(ids ...model.InternalID) *FeedItemCreate {
+	_c.mutation.AddFeedItemCollectionIDs(ids...)
+	return _c
 }
 
 // AddFeedItemCollection adds the "feed_item_collection" edges to the FeedItemCollection entity.
-func (fic *FeedItemCreate) AddFeedItemCollection(f ...*FeedItemCollection) *FeedItemCreate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+func (_c *FeedItemCreate) AddFeedItemCollection(v ...*FeedItemCollection) *FeedItemCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return fic.AddFeedItemCollectionIDs(ids...)
+	return _c.AddFeedItemCollectionIDs(ids...)
 }
 
 // Mutation returns the FeedItemMutation object of the builder.
-func (fic *FeedItemCreate) Mutation() *FeedItemMutation {
-	return fic.mutation
+func (_c *FeedItemCreate) Mutation() *FeedItemMutation {
+	return _c.mutation
 }
 
 // Save creates the FeedItem in the database.
-func (fic *FeedItemCreate) Save(ctx context.Context) (*FeedItem, error) {
-	fic.defaults()
-	return withHooks(ctx, fic.sqlSave, fic.mutation, fic.hooks)
+func (_c *FeedItemCreate) Save(ctx context.Context) (*FeedItem, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (fic *FeedItemCreate) SaveX(ctx context.Context) *FeedItem {
-	v, err := fic.Save(ctx)
+func (_c *FeedItemCreate) SaveX(ctx context.Context) *FeedItem {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -283,66 +283,66 @@ func (fic *FeedItemCreate) SaveX(ctx context.Context) *FeedItem {
 }
 
 // Exec executes the query.
-func (fic *FeedItemCreate) Exec(ctx context.Context) error {
-	_, err := fic.Save(ctx)
+func (_c *FeedItemCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fic *FeedItemCreate) ExecX(ctx context.Context) {
-	if err := fic.Exec(ctx); err != nil {
+func (_c *FeedItemCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fic *FeedItemCreate) defaults() {
-	if _, ok := fic.mutation.ReadCount(); !ok {
+func (_c *FeedItemCreate) defaults() {
+	if _, ok := _c.mutation.ReadCount(); !ok {
 		v := feeditem.DefaultReadCount
-		fic.mutation.SetReadCount(v)
+		_c.mutation.SetReadCount(v)
 	}
-	if _, ok := fic.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := feeditem.DefaultUpdatedAt()
-		fic.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := fic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := feeditem.DefaultCreatedAt()
-		fic.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fic *FeedItemCreate) check() error {
-	if _, ok := fic.mutation.FeedID(); !ok {
+func (_c *FeedItemCreate) check() error {
+	if _, ok := _c.mutation.FeedID(); !ok {
 		return &ValidationError{Name: "feed_id", err: errors.New(`ent: missing required field "FeedItem.feed_id"`)}
 	}
-	if _, ok := fic.mutation.GUID(); !ok {
+	if _, ok := _c.mutation.GUID(); !ok {
 		return &ValidationError{Name: "guid", err: errors.New(`ent: missing required field "FeedItem.guid"`)}
 	}
-	if _, ok := fic.mutation.PublishedParsed(); !ok {
+	if _, ok := _c.mutation.PublishedParsed(); !ok {
 		return &ValidationError{Name: "published_parsed", err: errors.New(`ent: missing required field "FeedItem.published_parsed"`)}
 	}
-	if _, ok := fic.mutation.ReadCount(); !ok {
+	if _, ok := _c.mutation.ReadCount(); !ok {
 		return &ValidationError{Name: "read_count", err: errors.New(`ent: missing required field "FeedItem.read_count"`)}
 	}
-	if _, ok := fic.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "FeedItem.updated_at"`)}
 	}
-	if _, ok := fic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedItem.created_at"`)}
 	}
-	if len(fic.mutation.FeedIDs()) == 0 {
+	if len(_c.mutation.FeedIDs()) == 0 {
 		return &ValidationError{Name: "feed", err: errors.New(`ent: missing required edge "FeedItem.feed"`)}
 	}
 	return nil
 }
 
-func (fic *FeedItemCreate) sqlSave(ctx context.Context) (*FeedItem, error) {
-	if err := fic.check(); err != nil {
+func (_c *FeedItemCreate) sqlSave(ctx context.Context) (*FeedItem, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := fic.createSpec()
-	if err := sqlgraph.CreateNode(ctx, fic.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -352,94 +352,94 @@ func (fic *FeedItemCreate) sqlSave(ctx context.Context) (*FeedItem, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	fic.mutation.id = &_node.ID
-	fic.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
+func (_c *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 	var (
-		_node = &FeedItem{config: fic.config}
+		_node = &FeedItem{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(feeditem.Table, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = fic.conflict
-	if id, ok := fic.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := fic.mutation.Title(); ok {
+	if value, ok := _c.mutation.Title(); ok {
 		_spec.SetField(feeditem.FieldTitle, field.TypeString, value)
 		_node.Title = value
 	}
-	if value, ok := fic.mutation.Authors(); ok {
+	if value, ok := _c.mutation.Authors(); ok {
 		_spec.SetField(feeditem.FieldAuthors, field.TypeJSON, value)
 		_node.Authors = value
 	}
-	if value, ok := fic.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(feeditem.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := fic.mutation.Content(); ok {
+	if value, ok := _c.mutation.Content(); ok {
 		_spec.SetField(feeditem.FieldContent, field.TypeString, value)
 		_node.Content = value
 	}
-	if value, ok := fic.mutation.GUID(); ok {
+	if value, ok := _c.mutation.GUID(); ok {
 		_spec.SetField(feeditem.FieldGUID, field.TypeString, value)
 		_node.GUID = value
 	}
-	if value, ok := fic.mutation.Link(); ok {
+	if value, ok := _c.mutation.Link(); ok {
 		_spec.SetField(feeditem.FieldLink, field.TypeString, value)
 		_node.Link = value
 	}
-	if value, ok := fic.mutation.Image(); ok {
+	if value, ok := _c.mutation.Image(); ok {
 		_spec.SetField(feeditem.FieldImage, field.TypeJSON, value)
 		_node.Image = value
 	}
-	if value, ok := fic.mutation.Published(); ok {
+	if value, ok := _c.mutation.Published(); ok {
 		_spec.SetField(feeditem.FieldPublished, field.TypeString, value)
 		_node.Published = value
 	}
-	if value, ok := fic.mutation.PublishedParsed(); ok {
+	if value, ok := _c.mutation.PublishedParsed(); ok {
 		_spec.SetField(feeditem.FieldPublishedParsed, field.TypeTime, value)
 		_node.PublishedParsed = value
 	}
-	if value, ok := fic.mutation.Updated(); ok {
+	if value, ok := _c.mutation.Updated(); ok {
 		_spec.SetField(feeditem.FieldUpdated, field.TypeString, value)
 		_node.Updated = value
 	}
-	if value, ok := fic.mutation.UpdatedParsed(); ok {
+	if value, ok := _c.mutation.UpdatedParsed(); ok {
 		_spec.SetField(feeditem.FieldUpdatedParsed, field.TypeTime, value)
 		_node.UpdatedParsed = &value
 	}
-	if value, ok := fic.mutation.Enclosures(); ok {
+	if value, ok := _c.mutation.Enclosures(); ok {
 		_spec.SetField(feeditem.FieldEnclosures, field.TypeJSON, value)
 		_node.Enclosures = value
 	}
-	if value, ok := fic.mutation.PublishPlatform(); ok {
+	if value, ok := _c.mutation.PublishPlatform(); ok {
 		_spec.SetField(feeditem.FieldPublishPlatform, field.TypeString, value)
 		_node.PublishPlatform = value
 	}
-	if value, ok := fic.mutation.ReadCount(); ok {
+	if value, ok := _c.mutation.ReadCount(); ok {
 		_spec.SetField(feeditem.FieldReadCount, field.TypeInt64, value)
 		_node.ReadCount = value
 	}
-	if value, ok := fic.mutation.DigestDescription(); ok {
+	if value, ok := _c.mutation.DigestDescription(); ok {
 		_spec.SetField(feeditem.FieldDigestDescription, field.TypeString, value)
 		_node.DigestDescription = value
 	}
-	if value, ok := fic.mutation.DigestImages(); ok {
+	if value, ok := _c.mutation.DigestImages(); ok {
 		_spec.SetField(feeditem.FieldDigestImages, field.TypeJSON, value)
 		_node.DigestImages = value
 	}
-	if value, ok := fic.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditem.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := fic.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(feeditem.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := fic.mutation.FeedIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FeedIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -456,7 +456,7 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 		_node.FeedID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fic.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -491,10 +491,10 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 //			SetFeedID(v+v).
 //		}).
 //		Exec(ctx)
-func (fic *FeedItemCreate) OnConflict(opts ...sql.ConflictOption) *FeedItemUpsertOne {
-	fic.conflict = opts
+func (_c *FeedItemCreate) OnConflict(opts ...sql.ConflictOption) *FeedItemUpsertOne {
+	_c.conflict = opts
 	return &FeedItemUpsertOne{
-		create: fic,
+		create: _c,
 	}
 }
 
@@ -504,10 +504,10 @@ func (fic *FeedItemCreate) OnConflict(opts ...sql.ConflictOption) *FeedItemUpser
 //	client.FeedItem.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (fic *FeedItemCreate) OnConflictColumns(columns ...string) *FeedItemUpsertOne {
-	fic.conflict = append(fic.conflict, sql.ConflictColumns(columns...))
+func (_c *FeedItemCreate) OnConflictColumns(columns ...string) *FeedItemUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FeedItemUpsertOne{
-		create: fic,
+		create: _c,
 	}
 }
 
@@ -1244,16 +1244,16 @@ type FeedItemCreateBulk struct {
 }
 
 // Save creates the FeedItem entities in the database.
-func (ficb *FeedItemCreateBulk) Save(ctx context.Context) ([]*FeedItem, error) {
-	if ficb.err != nil {
-		return nil, ficb.err
+func (_c *FeedItemCreateBulk) Save(ctx context.Context) ([]*FeedItem, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ficb.builders))
-	nodes := make([]*FeedItem, len(ficb.builders))
-	mutators := make([]Mutator, len(ficb.builders))
-	for i := range ficb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*FeedItem, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ficb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FeedItemMutation)
@@ -1267,12 +1267,12 @@ func (ficb *FeedItemCreateBulk) Save(ctx context.Context) ([]*FeedItem, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ficb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ficb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ficb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -1296,7 +1296,7 @@ func (ficb *FeedItemCreateBulk) Save(ctx context.Context) ([]*FeedItem, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ficb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -1304,8 +1304,8 @@ func (ficb *FeedItemCreateBulk) Save(ctx context.Context) ([]*FeedItem, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ficb *FeedItemCreateBulk) SaveX(ctx context.Context) []*FeedItem {
-	v, err := ficb.Save(ctx)
+func (_c *FeedItemCreateBulk) SaveX(ctx context.Context) []*FeedItem {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1313,14 +1313,14 @@ func (ficb *FeedItemCreateBulk) SaveX(ctx context.Context) []*FeedItem {
 }
 
 // Exec executes the query.
-func (ficb *FeedItemCreateBulk) Exec(ctx context.Context) error {
-	_, err := ficb.Save(ctx)
+func (_c *FeedItemCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ficb *FeedItemCreateBulk) ExecX(ctx context.Context) {
-	if err := ficb.Exec(ctx); err != nil {
+func (_c *FeedItemCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1340,10 +1340,10 @@ func (ficb *FeedItemCreateBulk) ExecX(ctx context.Context) {
 //			SetFeedID(v+v).
 //		}).
 //		Exec(ctx)
-func (ficb *FeedItemCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedItemUpsertBulk {
-	ficb.conflict = opts
+func (_c *FeedItemCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedItemUpsertBulk {
+	_c.conflict = opts
 	return &FeedItemUpsertBulk{
-		create: ficb,
+		create: _c,
 	}
 }
 
@@ -1353,10 +1353,10 @@ func (ficb *FeedItemCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedItem
 //	client.FeedItem.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ficb *FeedItemCreateBulk) OnConflictColumns(columns ...string) *FeedItemUpsertBulk {
-	ficb.conflict = append(ficb.conflict, sql.ConflictColumns(columns...))
+func (_c *FeedItemCreateBulk) OnConflictColumns(columns ...string) *FeedItemUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &FeedItemUpsertBulk{
-		create: ficb,
+		create: _c,
 	}
 }
 

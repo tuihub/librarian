@@ -85,7 +85,7 @@ func (*StoreAppBinary) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the StoreAppBinary fields.
-func (sab *StoreAppBinary) assignValues(columns []string, values []any) error {
+func (_m *StoreAppBinary) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -96,33 +96,33 @@ func (sab *StoreAppBinary) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			sab.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case storeappbinary.FieldStoreAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field store_app_id", values[i])
 			} else if value.Valid {
-				sab.StoreAppID = model.InternalID(value.Int64)
+				_m.StoreAppID = model.InternalID(value.Int64)
 			}
 		case storeappbinary.FieldSentinelAppBinaryUnionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_app_binary_union_id", values[i])
 			} else if value.Valid {
-				sab.SentinelAppBinaryUnionID = model.InternalID(value.Int64)
+				_m.SentinelAppBinaryUnionID = model.InternalID(value.Int64)
 			}
 		case storeappbinary.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				sab.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case storeappbinary.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				sab.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			sab.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -130,54 +130,54 @@ func (sab *StoreAppBinary) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the StoreAppBinary.
 // This includes values selected through modifiers, order, etc.
-func (sab *StoreAppBinary) Value(name string) (ent.Value, error) {
-	return sab.selectValues.Get(name)
+func (_m *StoreAppBinary) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryStoreApp queries the "store_app" edge of the StoreAppBinary entity.
-func (sab *StoreAppBinary) QueryStoreApp() *StoreAppQuery {
-	return NewStoreAppBinaryClient(sab.config).QueryStoreApp(sab)
+func (_m *StoreAppBinary) QueryStoreApp() *StoreAppQuery {
+	return NewStoreAppBinaryClient(_m.config).QueryStoreApp(_m)
 }
 
 // QuerySentinelAppBinary queries the "sentinel_app_binary" edge of the StoreAppBinary entity.
-func (sab *StoreAppBinary) QuerySentinelAppBinary() *SentinelAppBinaryQuery {
-	return NewStoreAppBinaryClient(sab.config).QuerySentinelAppBinary(sab)
+func (_m *StoreAppBinary) QuerySentinelAppBinary() *SentinelAppBinaryQuery {
+	return NewStoreAppBinaryClient(_m.config).QuerySentinelAppBinary(_m)
 }
 
 // Update returns a builder for updating this StoreAppBinary.
 // Note that you need to call StoreAppBinary.Unwrap() before calling this method if this StoreAppBinary
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (sab *StoreAppBinary) Update() *StoreAppBinaryUpdateOne {
-	return NewStoreAppBinaryClient(sab.config).UpdateOne(sab)
+func (_m *StoreAppBinary) Update() *StoreAppBinaryUpdateOne {
+	return NewStoreAppBinaryClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the StoreAppBinary entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (sab *StoreAppBinary) Unwrap() *StoreAppBinary {
-	_tx, ok := sab.config.driver.(*txDriver)
+func (_m *StoreAppBinary) Unwrap() *StoreAppBinary {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: StoreAppBinary is not a transactional entity")
 	}
-	sab.config.driver = _tx.drv
-	return sab
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (sab *StoreAppBinary) String() string {
+func (_m *StoreAppBinary) String() string {
 	var builder strings.Builder
 	builder.WriteString("StoreAppBinary(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", sab.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("store_app_id=")
-	builder.WriteString(fmt.Sprintf("%v", sab.StoreAppID))
+	builder.WriteString(fmt.Sprintf("%v", _m.StoreAppID))
 	builder.WriteString(", ")
 	builder.WriteString("sentinel_app_binary_union_id=")
-	builder.WriteString(fmt.Sprintf("%v", sab.SentinelAppBinaryUnionID))
+	builder.WriteString(fmt.Sprintf("%v", _m.SentinelAppBinaryUnionID))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(sab.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(sab.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

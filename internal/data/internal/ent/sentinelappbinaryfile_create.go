@@ -24,115 +24,115 @@ type SentinelAppBinaryFileCreate struct {
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetSentinelID(mi model.InternalID) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetSentinelID(mi)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetSentinelID(v model.InternalID) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetSentinelID(v)
+	return _c
 }
 
 // SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetSentinelLibraryReportedID(i)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetSentinelLibraryReportedID(v)
+	return _c
 }
 
 // SetLibrarySnapshot sets the "library_snapshot" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetLibrarySnapshot(t)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetLibrarySnapshot(v time.Time) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetLibrarySnapshot(v)
+	return _c
 }
 
 // SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetSentinelAppBinaryGeneratedID(s string) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetSentinelAppBinaryGeneratedID(s)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetSentinelAppBinaryGeneratedID(v string) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetSentinelAppBinaryGeneratedID(v)
+	return _c
 }
 
 // SetName sets the "name" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetName(s string) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetName(s)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetName(v string) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetSizeBytes(i int64) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetSizeBytes(i)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetSizeBytes(v int64) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetSizeBytes(v)
+	return _c
 }
 
 // SetSha256 sets the "sha256" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetSha256(b []byte) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetSha256(b)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetSha256(v []byte) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetSha256(v)
+	return _c
 }
 
 // SetServerFilePath sets the "server_file_path" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetServerFilePath(s string) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetServerFilePath(s)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetServerFilePath(v string) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetServerFilePath(v)
+	return _c
 }
 
 // SetChunksInfo sets the "chunks_info" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetChunksInfo(s string) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetChunksInfo(s)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetChunksInfo(v string) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetChunksInfo(v)
+	return _c
 }
 
 // SetNillableChunksInfo sets the "chunks_info" field if the given value is not nil.
-func (sabfc *SentinelAppBinaryFileCreate) SetNillableChunksInfo(s *string) *SentinelAppBinaryFileCreate {
-	if s != nil {
-		sabfc.SetChunksInfo(*s)
+func (_c *SentinelAppBinaryFileCreate) SetNillableChunksInfo(v *string) *SentinelAppBinaryFileCreate {
+	if v != nil {
+		_c.SetChunksInfo(*v)
 	}
-	return sabfc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetUpdatedAt(t time.Time) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetUpdatedAt(t)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetUpdatedAt(v time.Time) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (sabfc *SentinelAppBinaryFileCreate) SetNillableUpdatedAt(t *time.Time) *SentinelAppBinaryFileCreate {
-	if t != nil {
-		sabfc.SetUpdatedAt(*t)
+func (_c *SentinelAppBinaryFileCreate) SetNillableUpdatedAt(v *time.Time) *SentinelAppBinaryFileCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return sabfc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetCreatedAt(t time.Time) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetCreatedAt(t)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetCreatedAt(v time.Time) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sabfc *SentinelAppBinaryFileCreate) SetNillableCreatedAt(t *time.Time) *SentinelAppBinaryFileCreate {
-	if t != nil {
-		sabfc.SetCreatedAt(*t)
+func (_c *SentinelAppBinaryFileCreate) SetNillableCreatedAt(v *time.Time) *SentinelAppBinaryFileCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return sabfc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetID(mi model.InternalID) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetID(mi)
-	return sabfc
+func (_c *SentinelAppBinaryFileCreate) SetID(v model.InternalID) *SentinelAppBinaryFileCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // Mutation returns the SentinelAppBinaryFileMutation object of the builder.
-func (sabfc *SentinelAppBinaryFileCreate) Mutation() *SentinelAppBinaryFileMutation {
-	return sabfc.mutation
+func (_c *SentinelAppBinaryFileCreate) Mutation() *SentinelAppBinaryFileMutation {
+	return _c.mutation
 }
 
 // Save creates the SentinelAppBinaryFile in the database.
-func (sabfc *SentinelAppBinaryFileCreate) Save(ctx context.Context) (*SentinelAppBinaryFile, error) {
-	sabfc.defaults()
-	return withHooks(ctx, sabfc.sqlSave, sabfc.mutation, sabfc.hooks)
+func (_c *SentinelAppBinaryFileCreate) Save(ctx context.Context) (*SentinelAppBinaryFile, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (sabfc *SentinelAppBinaryFileCreate) SaveX(ctx context.Context) *SentinelAppBinaryFile {
-	v, err := sabfc.Save(ctx)
+func (_c *SentinelAppBinaryFileCreate) SaveX(ctx context.Context) *SentinelAppBinaryFile {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -140,71 +140,71 @@ func (sabfc *SentinelAppBinaryFileCreate) SaveX(ctx context.Context) *SentinelAp
 }
 
 // Exec executes the query.
-func (sabfc *SentinelAppBinaryFileCreate) Exec(ctx context.Context) error {
-	_, err := sabfc.Save(ctx)
+func (_c *SentinelAppBinaryFileCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabfc *SentinelAppBinaryFileCreate) ExecX(ctx context.Context) {
-	if err := sabfc.Exec(ctx); err != nil {
+func (_c *SentinelAppBinaryFileCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sabfc *SentinelAppBinaryFileCreate) defaults() {
-	if _, ok := sabfc.mutation.UpdatedAt(); !ok {
+func (_c *SentinelAppBinaryFileCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := sentinelappbinaryfile.DefaultUpdatedAt()
-		sabfc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := sabfc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := sentinelappbinaryfile.DefaultCreatedAt()
-		sabfc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (sabfc *SentinelAppBinaryFileCreate) check() error {
-	if _, ok := sabfc.mutation.SentinelID(); !ok {
+func (_c *SentinelAppBinaryFileCreate) check() error {
+	if _, ok := _c.mutation.SentinelID(); !ok {
 		return &ValidationError{Name: "sentinel_id", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.sentinel_id"`)}
 	}
-	if _, ok := sabfc.mutation.SentinelLibraryReportedID(); !ok {
+	if _, ok := _c.mutation.SentinelLibraryReportedID(); !ok {
 		return &ValidationError{Name: "sentinel_library_reported_id", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.sentinel_library_reported_id"`)}
 	}
-	if _, ok := sabfc.mutation.LibrarySnapshot(); !ok {
+	if _, ok := _c.mutation.LibrarySnapshot(); !ok {
 		return &ValidationError{Name: "library_snapshot", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.library_snapshot"`)}
 	}
-	if _, ok := sabfc.mutation.SentinelAppBinaryGeneratedID(); !ok {
+	if _, ok := _c.mutation.SentinelAppBinaryGeneratedID(); !ok {
 		return &ValidationError{Name: "sentinel_app_binary_generated_id", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.sentinel_app_binary_generated_id"`)}
 	}
-	if _, ok := sabfc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.name"`)}
 	}
-	if _, ok := sabfc.mutation.SizeBytes(); !ok {
+	if _, ok := _c.mutation.SizeBytes(); !ok {
 		return &ValidationError{Name: "size_bytes", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.size_bytes"`)}
 	}
-	if _, ok := sabfc.mutation.Sha256(); !ok {
+	if _, ok := _c.mutation.Sha256(); !ok {
 		return &ValidationError{Name: "sha256", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.sha256"`)}
 	}
-	if _, ok := sabfc.mutation.ServerFilePath(); !ok {
+	if _, ok := _c.mutation.ServerFilePath(); !ok {
 		return &ValidationError{Name: "server_file_path", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.server_file_path"`)}
 	}
-	if _, ok := sabfc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.updated_at"`)}
 	}
-	if _, ok := sabfc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.created_at"`)}
 	}
 	return nil
 }
 
-func (sabfc *SentinelAppBinaryFileCreate) sqlSave(ctx context.Context) (*SentinelAppBinaryFile, error) {
-	if err := sabfc.check(); err != nil {
+func (_c *SentinelAppBinaryFileCreate) sqlSave(ctx context.Context) (*SentinelAppBinaryFile, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := sabfc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, sabfc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -214,62 +214,62 @@ func (sabfc *SentinelAppBinaryFileCreate) sqlSave(ctx context.Context) (*Sentine
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	sabfc.mutation.id = &_node.ID
-	sabfc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (sabfc *SentinelAppBinaryFileCreate) createSpec() (*SentinelAppBinaryFile, *sqlgraph.CreateSpec) {
+func (_c *SentinelAppBinaryFileCreate) createSpec() (*SentinelAppBinaryFile, *sqlgraph.CreateSpec) {
 	var (
-		_node = &SentinelAppBinaryFile{config: sabfc.config}
+		_node = &SentinelAppBinaryFile{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(sentinelappbinaryfile.Table, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = sabfc.conflict
-	if id, ok := sabfc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := sabfc.mutation.SentinelID(); ok {
+	if value, ok := _c.mutation.SentinelID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelID, field.TypeInt64, value)
 		_node.SentinelID = value
 	}
-	if value, ok := sabfc.mutation.SentinelLibraryReportedID(); ok {
+	if value, ok := _c.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 		_node.SentinelLibraryReportedID = value
 	}
-	if value, ok := sabfc.mutation.LibrarySnapshot(); ok {
+	if value, ok := _c.mutation.LibrarySnapshot(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldLibrarySnapshot, field.TypeTime, value)
 		_node.LibrarySnapshot = value
 	}
-	if value, ok := sabfc.mutation.SentinelAppBinaryGeneratedID(); ok {
+	if value, ok := _c.mutation.SentinelAppBinaryGeneratedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, field.TypeString, value)
 		_node.SentinelAppBinaryGeneratedID = value
 	}
-	if value, ok := sabfc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := sabfc.mutation.SizeBytes(); ok {
+	if value, ok := _c.mutation.SizeBytes(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSizeBytes, field.TypeInt64, value)
 		_node.SizeBytes = value
 	}
-	if value, ok := sabfc.mutation.Sha256(); ok {
+	if value, ok := _c.mutation.Sha256(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSha256, field.TypeBytes, value)
 		_node.Sha256 = value
 	}
-	if value, ok := sabfc.mutation.ServerFilePath(); ok {
+	if value, ok := _c.mutation.ServerFilePath(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldServerFilePath, field.TypeString, value)
 		_node.ServerFilePath = value
 	}
-	if value, ok := sabfc.mutation.ChunksInfo(); ok {
+	if value, ok := _c.mutation.ChunksInfo(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldChunksInfo, field.TypeString, value)
 		_node.ChunksInfo = value
 	}
-	if value, ok := sabfc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := sabfc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
@@ -292,10 +292,10 @@ func (sabfc *SentinelAppBinaryFileCreate) createSpec() (*SentinelAppBinaryFile, 
 //			SetSentinelID(v+v).
 //		}).
 //		Exec(ctx)
-func (sabfc *SentinelAppBinaryFileCreate) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryFileUpsertOne {
-	sabfc.conflict = opts
+func (_c *SentinelAppBinaryFileCreate) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryFileUpsertOne {
+	_c.conflict = opts
 	return &SentinelAppBinaryFileUpsertOne{
-		create: sabfc,
+		create: _c,
 	}
 }
 
@@ -305,10 +305,10 @@ func (sabfc *SentinelAppBinaryFileCreate) OnConflict(opts ...sql.ConflictOption)
 //	client.SentinelAppBinaryFile.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sabfc *SentinelAppBinaryFileCreate) OnConflictColumns(columns ...string) *SentinelAppBinaryFileUpsertOne {
-	sabfc.conflict = append(sabfc.conflict, sql.ConflictColumns(columns...))
+func (_c *SentinelAppBinaryFileCreate) OnConflictColumns(columns ...string) *SentinelAppBinaryFileUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SentinelAppBinaryFileUpsertOne{
-		create: sabfc,
+		create: _c,
 	}
 }
 
@@ -753,16 +753,16 @@ type SentinelAppBinaryFileCreateBulk struct {
 }
 
 // Save creates the SentinelAppBinaryFile entities in the database.
-func (sabfcb *SentinelAppBinaryFileCreateBulk) Save(ctx context.Context) ([]*SentinelAppBinaryFile, error) {
-	if sabfcb.err != nil {
-		return nil, sabfcb.err
+func (_c *SentinelAppBinaryFileCreateBulk) Save(ctx context.Context) ([]*SentinelAppBinaryFile, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(sabfcb.builders))
-	nodes := make([]*SentinelAppBinaryFile, len(sabfcb.builders))
-	mutators := make([]Mutator, len(sabfcb.builders))
-	for i := range sabfcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*SentinelAppBinaryFile, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := sabfcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SentinelAppBinaryFileMutation)
@@ -776,12 +776,12 @@ func (sabfcb *SentinelAppBinaryFileCreateBulk) Save(ctx context.Context) ([]*Sen
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, sabfcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = sabfcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, sabfcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -805,7 +805,7 @@ func (sabfcb *SentinelAppBinaryFileCreateBulk) Save(ctx context.Context) ([]*Sen
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, sabfcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -813,8 +813,8 @@ func (sabfcb *SentinelAppBinaryFileCreateBulk) Save(ctx context.Context) ([]*Sen
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sabfcb *SentinelAppBinaryFileCreateBulk) SaveX(ctx context.Context) []*SentinelAppBinaryFile {
-	v, err := sabfcb.Save(ctx)
+func (_c *SentinelAppBinaryFileCreateBulk) SaveX(ctx context.Context) []*SentinelAppBinaryFile {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -822,14 +822,14 @@ func (sabfcb *SentinelAppBinaryFileCreateBulk) SaveX(ctx context.Context) []*Sen
 }
 
 // Exec executes the query.
-func (sabfcb *SentinelAppBinaryFileCreateBulk) Exec(ctx context.Context) error {
-	_, err := sabfcb.Save(ctx)
+func (_c *SentinelAppBinaryFileCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabfcb *SentinelAppBinaryFileCreateBulk) ExecX(ctx context.Context) {
-	if err := sabfcb.Exec(ctx); err != nil {
+func (_c *SentinelAppBinaryFileCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -849,10 +849,10 @@ func (sabfcb *SentinelAppBinaryFileCreateBulk) ExecX(ctx context.Context) {
 //			SetSentinelID(v+v).
 //		}).
 //		Exec(ctx)
-func (sabfcb *SentinelAppBinaryFileCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryFileUpsertBulk {
-	sabfcb.conflict = opts
+func (_c *SentinelAppBinaryFileCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryFileUpsertBulk {
+	_c.conflict = opts
 	return &SentinelAppBinaryFileUpsertBulk{
-		create: sabfcb,
+		create: _c,
 	}
 }
 
@@ -862,10 +862,10 @@ func (sabfcb *SentinelAppBinaryFileCreateBulk) OnConflict(opts ...sql.ConflictOp
 //	client.SentinelAppBinaryFile.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sabfcb *SentinelAppBinaryFileCreateBulk) OnConflictColumns(columns ...string) *SentinelAppBinaryFileUpsertBulk {
-	sabfcb.conflict = append(sabfcb.conflict, sql.ConflictColumns(columns...))
+func (_c *SentinelAppBinaryFileCreateBulk) OnConflictColumns(columns ...string) *SentinelAppBinaryFileUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SentinelAppBinaryFileUpsertBulk{
-		create: sabfcb,
+		create: _c,
 	}
 }
 

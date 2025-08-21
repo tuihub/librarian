@@ -122,7 +122,7 @@ func (*NotifyFlow) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the NotifyFlow fields.
-func (nf *NotifyFlow) assignValues(columns []string, values []any) error {
+func (_m *NotifyFlow) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -132,47 +132,47 @@ func (nf *NotifyFlow) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				nf.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case notifyflow.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				nf.Name = value.String
+				_m.Name = value.String
 			}
 		case notifyflow.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				nf.Description = value.String
+				_m.Description = value.String
 			}
 		case notifyflow.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				nf.Status = notifyflow.Status(value.String)
+				_m.Status = notifyflow.Status(value.String)
 			}
 		case notifyflow.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				nf.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case notifyflow.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				nf.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case notifyflow.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_notify_flow", values[i])
 			} else if value.Valid {
-				nf.user_notify_flow = new(model.InternalID)
-				*nf.user_notify_flow = model.InternalID(value.Int64)
+				_m.user_notify_flow = new(model.InternalID)
+				*_m.user_notify_flow = model.InternalID(value.Int64)
 			}
 		default:
-			nf.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -180,72 +180,72 @@ func (nf *NotifyFlow) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the NotifyFlow.
 // This includes values selected through modifiers, order, etc.
-func (nf *NotifyFlow) Value(name string) (ent.Value, error) {
-	return nf.selectValues.Get(name)
+func (_m *NotifyFlow) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the NotifyFlow entity.
-func (nf *NotifyFlow) QueryOwner() *UserQuery {
-	return NewNotifyFlowClient(nf.config).QueryOwner(nf)
+func (_m *NotifyFlow) QueryOwner() *UserQuery {
+	return NewNotifyFlowClient(_m.config).QueryOwner(_m)
 }
 
 // QueryNotifyTarget queries the "notify_target" edge of the NotifyFlow entity.
-func (nf *NotifyFlow) QueryNotifyTarget() *NotifyTargetQuery {
-	return NewNotifyFlowClient(nf.config).QueryNotifyTarget(nf)
+func (_m *NotifyFlow) QueryNotifyTarget() *NotifyTargetQuery {
+	return NewNotifyFlowClient(_m.config).QueryNotifyTarget(_m)
 }
 
 // QueryNotifySource queries the "notify_source" edge of the NotifyFlow entity.
-func (nf *NotifyFlow) QueryNotifySource() *NotifySourceQuery {
-	return NewNotifyFlowClient(nf.config).QueryNotifySource(nf)
+func (_m *NotifyFlow) QueryNotifySource() *NotifySourceQuery {
+	return NewNotifyFlowClient(_m.config).QueryNotifySource(_m)
 }
 
 // QueryNotifyFlowTarget queries the "notify_flow_target" edge of the NotifyFlow entity.
-func (nf *NotifyFlow) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
-	return NewNotifyFlowClient(nf.config).QueryNotifyFlowTarget(nf)
+func (_m *NotifyFlow) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
+	return NewNotifyFlowClient(_m.config).QueryNotifyFlowTarget(_m)
 }
 
 // QueryNotifyFlowSource queries the "notify_flow_source" edge of the NotifyFlow entity.
-func (nf *NotifyFlow) QueryNotifyFlowSource() *NotifyFlowSourceQuery {
-	return NewNotifyFlowClient(nf.config).QueryNotifyFlowSource(nf)
+func (_m *NotifyFlow) QueryNotifyFlowSource() *NotifyFlowSourceQuery {
+	return NewNotifyFlowClient(_m.config).QueryNotifyFlowSource(_m)
 }
 
 // Update returns a builder for updating this NotifyFlow.
 // Note that you need to call NotifyFlow.Unwrap() before calling this method if this NotifyFlow
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (nf *NotifyFlow) Update() *NotifyFlowUpdateOne {
-	return NewNotifyFlowClient(nf.config).UpdateOne(nf)
+func (_m *NotifyFlow) Update() *NotifyFlowUpdateOne {
+	return NewNotifyFlowClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the NotifyFlow entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (nf *NotifyFlow) Unwrap() *NotifyFlow {
-	_tx, ok := nf.config.driver.(*txDriver)
+func (_m *NotifyFlow) Unwrap() *NotifyFlow {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: NotifyFlow is not a transactional entity")
 	}
-	nf.config.driver = _tx.drv
-	return nf
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (nf *NotifyFlow) String() string {
+func (_m *NotifyFlow) String() string {
 	var builder strings.Builder
 	builder.WriteString("NotifyFlow(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", nf.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(nf.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(nf.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", nf.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(nf.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(nf.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -27,118 +27,118 @@ type NotifyTargetCreate struct {
 }
 
 // SetName sets the "name" field.
-func (ntc *NotifyTargetCreate) SetName(s string) *NotifyTargetCreate {
-	ntc.mutation.SetName(s)
-	return ntc
+func (_c *NotifyTargetCreate) SetName(v string) *NotifyTargetCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (ntc *NotifyTargetCreate) SetDescription(s string) *NotifyTargetCreate {
-	ntc.mutation.SetDescription(s)
-	return ntc
+func (_c *NotifyTargetCreate) SetDescription(v string) *NotifyTargetCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetDestination sets the "destination" field.
-func (ntc *NotifyTargetCreate) SetDestination(mr *model.FeatureRequest) *NotifyTargetCreate {
-	ntc.mutation.SetDestination(mr)
-	return ntc
+func (_c *NotifyTargetCreate) SetDestination(v *model.FeatureRequest) *NotifyTargetCreate {
+	_c.mutation.SetDestination(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (ntc *NotifyTargetCreate) SetStatus(n notifytarget.Status) *NotifyTargetCreate {
-	ntc.mutation.SetStatus(n)
-	return ntc
+func (_c *NotifyTargetCreate) SetStatus(v notifytarget.Status) *NotifyTargetCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ntc *NotifyTargetCreate) SetUpdatedAt(t time.Time) *NotifyTargetCreate {
-	ntc.mutation.SetUpdatedAt(t)
-	return ntc
+func (_c *NotifyTargetCreate) SetUpdatedAt(v time.Time) *NotifyTargetCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ntc *NotifyTargetCreate) SetNillableUpdatedAt(t *time.Time) *NotifyTargetCreate {
-	if t != nil {
-		ntc.SetUpdatedAt(*t)
+func (_c *NotifyTargetCreate) SetNillableUpdatedAt(v *time.Time) *NotifyTargetCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return ntc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ntc *NotifyTargetCreate) SetCreatedAt(t time.Time) *NotifyTargetCreate {
-	ntc.mutation.SetCreatedAt(t)
-	return ntc
+func (_c *NotifyTargetCreate) SetCreatedAt(v time.Time) *NotifyTargetCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ntc *NotifyTargetCreate) SetNillableCreatedAt(t *time.Time) *NotifyTargetCreate {
-	if t != nil {
-		ntc.SetCreatedAt(*t)
+func (_c *NotifyTargetCreate) SetNillableCreatedAt(v *time.Time) *NotifyTargetCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return ntc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ntc *NotifyTargetCreate) SetID(mi model.InternalID) *NotifyTargetCreate {
-	ntc.mutation.SetID(mi)
-	return ntc
+func (_c *NotifyTargetCreate) SetID(v model.InternalID) *NotifyTargetCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ntc *NotifyTargetCreate) SetOwnerID(id model.InternalID) *NotifyTargetCreate {
-	ntc.mutation.SetOwnerID(id)
-	return ntc
+func (_c *NotifyTargetCreate) SetOwnerID(id model.InternalID) *NotifyTargetCreate {
+	_c.mutation.SetOwnerID(id)
+	return _c
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (ntc *NotifyTargetCreate) SetOwner(u *User) *NotifyTargetCreate {
-	return ntc.SetOwnerID(u.ID)
+func (_c *NotifyTargetCreate) SetOwner(v *User) *NotifyTargetCreate {
+	return _c.SetOwnerID(v.ID)
 }
 
 // AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (ntc *NotifyTargetCreate) AddNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetCreate {
-	ntc.mutation.AddNotifyFlowIDs(ids...)
-	return ntc
+func (_c *NotifyTargetCreate) AddNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetCreate {
+	_c.mutation.AddNotifyFlowIDs(ids...)
+	return _c
 }
 
 // AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
-func (ntc *NotifyTargetCreate) AddNotifyFlow(n ...*NotifyFlow) *NotifyTargetCreate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_c *NotifyTargetCreate) AddNotifyFlow(v ...*NotifyFlow) *NotifyTargetCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntc.AddNotifyFlowIDs(ids...)
+	return _c.AddNotifyFlowIDs(ids...)
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (ntc *NotifyTargetCreate) AddNotifyFlowTargetIDs(ids ...int) *NotifyTargetCreate {
-	ntc.mutation.AddNotifyFlowTargetIDs(ids...)
-	return ntc
+func (_c *NotifyTargetCreate) AddNotifyFlowTargetIDs(ids ...int) *NotifyTargetCreate {
+	_c.mutation.AddNotifyFlowTargetIDs(ids...)
+	return _c
 }
 
 // AddNotifyFlowTarget adds the "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (ntc *NotifyTargetCreate) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyTargetCreate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_c *NotifyTargetCreate) AddNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyTargetCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntc.AddNotifyFlowTargetIDs(ids...)
+	return _c.AddNotifyFlowTargetIDs(ids...)
 }
 
 // Mutation returns the NotifyTargetMutation object of the builder.
-func (ntc *NotifyTargetCreate) Mutation() *NotifyTargetMutation {
-	return ntc.mutation
+func (_c *NotifyTargetCreate) Mutation() *NotifyTargetMutation {
+	return _c.mutation
 }
 
 // Save creates the NotifyTarget in the database.
-func (ntc *NotifyTargetCreate) Save(ctx context.Context) (*NotifyTarget, error) {
-	ntc.defaults()
-	return withHooks(ctx, ntc.sqlSave, ntc.mutation, ntc.hooks)
+func (_c *NotifyTargetCreate) Save(ctx context.Context) (*NotifyTarget, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ntc *NotifyTargetCreate) SaveX(ctx context.Context) *NotifyTarget {
-	v, err := ntc.Save(ctx)
+func (_c *NotifyTargetCreate) SaveX(ctx context.Context) *NotifyTarget {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -146,67 +146,67 @@ func (ntc *NotifyTargetCreate) SaveX(ctx context.Context) *NotifyTarget {
 }
 
 // Exec executes the query.
-func (ntc *NotifyTargetCreate) Exec(ctx context.Context) error {
-	_, err := ntc.Save(ctx)
+func (_c *NotifyTargetCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ntc *NotifyTargetCreate) ExecX(ctx context.Context) {
-	if err := ntc.Exec(ctx); err != nil {
+func (_c *NotifyTargetCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ntc *NotifyTargetCreate) defaults() {
-	if _, ok := ntc.mutation.UpdatedAt(); !ok {
+func (_c *NotifyTargetCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := notifytarget.DefaultUpdatedAt()
-		ntc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := ntc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := notifytarget.DefaultCreatedAt()
-		ntc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ntc *NotifyTargetCreate) check() error {
-	if _, ok := ntc.mutation.Name(); !ok {
+func (_c *NotifyTargetCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "NotifyTarget.name"`)}
 	}
-	if _, ok := ntc.mutation.Description(); !ok {
+	if _, ok := _c.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "NotifyTarget.description"`)}
 	}
-	if _, ok := ntc.mutation.Destination(); !ok {
+	if _, ok := _c.mutation.Destination(); !ok {
 		return &ValidationError{Name: "destination", err: errors.New(`ent: missing required field "NotifyTarget.destination"`)}
 	}
-	if _, ok := ntc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "NotifyTarget.status"`)}
 	}
-	if v, ok := ntc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := notifytarget.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.status": %w`, err)}
 		}
 	}
-	if _, ok := ntc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "NotifyTarget.updated_at"`)}
 	}
-	if _, ok := ntc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "NotifyTarget.created_at"`)}
 	}
-	if len(ntc.mutation.OwnerIDs()) == 0 {
+	if len(_c.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "NotifyTarget.owner"`)}
 	}
 	return nil
 }
 
-func (ntc *NotifyTargetCreate) sqlSave(ctx context.Context) (*NotifyTarget, error) {
-	if err := ntc.check(); err != nil {
+func (_c *NotifyTargetCreate) sqlSave(ctx context.Context) (*NotifyTarget, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ntc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ntc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -216,46 +216,46 @@ func (ntc *NotifyTargetCreate) sqlSave(ctx context.Context) (*NotifyTarget, erro
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	ntc.mutation.id = &_node.ID
-	ntc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ntc *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec) {
+func (_c *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec) {
 	var (
-		_node = &NotifyTarget{config: ntc.config}
+		_node = &NotifyTarget{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(notifytarget.Table, sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = ntc.conflict
-	if id, ok := ntc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ntc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(notifytarget.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := ntc.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(notifytarget.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := ntc.mutation.Destination(); ok {
+	if value, ok := _c.mutation.Destination(); ok {
 		_spec.SetField(notifytarget.FieldDestination, field.TypeJSON, value)
 		_node.Destination = value
 	}
-	if value, ok := ntc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(notifytarget.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := ntc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifytarget.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := ntc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(notifytarget.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ntc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -272,7 +272,7 @@ func (ntc *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec
 		_node.user_notify_target = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ntc.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifyFlowIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -286,13 +286,13 @@ func (ntc *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowTargetCreate{config: ntc.config, mutation: newNotifyFlowTargetMutation(ntc.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _c.config, mutation: newNotifyFlowTargetMutation(_c.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ntc.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -327,10 +327,10 @@ func (ntc *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (ntc *NotifyTargetCreate) OnConflict(opts ...sql.ConflictOption) *NotifyTargetUpsertOne {
-	ntc.conflict = opts
+func (_c *NotifyTargetCreate) OnConflict(opts ...sql.ConflictOption) *NotifyTargetUpsertOne {
+	_c.conflict = opts
 	return &NotifyTargetUpsertOne{
-		create: ntc,
+		create: _c,
 	}
 }
 
@@ -340,10 +340,10 @@ func (ntc *NotifyTargetCreate) OnConflict(opts ...sql.ConflictOption) *NotifyTar
 //	client.NotifyTarget.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ntc *NotifyTargetCreate) OnConflictColumns(columns ...string) *NotifyTargetUpsertOne {
-	ntc.conflict = append(ntc.conflict, sql.ConflictColumns(columns...))
+func (_c *NotifyTargetCreate) OnConflictColumns(columns ...string) *NotifyTargetUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NotifyTargetUpsertOne{
-		create: ntc,
+		create: _c,
 	}
 }
 
@@ -606,16 +606,16 @@ type NotifyTargetCreateBulk struct {
 }
 
 // Save creates the NotifyTarget entities in the database.
-func (ntcb *NotifyTargetCreateBulk) Save(ctx context.Context) ([]*NotifyTarget, error) {
-	if ntcb.err != nil {
-		return nil, ntcb.err
+func (_c *NotifyTargetCreateBulk) Save(ctx context.Context) ([]*NotifyTarget, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(ntcb.builders))
-	nodes := make([]*NotifyTarget, len(ntcb.builders))
-	mutators := make([]Mutator, len(ntcb.builders))
-	for i := range ntcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*NotifyTarget, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := ntcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*NotifyTargetMutation)
@@ -629,12 +629,12 @@ func (ntcb *NotifyTargetCreateBulk) Save(ctx context.Context) ([]*NotifyTarget, 
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, ntcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = ntcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, ntcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -658,7 +658,7 @@ func (ntcb *NotifyTargetCreateBulk) Save(ctx context.Context) ([]*NotifyTarget, 
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, ntcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -666,8 +666,8 @@ func (ntcb *NotifyTargetCreateBulk) Save(ctx context.Context) ([]*NotifyTarget, 
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ntcb *NotifyTargetCreateBulk) SaveX(ctx context.Context) []*NotifyTarget {
-	v, err := ntcb.Save(ctx)
+func (_c *NotifyTargetCreateBulk) SaveX(ctx context.Context) []*NotifyTarget {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -675,14 +675,14 @@ func (ntcb *NotifyTargetCreateBulk) SaveX(ctx context.Context) []*NotifyTarget {
 }
 
 // Exec executes the query.
-func (ntcb *NotifyTargetCreateBulk) Exec(ctx context.Context) error {
-	_, err := ntcb.Save(ctx)
+func (_c *NotifyTargetCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ntcb *NotifyTargetCreateBulk) ExecX(ctx context.Context) {
-	if err := ntcb.Exec(ctx); err != nil {
+func (_c *NotifyTargetCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -702,10 +702,10 @@ func (ntcb *NotifyTargetCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (ntcb *NotifyTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *NotifyTargetUpsertBulk {
-	ntcb.conflict = opts
+func (_c *NotifyTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *NotifyTargetUpsertBulk {
+	_c.conflict = opts
 	return &NotifyTargetUpsertBulk{
-		create: ntcb,
+		create: _c,
 	}
 }
 
@@ -715,10 +715,10 @@ func (ntcb *NotifyTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *Noti
 //	client.NotifyTarget.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ntcb *NotifyTargetCreateBulk) OnConflictColumns(columns ...string) *NotifyTargetUpsertBulk {
-	ntcb.conflict = append(ntcb.conflict, sql.ConflictColumns(columns...))
+func (_c *NotifyTargetCreateBulk) OnConflictColumns(columns ...string) *NotifyTargetUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NotifyTargetUpsertBulk{
-		create: ntcb,
+		create: _c,
 	}
 }
 

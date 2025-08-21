@@ -88,7 +88,7 @@ func (*PorterContext) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the PorterContext fields.
-func (pc *PorterContext) assignValues(columns []string, values []any) error {
+func (_m *PorterContext) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -98,77 +98,77 @@ func (pc *PorterContext) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				pc.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case portercontext.FieldGlobalName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field global_name", values[i])
 			} else if value.Valid {
-				pc.GlobalName = value.String
+				_m.GlobalName = value.String
 			}
 		case portercontext.FieldRegion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field region", values[i])
 			} else if value.Valid {
-				pc.Region = value.String
+				_m.Region = value.String
 			}
 		case portercontext.FieldContextJSON:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field context_json", values[i])
 			} else if value.Valid {
-				pc.ContextJSON = value.String
+				_m.ContextJSON = value.String
 			}
 		case portercontext.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				pc.Name = value.String
+				_m.Name = value.String
 			}
 		case portercontext.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				pc.Description = value.String
+				_m.Description = value.String
 			}
 		case portercontext.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				pc.Status = portercontext.Status(value.String)
+				_m.Status = portercontext.Status(value.String)
 			}
 		case portercontext.FieldHandleStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field handle_status", values[i])
 			} else if value.Valid {
-				pc.HandleStatus = portercontext.HandleStatus(value.String)
+				_m.HandleStatus = portercontext.HandleStatus(value.String)
 			}
 		case portercontext.FieldHandleStatusMessage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field handle_status_message", values[i])
 			} else if value.Valid {
-				pc.HandleStatusMessage = value.String
+				_m.HandleStatusMessage = value.String
 			}
 		case portercontext.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				pc.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case portercontext.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				pc.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case portercontext.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_porter_context", values[i])
 			} else if value.Valid {
-				pc.user_porter_context = new(model.InternalID)
-				*pc.user_porter_context = model.InternalID(value.Int64)
+				_m.user_porter_context = new(model.InternalID)
+				*_m.user_porter_context = model.InternalID(value.Int64)
 			}
 		default:
-			pc.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -176,67 +176,67 @@ func (pc *PorterContext) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the PorterContext.
 // This includes values selected through modifiers, order, etc.
-func (pc *PorterContext) Value(name string) (ent.Value, error) {
-	return pc.selectValues.Get(name)
+func (_m *PorterContext) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the PorterContext entity.
-func (pc *PorterContext) QueryOwner() *UserQuery {
-	return NewPorterContextClient(pc.config).QueryOwner(pc)
+func (_m *PorterContext) QueryOwner() *UserQuery {
+	return NewPorterContextClient(_m.config).QueryOwner(_m)
 }
 
 // Update returns a builder for updating this PorterContext.
 // Note that you need to call PorterContext.Unwrap() before calling this method if this PorterContext
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (pc *PorterContext) Update() *PorterContextUpdateOne {
-	return NewPorterContextClient(pc.config).UpdateOne(pc)
+func (_m *PorterContext) Update() *PorterContextUpdateOne {
+	return NewPorterContextClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the PorterContext entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (pc *PorterContext) Unwrap() *PorterContext {
-	_tx, ok := pc.config.driver.(*txDriver)
+func (_m *PorterContext) Unwrap() *PorterContext {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: PorterContext is not a transactional entity")
 	}
-	pc.config.driver = _tx.drv
-	return pc
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (pc *PorterContext) String() string {
+func (_m *PorterContext) String() string {
 	var builder strings.Builder
 	builder.WriteString("PorterContext(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", pc.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("global_name=")
-	builder.WriteString(pc.GlobalName)
+	builder.WriteString(_m.GlobalName)
 	builder.WriteString(", ")
 	builder.WriteString("region=")
-	builder.WriteString(pc.Region)
+	builder.WriteString(_m.Region)
 	builder.WriteString(", ")
 	builder.WriteString("context_json=")
-	builder.WriteString(pc.ContextJSON)
+	builder.WriteString(_m.ContextJSON)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(pc.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(pc.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", pc.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("handle_status=")
-	builder.WriteString(fmt.Sprintf("%v", pc.HandleStatus))
+	builder.WriteString(fmt.Sprintf("%v", _m.HandleStatus))
 	builder.WriteString(", ")
 	builder.WriteString("handle_status_message=")
-	builder.WriteString(pc.HandleStatusMessage)
+	builder.WriteString(_m.HandleStatusMessage)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(pc.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(pc.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

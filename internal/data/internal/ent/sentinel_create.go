@@ -26,163 +26,163 @@ type SentinelCreate struct {
 }
 
 // SetName sets the "name" field.
-func (sc *SentinelCreate) SetName(s string) *SentinelCreate {
-	sc.mutation.SetName(s)
-	return sc
+func (_c *SentinelCreate) SetName(v string) *SentinelCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (sc *SentinelCreate) SetDescription(s string) *SentinelCreate {
-	sc.mutation.SetDescription(s)
-	return sc
+func (_c *SentinelCreate) SetDescription(v string) *SentinelCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetURL sets the "url" field.
-func (sc *SentinelCreate) SetURL(s string) *SentinelCreate {
-	sc.mutation.SetURL(s)
-	return sc
+func (_c *SentinelCreate) SetURL(v string) *SentinelCreate {
+	_c.mutation.SetURL(v)
+	return _c
 }
 
 // SetNillableURL sets the "url" field if the given value is not nil.
-func (sc *SentinelCreate) SetNillableURL(s *string) *SentinelCreate {
-	if s != nil {
-		sc.SetURL(*s)
+func (_c *SentinelCreate) SetNillableURL(v *string) *SentinelCreate {
+	if v != nil {
+		_c.SetURL(*v)
 	}
-	return sc
+	return _c
 }
 
 // SetAlternativeUrls sets the "alternative_urls" field.
-func (sc *SentinelCreate) SetAlternativeUrls(s []string) *SentinelCreate {
-	sc.mutation.SetAlternativeUrls(s)
-	return sc
+func (_c *SentinelCreate) SetAlternativeUrls(v []string) *SentinelCreate {
+	_c.mutation.SetAlternativeUrls(v)
+	return _c
 }
 
 // SetGetTokenPath sets the "get_token_path" field.
-func (sc *SentinelCreate) SetGetTokenPath(s string) *SentinelCreate {
-	sc.mutation.SetGetTokenPath(s)
-	return sc
+func (_c *SentinelCreate) SetGetTokenPath(v string) *SentinelCreate {
+	_c.mutation.SetGetTokenPath(v)
+	return _c
 }
 
 // SetNillableGetTokenPath sets the "get_token_path" field if the given value is not nil.
-func (sc *SentinelCreate) SetNillableGetTokenPath(s *string) *SentinelCreate {
-	if s != nil {
-		sc.SetGetTokenPath(*s)
+func (_c *SentinelCreate) SetNillableGetTokenPath(v *string) *SentinelCreate {
+	if v != nil {
+		_c.SetGetTokenPath(*v)
 	}
-	return sc
+	return _c
 }
 
 // SetDownloadFileBasePath sets the "download_file_base_path" field.
-func (sc *SentinelCreate) SetDownloadFileBasePath(s string) *SentinelCreate {
-	sc.mutation.SetDownloadFileBasePath(s)
-	return sc
+func (_c *SentinelCreate) SetDownloadFileBasePath(v string) *SentinelCreate {
+	_c.mutation.SetDownloadFileBasePath(v)
+	return _c
 }
 
 // SetNillableDownloadFileBasePath sets the "download_file_base_path" field if the given value is not nil.
-func (sc *SentinelCreate) SetNillableDownloadFileBasePath(s *string) *SentinelCreate {
-	if s != nil {
-		sc.SetDownloadFileBasePath(*s)
+func (_c *SentinelCreate) SetNillableDownloadFileBasePath(v *string) *SentinelCreate {
+	if v != nil {
+		_c.SetDownloadFileBasePath(*v)
 	}
-	return sc
+	return _c
 }
 
 // SetCreatorID sets the "creator_id" field.
-func (sc *SentinelCreate) SetCreatorID(mi model.InternalID) *SentinelCreate {
-	sc.mutation.SetCreatorID(mi)
-	return sc
+func (_c *SentinelCreate) SetCreatorID(v model.InternalID) *SentinelCreate {
+	_c.mutation.SetCreatorID(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sc *SentinelCreate) SetUpdatedAt(t time.Time) *SentinelCreate {
-	sc.mutation.SetUpdatedAt(t)
-	return sc
+func (_c *SentinelCreate) SetUpdatedAt(v time.Time) *SentinelCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (sc *SentinelCreate) SetNillableUpdatedAt(t *time.Time) *SentinelCreate {
-	if t != nil {
-		sc.SetUpdatedAt(*t)
+func (_c *SentinelCreate) SetNillableUpdatedAt(v *time.Time) *SentinelCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return sc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sc *SentinelCreate) SetCreatedAt(t time.Time) *SentinelCreate {
-	sc.mutation.SetCreatedAt(t)
-	return sc
+func (_c *SentinelCreate) SetCreatedAt(v time.Time) *SentinelCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sc *SentinelCreate) SetNillableCreatedAt(t *time.Time) *SentinelCreate {
-	if t != nil {
-		sc.SetCreatedAt(*t)
+func (_c *SentinelCreate) SetNillableCreatedAt(v *time.Time) *SentinelCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return sc
+	return _c
 }
 
 // SetLibraryReportSequence sets the "library_report_sequence" field.
-func (sc *SentinelCreate) SetLibraryReportSequence(i int64) *SentinelCreate {
-	sc.mutation.SetLibraryReportSequence(i)
-	return sc
+func (_c *SentinelCreate) SetLibraryReportSequence(v int64) *SentinelCreate {
+	_c.mutation.SetLibraryReportSequence(v)
+	return _c
 }
 
 // SetNillableLibraryReportSequence sets the "library_report_sequence" field if the given value is not nil.
-func (sc *SentinelCreate) SetNillableLibraryReportSequence(i *int64) *SentinelCreate {
-	if i != nil {
-		sc.SetLibraryReportSequence(*i)
+func (_c *SentinelCreate) SetNillableLibraryReportSequence(v *int64) *SentinelCreate {
+	if v != nil {
+		_c.SetLibraryReportSequence(*v)
 	}
-	return sc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (sc *SentinelCreate) SetID(mi model.InternalID) *SentinelCreate {
-	sc.mutation.SetID(mi)
-	return sc
+func (_c *SentinelCreate) SetID(v model.InternalID) *SentinelCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // AddSentinelSessionIDs adds the "sentinel_session" edge to the SentinelSession entity by IDs.
-func (sc *SentinelCreate) AddSentinelSessionIDs(ids ...model.InternalID) *SentinelCreate {
-	sc.mutation.AddSentinelSessionIDs(ids...)
-	return sc
+func (_c *SentinelCreate) AddSentinelSessionIDs(ids ...model.InternalID) *SentinelCreate {
+	_c.mutation.AddSentinelSessionIDs(ids...)
+	return _c
 }
 
 // AddSentinelSession adds the "sentinel_session" edges to the SentinelSession entity.
-func (sc *SentinelCreate) AddSentinelSession(s ...*SentinelSession) *SentinelCreate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_c *SentinelCreate) AddSentinelSession(v ...*SentinelSession) *SentinelCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sc.AddSentinelSessionIDs(ids...)
+	return _c.AddSentinelSessionIDs(ids...)
 }
 
 // AddSentinelLibraryIDs adds the "sentinel_library" edge to the SentinelLibrary entity by IDs.
-func (sc *SentinelCreate) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelCreate {
-	sc.mutation.AddSentinelLibraryIDs(ids...)
-	return sc
+func (_c *SentinelCreate) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelCreate {
+	_c.mutation.AddSentinelLibraryIDs(ids...)
+	return _c
 }
 
 // AddSentinelLibrary adds the "sentinel_library" edges to the SentinelLibrary entity.
-func (sc *SentinelCreate) AddSentinelLibrary(s ...*SentinelLibrary) *SentinelCreate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_c *SentinelCreate) AddSentinelLibrary(v ...*SentinelLibrary) *SentinelCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sc.AddSentinelLibraryIDs(ids...)
+	return _c.AddSentinelLibraryIDs(ids...)
 }
 
 // Mutation returns the SentinelMutation object of the builder.
-func (sc *SentinelCreate) Mutation() *SentinelMutation {
-	return sc.mutation
+func (_c *SentinelCreate) Mutation() *SentinelMutation {
+	return _c.mutation
 }
 
 // Save creates the Sentinel in the database.
-func (sc *SentinelCreate) Save(ctx context.Context) (*Sentinel, error) {
-	sc.defaults()
-	return withHooks(ctx, sc.sqlSave, sc.mutation, sc.hooks)
+func (_c *SentinelCreate) Save(ctx context.Context) (*Sentinel, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (sc *SentinelCreate) SaveX(ctx context.Context) *Sentinel {
-	v, err := sc.Save(ctx)
+func (_c *SentinelCreate) SaveX(ctx context.Context) *Sentinel {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -190,77 +190,77 @@ func (sc *SentinelCreate) SaveX(ctx context.Context) *Sentinel {
 }
 
 // Exec executes the query.
-func (sc *SentinelCreate) Exec(ctx context.Context) error {
-	_, err := sc.Save(ctx)
+func (_c *SentinelCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sc *SentinelCreate) ExecX(ctx context.Context) {
-	if err := sc.Exec(ctx); err != nil {
+func (_c *SentinelCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sc *SentinelCreate) defaults() {
-	if _, ok := sc.mutation.URL(); !ok {
+func (_c *SentinelCreate) defaults() {
+	if _, ok := _c.mutation.URL(); !ok {
 		v := sentinel.DefaultURL
-		sc.mutation.SetURL(v)
+		_c.mutation.SetURL(v)
 	}
-	if _, ok := sc.mutation.DownloadFileBasePath(); !ok {
+	if _, ok := _c.mutation.DownloadFileBasePath(); !ok {
 		v := sentinel.DefaultDownloadFileBasePath
-		sc.mutation.SetDownloadFileBasePath(v)
+		_c.mutation.SetDownloadFileBasePath(v)
 	}
-	if _, ok := sc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := sentinel.DefaultUpdatedAt()
-		sc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := sc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := sentinel.DefaultCreatedAt()
-		sc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
-	if _, ok := sc.mutation.LibraryReportSequence(); !ok {
+	if _, ok := _c.mutation.LibraryReportSequence(); !ok {
 		v := sentinel.DefaultLibraryReportSequence
-		sc.mutation.SetLibraryReportSequence(v)
+		_c.mutation.SetLibraryReportSequence(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (sc *SentinelCreate) check() error {
-	if _, ok := sc.mutation.Name(); !ok {
+func (_c *SentinelCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Sentinel.name"`)}
 	}
-	if _, ok := sc.mutation.Description(); !ok {
+	if _, ok := _c.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Sentinel.description"`)}
 	}
-	if _, ok := sc.mutation.URL(); !ok {
+	if _, ok := _c.mutation.URL(); !ok {
 		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "Sentinel.url"`)}
 	}
-	if _, ok := sc.mutation.DownloadFileBasePath(); !ok {
+	if _, ok := _c.mutation.DownloadFileBasePath(); !ok {
 		return &ValidationError{Name: "download_file_base_path", err: errors.New(`ent: missing required field "Sentinel.download_file_base_path"`)}
 	}
-	if _, ok := sc.mutation.CreatorID(); !ok {
+	if _, ok := _c.mutation.CreatorID(); !ok {
 		return &ValidationError{Name: "creator_id", err: errors.New(`ent: missing required field "Sentinel.creator_id"`)}
 	}
-	if _, ok := sc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Sentinel.updated_at"`)}
 	}
-	if _, ok := sc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Sentinel.created_at"`)}
 	}
-	if _, ok := sc.mutation.LibraryReportSequence(); !ok {
+	if _, ok := _c.mutation.LibraryReportSequence(); !ok {
 		return &ValidationError{Name: "library_report_sequence", err: errors.New(`ent: missing required field "Sentinel.library_report_sequence"`)}
 	}
 	return nil
 }
 
-func (sc *SentinelCreate) sqlSave(ctx context.Context) (*Sentinel, error) {
-	if err := sc.check(); err != nil {
+func (_c *SentinelCreate) sqlSave(ctx context.Context) (*Sentinel, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := sc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, sc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -270,62 +270,62 @@ func (sc *SentinelCreate) sqlSave(ctx context.Context) (*Sentinel, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	sc.mutation.id = &_node.ID
-	sc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (sc *SentinelCreate) createSpec() (*Sentinel, *sqlgraph.CreateSpec) {
+func (_c *SentinelCreate) createSpec() (*Sentinel, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Sentinel{config: sc.config}
+		_node = &Sentinel{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(sentinel.Table, sqlgraph.NewFieldSpec(sentinel.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = sc.conflict
-	if id, ok := sc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := sc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(sentinel.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := sc.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(sentinel.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := sc.mutation.URL(); ok {
+	if value, ok := _c.mutation.URL(); ok {
 		_spec.SetField(sentinel.FieldURL, field.TypeString, value)
 		_node.URL = value
 	}
-	if value, ok := sc.mutation.AlternativeUrls(); ok {
+	if value, ok := _c.mutation.AlternativeUrls(); ok {
 		_spec.SetField(sentinel.FieldAlternativeUrls, field.TypeJSON, value)
 		_node.AlternativeUrls = value
 	}
-	if value, ok := sc.mutation.GetTokenPath(); ok {
+	if value, ok := _c.mutation.GetTokenPath(); ok {
 		_spec.SetField(sentinel.FieldGetTokenPath, field.TypeString, value)
 		_node.GetTokenPath = value
 	}
-	if value, ok := sc.mutation.DownloadFileBasePath(); ok {
+	if value, ok := _c.mutation.DownloadFileBasePath(); ok {
 		_spec.SetField(sentinel.FieldDownloadFileBasePath, field.TypeString, value)
 		_node.DownloadFileBasePath = value
 	}
-	if value, ok := sc.mutation.CreatorID(); ok {
+	if value, ok := _c.mutation.CreatorID(); ok {
 		_spec.SetField(sentinel.FieldCreatorID, field.TypeInt64, value)
 		_node.CreatorID = value
 	}
-	if value, ok := sc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinel.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := sc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinel.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := sc.mutation.LibraryReportSequence(); ok {
+	if value, ok := _c.mutation.LibraryReportSequence(); ok {
 		_spec.SetField(sentinel.FieldLibraryReportSequence, field.TypeInt64, value)
 		_node.LibraryReportSequence = value
 	}
-	if nodes := sc.mutation.SentinelSessionIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.SentinelSessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -341,7 +341,7 @@ func (sc *SentinelCreate) createSpec() (*Sentinel, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := sc.mutation.SentinelLibraryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.SentinelLibraryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -376,10 +376,10 @@ func (sc *SentinelCreate) createSpec() (*Sentinel, *sqlgraph.CreateSpec) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (sc *SentinelCreate) OnConflict(opts ...sql.ConflictOption) *SentinelUpsertOne {
-	sc.conflict = opts
+func (_c *SentinelCreate) OnConflict(opts ...sql.ConflictOption) *SentinelUpsertOne {
+	_c.conflict = opts
 	return &SentinelUpsertOne{
-		create: sc,
+		create: _c,
 	}
 }
 
@@ -389,10 +389,10 @@ func (sc *SentinelCreate) OnConflict(opts ...sql.ConflictOption) *SentinelUpsert
 //	client.Sentinel.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sc *SentinelCreate) OnConflictColumns(columns ...string) *SentinelUpsertOne {
-	sc.conflict = append(sc.conflict, sql.ConflictColumns(columns...))
+func (_c *SentinelCreate) OnConflictColumns(columns ...string) *SentinelUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SentinelUpsertOne{
-		create: sc,
+		create: _c,
 	}
 }
 
@@ -775,16 +775,16 @@ type SentinelCreateBulk struct {
 }
 
 // Save creates the Sentinel entities in the database.
-func (scb *SentinelCreateBulk) Save(ctx context.Context) ([]*Sentinel, error) {
-	if scb.err != nil {
-		return nil, scb.err
+func (_c *SentinelCreateBulk) Save(ctx context.Context) ([]*Sentinel, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(scb.builders))
-	nodes := make([]*Sentinel, len(scb.builders))
-	mutators := make([]Mutator, len(scb.builders))
-	for i := range scb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Sentinel, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := scb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SentinelMutation)
@@ -798,12 +798,12 @@ func (scb *SentinelCreateBulk) Save(ctx context.Context) ([]*Sentinel, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, scb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = scb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, scb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -827,7 +827,7 @@ func (scb *SentinelCreateBulk) Save(ctx context.Context) ([]*Sentinel, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, scb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -835,8 +835,8 @@ func (scb *SentinelCreateBulk) Save(ctx context.Context) ([]*Sentinel, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (scb *SentinelCreateBulk) SaveX(ctx context.Context) []*Sentinel {
-	v, err := scb.Save(ctx)
+func (_c *SentinelCreateBulk) SaveX(ctx context.Context) []*Sentinel {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -844,14 +844,14 @@ func (scb *SentinelCreateBulk) SaveX(ctx context.Context) []*Sentinel {
 }
 
 // Exec executes the query.
-func (scb *SentinelCreateBulk) Exec(ctx context.Context) error {
-	_, err := scb.Save(ctx)
+func (_c *SentinelCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (scb *SentinelCreateBulk) ExecX(ctx context.Context) {
-	if err := scb.Exec(ctx); err != nil {
+func (_c *SentinelCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -871,10 +871,10 @@ func (scb *SentinelCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (scb *SentinelCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelUpsertBulk {
-	scb.conflict = opts
+func (_c *SentinelCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelUpsertBulk {
+	_c.conflict = opts
 	return &SentinelUpsertBulk{
-		create: scb,
+		create: _c,
 	}
 }
 
@@ -884,10 +884,10 @@ func (scb *SentinelCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelU
 //	client.Sentinel.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (scb *SentinelCreateBulk) OnConflictColumns(columns ...string) *SentinelUpsertBulk {
-	scb.conflict = append(scb.conflict, sql.ConflictColumns(columns...))
+func (_c *SentinelCreateBulk) OnConflictColumns(columns ...string) *SentinelUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SentinelUpsertBulk{
-		create: scb,
+		create: _c,
 	}
 }
 

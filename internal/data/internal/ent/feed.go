@@ -99,7 +99,7 @@ func (*Feed) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Feed fields.
-func (f *Feed) assignValues(columns []string, values []any) error {
+func (_m *Feed) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -109,37 +109,37 @@ func (f *Feed) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				f.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case feed.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
-				f.Title = value.String
+				_m.Title = value.String
 			}
 		case feed.FieldLink:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field link", values[i])
 			} else if value.Valid {
-				f.Link = value.String
+				_m.Link = value.String
 			}
 		case feed.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				f.Description = value.String
+				_m.Description = value.String
 			}
 		case feed.FieldLanguage:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field language", values[i])
 			} else if value.Valid {
-				f.Language = value.String
+				_m.Language = value.String
 			}
 		case feed.FieldAuthors:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field authors", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &f.Authors); err != nil {
+				if err := json.Unmarshal(*value, &_m.Authors); err != nil {
 					return fmt.Errorf("unmarshal field authors: %w", err)
 				}
 			}
@@ -147,7 +147,7 @@ func (f *Feed) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field image", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &f.Image); err != nil {
+				if err := json.Unmarshal(*value, &_m.Image); err != nil {
 					return fmt.Errorf("unmarshal field image: %w", err)
 				}
 			}
@@ -155,23 +155,23 @@ func (f *Feed) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				f.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case feed.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				f.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case feed.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_config_feed", values[i])
 			} else if value.Valid {
-				f.feed_config_feed = new(model.InternalID)
-				*f.feed_config_feed = model.InternalID(value.Int64)
+				_m.feed_config_feed = new(model.InternalID)
+				*_m.feed_config_feed = model.InternalID(value.Int64)
 			}
 		default:
-			f.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -179,66 +179,66 @@ func (f *Feed) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Feed.
 // This includes values selected through modifiers, order, etc.
-func (f *Feed) Value(name string) (ent.Value, error) {
-	return f.selectValues.Get(name)
+func (_m *Feed) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryItem queries the "item" edge of the Feed entity.
-func (f *Feed) QueryItem() *FeedItemQuery {
-	return NewFeedClient(f.config).QueryItem(f)
+func (_m *Feed) QueryItem() *FeedItemQuery {
+	return NewFeedClient(_m.config).QueryItem(_m)
 }
 
 // QueryConfig queries the "config" edge of the Feed entity.
-func (f *Feed) QueryConfig() *FeedConfigQuery {
-	return NewFeedClient(f.config).QueryConfig(f)
+func (_m *Feed) QueryConfig() *FeedConfigQuery {
+	return NewFeedClient(_m.config).QueryConfig(_m)
 }
 
 // Update returns a builder for updating this Feed.
 // Note that you need to call Feed.Unwrap() before calling this method if this Feed
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (f *Feed) Update() *FeedUpdateOne {
-	return NewFeedClient(f.config).UpdateOne(f)
+func (_m *Feed) Update() *FeedUpdateOne {
+	return NewFeedClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Feed entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (f *Feed) Unwrap() *Feed {
-	_tx, ok := f.config.driver.(*txDriver)
+func (_m *Feed) Unwrap() *Feed {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Feed is not a transactional entity")
 	}
-	f.config.driver = _tx.drv
-	return f
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (f *Feed) String() string {
+func (_m *Feed) String() string {
 	var builder strings.Builder
 	builder.WriteString("Feed(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", f.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("title=")
-	builder.WriteString(f.Title)
+	builder.WriteString(_m.Title)
 	builder.WriteString(", ")
 	builder.WriteString("link=")
-	builder.WriteString(f.Link)
+	builder.WriteString(_m.Link)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(f.Description)
+	builder.WriteString(_m.Description)
 	builder.WriteString(", ")
 	builder.WriteString("language=")
-	builder.WriteString(f.Language)
+	builder.WriteString(_m.Language)
 	builder.WriteString(", ")
 	builder.WriteString("authors=")
-	builder.WriteString(fmt.Sprintf("%v", f.Authors))
+	builder.WriteString(fmt.Sprintf("%v", _m.Authors))
 	builder.WriteString(", ")
 	builder.WriteString("image=")
-	builder.WriteString(fmt.Sprintf("%v", f.Image))
+	builder.WriteString(fmt.Sprintf("%v", _m.Image))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(f.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(f.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

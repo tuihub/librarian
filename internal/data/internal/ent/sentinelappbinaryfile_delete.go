@@ -20,56 +20,56 @@ type SentinelAppBinaryFileDelete struct {
 }
 
 // Where appends a list predicates to the SentinelAppBinaryFileDelete builder.
-func (sabfd *SentinelAppBinaryFileDelete) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileDelete {
-	sabfd.mutation.Where(ps...)
-	return sabfd
+func (_d *SentinelAppBinaryFileDelete) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (sabfd *SentinelAppBinaryFileDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, sabfd.sqlExec, sabfd.mutation, sabfd.hooks)
+func (_d *SentinelAppBinaryFileDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabfd *SentinelAppBinaryFileDelete) ExecX(ctx context.Context) int {
-	n, err := sabfd.Exec(ctx)
+func (_d *SentinelAppBinaryFileDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (sabfd *SentinelAppBinaryFileDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *SentinelAppBinaryFileDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(sentinelappbinaryfile.Table, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
-	if ps := sabfd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, sabfd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	sabfd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // SentinelAppBinaryFileDeleteOne is the builder for deleting a single SentinelAppBinaryFile entity.
 type SentinelAppBinaryFileDeleteOne struct {
-	sabfd *SentinelAppBinaryFileDelete
+	_d *SentinelAppBinaryFileDelete
 }
 
 // Where appends a list predicates to the SentinelAppBinaryFileDelete builder.
-func (sabfdo *SentinelAppBinaryFileDeleteOne) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileDeleteOne {
-	sabfdo.sabfd.mutation.Where(ps...)
-	return sabfdo
+func (_d *SentinelAppBinaryFileDeleteOne) Where(ps ...predicate.SentinelAppBinaryFile) *SentinelAppBinaryFileDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (sabfdo *SentinelAppBinaryFileDeleteOne) Exec(ctx context.Context) error {
-	n, err := sabfdo.sabfd.Exec(ctx)
+func (_d *SentinelAppBinaryFileDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (sabfdo *SentinelAppBinaryFileDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabfdo *SentinelAppBinaryFileDeleteOne) ExecX(ctx context.Context) {
-	if err := sabfdo.Exec(ctx); err != nil {
+func (_d *SentinelAppBinaryFileDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

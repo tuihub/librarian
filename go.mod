@@ -1,8 +1,8 @@
 module github.com/tuihub/librarian
 
-go 1.24
+go 1.24.0
 
-toolchain go1.24.2
+toolchain go1.24.4
 
 require (
 	buf.build/go/protovalidate v0.14.0
@@ -20,7 +20,7 @@ require (
 	github.com/go-co-op/gocron/v2 v2.16.4
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20250828133012-308cfee50a57
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20250828133012-308cfee50a57
-	github.com/go-kratos/kratos/v2 v2.8.4
+	github.com/go-kratos/kratos/v2 v2.9.1
 	github.com/gocolly/colly/v2 v2.2.0
 	github.com/gofiber/contrib/fiberi18n/v2 v2.0.6
 	github.com/gofiber/fiber/v2 v2.52.9
@@ -50,7 +50,7 @@ require (
 	github.com/sony/sonyflake/v2 v2.2.0
 	github.com/spf13/afero v1.14.0
 	github.com/stretchr/testify v1.11.1
-	github.com/tuihub/protos v0.5.10
+	github.com/tuihub/protos v0.6.2
 	github.com/urfave/cli/v3 v3.4.1
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.14.0
@@ -68,15 +68,17 @@ require (
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.41.0
 	golang.org/x/text v0.28.0
-	google.golang.org/grpc v1.75.0
-	google.golang.org/protobuf v1.36.8
+	google.golang.org/grpc v1.76.0
+	google.golang.org/protobuf v1.36.10
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (
 	ariga.io/atlas v0.32.1-0.20250325101103-175b25e1c1b9 // indirect
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.6-20250717165733-d22d418d82d8.1 // indirect
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.10-20250912141014-52f32327d4b0.1 // indirect
 	cel.dev/expr v0.24.0 // indirect
+	connectrpc.com/connect v1.19.1 // indirect
+	connectrpc.com/grpcreflect v1.3.0 // indirect
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Jeffail/gabs/v2 v2.7.0 // indirect
 	github.com/Rican7/retry v0.3.1 // indirect

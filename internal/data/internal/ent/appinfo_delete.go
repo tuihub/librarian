@@ -20,56 +20,56 @@ type AppInfoDelete struct {
 }
 
 // Where appends a list predicates to the AppInfoDelete builder.
-func (aid *AppInfoDelete) Where(ps ...predicate.AppInfo) *AppInfoDelete {
-	aid.mutation.Where(ps...)
-	return aid
+func (_d *AppInfoDelete) Where(ps ...predicate.AppInfo) *AppInfoDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (aid *AppInfoDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, aid.sqlExec, aid.mutation, aid.hooks)
+func (_d *AppInfoDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aid *AppInfoDelete) ExecX(ctx context.Context) int {
-	n, err := aid.Exec(ctx)
+func (_d *AppInfoDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (aid *AppInfoDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *AppInfoDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(appinfo.Table, sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64))
-	if ps := aid.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, aid.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	aid.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // AppInfoDeleteOne is the builder for deleting a single AppInfo entity.
 type AppInfoDeleteOne struct {
-	aid *AppInfoDelete
+	_d *AppInfoDelete
 }
 
 // Where appends a list predicates to the AppInfoDelete builder.
-func (aido *AppInfoDeleteOne) Where(ps ...predicate.AppInfo) *AppInfoDeleteOne {
-	aido.aid.mutation.Where(ps...)
-	return aido
+func (_d *AppInfoDeleteOne) Where(ps ...predicate.AppInfo) *AppInfoDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (aido *AppInfoDeleteOne) Exec(ctx context.Context) error {
-	n, err := aido.aid.Exec(ctx)
+func (_d *AppInfoDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (aido *AppInfoDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aido *AppInfoDeleteOne) ExecX(ctx context.Context) {
-	if err := aido.Exec(ctx); err != nil {
+func (_d *AppInfoDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

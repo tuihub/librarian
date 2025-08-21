@@ -2,7 +2,7 @@ package converter
 
 import (
 	"github.com/tuihub/librarian/internal/model/modelgebura"
-	sentinel "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
+	sentinel "github.com/tuihub/protos/pkg/librarian/sentinel/v1"
 )
 
 // goverter:converter

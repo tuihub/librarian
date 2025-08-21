@@ -23,87 +23,87 @@ type KVUpdate struct {
 }
 
 // Where appends a list predicates to the KVUpdate builder.
-func (ku *KVUpdate) Where(ps ...predicate.KV) *KVUpdate {
-	ku.mutation.Where(ps...)
-	return ku
+func (_u *KVUpdate) Where(ps ...predicate.KV) *KVUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetBucket sets the "bucket" field.
-func (ku *KVUpdate) SetBucket(s string) *KVUpdate {
-	ku.mutation.SetBucket(s)
-	return ku
+func (_u *KVUpdate) SetBucket(v string) *KVUpdate {
+	_u.mutation.SetBucket(v)
+	return _u
 }
 
 // SetNillableBucket sets the "bucket" field if the given value is not nil.
-func (ku *KVUpdate) SetNillableBucket(s *string) *KVUpdate {
-	if s != nil {
-		ku.SetBucket(*s)
+func (_u *KVUpdate) SetNillableBucket(v *string) *KVUpdate {
+	if v != nil {
+		_u.SetBucket(*v)
 	}
-	return ku
+	return _u
 }
 
 // SetKey sets the "key" field.
-func (ku *KVUpdate) SetKey(s string) *KVUpdate {
-	ku.mutation.SetKey(s)
-	return ku
+func (_u *KVUpdate) SetKey(v string) *KVUpdate {
+	_u.mutation.SetKey(v)
+	return _u
 }
 
 // SetNillableKey sets the "key" field if the given value is not nil.
-func (ku *KVUpdate) SetNillableKey(s *string) *KVUpdate {
-	if s != nil {
-		ku.SetKey(*s)
+func (_u *KVUpdate) SetNillableKey(v *string) *KVUpdate {
+	if v != nil {
+		_u.SetKey(*v)
 	}
-	return ku
+	return _u
 }
 
 // SetValue sets the "value" field.
-func (ku *KVUpdate) SetValue(s string) *KVUpdate {
-	ku.mutation.SetValue(s)
-	return ku
+func (_u *KVUpdate) SetValue(v string) *KVUpdate {
+	_u.mutation.SetValue(v)
+	return _u
 }
 
 // SetNillableValue sets the "value" field if the given value is not nil.
-func (ku *KVUpdate) SetNillableValue(s *string) *KVUpdate {
-	if s != nil {
-		ku.SetValue(*s)
+func (_u *KVUpdate) SetNillableValue(v *string) *KVUpdate {
+	if v != nil {
+		_u.SetValue(*v)
 	}
-	return ku
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ku *KVUpdate) SetUpdatedAt(t time.Time) *KVUpdate {
-	ku.mutation.SetUpdatedAt(t)
-	return ku
+func (_u *KVUpdate) SetUpdatedAt(v time.Time) *KVUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ku *KVUpdate) SetCreatedAt(t time.Time) *KVUpdate {
-	ku.mutation.SetCreatedAt(t)
-	return ku
+func (_u *KVUpdate) SetCreatedAt(v time.Time) *KVUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ku *KVUpdate) SetNillableCreatedAt(t *time.Time) *KVUpdate {
-	if t != nil {
-		ku.SetCreatedAt(*t)
+func (_u *KVUpdate) SetNillableCreatedAt(v *time.Time) *KVUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return ku
+	return _u
 }
 
 // Mutation returns the KVMutation object of the builder.
-func (ku *KVUpdate) Mutation() *KVMutation {
-	return ku.mutation
+func (_u *KVUpdate) Mutation() *KVMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ku *KVUpdate) Save(ctx context.Context) (int, error) {
-	ku.defaults()
-	return withHooks(ctx, ku.sqlSave, ku.mutation, ku.hooks)
+func (_u *KVUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ku *KVUpdate) SaveX(ctx context.Context) int {
-	affected, err := ku.Save(ctx)
+func (_u *KVUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -111,51 +111,51 @@ func (ku *KVUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ku *KVUpdate) Exec(ctx context.Context) error {
-	_, err := ku.Save(ctx)
+func (_u *KVUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ku *KVUpdate) ExecX(ctx context.Context) {
-	if err := ku.Exec(ctx); err != nil {
+func (_u *KVUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ku *KVUpdate) defaults() {
-	if _, ok := ku.mutation.UpdatedAt(); !ok {
+func (_u *KVUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := kv.UpdateDefaultUpdatedAt()
-		ku.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (ku *KVUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *KVUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(kv.Table, kv.Columns, sqlgraph.NewFieldSpec(kv.FieldID, field.TypeInt))
-	if ps := ku.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ku.mutation.Bucket(); ok {
+	if value, ok := _u.mutation.Bucket(); ok {
 		_spec.SetField(kv.FieldBucket, field.TypeString, value)
 	}
-	if value, ok := ku.mutation.Key(); ok {
+	if value, ok := _u.mutation.Key(); ok {
 		_spec.SetField(kv.FieldKey, field.TypeString, value)
 	}
-	if value, ok := ku.mutation.Value(); ok {
+	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(kv.FieldValue, field.TypeString, value)
 	}
-	if value, ok := ku.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(kv.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := ku.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(kv.FieldCreatedAt, field.TypeTime, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ku.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{kv.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -163,8 +163,8 @@ func (ku *KVUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ku.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // KVUpdateOne is the builder for updating a single KV entity.
@@ -176,94 +176,94 @@ type KVUpdateOne struct {
 }
 
 // SetBucket sets the "bucket" field.
-func (kuo *KVUpdateOne) SetBucket(s string) *KVUpdateOne {
-	kuo.mutation.SetBucket(s)
-	return kuo
+func (_u *KVUpdateOne) SetBucket(v string) *KVUpdateOne {
+	_u.mutation.SetBucket(v)
+	return _u
 }
 
 // SetNillableBucket sets the "bucket" field if the given value is not nil.
-func (kuo *KVUpdateOne) SetNillableBucket(s *string) *KVUpdateOne {
-	if s != nil {
-		kuo.SetBucket(*s)
+func (_u *KVUpdateOne) SetNillableBucket(v *string) *KVUpdateOne {
+	if v != nil {
+		_u.SetBucket(*v)
 	}
-	return kuo
+	return _u
 }
 
 // SetKey sets the "key" field.
-func (kuo *KVUpdateOne) SetKey(s string) *KVUpdateOne {
-	kuo.mutation.SetKey(s)
-	return kuo
+func (_u *KVUpdateOne) SetKey(v string) *KVUpdateOne {
+	_u.mutation.SetKey(v)
+	return _u
 }
 
 // SetNillableKey sets the "key" field if the given value is not nil.
-func (kuo *KVUpdateOne) SetNillableKey(s *string) *KVUpdateOne {
-	if s != nil {
-		kuo.SetKey(*s)
+func (_u *KVUpdateOne) SetNillableKey(v *string) *KVUpdateOne {
+	if v != nil {
+		_u.SetKey(*v)
 	}
-	return kuo
+	return _u
 }
 
 // SetValue sets the "value" field.
-func (kuo *KVUpdateOne) SetValue(s string) *KVUpdateOne {
-	kuo.mutation.SetValue(s)
-	return kuo
+func (_u *KVUpdateOne) SetValue(v string) *KVUpdateOne {
+	_u.mutation.SetValue(v)
+	return _u
 }
 
 // SetNillableValue sets the "value" field if the given value is not nil.
-func (kuo *KVUpdateOne) SetNillableValue(s *string) *KVUpdateOne {
-	if s != nil {
-		kuo.SetValue(*s)
+func (_u *KVUpdateOne) SetNillableValue(v *string) *KVUpdateOne {
+	if v != nil {
+		_u.SetValue(*v)
 	}
-	return kuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (kuo *KVUpdateOne) SetUpdatedAt(t time.Time) *KVUpdateOne {
-	kuo.mutation.SetUpdatedAt(t)
-	return kuo
+func (_u *KVUpdateOne) SetUpdatedAt(v time.Time) *KVUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (kuo *KVUpdateOne) SetCreatedAt(t time.Time) *KVUpdateOne {
-	kuo.mutation.SetCreatedAt(t)
-	return kuo
+func (_u *KVUpdateOne) SetCreatedAt(v time.Time) *KVUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (kuo *KVUpdateOne) SetNillableCreatedAt(t *time.Time) *KVUpdateOne {
-	if t != nil {
-		kuo.SetCreatedAt(*t)
+func (_u *KVUpdateOne) SetNillableCreatedAt(v *time.Time) *KVUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return kuo
+	return _u
 }
 
 // Mutation returns the KVMutation object of the builder.
-func (kuo *KVUpdateOne) Mutation() *KVMutation {
-	return kuo.mutation
+func (_u *KVUpdateOne) Mutation() *KVMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the KVUpdate builder.
-func (kuo *KVUpdateOne) Where(ps ...predicate.KV) *KVUpdateOne {
-	kuo.mutation.Where(ps...)
-	return kuo
+func (_u *KVUpdateOne) Where(ps ...predicate.KV) *KVUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (kuo *KVUpdateOne) Select(field string, fields ...string) *KVUpdateOne {
-	kuo.fields = append([]string{field}, fields...)
-	return kuo
+func (_u *KVUpdateOne) Select(field string, fields ...string) *KVUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated KV entity.
-func (kuo *KVUpdateOne) Save(ctx context.Context) (*KV, error) {
-	kuo.defaults()
-	return withHooks(ctx, kuo.sqlSave, kuo.mutation, kuo.hooks)
+func (_u *KVUpdateOne) Save(ctx context.Context) (*KV, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (kuo *KVUpdateOne) SaveX(ctx context.Context) *KV {
-	node, err := kuo.Save(ctx)
+func (_u *KVUpdateOne) SaveX(ctx context.Context) *KV {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -271,34 +271,34 @@ func (kuo *KVUpdateOne) SaveX(ctx context.Context) *KV {
 }
 
 // Exec executes the query on the entity.
-func (kuo *KVUpdateOne) Exec(ctx context.Context) error {
-	_, err := kuo.Save(ctx)
+func (_u *KVUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (kuo *KVUpdateOne) ExecX(ctx context.Context) {
-	if err := kuo.Exec(ctx); err != nil {
+func (_u *KVUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (kuo *KVUpdateOne) defaults() {
-	if _, ok := kuo.mutation.UpdatedAt(); !ok {
+func (_u *KVUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := kv.UpdateDefaultUpdatedAt()
-		kuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (kuo *KVUpdateOne) sqlSave(ctx context.Context) (_node *KV, err error) {
+func (_u *KVUpdateOne) sqlSave(ctx context.Context) (_node *KV, err error) {
 	_spec := sqlgraph.NewUpdateSpec(kv.Table, kv.Columns, sqlgraph.NewFieldSpec(kv.FieldID, field.TypeInt))
-	id, ok := kuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "KV.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := kuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, kv.FieldID)
 		for _, f := range fields {
@@ -310,32 +310,32 @@ func (kuo *KVUpdateOne) sqlSave(ctx context.Context) (_node *KV, err error) {
 			}
 		}
 	}
-	if ps := kuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := kuo.mutation.Bucket(); ok {
+	if value, ok := _u.mutation.Bucket(); ok {
 		_spec.SetField(kv.FieldBucket, field.TypeString, value)
 	}
-	if value, ok := kuo.mutation.Key(); ok {
+	if value, ok := _u.mutation.Key(); ok {
 		_spec.SetField(kv.FieldKey, field.TypeString, value)
 	}
-	if value, ok := kuo.mutation.Value(); ok {
+	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(kv.FieldValue, field.TypeString, value)
 	}
-	if value, ok := kuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(kv.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := kuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(kv.FieldCreatedAt, field.TypeTime, value)
 	}
-	_node = &KV{config: kuo.config}
+	_node = &KV{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, kuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{kv.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -343,6 +343,6 @@ func (kuo *KVUpdateOne) sqlSave(ctx context.Context) (_node *KV, err error) {
 		}
 		return nil, err
 	}
-	kuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

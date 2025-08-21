@@ -37,44 +37,44 @@ type NotifyTargetQuery struct {
 }
 
 // Where adds a new predicate for the NotifyTargetQuery builder.
-func (ntq *NotifyTargetQuery) Where(ps ...predicate.NotifyTarget) *NotifyTargetQuery {
-	ntq.predicates = append(ntq.predicates, ps...)
-	return ntq
+func (_q *NotifyTargetQuery) Where(ps ...predicate.NotifyTarget) *NotifyTargetQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (ntq *NotifyTargetQuery) Limit(limit int) *NotifyTargetQuery {
-	ntq.ctx.Limit = &limit
-	return ntq
+func (_q *NotifyTargetQuery) Limit(limit int) *NotifyTargetQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (ntq *NotifyTargetQuery) Offset(offset int) *NotifyTargetQuery {
-	ntq.ctx.Offset = &offset
-	return ntq
+func (_q *NotifyTargetQuery) Offset(offset int) *NotifyTargetQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (ntq *NotifyTargetQuery) Unique(unique bool) *NotifyTargetQuery {
-	ntq.ctx.Unique = &unique
-	return ntq
+func (_q *NotifyTargetQuery) Unique(unique bool) *NotifyTargetQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (ntq *NotifyTargetQuery) Order(o ...notifytarget.OrderOption) *NotifyTargetQuery {
-	ntq.order = append(ntq.order, o...)
-	return ntq
+func (_q *NotifyTargetQuery) Order(o ...notifytarget.OrderOption) *NotifyTargetQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryOwner chains the current query on the "owner" edge.
-func (ntq *NotifyTargetQuery) QueryOwner() *UserQuery {
-	query := (&UserClient{config: ntq.config}).Query()
+func (_q *NotifyTargetQuery) QueryOwner() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ntq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ntq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -83,20 +83,20 @@ func (ntq *NotifyTargetQuery) QueryOwner() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, notifytarget.OwnerTable, notifytarget.OwnerColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ntq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryNotifyFlow chains the current query on the "notify_flow" edge.
-func (ntq *NotifyTargetQuery) QueryNotifyFlow() *NotifyFlowQuery {
-	query := (&NotifyFlowClient{config: ntq.config}).Query()
+func (_q *NotifyTargetQuery) QueryNotifyFlow() *NotifyFlowQuery {
+	query := (&NotifyFlowClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ntq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ntq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -105,20 +105,20 @@ func (ntq *NotifyTargetQuery) QueryNotifyFlow() *NotifyFlowQuery {
 			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, notifytarget.NotifyFlowTable, notifytarget.NotifyFlowPrimaryKey...),
 		)
-		fromU = sqlgraph.SetNeighbors(ntq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryNotifyFlowTarget chains the current query on the "notify_flow_target" edge.
-func (ntq *NotifyTargetQuery) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
-	query := (&NotifyFlowTargetClient{config: ntq.config}).Query()
+func (_q *NotifyTargetQuery) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
+	query := (&NotifyFlowTargetClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ntq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ntq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -127,7 +127,7 @@ func (ntq *NotifyTargetQuery) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
 			sqlgraph.To(notifyflowtarget.Table, notifyflowtarget.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, notifytarget.NotifyFlowTargetTable, notifytarget.NotifyFlowTargetColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ntq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -135,8 +135,8 @@ func (ntq *NotifyTargetQuery) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
 
 // First returns the first NotifyTarget entity from the query.
 // Returns a *NotFoundError when no NotifyTarget was found.
-func (ntq *NotifyTargetQuery) First(ctx context.Context) (*NotifyTarget, error) {
-	nodes, err := ntq.Limit(1).All(setContextOp(ctx, ntq.ctx, ent.OpQueryFirst))
+func (_q *NotifyTargetQuery) First(ctx context.Context) (*NotifyTarget, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +147,8 @@ func (ntq *NotifyTargetQuery) First(ctx context.Context) (*NotifyTarget, error) 
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (ntq *NotifyTargetQuery) FirstX(ctx context.Context) *NotifyTarget {
-	node, err := ntq.First(ctx)
+func (_q *NotifyTargetQuery) FirstX(ctx context.Context) *NotifyTarget {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -157,9 +157,9 @@ func (ntq *NotifyTargetQuery) FirstX(ctx context.Context) *NotifyTarget {
 
 // FirstID returns the first NotifyTarget ID from the query.
 // Returns a *NotFoundError when no NotifyTarget ID was found.
-func (ntq *NotifyTargetQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *NotifyTargetQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = ntq.Limit(1).IDs(setContextOp(ctx, ntq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -170,8 +170,8 @@ func (ntq *NotifyTargetQuery) FirstID(ctx context.Context) (id model.InternalID,
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ntq *NotifyTargetQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := ntq.FirstID(ctx)
+func (_q *NotifyTargetQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -181,8 +181,8 @@ func (ntq *NotifyTargetQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Only returns a single NotifyTarget entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one NotifyTarget entity is found.
 // Returns a *NotFoundError when no NotifyTarget entities are found.
-func (ntq *NotifyTargetQuery) Only(ctx context.Context) (*NotifyTarget, error) {
-	nodes, err := ntq.Limit(2).All(setContextOp(ctx, ntq.ctx, ent.OpQueryOnly))
+func (_q *NotifyTargetQuery) Only(ctx context.Context) (*NotifyTarget, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -197,8 +197,8 @@ func (ntq *NotifyTargetQuery) Only(ctx context.Context) (*NotifyTarget, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (ntq *NotifyTargetQuery) OnlyX(ctx context.Context) *NotifyTarget {
-	node, err := ntq.Only(ctx)
+func (_q *NotifyTargetQuery) OnlyX(ctx context.Context) *NotifyTarget {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -208,9 +208,9 @@ func (ntq *NotifyTargetQuery) OnlyX(ctx context.Context) *NotifyTarget {
 // OnlyID is like Only, but returns the only NotifyTarget ID in the query.
 // Returns a *NotSingularError when more than one NotifyTarget ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ntq *NotifyTargetQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *NotifyTargetQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = ntq.Limit(2).IDs(setContextOp(ctx, ntq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -225,8 +225,8 @@ func (ntq *NotifyTargetQuery) OnlyID(ctx context.Context) (id model.InternalID, 
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ntq *NotifyTargetQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := ntq.OnlyID(ctx)
+func (_q *NotifyTargetQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -234,18 +234,18 @@ func (ntq *NotifyTargetQuery) OnlyIDX(ctx context.Context) model.InternalID {
 }
 
 // All executes the query and returns a list of NotifyTargets.
-func (ntq *NotifyTargetQuery) All(ctx context.Context) ([]*NotifyTarget, error) {
-	ctx = setContextOp(ctx, ntq.ctx, ent.OpQueryAll)
-	if err := ntq.prepareQuery(ctx); err != nil {
+func (_q *NotifyTargetQuery) All(ctx context.Context) ([]*NotifyTarget, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*NotifyTarget, *NotifyTargetQuery]()
-	return withInterceptors[[]*NotifyTarget](ctx, ntq, qr, ntq.inters)
+	return withInterceptors[[]*NotifyTarget](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (ntq *NotifyTargetQuery) AllX(ctx context.Context) []*NotifyTarget {
-	nodes, err := ntq.All(ctx)
+func (_q *NotifyTargetQuery) AllX(ctx context.Context) []*NotifyTarget {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -253,20 +253,20 @@ func (ntq *NotifyTargetQuery) AllX(ctx context.Context) []*NotifyTarget {
 }
 
 // IDs executes the query and returns a list of NotifyTarget IDs.
-func (ntq *NotifyTargetQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if ntq.ctx.Unique == nil && ntq.path != nil {
-		ntq.Unique(true)
+func (_q *NotifyTargetQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, ntq.ctx, ent.OpQueryIDs)
-	if err = ntq.Select(notifytarget.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(notifytarget.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ntq *NotifyTargetQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := ntq.IDs(ctx)
+func (_q *NotifyTargetQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -274,17 +274,17 @@ func (ntq *NotifyTargetQuery) IDsX(ctx context.Context) []model.InternalID {
 }
 
 // Count returns the count of the given query.
-func (ntq *NotifyTargetQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ntq.ctx, ent.OpQueryCount)
-	if err := ntq.prepareQuery(ctx); err != nil {
+func (_q *NotifyTargetQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, ntq, querierCount[*NotifyTargetQuery](), ntq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*NotifyTargetQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (ntq *NotifyTargetQuery) CountX(ctx context.Context) int {
-	count, err := ntq.Count(ctx)
+func (_q *NotifyTargetQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -292,9 +292,9 @@ func (ntq *NotifyTargetQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (ntq *NotifyTargetQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ntq.ctx, ent.OpQueryExist)
-	switch _, err := ntq.FirstID(ctx); {
+func (_q *NotifyTargetQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -305,8 +305,8 @@ func (ntq *NotifyTargetQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (ntq *NotifyTargetQuery) ExistX(ctx context.Context) bool {
-	exist, err := ntq.Exist(ctx)
+func (_q *NotifyTargetQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -315,56 +315,56 @@ func (ntq *NotifyTargetQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the NotifyTargetQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (ntq *NotifyTargetQuery) Clone() *NotifyTargetQuery {
-	if ntq == nil {
+func (_q *NotifyTargetQuery) Clone() *NotifyTargetQuery {
+	if _q == nil {
 		return nil
 	}
 	return &NotifyTargetQuery{
-		config:               ntq.config,
-		ctx:                  ntq.ctx.Clone(),
-		order:                append([]notifytarget.OrderOption{}, ntq.order...),
-		inters:               append([]Interceptor{}, ntq.inters...),
-		predicates:           append([]predicate.NotifyTarget{}, ntq.predicates...),
-		withOwner:            ntq.withOwner.Clone(),
-		withNotifyFlow:       ntq.withNotifyFlow.Clone(),
-		withNotifyFlowTarget: ntq.withNotifyFlowTarget.Clone(),
+		config:               _q.config,
+		ctx:                  _q.ctx.Clone(),
+		order:                append([]notifytarget.OrderOption{}, _q.order...),
+		inters:               append([]Interceptor{}, _q.inters...),
+		predicates:           append([]predicate.NotifyTarget{}, _q.predicates...),
+		withOwner:            _q.withOwner.Clone(),
+		withNotifyFlow:       _q.withNotifyFlow.Clone(),
+		withNotifyFlowTarget: _q.withNotifyFlowTarget.Clone(),
 		// clone intermediate query.
-		sql:  ntq.sql.Clone(),
-		path: ntq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithOwner tells the query-builder to eager-load the nodes that are connected to
 // the "owner" edge. The optional arguments are used to configure the query builder of the edge.
-func (ntq *NotifyTargetQuery) WithOwner(opts ...func(*UserQuery)) *NotifyTargetQuery {
-	query := (&UserClient{config: ntq.config}).Query()
+func (_q *NotifyTargetQuery) WithOwner(opts ...func(*UserQuery)) *NotifyTargetQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ntq.withOwner = query
-	return ntq
+	_q.withOwner = query
+	return _q
 }
 
 // WithNotifyFlow tells the query-builder to eager-load the nodes that are connected to
 // the "notify_flow" edge. The optional arguments are used to configure the query builder of the edge.
-func (ntq *NotifyTargetQuery) WithNotifyFlow(opts ...func(*NotifyFlowQuery)) *NotifyTargetQuery {
-	query := (&NotifyFlowClient{config: ntq.config}).Query()
+func (_q *NotifyTargetQuery) WithNotifyFlow(opts ...func(*NotifyFlowQuery)) *NotifyTargetQuery {
+	query := (&NotifyFlowClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ntq.withNotifyFlow = query
-	return ntq
+	_q.withNotifyFlow = query
+	return _q
 }
 
 // WithNotifyFlowTarget tells the query-builder to eager-load the nodes that are connected to
 // the "notify_flow_target" edge. The optional arguments are used to configure the query builder of the edge.
-func (ntq *NotifyTargetQuery) WithNotifyFlowTarget(opts ...func(*NotifyFlowTargetQuery)) *NotifyTargetQuery {
-	query := (&NotifyFlowTargetClient{config: ntq.config}).Query()
+func (_q *NotifyTargetQuery) WithNotifyFlowTarget(opts ...func(*NotifyFlowTargetQuery)) *NotifyTargetQuery {
+	query := (&NotifyFlowTargetClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ntq.withNotifyFlowTarget = query
-	return ntq
+	_q.withNotifyFlowTarget = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -381,10 +381,10 @@ func (ntq *NotifyTargetQuery) WithNotifyFlowTarget(opts ...func(*NotifyFlowTarge
 //		GroupBy(notifytarget.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (ntq *NotifyTargetQuery) GroupBy(field string, fields ...string) *NotifyTargetGroupBy {
-	ntq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &NotifyTargetGroupBy{build: ntq}
-	grbuild.flds = &ntq.ctx.Fields
+func (_q *NotifyTargetQuery) GroupBy(field string, fields ...string) *NotifyTargetGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &NotifyTargetGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = notifytarget.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -402,57 +402,57 @@ func (ntq *NotifyTargetQuery) GroupBy(field string, fields ...string) *NotifyTar
 //	client.NotifyTarget.Query().
 //		Select(notifytarget.FieldName).
 //		Scan(ctx, &v)
-func (ntq *NotifyTargetQuery) Select(fields ...string) *NotifyTargetSelect {
-	ntq.ctx.Fields = append(ntq.ctx.Fields, fields...)
-	sbuild := &NotifyTargetSelect{NotifyTargetQuery: ntq}
+func (_q *NotifyTargetQuery) Select(fields ...string) *NotifyTargetSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &NotifyTargetSelect{NotifyTargetQuery: _q}
 	sbuild.label = notifytarget.Label
-	sbuild.flds, sbuild.scan = &ntq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a NotifyTargetSelect configured with the given aggregations.
-func (ntq *NotifyTargetQuery) Aggregate(fns ...AggregateFunc) *NotifyTargetSelect {
-	return ntq.Select().Aggregate(fns...)
+func (_q *NotifyTargetQuery) Aggregate(fns ...AggregateFunc) *NotifyTargetSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (ntq *NotifyTargetQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range ntq.inters {
+func (_q *NotifyTargetQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, ntq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range ntq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !notifytarget.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if ntq.path != nil {
-		prev, err := ntq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		ntq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (ntq *NotifyTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*NotifyTarget, error) {
+func (_q *NotifyTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*NotifyTarget, error) {
 	var (
 		nodes       = []*NotifyTarget{}
-		withFKs     = ntq.withFKs
-		_spec       = ntq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [3]bool{
-			ntq.withOwner != nil,
-			ntq.withNotifyFlow != nil,
-			ntq.withNotifyFlowTarget != nil,
+			_q.withOwner != nil,
+			_q.withNotifyFlow != nil,
+			_q.withNotifyFlowTarget != nil,
 		}
 	)
-	if ntq.withOwner != nil {
+	if _q.withOwner != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -462,7 +462,7 @@ func (ntq *NotifyTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 		return (*NotifyTarget).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &NotifyTarget{config: ntq.config}
+		node := &NotifyTarget{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -470,27 +470,27 @@ func (ntq *NotifyTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, ntq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := ntq.withOwner; query != nil {
-		if err := ntq.loadOwner(ctx, query, nodes, nil,
+	if query := _q.withOwner; query != nil {
+		if err := _q.loadOwner(ctx, query, nodes, nil,
 			func(n *NotifyTarget, e *User) { n.Edges.Owner = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := ntq.withNotifyFlow; query != nil {
-		if err := ntq.loadNotifyFlow(ctx, query, nodes,
+	if query := _q.withNotifyFlow; query != nil {
+		if err := _q.loadNotifyFlow(ctx, query, nodes,
 			func(n *NotifyTarget) { n.Edges.NotifyFlow = []*NotifyFlow{} },
 			func(n *NotifyTarget, e *NotifyFlow) { n.Edges.NotifyFlow = append(n.Edges.NotifyFlow, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := ntq.withNotifyFlowTarget; query != nil {
-		if err := ntq.loadNotifyFlowTarget(ctx, query, nodes,
+	if query := _q.withNotifyFlowTarget; query != nil {
+		if err := _q.loadNotifyFlowTarget(ctx, query, nodes,
 			func(n *NotifyTarget) { n.Edges.NotifyFlowTarget = []*NotifyFlowTarget{} },
 			func(n *NotifyTarget, e *NotifyFlowTarget) {
 				n.Edges.NotifyFlowTarget = append(n.Edges.NotifyFlowTarget, e)
@@ -501,7 +501,7 @@ func (ntq *NotifyTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 	return nodes, nil
 }
 
-func (ntq *NotifyTargetQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*NotifyTarget, init func(*NotifyTarget), assign func(*NotifyTarget, *User)) error {
+func (_q *NotifyTargetQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*NotifyTarget, init func(*NotifyTarget), assign func(*NotifyTarget, *User)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*NotifyTarget)
 	for i := range nodes {
@@ -533,7 +533,7 @@ func (ntq *NotifyTargetQuery) loadOwner(ctx context.Context, query *UserQuery, n
 	}
 	return nil
 }
-func (ntq *NotifyTargetQuery) loadNotifyFlow(ctx context.Context, query *NotifyFlowQuery, nodes []*NotifyTarget, init func(*NotifyTarget), assign func(*NotifyTarget, *NotifyFlow)) error {
+func (_q *NotifyTargetQuery) loadNotifyFlow(ctx context.Context, query *NotifyFlowQuery, nodes []*NotifyTarget, init func(*NotifyTarget), assign func(*NotifyTarget, *NotifyFlow)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[model.InternalID]*NotifyTarget)
 	nids := make(map[model.InternalID]map[*NotifyTarget]struct{})
@@ -594,7 +594,7 @@ func (ntq *NotifyTargetQuery) loadNotifyFlow(ctx context.Context, query *NotifyF
 	}
 	return nil
 }
-func (ntq *NotifyTargetQuery) loadNotifyFlowTarget(ctx context.Context, query *NotifyFlowTargetQuery, nodes []*NotifyTarget, init func(*NotifyTarget), assign func(*NotifyTarget, *NotifyFlowTarget)) error {
+func (_q *NotifyTargetQuery) loadNotifyFlowTarget(ctx context.Context, query *NotifyFlowTargetQuery, nodes []*NotifyTarget, init func(*NotifyTarget), assign func(*NotifyTarget, *NotifyFlowTarget)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*NotifyTarget)
 	for i := range nodes {
@@ -625,24 +625,24 @@ func (ntq *NotifyTargetQuery) loadNotifyFlowTarget(ctx context.Context, query *N
 	return nil
 }
 
-func (ntq *NotifyTargetQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := ntq.querySpec()
-	_spec.Node.Columns = ntq.ctx.Fields
-	if len(ntq.ctx.Fields) > 0 {
-		_spec.Unique = ntq.ctx.Unique != nil && *ntq.ctx.Unique
+func (_q *NotifyTargetQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, ntq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (ntq *NotifyTargetQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *NotifyTargetQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(notifytarget.Table, notifytarget.Columns, sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64))
-	_spec.From = ntq.sql
-	if unique := ntq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if ntq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := ntq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, notifytarget.FieldID)
 		for i := range fields {
@@ -651,20 +651,20 @@ func (ntq *NotifyTargetQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := ntq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := ntq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := ntq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := ntq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -674,33 +674,33 @@ func (ntq *NotifyTargetQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (ntq *NotifyTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(ntq.driver.Dialect())
+func (_q *NotifyTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(notifytarget.Table)
-	columns := ntq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = notifytarget.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if ntq.sql != nil {
-		selector = ntq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if ntq.ctx.Unique != nil && *ntq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range ntq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range ntq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := ntq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := ntq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -713,41 +713,41 @@ type NotifyTargetGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (ntgb *NotifyTargetGroupBy) Aggregate(fns ...AggregateFunc) *NotifyTargetGroupBy {
-	ntgb.fns = append(ntgb.fns, fns...)
-	return ntgb
+func (_g *NotifyTargetGroupBy) Aggregate(fns ...AggregateFunc) *NotifyTargetGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ntgb *NotifyTargetGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ntgb.build.ctx, ent.OpQueryGroupBy)
-	if err := ntgb.build.prepareQuery(ctx); err != nil {
+func (_g *NotifyTargetGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*NotifyTargetQuery, *NotifyTargetGroupBy](ctx, ntgb.build, ntgb, ntgb.build.inters, v)
+	return scanWithInterceptors[*NotifyTargetQuery, *NotifyTargetGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (ntgb *NotifyTargetGroupBy) sqlScan(ctx context.Context, root *NotifyTargetQuery, v any) error {
+func (_g *NotifyTargetGroupBy) sqlScan(ctx context.Context, root *NotifyTargetQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(ntgb.fns))
-	for _, fn := range ntgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*ntgb.flds)+len(ntgb.fns))
-		for _, f := range *ntgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*ntgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ntgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -761,27 +761,27 @@ type NotifyTargetSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (nts *NotifyTargetSelect) Aggregate(fns ...AggregateFunc) *NotifyTargetSelect {
-	nts.fns = append(nts.fns, fns...)
-	return nts
+func (_s *NotifyTargetSelect) Aggregate(fns ...AggregateFunc) *NotifyTargetSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (nts *NotifyTargetSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nts.ctx, ent.OpQuerySelect)
-	if err := nts.prepareQuery(ctx); err != nil {
+func (_s *NotifyTargetSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*NotifyTargetQuery, *NotifyTargetSelect](ctx, nts.NotifyTargetQuery, nts, nts.inters, v)
+	return scanWithInterceptors[*NotifyTargetQuery, *NotifyTargetSelect](ctx, _s.NotifyTargetQuery, _s, _s.inters, v)
 }
 
-func (nts *NotifyTargetSelect) sqlScan(ctx context.Context, root *NotifyTargetQuery, v any) error {
+func (_s *NotifyTargetSelect) sqlScan(ctx context.Context, root *NotifyTargetQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(nts.fns))
-	for _, fn := range nts.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*nts.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -789,7 +789,7 @@ func (nts *NotifyTargetSelect) sqlScan(ctx context.Context, root *NotifyTargetQu
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := nts.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

@@ -27,182 +27,182 @@ type NotifyTargetUpdate struct {
 }
 
 // Where appends a list predicates to the NotifyTargetUpdate builder.
-func (ntu *NotifyTargetUpdate) Where(ps ...predicate.NotifyTarget) *NotifyTargetUpdate {
-	ntu.mutation.Where(ps...)
-	return ntu
+func (_u *NotifyTargetUpdate) Where(ps ...predicate.NotifyTarget) *NotifyTargetUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (ntu *NotifyTargetUpdate) SetName(s string) *NotifyTargetUpdate {
-	ntu.mutation.SetName(s)
-	return ntu
+func (_u *NotifyTargetUpdate) SetName(v string) *NotifyTargetUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ntu *NotifyTargetUpdate) SetNillableName(s *string) *NotifyTargetUpdate {
-	if s != nil {
-		ntu.SetName(*s)
+func (_u *NotifyTargetUpdate) SetNillableName(v *string) *NotifyTargetUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ntu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (ntu *NotifyTargetUpdate) SetDescription(s string) *NotifyTargetUpdate {
-	ntu.mutation.SetDescription(s)
-	return ntu
+func (_u *NotifyTargetUpdate) SetDescription(v string) *NotifyTargetUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (ntu *NotifyTargetUpdate) SetNillableDescription(s *string) *NotifyTargetUpdate {
-	if s != nil {
-		ntu.SetDescription(*s)
+func (_u *NotifyTargetUpdate) SetNillableDescription(v *string) *NotifyTargetUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return ntu
+	return _u
 }
 
 // SetDestination sets the "destination" field.
-func (ntu *NotifyTargetUpdate) SetDestination(mr *model.FeatureRequest) *NotifyTargetUpdate {
-	ntu.mutation.SetDestination(mr)
-	return ntu
+func (_u *NotifyTargetUpdate) SetDestination(v *model.FeatureRequest) *NotifyTargetUpdate {
+	_u.mutation.SetDestination(v)
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ntu *NotifyTargetUpdate) SetStatus(n notifytarget.Status) *NotifyTargetUpdate {
-	ntu.mutation.SetStatus(n)
-	return ntu
+func (_u *NotifyTargetUpdate) SetStatus(v notifytarget.Status) *NotifyTargetUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ntu *NotifyTargetUpdate) SetNillableStatus(n *notifytarget.Status) *NotifyTargetUpdate {
-	if n != nil {
-		ntu.SetStatus(*n)
+func (_u *NotifyTargetUpdate) SetNillableStatus(v *notifytarget.Status) *NotifyTargetUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ntu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ntu *NotifyTargetUpdate) SetUpdatedAt(t time.Time) *NotifyTargetUpdate {
-	ntu.mutation.SetUpdatedAt(t)
-	return ntu
+func (_u *NotifyTargetUpdate) SetUpdatedAt(v time.Time) *NotifyTargetUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ntu *NotifyTargetUpdate) SetCreatedAt(t time.Time) *NotifyTargetUpdate {
-	ntu.mutation.SetCreatedAt(t)
-	return ntu
+func (_u *NotifyTargetUpdate) SetCreatedAt(v time.Time) *NotifyTargetUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ntu *NotifyTargetUpdate) SetNillableCreatedAt(t *time.Time) *NotifyTargetUpdate {
-	if t != nil {
-		ntu.SetCreatedAt(*t)
+func (_u *NotifyTargetUpdate) SetNillableCreatedAt(v *time.Time) *NotifyTargetUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return ntu
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ntu *NotifyTargetUpdate) SetOwnerID(id model.InternalID) *NotifyTargetUpdate {
-	ntu.mutation.SetOwnerID(id)
-	return ntu
+func (_u *NotifyTargetUpdate) SetOwnerID(id model.InternalID) *NotifyTargetUpdate {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (ntu *NotifyTargetUpdate) SetOwner(u *User) *NotifyTargetUpdate {
-	return ntu.SetOwnerID(u.ID)
+func (_u *NotifyTargetUpdate) SetOwner(v *User) *NotifyTargetUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (ntu *NotifyTargetUpdate) AddNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetUpdate {
-	ntu.mutation.AddNotifyFlowIDs(ids...)
-	return ntu
+func (_u *NotifyTargetUpdate) AddNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetUpdate {
+	_u.mutation.AddNotifyFlowIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
-func (ntu *NotifyTargetUpdate) AddNotifyFlow(n ...*NotifyFlow) *NotifyTargetUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyTargetUpdate) AddNotifyFlow(v ...*NotifyFlow) *NotifyTargetUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntu.AddNotifyFlowIDs(ids...)
+	return _u.AddNotifyFlowIDs(ids...)
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (ntu *NotifyTargetUpdate) AddNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdate {
-	ntu.mutation.AddNotifyFlowTargetIDs(ids...)
-	return ntu
+func (_u *NotifyTargetUpdate) AddNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdate {
+	_u.mutation.AddNotifyFlowTargetIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlowTarget adds the "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (ntu *NotifyTargetUpdate) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyTargetUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyTargetUpdate) AddNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyTargetUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntu.AddNotifyFlowTargetIDs(ids...)
+	return _u.AddNotifyFlowTargetIDs(ids...)
 }
 
 // Mutation returns the NotifyTargetMutation object of the builder.
-func (ntu *NotifyTargetUpdate) Mutation() *NotifyTargetMutation {
-	return ntu.mutation
+func (_u *NotifyTargetUpdate) Mutation() *NotifyTargetMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (ntu *NotifyTargetUpdate) ClearOwner() *NotifyTargetUpdate {
-	ntu.mutation.ClearOwner()
-	return ntu
+func (_u *NotifyTargetUpdate) ClearOwner() *NotifyTargetUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearNotifyFlow clears all "notify_flow" edges to the NotifyFlow entity.
-func (ntu *NotifyTargetUpdate) ClearNotifyFlow() *NotifyTargetUpdate {
-	ntu.mutation.ClearNotifyFlow()
-	return ntu
+func (_u *NotifyTargetUpdate) ClearNotifyFlow() *NotifyTargetUpdate {
+	_u.mutation.ClearNotifyFlow()
+	return _u
 }
 
 // RemoveNotifyFlowIDs removes the "notify_flow" edge to NotifyFlow entities by IDs.
-func (ntu *NotifyTargetUpdate) RemoveNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetUpdate {
-	ntu.mutation.RemoveNotifyFlowIDs(ids...)
-	return ntu
+func (_u *NotifyTargetUpdate) RemoveNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetUpdate {
+	_u.mutation.RemoveNotifyFlowIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlow removes "notify_flow" edges to NotifyFlow entities.
-func (ntu *NotifyTargetUpdate) RemoveNotifyFlow(n ...*NotifyFlow) *NotifyTargetUpdate {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyTargetUpdate) RemoveNotifyFlow(v ...*NotifyFlow) *NotifyTargetUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntu.RemoveNotifyFlowIDs(ids...)
+	return _u.RemoveNotifyFlowIDs(ids...)
 }
 
 // ClearNotifyFlowTarget clears all "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (ntu *NotifyTargetUpdate) ClearNotifyFlowTarget() *NotifyTargetUpdate {
-	ntu.mutation.ClearNotifyFlowTarget()
-	return ntu
+func (_u *NotifyTargetUpdate) ClearNotifyFlowTarget() *NotifyTargetUpdate {
+	_u.mutation.ClearNotifyFlowTarget()
+	return _u
 }
 
 // RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to NotifyFlowTarget entities by IDs.
-func (ntu *NotifyTargetUpdate) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdate {
-	ntu.mutation.RemoveNotifyFlowTargetIDs(ids...)
-	return ntu
+func (_u *NotifyTargetUpdate) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdate {
+	_u.mutation.RemoveNotifyFlowTargetIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlowTarget removes "notify_flow_target" edges to NotifyFlowTarget entities.
-func (ntu *NotifyTargetUpdate) RemoveNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyTargetUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyTargetUpdate) RemoveNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyTargetUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntu.RemoveNotifyFlowTargetIDs(ids...)
+	return _u.RemoveNotifyFlowTargetIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (ntu *NotifyTargetUpdate) Save(ctx context.Context) (int, error) {
-	ntu.defaults()
-	return withHooks(ctx, ntu.sqlSave, ntu.mutation, ntu.hooks)
+func (_u *NotifyTargetUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ntu *NotifyTargetUpdate) SaveX(ctx context.Context) int {
-	affected, err := ntu.Save(ctx)
+func (_u *NotifyTargetUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -210,70 +210,70 @@ func (ntu *NotifyTargetUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (ntu *NotifyTargetUpdate) Exec(ctx context.Context) error {
-	_, err := ntu.Save(ctx)
+func (_u *NotifyTargetUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ntu *NotifyTargetUpdate) ExecX(ctx context.Context) {
-	if err := ntu.Exec(ctx); err != nil {
+func (_u *NotifyTargetUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ntu *NotifyTargetUpdate) defaults() {
-	if _, ok := ntu.mutation.UpdatedAt(); !ok {
+func (_u *NotifyTargetUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := notifytarget.UpdateDefaultUpdatedAt()
-		ntu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ntu *NotifyTargetUpdate) check() error {
-	if v, ok := ntu.mutation.Status(); ok {
+func (_u *NotifyTargetUpdate) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := notifytarget.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.status": %w`, err)}
 		}
 	}
-	if ntu.mutation.OwnerCleared() && len(ntu.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyTarget.owner"`)
 	}
 	return nil
 }
 
-func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := ntu.check(); err != nil {
-		return n, err
+func (_u *NotifyTargetUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(notifytarget.Table, notifytarget.Columns, sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64))
-	if ps := ntu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ntu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(notifytarget.FieldName, field.TypeString, value)
 	}
-	if value, ok := ntu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(notifytarget.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ntu.mutation.Destination(); ok {
+	if value, ok := _u.mutation.Destination(); ok {
 		_spec.SetField(notifytarget.FieldDestination, field.TypeJSON, value)
 	}
-	if value, ok := ntu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(notifytarget.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := ntu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifytarget.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := ntu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(notifytarget.FieldCreatedAt, field.TypeTime, value)
 	}
-	if ntu.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -286,7 +286,7 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -302,7 +302,7 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ntu.mutation.NotifyFlowCleared() {
+	if _u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -313,13 +313,13 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &NotifyFlowTargetCreate{config: ntu.config, mutation: newNotifyFlowTargetMutation(ntu.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntu.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !ntu.mutation.NotifyFlowCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -333,13 +333,13 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowTargetCreate{config: ntu.config, mutation: newNotifyFlowTargetMutation(ntu.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntu.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -353,13 +353,13 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowTargetCreate{config: ntu.config, mutation: newNotifyFlowTargetMutation(ntu.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ntu.mutation.NotifyFlowTargetCleared() {
+	if _u.mutation.NotifyFlowTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -372,7 +372,7 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntu.mutation.RemovedNotifyFlowTargetIDs(); len(nodes) > 0 && !ntu.mutation.NotifyFlowTargetCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowTargetIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -388,7 +388,7 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntu.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -404,7 +404,7 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, ntu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{notifytarget.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -412,8 +412,8 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	ntu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // NotifyTargetUpdateOne is the builder for updating a single NotifyTarget entity.
@@ -425,189 +425,189 @@ type NotifyTargetUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (ntuo *NotifyTargetUpdateOne) SetName(s string) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetName(s)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) SetName(v string) *NotifyTargetUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (ntuo *NotifyTargetUpdateOne) SetNillableName(s *string) *NotifyTargetUpdateOne {
-	if s != nil {
-		ntuo.SetName(*s)
+func (_u *NotifyTargetUpdateOne) SetNillableName(v *string) *NotifyTargetUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return ntuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (ntuo *NotifyTargetUpdateOne) SetDescription(s string) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetDescription(s)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) SetDescription(v string) *NotifyTargetUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (ntuo *NotifyTargetUpdateOne) SetNillableDescription(s *string) *NotifyTargetUpdateOne {
-	if s != nil {
-		ntuo.SetDescription(*s)
+func (_u *NotifyTargetUpdateOne) SetNillableDescription(v *string) *NotifyTargetUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return ntuo
+	return _u
 }
 
 // SetDestination sets the "destination" field.
-func (ntuo *NotifyTargetUpdateOne) SetDestination(mr *model.FeatureRequest) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetDestination(mr)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) SetDestination(v *model.FeatureRequest) *NotifyTargetUpdateOne {
+	_u.mutation.SetDestination(v)
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (ntuo *NotifyTargetUpdateOne) SetStatus(n notifytarget.Status) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetStatus(n)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) SetStatus(v notifytarget.Status) *NotifyTargetUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (ntuo *NotifyTargetUpdateOne) SetNillableStatus(n *notifytarget.Status) *NotifyTargetUpdateOne {
-	if n != nil {
-		ntuo.SetStatus(*n)
+func (_u *NotifyTargetUpdateOne) SetNillableStatus(v *notifytarget.Status) *NotifyTargetUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return ntuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ntuo *NotifyTargetUpdateOne) SetUpdatedAt(t time.Time) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetUpdatedAt(t)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) SetUpdatedAt(v time.Time) *NotifyTargetUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ntuo *NotifyTargetUpdateOne) SetCreatedAt(t time.Time) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetCreatedAt(t)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) SetCreatedAt(v time.Time) *NotifyTargetUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ntuo *NotifyTargetUpdateOne) SetNillableCreatedAt(t *time.Time) *NotifyTargetUpdateOne {
-	if t != nil {
-		ntuo.SetCreatedAt(*t)
+func (_u *NotifyTargetUpdateOne) SetNillableCreatedAt(v *time.Time) *NotifyTargetUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return ntuo
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ntuo *NotifyTargetUpdateOne) SetOwnerID(id model.InternalID) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetOwnerID(id)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) SetOwnerID(id model.InternalID) *NotifyTargetUpdateOne {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (ntuo *NotifyTargetUpdateOne) SetOwner(u *User) *NotifyTargetUpdateOne {
-	return ntuo.SetOwnerID(u.ID)
+func (_u *NotifyTargetUpdateOne) SetOwner(v *User) *NotifyTargetUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (ntuo *NotifyTargetUpdateOne) AddNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetUpdateOne {
-	ntuo.mutation.AddNotifyFlowIDs(ids...)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) AddNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetUpdateOne {
+	_u.mutation.AddNotifyFlowIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
-func (ntuo *NotifyTargetUpdateOne) AddNotifyFlow(n ...*NotifyFlow) *NotifyTargetUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyTargetUpdateOne) AddNotifyFlow(v ...*NotifyFlow) *NotifyTargetUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntuo.AddNotifyFlowIDs(ids...)
+	return _u.AddNotifyFlowIDs(ids...)
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (ntuo *NotifyTargetUpdateOne) AddNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdateOne {
-	ntuo.mutation.AddNotifyFlowTargetIDs(ids...)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) AddNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdateOne {
+	_u.mutation.AddNotifyFlowTargetIDs(ids...)
+	return _u
 }
 
 // AddNotifyFlowTarget adds the "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (ntuo *NotifyTargetUpdateOne) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyTargetUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyTargetUpdateOne) AddNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyTargetUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntuo.AddNotifyFlowTargetIDs(ids...)
+	return _u.AddNotifyFlowTargetIDs(ids...)
 }
 
 // Mutation returns the NotifyTargetMutation object of the builder.
-func (ntuo *NotifyTargetUpdateOne) Mutation() *NotifyTargetMutation {
-	return ntuo.mutation
+func (_u *NotifyTargetUpdateOne) Mutation() *NotifyTargetMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (ntuo *NotifyTargetUpdateOne) ClearOwner() *NotifyTargetUpdateOne {
-	ntuo.mutation.ClearOwner()
-	return ntuo
+func (_u *NotifyTargetUpdateOne) ClearOwner() *NotifyTargetUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // ClearNotifyFlow clears all "notify_flow" edges to the NotifyFlow entity.
-func (ntuo *NotifyTargetUpdateOne) ClearNotifyFlow() *NotifyTargetUpdateOne {
-	ntuo.mutation.ClearNotifyFlow()
-	return ntuo
+func (_u *NotifyTargetUpdateOne) ClearNotifyFlow() *NotifyTargetUpdateOne {
+	_u.mutation.ClearNotifyFlow()
+	return _u
 }
 
 // RemoveNotifyFlowIDs removes the "notify_flow" edge to NotifyFlow entities by IDs.
-func (ntuo *NotifyTargetUpdateOne) RemoveNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetUpdateOne {
-	ntuo.mutation.RemoveNotifyFlowIDs(ids...)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) RemoveNotifyFlowIDs(ids ...model.InternalID) *NotifyTargetUpdateOne {
+	_u.mutation.RemoveNotifyFlowIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlow removes "notify_flow" edges to NotifyFlow entities.
-func (ntuo *NotifyTargetUpdateOne) RemoveNotifyFlow(n ...*NotifyFlow) *NotifyTargetUpdateOne {
-	ids := make([]model.InternalID, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyTargetUpdateOne) RemoveNotifyFlow(v ...*NotifyFlow) *NotifyTargetUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntuo.RemoveNotifyFlowIDs(ids...)
+	return _u.RemoveNotifyFlowIDs(ids...)
 }
 
 // ClearNotifyFlowTarget clears all "notify_flow_target" edges to the NotifyFlowTarget entity.
-func (ntuo *NotifyTargetUpdateOne) ClearNotifyFlowTarget() *NotifyTargetUpdateOne {
-	ntuo.mutation.ClearNotifyFlowTarget()
-	return ntuo
+func (_u *NotifyTargetUpdateOne) ClearNotifyFlowTarget() *NotifyTargetUpdateOne {
+	_u.mutation.ClearNotifyFlowTarget()
+	return _u
 }
 
 // RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to NotifyFlowTarget entities by IDs.
-func (ntuo *NotifyTargetUpdateOne) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdateOne {
-	ntuo.mutation.RemoveNotifyFlowTargetIDs(ids...)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdateOne {
+	_u.mutation.RemoveNotifyFlowTargetIDs(ids...)
+	return _u
 }
 
 // RemoveNotifyFlowTarget removes "notify_flow_target" edges to NotifyFlowTarget entities.
-func (ntuo *NotifyTargetUpdateOne) RemoveNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyTargetUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
+func (_u *NotifyTargetUpdateOne) RemoveNotifyFlowTarget(v ...*NotifyFlowTarget) *NotifyTargetUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return ntuo.RemoveNotifyFlowTargetIDs(ids...)
+	return _u.RemoveNotifyFlowTargetIDs(ids...)
 }
 
 // Where appends a list predicates to the NotifyTargetUpdate builder.
-func (ntuo *NotifyTargetUpdateOne) Where(ps ...predicate.NotifyTarget) *NotifyTargetUpdateOne {
-	ntuo.mutation.Where(ps...)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) Where(ps ...predicate.NotifyTarget) *NotifyTargetUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (ntuo *NotifyTargetUpdateOne) Select(field string, fields ...string) *NotifyTargetUpdateOne {
-	ntuo.fields = append([]string{field}, fields...)
-	return ntuo
+func (_u *NotifyTargetUpdateOne) Select(field string, fields ...string) *NotifyTargetUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated NotifyTarget entity.
-func (ntuo *NotifyTargetUpdateOne) Save(ctx context.Context) (*NotifyTarget, error) {
-	ntuo.defaults()
-	return withHooks(ctx, ntuo.sqlSave, ntuo.mutation, ntuo.hooks)
+func (_u *NotifyTargetUpdateOne) Save(ctx context.Context) (*NotifyTarget, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (ntuo *NotifyTargetUpdateOne) SaveX(ctx context.Context) *NotifyTarget {
-	node, err := ntuo.Save(ctx)
+func (_u *NotifyTargetUpdateOne) SaveX(ctx context.Context) *NotifyTarget {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -615,50 +615,50 @@ func (ntuo *NotifyTargetUpdateOne) SaveX(ctx context.Context) *NotifyTarget {
 }
 
 // Exec executes the query on the entity.
-func (ntuo *NotifyTargetUpdateOne) Exec(ctx context.Context) error {
-	_, err := ntuo.Save(ctx)
+func (_u *NotifyTargetUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ntuo *NotifyTargetUpdateOne) ExecX(ctx context.Context) {
-	if err := ntuo.Exec(ctx); err != nil {
+func (_u *NotifyTargetUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ntuo *NotifyTargetUpdateOne) defaults() {
-	if _, ok := ntuo.mutation.UpdatedAt(); !ok {
+func (_u *NotifyTargetUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := notifytarget.UpdateDefaultUpdatedAt()
-		ntuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ntuo *NotifyTargetUpdateOne) check() error {
-	if v, ok := ntuo.mutation.Status(); ok {
+func (_u *NotifyTargetUpdateOne) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := notifytarget.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.status": %w`, err)}
 		}
 	}
-	if ntuo.mutation.OwnerCleared() && len(ntuo.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyTarget.owner"`)
 	}
 	return nil
 }
 
-func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTarget, err error) {
-	if err := ntuo.check(); err != nil {
+func (_u *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTarget, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(notifytarget.Table, notifytarget.Columns, sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64))
-	id, ok := ntuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "NotifyTarget.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := ntuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, notifytarget.FieldID)
 		for _, f := range fields {
@@ -670,32 +670,32 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 			}
 		}
 	}
-	if ps := ntuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := ntuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(notifytarget.FieldName, field.TypeString, value)
 	}
-	if value, ok := ntuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(notifytarget.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ntuo.mutation.Destination(); ok {
+	if value, ok := _u.mutation.Destination(); ok {
 		_spec.SetField(notifytarget.FieldDestination, field.TypeJSON, value)
 	}
-	if value, ok := ntuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(notifytarget.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := ntuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifytarget.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := ntuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(notifytarget.FieldCreatedAt, field.TypeTime, value)
 	}
-	if ntuo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -708,7 +708,7 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -724,7 +724,7 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ntuo.mutation.NotifyFlowCleared() {
+	if _u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -735,13 +735,13 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &NotifyFlowTargetCreate{config: ntuo.config, mutation: newNotifyFlowTargetMutation(ntuo.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntuo.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !ntuo.mutation.NotifyFlowCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -755,13 +755,13 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowTargetCreate{config: ntuo.config, mutation: newNotifyFlowTargetMutation(ntuo.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntuo.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -775,13 +775,13 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &NotifyFlowTargetCreate{config: ntuo.config, mutation: newNotifyFlowTargetMutation(ntuo.config, OpCreate)}
+		createE := &NotifyFlowTargetCreate{config: _u.config, mutation: newNotifyFlowTargetMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if ntuo.mutation.NotifyFlowTargetCleared() {
+	if _u.mutation.NotifyFlowTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -794,7 +794,7 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntuo.mutation.RemovedNotifyFlowTargetIDs(); len(nodes) > 0 && !ntuo.mutation.NotifyFlowTargetCleared() {
+	if nodes := _u.mutation.RemovedNotifyFlowTargetIDs(); len(nodes) > 0 && !_u.mutation.NotifyFlowTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -810,7 +810,7 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := ntuo.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -826,10 +826,10 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &NotifyTarget{config: ntuo.config}
+	_node = &NotifyTarget{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, ntuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{notifytarget.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -837,6 +837,6 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 		}
 		return nil, err
 	}
-	ntuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

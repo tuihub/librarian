@@ -25,112 +25,112 @@ type PorterContextCreate struct {
 }
 
 // SetGlobalName sets the "global_name" field.
-func (pcc *PorterContextCreate) SetGlobalName(s string) *PorterContextCreate {
-	pcc.mutation.SetGlobalName(s)
-	return pcc
+func (_c *PorterContextCreate) SetGlobalName(v string) *PorterContextCreate {
+	_c.mutation.SetGlobalName(v)
+	return _c
 }
 
 // SetRegion sets the "region" field.
-func (pcc *PorterContextCreate) SetRegion(s string) *PorterContextCreate {
-	pcc.mutation.SetRegion(s)
-	return pcc
+func (_c *PorterContextCreate) SetRegion(v string) *PorterContextCreate {
+	_c.mutation.SetRegion(v)
+	return _c
 }
 
 // SetContextJSON sets the "context_json" field.
-func (pcc *PorterContextCreate) SetContextJSON(s string) *PorterContextCreate {
-	pcc.mutation.SetContextJSON(s)
-	return pcc
+func (_c *PorterContextCreate) SetContextJSON(v string) *PorterContextCreate {
+	_c.mutation.SetContextJSON(v)
+	return _c
 }
 
 // SetName sets the "name" field.
-func (pcc *PorterContextCreate) SetName(s string) *PorterContextCreate {
-	pcc.mutation.SetName(s)
-	return pcc
+func (_c *PorterContextCreate) SetName(v string) *PorterContextCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (pcc *PorterContextCreate) SetDescription(s string) *PorterContextCreate {
-	pcc.mutation.SetDescription(s)
-	return pcc
+func (_c *PorterContextCreate) SetDescription(v string) *PorterContextCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (pcc *PorterContextCreate) SetStatus(po portercontext.Status) *PorterContextCreate {
-	pcc.mutation.SetStatus(po)
-	return pcc
+func (_c *PorterContextCreate) SetStatus(v portercontext.Status) *PorterContextCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetHandleStatus sets the "handle_status" field.
-func (pcc *PorterContextCreate) SetHandleStatus(ps portercontext.HandleStatus) *PorterContextCreate {
-	pcc.mutation.SetHandleStatus(ps)
-	return pcc
+func (_c *PorterContextCreate) SetHandleStatus(v portercontext.HandleStatus) *PorterContextCreate {
+	_c.mutation.SetHandleStatus(v)
+	return _c
 }
 
 // SetHandleStatusMessage sets the "handle_status_message" field.
-func (pcc *PorterContextCreate) SetHandleStatusMessage(s string) *PorterContextCreate {
-	pcc.mutation.SetHandleStatusMessage(s)
-	return pcc
+func (_c *PorterContextCreate) SetHandleStatusMessage(v string) *PorterContextCreate {
+	_c.mutation.SetHandleStatusMessage(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (pcc *PorterContextCreate) SetUpdatedAt(t time.Time) *PorterContextCreate {
-	pcc.mutation.SetUpdatedAt(t)
-	return pcc
+func (_c *PorterContextCreate) SetUpdatedAt(v time.Time) *PorterContextCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (pcc *PorterContextCreate) SetNillableUpdatedAt(t *time.Time) *PorterContextCreate {
-	if t != nil {
-		pcc.SetUpdatedAt(*t)
+func (_c *PorterContextCreate) SetNillableUpdatedAt(v *time.Time) *PorterContextCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return pcc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (pcc *PorterContextCreate) SetCreatedAt(t time.Time) *PorterContextCreate {
-	pcc.mutation.SetCreatedAt(t)
-	return pcc
+func (_c *PorterContextCreate) SetCreatedAt(v time.Time) *PorterContextCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (pcc *PorterContextCreate) SetNillableCreatedAt(t *time.Time) *PorterContextCreate {
-	if t != nil {
-		pcc.SetCreatedAt(*t)
+func (_c *PorterContextCreate) SetNillableCreatedAt(v *time.Time) *PorterContextCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return pcc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (pcc *PorterContextCreate) SetID(mi model.InternalID) *PorterContextCreate {
-	pcc.mutation.SetID(mi)
-	return pcc
+func (_c *PorterContextCreate) SetID(v model.InternalID) *PorterContextCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (pcc *PorterContextCreate) SetOwnerID(id model.InternalID) *PorterContextCreate {
-	pcc.mutation.SetOwnerID(id)
-	return pcc
+func (_c *PorterContextCreate) SetOwnerID(id model.InternalID) *PorterContextCreate {
+	_c.mutation.SetOwnerID(id)
+	return _c
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (pcc *PorterContextCreate) SetOwner(u *User) *PorterContextCreate {
-	return pcc.SetOwnerID(u.ID)
+func (_c *PorterContextCreate) SetOwner(v *User) *PorterContextCreate {
+	return _c.SetOwnerID(v.ID)
 }
 
 // Mutation returns the PorterContextMutation object of the builder.
-func (pcc *PorterContextCreate) Mutation() *PorterContextMutation {
-	return pcc.mutation
+func (_c *PorterContextCreate) Mutation() *PorterContextMutation {
+	return _c.mutation
 }
 
 // Save creates the PorterContext in the database.
-func (pcc *PorterContextCreate) Save(ctx context.Context) (*PorterContext, error) {
-	pcc.defaults()
-	return withHooks(ctx, pcc.sqlSave, pcc.mutation, pcc.hooks)
+func (_c *PorterContextCreate) Save(ctx context.Context) (*PorterContext, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (pcc *PorterContextCreate) SaveX(ctx context.Context) *PorterContext {
-	v, err := pcc.Save(ctx)
+func (_c *PorterContextCreate) SaveX(ctx context.Context) *PorterContext {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -138,84 +138,84 @@ func (pcc *PorterContextCreate) SaveX(ctx context.Context) *PorterContext {
 }
 
 // Exec executes the query.
-func (pcc *PorterContextCreate) Exec(ctx context.Context) error {
-	_, err := pcc.Save(ctx)
+func (_c *PorterContextCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pcc *PorterContextCreate) ExecX(ctx context.Context) {
-	if err := pcc.Exec(ctx); err != nil {
+func (_c *PorterContextCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (pcc *PorterContextCreate) defaults() {
-	if _, ok := pcc.mutation.UpdatedAt(); !ok {
+func (_c *PorterContextCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := portercontext.DefaultUpdatedAt()
-		pcc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := pcc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := portercontext.DefaultCreatedAt()
-		pcc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (pcc *PorterContextCreate) check() error {
-	if _, ok := pcc.mutation.GlobalName(); !ok {
+func (_c *PorterContextCreate) check() error {
+	if _, ok := _c.mutation.GlobalName(); !ok {
 		return &ValidationError{Name: "global_name", err: errors.New(`ent: missing required field "PorterContext.global_name"`)}
 	}
-	if _, ok := pcc.mutation.Region(); !ok {
+	if _, ok := _c.mutation.Region(); !ok {
 		return &ValidationError{Name: "region", err: errors.New(`ent: missing required field "PorterContext.region"`)}
 	}
-	if _, ok := pcc.mutation.ContextJSON(); !ok {
+	if _, ok := _c.mutation.ContextJSON(); !ok {
 		return &ValidationError{Name: "context_json", err: errors.New(`ent: missing required field "PorterContext.context_json"`)}
 	}
-	if _, ok := pcc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "PorterContext.name"`)}
 	}
-	if _, ok := pcc.mutation.Description(); !ok {
+	if _, ok := _c.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "PorterContext.description"`)}
 	}
-	if _, ok := pcc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "PorterContext.status"`)}
 	}
-	if v, ok := pcc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := portercontext.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
 		}
 	}
-	if _, ok := pcc.mutation.HandleStatus(); !ok {
+	if _, ok := _c.mutation.HandleStatus(); !ok {
 		return &ValidationError{Name: "handle_status", err: errors.New(`ent: missing required field "PorterContext.handle_status"`)}
 	}
-	if v, ok := pcc.mutation.HandleStatus(); ok {
+	if v, ok := _c.mutation.HandleStatus(); ok {
 		if err := portercontext.HandleStatusValidator(v); err != nil {
 			return &ValidationError{Name: "handle_status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.handle_status": %w`, err)}
 		}
 	}
-	if _, ok := pcc.mutation.HandleStatusMessage(); !ok {
+	if _, ok := _c.mutation.HandleStatusMessage(); !ok {
 		return &ValidationError{Name: "handle_status_message", err: errors.New(`ent: missing required field "PorterContext.handle_status_message"`)}
 	}
-	if _, ok := pcc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "PorterContext.updated_at"`)}
 	}
-	if _, ok := pcc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "PorterContext.created_at"`)}
 	}
-	if len(pcc.mutation.OwnerIDs()) == 0 {
+	if len(_c.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "PorterContext.owner"`)}
 	}
 	return nil
 }
 
-func (pcc *PorterContextCreate) sqlSave(ctx context.Context) (*PorterContext, error) {
-	if err := pcc.check(); err != nil {
+func (_c *PorterContextCreate) sqlSave(ctx context.Context) (*PorterContext, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := pcc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, pcc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -225,62 +225,62 @@ func (pcc *PorterContextCreate) sqlSave(ctx context.Context) (*PorterContext, er
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	pcc.mutation.id = &_node.ID
-	pcc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (pcc *PorterContextCreate) createSpec() (*PorterContext, *sqlgraph.CreateSpec) {
+func (_c *PorterContextCreate) createSpec() (*PorterContext, *sqlgraph.CreateSpec) {
 	var (
-		_node = &PorterContext{config: pcc.config}
+		_node = &PorterContext{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(portercontext.Table, sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = pcc.conflict
-	if id, ok := pcc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := pcc.mutation.GlobalName(); ok {
+	if value, ok := _c.mutation.GlobalName(); ok {
 		_spec.SetField(portercontext.FieldGlobalName, field.TypeString, value)
 		_node.GlobalName = value
 	}
-	if value, ok := pcc.mutation.Region(); ok {
+	if value, ok := _c.mutation.Region(); ok {
 		_spec.SetField(portercontext.FieldRegion, field.TypeString, value)
 		_node.Region = value
 	}
-	if value, ok := pcc.mutation.ContextJSON(); ok {
+	if value, ok := _c.mutation.ContextJSON(); ok {
 		_spec.SetField(portercontext.FieldContextJSON, field.TypeString, value)
 		_node.ContextJSON = value
 	}
-	if value, ok := pcc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(portercontext.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := pcc.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(portercontext.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := pcc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(portercontext.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := pcc.mutation.HandleStatus(); ok {
+	if value, ok := _c.mutation.HandleStatus(); ok {
 		_spec.SetField(portercontext.FieldHandleStatus, field.TypeEnum, value)
 		_node.HandleStatus = value
 	}
-	if value, ok := pcc.mutation.HandleStatusMessage(); ok {
+	if value, ok := _c.mutation.HandleStatusMessage(); ok {
 		_spec.SetField(portercontext.FieldHandleStatusMessage, field.TypeString, value)
 		_node.HandleStatusMessage = value
 	}
-	if value, ok := pcc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(portercontext.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := pcc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(portercontext.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := pcc.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -316,10 +316,10 @@ func (pcc *PorterContextCreate) createSpec() (*PorterContext, *sqlgraph.CreateSp
 //			SetGlobalName(v+v).
 //		}).
 //		Exec(ctx)
-func (pcc *PorterContextCreate) OnConflict(opts ...sql.ConflictOption) *PorterContextUpsertOne {
-	pcc.conflict = opts
+func (_c *PorterContextCreate) OnConflict(opts ...sql.ConflictOption) *PorterContextUpsertOne {
+	_c.conflict = opts
 	return &PorterContextUpsertOne{
-		create: pcc,
+		create: _c,
 	}
 }
 
@@ -329,10 +329,10 @@ func (pcc *PorterContextCreate) OnConflict(opts ...sql.ConflictOption) *PorterCo
 //	client.PorterContext.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (pcc *PorterContextCreate) OnConflictColumns(columns ...string) *PorterContextUpsertOne {
-	pcc.conflict = append(pcc.conflict, sql.ConflictColumns(columns...))
+func (_c *PorterContextCreate) OnConflictColumns(columns ...string) *PorterContextUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &PorterContextUpsertOne{
-		create: pcc,
+		create: _c,
 	}
 }
 
@@ -699,16 +699,16 @@ type PorterContextCreateBulk struct {
 }
 
 // Save creates the PorterContext entities in the database.
-func (pccb *PorterContextCreateBulk) Save(ctx context.Context) ([]*PorterContext, error) {
-	if pccb.err != nil {
-		return nil, pccb.err
+func (_c *PorterContextCreateBulk) Save(ctx context.Context) ([]*PorterContext, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(pccb.builders))
-	nodes := make([]*PorterContext, len(pccb.builders))
-	mutators := make([]Mutator, len(pccb.builders))
-	for i := range pccb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*PorterContext, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := pccb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*PorterContextMutation)
@@ -722,12 +722,12 @@ func (pccb *PorterContextCreateBulk) Save(ctx context.Context) ([]*PorterContext
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, pccb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = pccb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, pccb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -751,7 +751,7 @@ func (pccb *PorterContextCreateBulk) Save(ctx context.Context) ([]*PorterContext
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, pccb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -759,8 +759,8 @@ func (pccb *PorterContextCreateBulk) Save(ctx context.Context) ([]*PorterContext
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (pccb *PorterContextCreateBulk) SaveX(ctx context.Context) []*PorterContext {
-	v, err := pccb.Save(ctx)
+func (_c *PorterContextCreateBulk) SaveX(ctx context.Context) []*PorterContext {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -768,14 +768,14 @@ func (pccb *PorterContextCreateBulk) SaveX(ctx context.Context) []*PorterContext
 }
 
 // Exec executes the query.
-func (pccb *PorterContextCreateBulk) Exec(ctx context.Context) error {
-	_, err := pccb.Save(ctx)
+func (_c *PorterContextCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pccb *PorterContextCreateBulk) ExecX(ctx context.Context) {
-	if err := pccb.Exec(ctx); err != nil {
+func (_c *PorterContextCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -795,10 +795,10 @@ func (pccb *PorterContextCreateBulk) ExecX(ctx context.Context) {
 //			SetGlobalName(v+v).
 //		}).
 //		Exec(ctx)
-func (pccb *PorterContextCreateBulk) OnConflict(opts ...sql.ConflictOption) *PorterContextUpsertBulk {
-	pccb.conflict = opts
+func (_c *PorterContextCreateBulk) OnConflict(opts ...sql.ConflictOption) *PorterContextUpsertBulk {
+	_c.conflict = opts
 	return &PorterContextUpsertBulk{
-		create: pccb,
+		create: _c,
 	}
 }
 
@@ -808,10 +808,10 @@ func (pccb *PorterContextCreateBulk) OnConflict(opts ...sql.ConflictOption) *Por
 //	client.PorterContext.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (pccb *PorterContextCreateBulk) OnConflictColumns(columns ...string) *PorterContextUpsertBulk {
-	pccb.conflict = append(pccb.conflict, sql.ConflictColumns(columns...))
+func (_c *PorterContextCreateBulk) OnConflictColumns(columns ...string) *PorterContextUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &PorterContextUpsertBulk{
-		create: pccb,
+		create: _c,
 	}
 }
 

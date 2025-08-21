@@ -35,44 +35,44 @@ type FeedActionSetQuery struct {
 }
 
 // Where adds a new predicate for the FeedActionSetQuery builder.
-func (fasq *FeedActionSetQuery) Where(ps ...predicate.FeedActionSet) *FeedActionSetQuery {
-	fasq.predicates = append(fasq.predicates, ps...)
-	return fasq
+func (_q *FeedActionSetQuery) Where(ps ...predicate.FeedActionSet) *FeedActionSetQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (fasq *FeedActionSetQuery) Limit(limit int) *FeedActionSetQuery {
-	fasq.ctx.Limit = &limit
-	return fasq
+func (_q *FeedActionSetQuery) Limit(limit int) *FeedActionSetQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (fasq *FeedActionSetQuery) Offset(offset int) *FeedActionSetQuery {
-	fasq.ctx.Offset = &offset
-	return fasq
+func (_q *FeedActionSetQuery) Offset(offset int) *FeedActionSetQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (fasq *FeedActionSetQuery) Unique(unique bool) *FeedActionSetQuery {
-	fasq.ctx.Unique = &unique
-	return fasq
+func (_q *FeedActionSetQuery) Unique(unique bool) *FeedActionSetQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (fasq *FeedActionSetQuery) Order(o ...feedactionset.OrderOption) *FeedActionSetQuery {
-	fasq.order = append(fasq.order, o...)
-	return fasq
+func (_q *FeedActionSetQuery) Order(o ...feedactionset.OrderOption) *FeedActionSetQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryOwner chains the current query on the "owner" edge.
-func (fasq *FeedActionSetQuery) QueryOwner() *UserQuery {
-	query := (&UserClient{config: fasq.config}).Query()
+func (_q *FeedActionSetQuery) QueryOwner() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := fasq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := fasq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -81,20 +81,20 @@ func (fasq *FeedActionSetQuery) QueryOwner() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, feedactionset.OwnerTable, feedactionset.OwnerColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(fasq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryFeedConfig chains the current query on the "feed_config" edge.
-func (fasq *FeedActionSetQuery) QueryFeedConfig() *FeedConfigQuery {
-	query := (&FeedConfigClient{config: fasq.config}).Query()
+func (_q *FeedActionSetQuery) QueryFeedConfig() *FeedConfigQuery {
+	query := (&FeedConfigClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := fasq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := fasq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -103,7 +103,7 @@ func (fasq *FeedActionSetQuery) QueryFeedConfig() *FeedConfigQuery {
 			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, feedactionset.FeedConfigTable, feedactionset.FeedConfigPrimaryKey...),
 		)
-		fromU = sqlgraph.SetNeighbors(fasq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -111,8 +111,8 @@ func (fasq *FeedActionSetQuery) QueryFeedConfig() *FeedConfigQuery {
 
 // First returns the first FeedActionSet entity from the query.
 // Returns a *NotFoundError when no FeedActionSet was found.
-func (fasq *FeedActionSetQuery) First(ctx context.Context) (*FeedActionSet, error) {
-	nodes, err := fasq.Limit(1).All(setContextOp(ctx, fasq.ctx, ent.OpQueryFirst))
+func (_q *FeedActionSetQuery) First(ctx context.Context) (*FeedActionSet, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -123,8 +123,8 @@ func (fasq *FeedActionSetQuery) First(ctx context.Context) (*FeedActionSet, erro
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (fasq *FeedActionSetQuery) FirstX(ctx context.Context) *FeedActionSet {
-	node, err := fasq.First(ctx)
+func (_q *FeedActionSetQuery) FirstX(ctx context.Context) *FeedActionSet {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -133,9 +133,9 @@ func (fasq *FeedActionSetQuery) FirstX(ctx context.Context) *FeedActionSet {
 
 // FirstID returns the first FeedActionSet ID from the query.
 // Returns a *NotFoundError when no FeedActionSet ID was found.
-func (fasq *FeedActionSetQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *FeedActionSetQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = fasq.Limit(1).IDs(setContextOp(ctx, fasq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -146,8 +146,8 @@ func (fasq *FeedActionSetQuery) FirstID(ctx context.Context) (id model.InternalI
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (fasq *FeedActionSetQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := fasq.FirstID(ctx)
+func (_q *FeedActionSetQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -157,8 +157,8 @@ func (fasq *FeedActionSetQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Only returns a single FeedActionSet entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one FeedActionSet entity is found.
 // Returns a *NotFoundError when no FeedActionSet entities are found.
-func (fasq *FeedActionSetQuery) Only(ctx context.Context) (*FeedActionSet, error) {
-	nodes, err := fasq.Limit(2).All(setContextOp(ctx, fasq.ctx, ent.OpQueryOnly))
+func (_q *FeedActionSetQuery) Only(ctx context.Context) (*FeedActionSet, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -173,8 +173,8 @@ func (fasq *FeedActionSetQuery) Only(ctx context.Context) (*FeedActionSet, error
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (fasq *FeedActionSetQuery) OnlyX(ctx context.Context) *FeedActionSet {
-	node, err := fasq.Only(ctx)
+func (_q *FeedActionSetQuery) OnlyX(ctx context.Context) *FeedActionSet {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -184,9 +184,9 @@ func (fasq *FeedActionSetQuery) OnlyX(ctx context.Context) *FeedActionSet {
 // OnlyID is like Only, but returns the only FeedActionSet ID in the query.
 // Returns a *NotSingularError when more than one FeedActionSet ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (fasq *FeedActionSetQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *FeedActionSetQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = fasq.Limit(2).IDs(setContextOp(ctx, fasq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -201,8 +201,8 @@ func (fasq *FeedActionSetQuery) OnlyID(ctx context.Context) (id model.InternalID
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (fasq *FeedActionSetQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := fasq.OnlyID(ctx)
+func (_q *FeedActionSetQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -210,18 +210,18 @@ func (fasq *FeedActionSetQuery) OnlyIDX(ctx context.Context) model.InternalID {
 }
 
 // All executes the query and returns a list of FeedActionSets.
-func (fasq *FeedActionSetQuery) All(ctx context.Context) ([]*FeedActionSet, error) {
-	ctx = setContextOp(ctx, fasq.ctx, ent.OpQueryAll)
-	if err := fasq.prepareQuery(ctx); err != nil {
+func (_q *FeedActionSetQuery) All(ctx context.Context) ([]*FeedActionSet, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*FeedActionSet, *FeedActionSetQuery]()
-	return withInterceptors[[]*FeedActionSet](ctx, fasq, qr, fasq.inters)
+	return withInterceptors[[]*FeedActionSet](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (fasq *FeedActionSetQuery) AllX(ctx context.Context) []*FeedActionSet {
-	nodes, err := fasq.All(ctx)
+func (_q *FeedActionSetQuery) AllX(ctx context.Context) []*FeedActionSet {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -229,20 +229,20 @@ func (fasq *FeedActionSetQuery) AllX(ctx context.Context) []*FeedActionSet {
 }
 
 // IDs executes the query and returns a list of FeedActionSet IDs.
-func (fasq *FeedActionSetQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if fasq.ctx.Unique == nil && fasq.path != nil {
-		fasq.Unique(true)
+func (_q *FeedActionSetQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, fasq.ctx, ent.OpQueryIDs)
-	if err = fasq.Select(feedactionset.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(feedactionset.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (fasq *FeedActionSetQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := fasq.IDs(ctx)
+func (_q *FeedActionSetQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -250,17 +250,17 @@ func (fasq *FeedActionSetQuery) IDsX(ctx context.Context) []model.InternalID {
 }
 
 // Count returns the count of the given query.
-func (fasq *FeedActionSetQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fasq.ctx, ent.OpQueryCount)
-	if err := fasq.prepareQuery(ctx); err != nil {
+func (_q *FeedActionSetQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, fasq, querierCount[*FeedActionSetQuery](), fasq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*FeedActionSetQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (fasq *FeedActionSetQuery) CountX(ctx context.Context) int {
-	count, err := fasq.Count(ctx)
+func (_q *FeedActionSetQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -268,9 +268,9 @@ func (fasq *FeedActionSetQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (fasq *FeedActionSetQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fasq.ctx, ent.OpQueryExist)
-	switch _, err := fasq.FirstID(ctx); {
+func (_q *FeedActionSetQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -281,8 +281,8 @@ func (fasq *FeedActionSetQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (fasq *FeedActionSetQuery) ExistX(ctx context.Context) bool {
-	exist, err := fasq.Exist(ctx)
+func (_q *FeedActionSetQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -291,44 +291,44 @@ func (fasq *FeedActionSetQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the FeedActionSetQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (fasq *FeedActionSetQuery) Clone() *FeedActionSetQuery {
-	if fasq == nil {
+func (_q *FeedActionSetQuery) Clone() *FeedActionSetQuery {
+	if _q == nil {
 		return nil
 	}
 	return &FeedActionSetQuery{
-		config:         fasq.config,
-		ctx:            fasq.ctx.Clone(),
-		order:          append([]feedactionset.OrderOption{}, fasq.order...),
-		inters:         append([]Interceptor{}, fasq.inters...),
-		predicates:     append([]predicate.FeedActionSet{}, fasq.predicates...),
-		withOwner:      fasq.withOwner.Clone(),
-		withFeedConfig: fasq.withFeedConfig.Clone(),
+		config:         _q.config,
+		ctx:            _q.ctx.Clone(),
+		order:          append([]feedactionset.OrderOption{}, _q.order...),
+		inters:         append([]Interceptor{}, _q.inters...),
+		predicates:     append([]predicate.FeedActionSet{}, _q.predicates...),
+		withOwner:      _q.withOwner.Clone(),
+		withFeedConfig: _q.withFeedConfig.Clone(),
 		// clone intermediate query.
-		sql:  fasq.sql.Clone(),
-		path: fasq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithOwner tells the query-builder to eager-load the nodes that are connected to
 // the "owner" edge. The optional arguments are used to configure the query builder of the edge.
-func (fasq *FeedActionSetQuery) WithOwner(opts ...func(*UserQuery)) *FeedActionSetQuery {
-	query := (&UserClient{config: fasq.config}).Query()
+func (_q *FeedActionSetQuery) WithOwner(opts ...func(*UserQuery)) *FeedActionSetQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fasq.withOwner = query
-	return fasq
+	_q.withOwner = query
+	return _q
 }
 
 // WithFeedConfig tells the query-builder to eager-load the nodes that are connected to
 // the "feed_config" edge. The optional arguments are used to configure the query builder of the edge.
-func (fasq *FeedActionSetQuery) WithFeedConfig(opts ...func(*FeedConfigQuery)) *FeedActionSetQuery {
-	query := (&FeedConfigClient{config: fasq.config}).Query()
+func (_q *FeedActionSetQuery) WithFeedConfig(opts ...func(*FeedConfigQuery)) *FeedActionSetQuery {
+	query := (&FeedConfigClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fasq.withFeedConfig = query
-	return fasq
+	_q.withFeedConfig = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -345,10 +345,10 @@ func (fasq *FeedActionSetQuery) WithFeedConfig(opts ...func(*FeedConfigQuery)) *
 //		GroupBy(feedactionset.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (fasq *FeedActionSetQuery) GroupBy(field string, fields ...string) *FeedActionSetGroupBy {
-	fasq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &FeedActionSetGroupBy{build: fasq}
-	grbuild.flds = &fasq.ctx.Fields
+func (_q *FeedActionSetQuery) GroupBy(field string, fields ...string) *FeedActionSetGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &FeedActionSetGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = feedactionset.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -366,56 +366,56 @@ func (fasq *FeedActionSetQuery) GroupBy(field string, fields ...string) *FeedAct
 //	client.FeedActionSet.Query().
 //		Select(feedactionset.FieldName).
 //		Scan(ctx, &v)
-func (fasq *FeedActionSetQuery) Select(fields ...string) *FeedActionSetSelect {
-	fasq.ctx.Fields = append(fasq.ctx.Fields, fields...)
-	sbuild := &FeedActionSetSelect{FeedActionSetQuery: fasq}
+func (_q *FeedActionSetQuery) Select(fields ...string) *FeedActionSetSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &FeedActionSetSelect{FeedActionSetQuery: _q}
 	sbuild.label = feedactionset.Label
-	sbuild.flds, sbuild.scan = &fasq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a FeedActionSetSelect configured with the given aggregations.
-func (fasq *FeedActionSetQuery) Aggregate(fns ...AggregateFunc) *FeedActionSetSelect {
-	return fasq.Select().Aggregate(fns...)
+func (_q *FeedActionSetQuery) Aggregate(fns ...AggregateFunc) *FeedActionSetSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (fasq *FeedActionSetQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range fasq.inters {
+func (_q *FeedActionSetQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, fasq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range fasq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !feedactionset.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if fasq.path != nil {
-		prev, err := fasq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		fasq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (fasq *FeedActionSetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedActionSet, error) {
+func (_q *FeedActionSetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedActionSet, error) {
 	var (
 		nodes       = []*FeedActionSet{}
-		withFKs     = fasq.withFKs
-		_spec       = fasq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			fasq.withOwner != nil,
-			fasq.withFeedConfig != nil,
+			_q.withOwner != nil,
+			_q.withFeedConfig != nil,
 		}
 	)
-	if fasq.withOwner != nil {
+	if _q.withOwner != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -425,7 +425,7 @@ func (fasq *FeedActionSetQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		return (*FeedActionSet).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &FeedActionSet{config: fasq.config}
+		node := &FeedActionSet{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -433,20 +433,20 @@ func (fasq *FeedActionSetQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, fasq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := fasq.withOwner; query != nil {
-		if err := fasq.loadOwner(ctx, query, nodes, nil,
+	if query := _q.withOwner; query != nil {
+		if err := _q.loadOwner(ctx, query, nodes, nil,
 			func(n *FeedActionSet, e *User) { n.Edges.Owner = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := fasq.withFeedConfig; query != nil {
-		if err := fasq.loadFeedConfig(ctx, query, nodes,
+	if query := _q.withFeedConfig; query != nil {
+		if err := _q.loadFeedConfig(ctx, query, nodes,
 			func(n *FeedActionSet) { n.Edges.FeedConfig = []*FeedConfig{} },
 			func(n *FeedActionSet, e *FeedConfig) { n.Edges.FeedConfig = append(n.Edges.FeedConfig, e) }); err != nil {
 			return nil, err
@@ -455,7 +455,7 @@ func (fasq *FeedActionSetQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	return nodes, nil
 }
 
-func (fasq *FeedActionSetQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*FeedActionSet, init func(*FeedActionSet), assign func(*FeedActionSet, *User)) error {
+func (_q *FeedActionSetQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*FeedActionSet, init func(*FeedActionSet), assign func(*FeedActionSet, *User)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*FeedActionSet)
 	for i := range nodes {
@@ -487,7 +487,7 @@ func (fasq *FeedActionSetQuery) loadOwner(ctx context.Context, query *UserQuery,
 	}
 	return nil
 }
-func (fasq *FeedActionSetQuery) loadFeedConfig(ctx context.Context, query *FeedConfigQuery, nodes []*FeedActionSet, init func(*FeedActionSet), assign func(*FeedActionSet, *FeedConfig)) error {
+func (_q *FeedActionSetQuery) loadFeedConfig(ctx context.Context, query *FeedConfigQuery, nodes []*FeedActionSet, init func(*FeedActionSet), assign func(*FeedActionSet, *FeedConfig)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[model.InternalID]*FeedActionSet)
 	nids := make(map[model.InternalID]map[*FeedActionSet]struct{})
@@ -549,24 +549,24 @@ func (fasq *FeedActionSetQuery) loadFeedConfig(ctx context.Context, query *FeedC
 	return nil
 }
 
-func (fasq *FeedActionSetQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := fasq.querySpec()
-	_spec.Node.Columns = fasq.ctx.Fields
-	if len(fasq.ctx.Fields) > 0 {
-		_spec.Unique = fasq.ctx.Unique != nil && *fasq.ctx.Unique
+func (_q *FeedActionSetQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, fasq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (fasq *FeedActionSetQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *FeedActionSetQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(feedactionset.Table, feedactionset.Columns, sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64))
-	_spec.From = fasq.sql
-	if unique := fasq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if fasq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := fasq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, feedactionset.FieldID)
 		for i := range fields {
@@ -575,20 +575,20 @@ func (fasq *FeedActionSetQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := fasq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := fasq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := fasq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := fasq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -598,33 +598,33 @@ func (fasq *FeedActionSetQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (fasq *FeedActionSetQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(fasq.driver.Dialect())
+func (_q *FeedActionSetQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(feedactionset.Table)
-	columns := fasq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = feedactionset.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if fasq.sql != nil {
-		selector = fasq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if fasq.ctx.Unique != nil && *fasq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range fasq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range fasq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := fasq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := fasq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -637,41 +637,41 @@ type FeedActionSetGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (fasgb *FeedActionSetGroupBy) Aggregate(fns ...AggregateFunc) *FeedActionSetGroupBy {
-	fasgb.fns = append(fasgb.fns, fns...)
-	return fasgb
+func (_g *FeedActionSetGroupBy) Aggregate(fns ...AggregateFunc) *FeedActionSetGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (fasgb *FeedActionSetGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fasgb.build.ctx, ent.OpQueryGroupBy)
-	if err := fasgb.build.prepareQuery(ctx); err != nil {
+func (_g *FeedActionSetGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*FeedActionSetQuery, *FeedActionSetGroupBy](ctx, fasgb.build, fasgb, fasgb.build.inters, v)
+	return scanWithInterceptors[*FeedActionSetQuery, *FeedActionSetGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (fasgb *FeedActionSetGroupBy) sqlScan(ctx context.Context, root *FeedActionSetQuery, v any) error {
+func (_g *FeedActionSetGroupBy) sqlScan(ctx context.Context, root *FeedActionSetQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(fasgb.fns))
-	for _, fn := range fasgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*fasgb.flds)+len(fasgb.fns))
-		for _, f := range *fasgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*fasgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := fasgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -685,27 +685,27 @@ type FeedActionSetSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (fass *FeedActionSetSelect) Aggregate(fns ...AggregateFunc) *FeedActionSetSelect {
-	fass.fns = append(fass.fns, fns...)
-	return fass
+func (_s *FeedActionSetSelect) Aggregate(fns ...AggregateFunc) *FeedActionSetSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (fass *FeedActionSetSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fass.ctx, ent.OpQuerySelect)
-	if err := fass.prepareQuery(ctx); err != nil {
+func (_s *FeedActionSetSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*FeedActionSetQuery, *FeedActionSetSelect](ctx, fass.FeedActionSetQuery, fass, fass.inters, v)
+	return scanWithInterceptors[*FeedActionSetQuery, *FeedActionSetSelect](ctx, _s.FeedActionSetQuery, _s, _s.inters, v)
 }
 
-func (fass *FeedActionSetSelect) sqlScan(ctx context.Context, root *FeedActionSetQuery, v any) error {
+func (_s *FeedActionSetSelect) sqlScan(ctx context.Context, root *FeedActionSetQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(fass.fns))
-	for _, fn := range fass.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*fass.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -713,7 +713,7 @@ func (fass *FeedActionSetSelect) sqlScan(ctx context.Context, root *FeedActionSe
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := fass.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

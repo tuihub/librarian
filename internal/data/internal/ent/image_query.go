@@ -34,44 +34,44 @@ type ImageQuery struct {
 }
 
 // Where adds a new predicate for the ImageQuery builder.
-func (iq *ImageQuery) Where(ps ...predicate.Image) *ImageQuery {
-	iq.predicates = append(iq.predicates, ps...)
-	return iq
+func (_q *ImageQuery) Where(ps ...predicate.Image) *ImageQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (iq *ImageQuery) Limit(limit int) *ImageQuery {
-	iq.ctx.Limit = &limit
-	return iq
+func (_q *ImageQuery) Limit(limit int) *ImageQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (iq *ImageQuery) Offset(offset int) *ImageQuery {
-	iq.ctx.Offset = &offset
-	return iq
+func (_q *ImageQuery) Offset(offset int) *ImageQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (iq *ImageQuery) Unique(unique bool) *ImageQuery {
-	iq.ctx.Unique = &unique
-	return iq
+func (_q *ImageQuery) Unique(unique bool) *ImageQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (iq *ImageQuery) Order(o ...image.OrderOption) *ImageQuery {
-	iq.order = append(iq.order, o...)
-	return iq
+func (_q *ImageQuery) Order(o ...image.OrderOption) *ImageQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryOwner chains the current query on the "owner" edge.
-func (iq *ImageQuery) QueryOwner() *UserQuery {
-	query := (&UserClient{config: iq.config}).Query()
+func (_q *ImageQuery) QueryOwner() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := iq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := iq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -80,20 +80,20 @@ func (iq *ImageQuery) QueryOwner() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, image.OwnerTable, image.OwnerColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryFile chains the current query on the "file" edge.
-func (iq *ImageQuery) QueryFile() *FileQuery {
-	query := (&FileClient{config: iq.config}).Query()
+func (_q *ImageQuery) QueryFile() *FileQuery {
+	query := (&FileClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := iq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := iq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -102,7 +102,7 @@ func (iq *ImageQuery) QueryFile() *FileQuery {
 			sqlgraph.To(file.Table, file.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, image.FileTable, image.FileColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -110,8 +110,8 @@ func (iq *ImageQuery) QueryFile() *FileQuery {
 
 // First returns the first Image entity from the query.
 // Returns a *NotFoundError when no Image was found.
-func (iq *ImageQuery) First(ctx context.Context) (*Image, error) {
-	nodes, err := iq.Limit(1).All(setContextOp(ctx, iq.ctx, ent.OpQueryFirst))
+func (_q *ImageQuery) First(ctx context.Context) (*Image, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func (iq *ImageQuery) First(ctx context.Context) (*Image, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (iq *ImageQuery) FirstX(ctx context.Context) *Image {
-	node, err := iq.First(ctx)
+func (_q *ImageQuery) FirstX(ctx context.Context) *Image {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -132,9 +132,9 @@ func (iq *ImageQuery) FirstX(ctx context.Context) *Image {
 
 // FirstID returns the first Image ID from the query.
 // Returns a *NotFoundError when no Image ID was found.
-func (iq *ImageQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *ImageQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = iq.Limit(1).IDs(setContextOp(ctx, iq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -145,8 +145,8 @@ func (iq *ImageQuery) FirstID(ctx context.Context) (id model.InternalID, err err
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (iq *ImageQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := iq.FirstID(ctx)
+func (_q *ImageQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -156,8 +156,8 @@ func (iq *ImageQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Only returns a single Image entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one Image entity is found.
 // Returns a *NotFoundError when no Image entities are found.
-func (iq *ImageQuery) Only(ctx context.Context) (*Image, error) {
-	nodes, err := iq.Limit(2).All(setContextOp(ctx, iq.ctx, ent.OpQueryOnly))
+func (_q *ImageQuery) Only(ctx context.Context) (*Image, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +172,8 @@ func (iq *ImageQuery) Only(ctx context.Context) (*Image, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (iq *ImageQuery) OnlyX(ctx context.Context) *Image {
-	node, err := iq.Only(ctx)
+func (_q *ImageQuery) OnlyX(ctx context.Context) *Image {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -183,9 +183,9 @@ func (iq *ImageQuery) OnlyX(ctx context.Context) *Image {
 // OnlyID is like Only, but returns the only Image ID in the query.
 // Returns a *NotSingularError when more than one Image ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (iq *ImageQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *ImageQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = iq.Limit(2).IDs(setContextOp(ctx, iq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -200,8 +200,8 @@ func (iq *ImageQuery) OnlyID(ctx context.Context) (id model.InternalID, err erro
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (iq *ImageQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := iq.OnlyID(ctx)
+func (_q *ImageQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -209,18 +209,18 @@ func (iq *ImageQuery) OnlyIDX(ctx context.Context) model.InternalID {
 }
 
 // All executes the query and returns a list of Images.
-func (iq *ImageQuery) All(ctx context.Context) ([]*Image, error) {
-	ctx = setContextOp(ctx, iq.ctx, ent.OpQueryAll)
-	if err := iq.prepareQuery(ctx); err != nil {
+func (_q *ImageQuery) All(ctx context.Context) ([]*Image, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*Image, *ImageQuery]()
-	return withInterceptors[[]*Image](ctx, iq, qr, iq.inters)
+	return withInterceptors[[]*Image](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (iq *ImageQuery) AllX(ctx context.Context) []*Image {
-	nodes, err := iq.All(ctx)
+func (_q *ImageQuery) AllX(ctx context.Context) []*Image {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -228,20 +228,20 @@ func (iq *ImageQuery) AllX(ctx context.Context) []*Image {
 }
 
 // IDs executes the query and returns a list of Image IDs.
-func (iq *ImageQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if iq.ctx.Unique == nil && iq.path != nil {
-		iq.Unique(true)
+func (_q *ImageQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, iq.ctx, ent.OpQueryIDs)
-	if err = iq.Select(image.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(image.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (iq *ImageQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := iq.IDs(ctx)
+func (_q *ImageQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -249,17 +249,17 @@ func (iq *ImageQuery) IDsX(ctx context.Context) []model.InternalID {
 }
 
 // Count returns the count of the given query.
-func (iq *ImageQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, iq.ctx, ent.OpQueryCount)
-	if err := iq.prepareQuery(ctx); err != nil {
+func (_q *ImageQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, iq, querierCount[*ImageQuery](), iq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*ImageQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (iq *ImageQuery) CountX(ctx context.Context) int {
-	count, err := iq.Count(ctx)
+func (_q *ImageQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -267,9 +267,9 @@ func (iq *ImageQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (iq *ImageQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, iq.ctx, ent.OpQueryExist)
-	switch _, err := iq.FirstID(ctx); {
+func (_q *ImageQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -280,8 +280,8 @@ func (iq *ImageQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (iq *ImageQuery) ExistX(ctx context.Context) bool {
-	exist, err := iq.Exist(ctx)
+func (_q *ImageQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -290,44 +290,44 @@ func (iq *ImageQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the ImageQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (iq *ImageQuery) Clone() *ImageQuery {
-	if iq == nil {
+func (_q *ImageQuery) Clone() *ImageQuery {
+	if _q == nil {
 		return nil
 	}
 	return &ImageQuery{
-		config:     iq.config,
-		ctx:        iq.ctx.Clone(),
-		order:      append([]image.OrderOption{}, iq.order...),
-		inters:     append([]Interceptor{}, iq.inters...),
-		predicates: append([]predicate.Image{}, iq.predicates...),
-		withOwner:  iq.withOwner.Clone(),
-		withFile:   iq.withFile.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]image.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.Image{}, _q.predicates...),
+		withOwner:  _q.withOwner.Clone(),
+		withFile:   _q.withFile.Clone(),
 		// clone intermediate query.
-		sql:  iq.sql.Clone(),
-		path: iq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithOwner tells the query-builder to eager-load the nodes that are connected to
 // the "owner" edge. The optional arguments are used to configure the query builder of the edge.
-func (iq *ImageQuery) WithOwner(opts ...func(*UserQuery)) *ImageQuery {
-	query := (&UserClient{config: iq.config}).Query()
+func (_q *ImageQuery) WithOwner(opts ...func(*UserQuery)) *ImageQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	iq.withOwner = query
-	return iq
+	_q.withOwner = query
+	return _q
 }
 
 // WithFile tells the query-builder to eager-load the nodes that are connected to
 // the "file" edge. The optional arguments are used to configure the query builder of the edge.
-func (iq *ImageQuery) WithFile(opts ...func(*FileQuery)) *ImageQuery {
-	query := (&FileClient{config: iq.config}).Query()
+func (_q *ImageQuery) WithFile(opts ...func(*FileQuery)) *ImageQuery {
+	query := (&FileClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	iq.withFile = query
-	return iq
+	_q.withFile = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -344,10 +344,10 @@ func (iq *ImageQuery) WithFile(opts ...func(*FileQuery)) *ImageQuery {
 //		GroupBy(image.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (iq *ImageQuery) GroupBy(field string, fields ...string) *ImageGroupBy {
-	iq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &ImageGroupBy{build: iq}
-	grbuild.flds = &iq.ctx.Fields
+func (_q *ImageQuery) GroupBy(field string, fields ...string) *ImageGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &ImageGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = image.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -365,56 +365,56 @@ func (iq *ImageQuery) GroupBy(field string, fields ...string) *ImageGroupBy {
 //	client.Image.Query().
 //		Select(image.FieldName).
 //		Scan(ctx, &v)
-func (iq *ImageQuery) Select(fields ...string) *ImageSelect {
-	iq.ctx.Fields = append(iq.ctx.Fields, fields...)
-	sbuild := &ImageSelect{ImageQuery: iq}
+func (_q *ImageQuery) Select(fields ...string) *ImageSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &ImageSelect{ImageQuery: _q}
 	sbuild.label = image.Label
-	sbuild.flds, sbuild.scan = &iq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a ImageSelect configured with the given aggregations.
-func (iq *ImageQuery) Aggregate(fns ...AggregateFunc) *ImageSelect {
-	return iq.Select().Aggregate(fns...)
+func (_q *ImageQuery) Aggregate(fns ...AggregateFunc) *ImageSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (iq *ImageQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range iq.inters {
+func (_q *ImageQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, iq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range iq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !image.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if iq.path != nil {
-		prev, err := iq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		iq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (iq *ImageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Image, error) {
+func (_q *ImageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Image, error) {
 	var (
 		nodes       = []*Image{}
-		withFKs     = iq.withFKs
-		_spec       = iq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			iq.withOwner != nil,
-			iq.withFile != nil,
+			_q.withOwner != nil,
+			_q.withFile != nil,
 		}
 	)
-	if iq.withOwner != nil || iq.withFile != nil {
+	if _q.withOwner != nil || _q.withFile != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -424,7 +424,7 @@ func (iq *ImageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Image,
 		return (*Image).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Image{config: iq.config}
+		node := &Image{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -432,20 +432,20 @@ func (iq *ImageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Image,
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, iq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := iq.withOwner; query != nil {
-		if err := iq.loadOwner(ctx, query, nodes, nil,
+	if query := _q.withOwner; query != nil {
+		if err := _q.loadOwner(ctx, query, nodes, nil,
 			func(n *Image, e *User) { n.Edges.Owner = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := iq.withFile; query != nil {
-		if err := iq.loadFile(ctx, query, nodes, nil,
+	if query := _q.withFile; query != nil {
+		if err := _q.loadFile(ctx, query, nodes, nil,
 			func(n *Image, e *File) { n.Edges.File = e }); err != nil {
 			return nil, err
 		}
@@ -453,7 +453,7 @@ func (iq *ImageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Image,
 	return nodes, nil
 }
 
-func (iq *ImageQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Image, init func(*Image), assign func(*Image, *User)) error {
+func (_q *ImageQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Image, init func(*Image), assign func(*Image, *User)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*Image)
 	for i := range nodes {
@@ -485,7 +485,7 @@ func (iq *ImageQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*
 	}
 	return nil
 }
-func (iq *ImageQuery) loadFile(ctx context.Context, query *FileQuery, nodes []*Image, init func(*Image), assign func(*Image, *File)) error {
+func (_q *ImageQuery) loadFile(ctx context.Context, query *FileQuery, nodes []*Image, init func(*Image), assign func(*Image, *File)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*Image)
 	for i := range nodes {
@@ -518,24 +518,24 @@ func (iq *ImageQuery) loadFile(ctx context.Context, query *FileQuery, nodes []*I
 	return nil
 }
 
-func (iq *ImageQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := iq.querySpec()
-	_spec.Node.Columns = iq.ctx.Fields
-	if len(iq.ctx.Fields) > 0 {
-		_spec.Unique = iq.ctx.Unique != nil && *iq.ctx.Unique
+func (_q *ImageQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, iq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (iq *ImageQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *ImageQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(image.Table, image.Columns, sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64))
-	_spec.From = iq.sql
-	if unique := iq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if iq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := iq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, image.FieldID)
 		for i := range fields {
@@ -544,20 +544,20 @@ func (iq *ImageQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := iq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := iq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := iq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := iq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -567,33 +567,33 @@ func (iq *ImageQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (iq *ImageQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(iq.driver.Dialect())
+func (_q *ImageQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(image.Table)
-	columns := iq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = image.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if iq.sql != nil {
-		selector = iq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if iq.ctx.Unique != nil && *iq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range iq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range iq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := iq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := iq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -606,41 +606,41 @@ type ImageGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (igb *ImageGroupBy) Aggregate(fns ...AggregateFunc) *ImageGroupBy {
-	igb.fns = append(igb.fns, fns...)
-	return igb
+func (_g *ImageGroupBy) Aggregate(fns ...AggregateFunc) *ImageGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (igb *ImageGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, igb.build.ctx, ent.OpQueryGroupBy)
-	if err := igb.build.prepareQuery(ctx); err != nil {
+func (_g *ImageGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ImageQuery, *ImageGroupBy](ctx, igb.build, igb, igb.build.inters, v)
+	return scanWithInterceptors[*ImageQuery, *ImageGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (igb *ImageGroupBy) sqlScan(ctx context.Context, root *ImageQuery, v any) error {
+func (_g *ImageGroupBy) sqlScan(ctx context.Context, root *ImageQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(igb.fns))
-	for _, fn := range igb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*igb.flds)+len(igb.fns))
-		for _, f := range *igb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*igb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := igb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -654,27 +654,27 @@ type ImageSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (is *ImageSelect) Aggregate(fns ...AggregateFunc) *ImageSelect {
-	is.fns = append(is.fns, fns...)
-	return is
+func (_s *ImageSelect) Aggregate(fns ...AggregateFunc) *ImageSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (is *ImageSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, is.ctx, ent.OpQuerySelect)
-	if err := is.prepareQuery(ctx); err != nil {
+func (_s *ImageSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ImageQuery, *ImageSelect](ctx, is.ImageQuery, is, is.inters, v)
+	return scanWithInterceptors[*ImageQuery, *ImageSelect](ctx, _s.ImageQuery, _s, _s.inters, v)
 }
 
-func (is *ImageSelect) sqlScan(ctx context.Context, root *ImageQuery, v any) error {
+func (_s *ImageSelect) sqlScan(ctx context.Context, root *ImageQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(is.fns))
-	for _, fn := range is.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*is.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -682,7 +682,7 @@ func (is *ImageSelect) sqlScan(ctx context.Context, root *ImageQuery, v any) err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := is.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

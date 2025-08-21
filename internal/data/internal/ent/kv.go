@@ -50,7 +50,7 @@ func (*KV) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the KV fields.
-func (k *KV) assignValues(columns []string, values []any) error {
+func (_m *KV) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -61,39 +61,39 @@ func (k *KV) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			k.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case kv.FieldBucket:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field bucket", values[i])
 			} else if value.Valid {
-				k.Bucket = value.String
+				_m.Bucket = value.String
 			}
 		case kv.FieldKey:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field key", values[i])
 			} else if value.Valid {
-				k.Key = value.String
+				_m.Key = value.String
 			}
 		case kv.FieldValue:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field value", values[i])
 			} else if value.Valid {
-				k.Value = value.String
+				_m.Value = value.String
 			}
 		case kv.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				k.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case kv.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				k.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			k.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -101,47 +101,47 @@ func (k *KV) assignValues(columns []string, values []any) error {
 
 // GetValue returns the ent.Value that was dynamically selected and assigned to the KV.
 // This includes values selected through modifiers, order, etc.
-func (k *KV) GetValue(name string) (ent.Value, error) {
-	return k.selectValues.Get(name)
+func (_m *KV) GetValue(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this KV.
 // Note that you need to call KV.Unwrap() before calling this method if this KV
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (k *KV) Update() *KVUpdateOne {
-	return NewKVClient(k.config).UpdateOne(k)
+func (_m *KV) Update() *KVUpdateOne {
+	return NewKVClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the KV entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (k *KV) Unwrap() *KV {
-	_tx, ok := k.config.driver.(*txDriver)
+func (_m *KV) Unwrap() *KV {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: KV is not a transactional entity")
 	}
-	k.config.driver = _tx.drv
-	return k
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (k *KV) String() string {
+func (_m *KV) String() string {
 	var builder strings.Builder
 	builder.WriteString("KV(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", k.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("bucket=")
-	builder.WriteString(k.Bucket)
+	builder.WriteString(_m.Bucket)
 	builder.WriteString(", ")
 	builder.WriteString("key=")
-	builder.WriteString(k.Key)
+	builder.WriteString(_m.Key)
 	builder.WriteString(", ")
 	builder.WriteString("value=")
-	builder.WriteString(k.Value)
+	builder.WriteString(_m.Value)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(k.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(k.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

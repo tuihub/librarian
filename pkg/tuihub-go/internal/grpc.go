@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	porter "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
-	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"

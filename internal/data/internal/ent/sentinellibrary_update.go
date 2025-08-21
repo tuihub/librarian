@@ -25,146 +25,146 @@ type SentinelLibraryUpdate struct {
 }
 
 // Where appends a list predicates to the SentinelLibraryUpdate builder.
-func (slu *SentinelLibraryUpdate) Where(ps ...predicate.SentinelLibrary) *SentinelLibraryUpdate {
-	slu.mutation.Where(ps...)
-	return slu
+func (_u *SentinelLibraryUpdate) Where(ps ...predicate.SentinelLibrary) *SentinelLibraryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (slu *SentinelLibraryUpdate) SetSentinelID(mi model.InternalID) *SentinelLibraryUpdate {
-	slu.mutation.SetSentinelID(mi)
-	return slu
+func (_u *SentinelLibraryUpdate) SetSentinelID(v model.InternalID) *SentinelLibraryUpdate {
+	_u.mutation.SetSentinelID(v)
+	return _u
 }
 
 // SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
-func (slu *SentinelLibraryUpdate) SetNillableSentinelID(mi *model.InternalID) *SentinelLibraryUpdate {
-	if mi != nil {
-		slu.SetSentinelID(*mi)
+func (_u *SentinelLibraryUpdate) SetNillableSentinelID(v *model.InternalID) *SentinelLibraryUpdate {
+	if v != nil {
+		_u.SetSentinelID(*v)
 	}
-	return slu
+	return _u
 }
 
 // SetReportedID sets the "reported_id" field.
-func (slu *SentinelLibraryUpdate) SetReportedID(i int64) *SentinelLibraryUpdate {
-	slu.mutation.ResetReportedID()
-	slu.mutation.SetReportedID(i)
-	return slu
+func (_u *SentinelLibraryUpdate) SetReportedID(v int64) *SentinelLibraryUpdate {
+	_u.mutation.ResetReportedID()
+	_u.mutation.SetReportedID(v)
+	return _u
 }
 
 // SetNillableReportedID sets the "reported_id" field if the given value is not nil.
-func (slu *SentinelLibraryUpdate) SetNillableReportedID(i *int64) *SentinelLibraryUpdate {
-	if i != nil {
-		slu.SetReportedID(*i)
+func (_u *SentinelLibraryUpdate) SetNillableReportedID(v *int64) *SentinelLibraryUpdate {
+	if v != nil {
+		_u.SetReportedID(*v)
 	}
-	return slu
+	return _u
 }
 
-// AddReportedID adds i to the "reported_id" field.
-func (slu *SentinelLibraryUpdate) AddReportedID(i int64) *SentinelLibraryUpdate {
-	slu.mutation.AddReportedID(i)
-	return slu
+// AddReportedID adds value to the "reported_id" field.
+func (_u *SentinelLibraryUpdate) AddReportedID(v int64) *SentinelLibraryUpdate {
+	_u.mutation.AddReportedID(v)
+	return _u
 }
 
 // SetDownloadBasePath sets the "download_base_path" field.
-func (slu *SentinelLibraryUpdate) SetDownloadBasePath(s string) *SentinelLibraryUpdate {
-	slu.mutation.SetDownloadBasePath(s)
-	return slu
+func (_u *SentinelLibraryUpdate) SetDownloadBasePath(v string) *SentinelLibraryUpdate {
+	_u.mutation.SetDownloadBasePath(v)
+	return _u
 }
 
 // SetNillableDownloadBasePath sets the "download_base_path" field if the given value is not nil.
-func (slu *SentinelLibraryUpdate) SetNillableDownloadBasePath(s *string) *SentinelLibraryUpdate {
-	if s != nil {
-		slu.SetDownloadBasePath(*s)
+func (_u *SentinelLibraryUpdate) SetNillableDownloadBasePath(v *string) *SentinelLibraryUpdate {
+	if v != nil {
+		_u.SetDownloadBasePath(*v)
 	}
-	return slu
+	return _u
 }
 
 // SetActiveSnapshot sets the "active_snapshot" field.
-func (slu *SentinelLibraryUpdate) SetActiveSnapshot(t time.Time) *SentinelLibraryUpdate {
-	slu.mutation.SetActiveSnapshot(t)
-	return slu
+func (_u *SentinelLibraryUpdate) SetActiveSnapshot(v time.Time) *SentinelLibraryUpdate {
+	_u.mutation.SetActiveSnapshot(v)
+	return _u
 }
 
 // SetNillableActiveSnapshot sets the "active_snapshot" field if the given value is not nil.
-func (slu *SentinelLibraryUpdate) SetNillableActiveSnapshot(t *time.Time) *SentinelLibraryUpdate {
-	if t != nil {
-		slu.SetActiveSnapshot(*t)
+func (_u *SentinelLibraryUpdate) SetNillableActiveSnapshot(v *time.Time) *SentinelLibraryUpdate {
+	if v != nil {
+		_u.SetActiveSnapshot(*v)
 	}
-	return slu
+	return _u
 }
 
 // ClearActiveSnapshot clears the value of the "active_snapshot" field.
-func (slu *SentinelLibraryUpdate) ClearActiveSnapshot() *SentinelLibraryUpdate {
-	slu.mutation.ClearActiveSnapshot()
-	return slu
+func (_u *SentinelLibraryUpdate) ClearActiveSnapshot() *SentinelLibraryUpdate {
+	_u.mutation.ClearActiveSnapshot()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (slu *SentinelLibraryUpdate) SetUpdatedAt(t time.Time) *SentinelLibraryUpdate {
-	slu.mutation.SetUpdatedAt(t)
-	return slu
+func (_u *SentinelLibraryUpdate) SetUpdatedAt(v time.Time) *SentinelLibraryUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (slu *SentinelLibraryUpdate) SetCreatedAt(t time.Time) *SentinelLibraryUpdate {
-	slu.mutation.SetCreatedAt(t)
-	return slu
+func (_u *SentinelLibraryUpdate) SetCreatedAt(v time.Time) *SentinelLibraryUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (slu *SentinelLibraryUpdate) SetNillableCreatedAt(t *time.Time) *SentinelLibraryUpdate {
-	if t != nil {
-		slu.SetCreatedAt(*t)
+func (_u *SentinelLibraryUpdate) SetNillableCreatedAt(v *time.Time) *SentinelLibraryUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return slu
+	return _u
 }
 
 // SetLibraryReportSequence sets the "library_report_sequence" field.
-func (slu *SentinelLibraryUpdate) SetLibraryReportSequence(i int64) *SentinelLibraryUpdate {
-	slu.mutation.ResetLibraryReportSequence()
-	slu.mutation.SetLibraryReportSequence(i)
-	return slu
+func (_u *SentinelLibraryUpdate) SetLibraryReportSequence(v int64) *SentinelLibraryUpdate {
+	_u.mutation.ResetLibraryReportSequence()
+	_u.mutation.SetLibraryReportSequence(v)
+	return _u
 }
 
 // SetNillableLibraryReportSequence sets the "library_report_sequence" field if the given value is not nil.
-func (slu *SentinelLibraryUpdate) SetNillableLibraryReportSequence(i *int64) *SentinelLibraryUpdate {
-	if i != nil {
-		slu.SetLibraryReportSequence(*i)
+func (_u *SentinelLibraryUpdate) SetNillableLibraryReportSequence(v *int64) *SentinelLibraryUpdate {
+	if v != nil {
+		_u.SetLibraryReportSequence(*v)
 	}
-	return slu
+	return _u
 }
 
-// AddLibraryReportSequence adds i to the "library_report_sequence" field.
-func (slu *SentinelLibraryUpdate) AddLibraryReportSequence(i int64) *SentinelLibraryUpdate {
-	slu.mutation.AddLibraryReportSequence(i)
-	return slu
+// AddLibraryReportSequence adds value to the "library_report_sequence" field.
+func (_u *SentinelLibraryUpdate) AddLibraryReportSequence(v int64) *SentinelLibraryUpdate {
+	_u.mutation.AddLibraryReportSequence(v)
+	return _u
 }
 
 // SetSentinel sets the "sentinel" edge to the Sentinel entity.
-func (slu *SentinelLibraryUpdate) SetSentinel(s *Sentinel) *SentinelLibraryUpdate {
-	return slu.SetSentinelID(s.ID)
+func (_u *SentinelLibraryUpdate) SetSentinel(v *Sentinel) *SentinelLibraryUpdate {
+	return _u.SetSentinelID(v.ID)
 }
 
 // Mutation returns the SentinelLibraryMutation object of the builder.
-func (slu *SentinelLibraryUpdate) Mutation() *SentinelLibraryMutation {
-	return slu.mutation
+func (_u *SentinelLibraryUpdate) Mutation() *SentinelLibraryMutation {
+	return _u.mutation
 }
 
 // ClearSentinel clears the "sentinel" edge to the Sentinel entity.
-func (slu *SentinelLibraryUpdate) ClearSentinel() *SentinelLibraryUpdate {
-	slu.mutation.ClearSentinel()
-	return slu
+func (_u *SentinelLibraryUpdate) ClearSentinel() *SentinelLibraryUpdate {
+	_u.mutation.ClearSentinel()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (slu *SentinelLibraryUpdate) Save(ctx context.Context) (int, error) {
-	slu.defaults()
-	return withHooks(ctx, slu.sqlSave, slu.mutation, slu.hooks)
+func (_u *SentinelLibraryUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (slu *SentinelLibraryUpdate) SaveX(ctx context.Context) int {
-	affected, err := slu.Save(ctx)
+func (_u *SentinelLibraryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -172,74 +172,74 @@ func (slu *SentinelLibraryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (slu *SentinelLibraryUpdate) Exec(ctx context.Context) error {
-	_, err := slu.Save(ctx)
+func (_u *SentinelLibraryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (slu *SentinelLibraryUpdate) ExecX(ctx context.Context) {
-	if err := slu.Exec(ctx); err != nil {
+func (_u *SentinelLibraryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (slu *SentinelLibraryUpdate) defaults() {
-	if _, ok := slu.mutation.UpdatedAt(); !ok {
+func (_u *SentinelLibraryUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinellibrary.UpdateDefaultUpdatedAt()
-		slu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (slu *SentinelLibraryUpdate) check() error {
-	if slu.mutation.SentinelCleared() && len(slu.mutation.SentinelIDs()) > 0 {
+func (_u *SentinelLibraryUpdate) check() error {
+	if _u.mutation.SentinelCleared() && len(_u.mutation.SentinelIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "SentinelLibrary.sentinel"`)
 	}
 	return nil
 }
 
-func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := slu.check(); err != nil {
-		return n, err
+func (_u *SentinelLibraryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
-	if ps := slu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := slu.mutation.ReportedID(); ok {
+	if value, ok := _u.mutation.ReportedID(); ok {
 		_spec.SetField(sentinellibrary.FieldReportedID, field.TypeInt64, value)
 	}
-	if value, ok := slu.mutation.AddedReportedID(); ok {
+	if value, ok := _u.mutation.AddedReportedID(); ok {
 		_spec.AddField(sentinellibrary.FieldReportedID, field.TypeInt64, value)
 	}
-	if value, ok := slu.mutation.DownloadBasePath(); ok {
+	if value, ok := _u.mutation.DownloadBasePath(); ok {
 		_spec.SetField(sentinellibrary.FieldDownloadBasePath, field.TypeString, value)
 	}
-	if value, ok := slu.mutation.ActiveSnapshot(); ok {
+	if value, ok := _u.mutation.ActiveSnapshot(); ok {
 		_spec.SetField(sentinellibrary.FieldActiveSnapshot, field.TypeTime, value)
 	}
-	if slu.mutation.ActiveSnapshotCleared() {
+	if _u.mutation.ActiveSnapshotCleared() {
 		_spec.ClearField(sentinellibrary.FieldActiveSnapshot, field.TypeTime)
 	}
-	if value, ok := slu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinellibrary.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := slu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinellibrary.FieldCreatedAt, field.TypeTime, value)
 	}
-	if value, ok := slu.mutation.LibraryReportSequence(); ok {
+	if value, ok := _u.mutation.LibraryReportSequence(); ok {
 		_spec.SetField(sentinellibrary.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if value, ok := slu.mutation.AddedLibraryReportSequence(); ok {
+	if value, ok := _u.mutation.AddedLibraryReportSequence(); ok {
 		_spec.AddField(sentinellibrary.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if slu.mutation.SentinelCleared() {
+	if _u.mutation.SentinelCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -252,7 +252,7 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := slu.mutation.SentinelIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SentinelIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -268,7 +268,7 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, slu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinellibrary.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -276,8 +276,8 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		return 0, err
 	}
-	slu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // SentinelLibraryUpdateOne is the builder for updating a single SentinelLibrary entity.
@@ -289,153 +289,153 @@ type SentinelLibraryUpdateOne struct {
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (sluo *SentinelLibraryUpdateOne) SetSentinelID(mi model.InternalID) *SentinelLibraryUpdateOne {
-	sluo.mutation.SetSentinelID(mi)
-	return sluo
+func (_u *SentinelLibraryUpdateOne) SetSentinelID(v model.InternalID) *SentinelLibraryUpdateOne {
+	_u.mutation.SetSentinelID(v)
+	return _u
 }
 
 // SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
-func (sluo *SentinelLibraryUpdateOne) SetNillableSentinelID(mi *model.InternalID) *SentinelLibraryUpdateOne {
-	if mi != nil {
-		sluo.SetSentinelID(*mi)
+func (_u *SentinelLibraryUpdateOne) SetNillableSentinelID(v *model.InternalID) *SentinelLibraryUpdateOne {
+	if v != nil {
+		_u.SetSentinelID(*v)
 	}
-	return sluo
+	return _u
 }
 
 // SetReportedID sets the "reported_id" field.
-func (sluo *SentinelLibraryUpdateOne) SetReportedID(i int64) *SentinelLibraryUpdateOne {
-	sluo.mutation.ResetReportedID()
-	sluo.mutation.SetReportedID(i)
-	return sluo
+func (_u *SentinelLibraryUpdateOne) SetReportedID(v int64) *SentinelLibraryUpdateOne {
+	_u.mutation.ResetReportedID()
+	_u.mutation.SetReportedID(v)
+	return _u
 }
 
 // SetNillableReportedID sets the "reported_id" field if the given value is not nil.
-func (sluo *SentinelLibraryUpdateOne) SetNillableReportedID(i *int64) *SentinelLibraryUpdateOne {
-	if i != nil {
-		sluo.SetReportedID(*i)
+func (_u *SentinelLibraryUpdateOne) SetNillableReportedID(v *int64) *SentinelLibraryUpdateOne {
+	if v != nil {
+		_u.SetReportedID(*v)
 	}
-	return sluo
+	return _u
 }
 
-// AddReportedID adds i to the "reported_id" field.
-func (sluo *SentinelLibraryUpdateOne) AddReportedID(i int64) *SentinelLibraryUpdateOne {
-	sluo.mutation.AddReportedID(i)
-	return sluo
+// AddReportedID adds value to the "reported_id" field.
+func (_u *SentinelLibraryUpdateOne) AddReportedID(v int64) *SentinelLibraryUpdateOne {
+	_u.mutation.AddReportedID(v)
+	return _u
 }
 
 // SetDownloadBasePath sets the "download_base_path" field.
-func (sluo *SentinelLibraryUpdateOne) SetDownloadBasePath(s string) *SentinelLibraryUpdateOne {
-	sluo.mutation.SetDownloadBasePath(s)
-	return sluo
+func (_u *SentinelLibraryUpdateOne) SetDownloadBasePath(v string) *SentinelLibraryUpdateOne {
+	_u.mutation.SetDownloadBasePath(v)
+	return _u
 }
 
 // SetNillableDownloadBasePath sets the "download_base_path" field if the given value is not nil.
-func (sluo *SentinelLibraryUpdateOne) SetNillableDownloadBasePath(s *string) *SentinelLibraryUpdateOne {
-	if s != nil {
-		sluo.SetDownloadBasePath(*s)
+func (_u *SentinelLibraryUpdateOne) SetNillableDownloadBasePath(v *string) *SentinelLibraryUpdateOne {
+	if v != nil {
+		_u.SetDownloadBasePath(*v)
 	}
-	return sluo
+	return _u
 }
 
 // SetActiveSnapshot sets the "active_snapshot" field.
-func (sluo *SentinelLibraryUpdateOne) SetActiveSnapshot(t time.Time) *SentinelLibraryUpdateOne {
-	sluo.mutation.SetActiveSnapshot(t)
-	return sluo
+func (_u *SentinelLibraryUpdateOne) SetActiveSnapshot(v time.Time) *SentinelLibraryUpdateOne {
+	_u.mutation.SetActiveSnapshot(v)
+	return _u
 }
 
 // SetNillableActiveSnapshot sets the "active_snapshot" field if the given value is not nil.
-func (sluo *SentinelLibraryUpdateOne) SetNillableActiveSnapshot(t *time.Time) *SentinelLibraryUpdateOne {
-	if t != nil {
-		sluo.SetActiveSnapshot(*t)
+func (_u *SentinelLibraryUpdateOne) SetNillableActiveSnapshot(v *time.Time) *SentinelLibraryUpdateOne {
+	if v != nil {
+		_u.SetActiveSnapshot(*v)
 	}
-	return sluo
+	return _u
 }
 
 // ClearActiveSnapshot clears the value of the "active_snapshot" field.
-func (sluo *SentinelLibraryUpdateOne) ClearActiveSnapshot() *SentinelLibraryUpdateOne {
-	sluo.mutation.ClearActiveSnapshot()
-	return sluo
+func (_u *SentinelLibraryUpdateOne) ClearActiveSnapshot() *SentinelLibraryUpdateOne {
+	_u.mutation.ClearActiveSnapshot()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sluo *SentinelLibraryUpdateOne) SetUpdatedAt(t time.Time) *SentinelLibraryUpdateOne {
-	sluo.mutation.SetUpdatedAt(t)
-	return sluo
+func (_u *SentinelLibraryUpdateOne) SetUpdatedAt(v time.Time) *SentinelLibraryUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sluo *SentinelLibraryUpdateOne) SetCreatedAt(t time.Time) *SentinelLibraryUpdateOne {
-	sluo.mutation.SetCreatedAt(t)
-	return sluo
+func (_u *SentinelLibraryUpdateOne) SetCreatedAt(v time.Time) *SentinelLibraryUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sluo *SentinelLibraryUpdateOne) SetNillableCreatedAt(t *time.Time) *SentinelLibraryUpdateOne {
-	if t != nil {
-		sluo.SetCreatedAt(*t)
+func (_u *SentinelLibraryUpdateOne) SetNillableCreatedAt(v *time.Time) *SentinelLibraryUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return sluo
+	return _u
 }
 
 // SetLibraryReportSequence sets the "library_report_sequence" field.
-func (sluo *SentinelLibraryUpdateOne) SetLibraryReportSequence(i int64) *SentinelLibraryUpdateOne {
-	sluo.mutation.ResetLibraryReportSequence()
-	sluo.mutation.SetLibraryReportSequence(i)
-	return sluo
+func (_u *SentinelLibraryUpdateOne) SetLibraryReportSequence(v int64) *SentinelLibraryUpdateOne {
+	_u.mutation.ResetLibraryReportSequence()
+	_u.mutation.SetLibraryReportSequence(v)
+	return _u
 }
 
 // SetNillableLibraryReportSequence sets the "library_report_sequence" field if the given value is not nil.
-func (sluo *SentinelLibraryUpdateOne) SetNillableLibraryReportSequence(i *int64) *SentinelLibraryUpdateOne {
-	if i != nil {
-		sluo.SetLibraryReportSequence(*i)
+func (_u *SentinelLibraryUpdateOne) SetNillableLibraryReportSequence(v *int64) *SentinelLibraryUpdateOne {
+	if v != nil {
+		_u.SetLibraryReportSequence(*v)
 	}
-	return sluo
+	return _u
 }
 
-// AddLibraryReportSequence adds i to the "library_report_sequence" field.
-func (sluo *SentinelLibraryUpdateOne) AddLibraryReportSequence(i int64) *SentinelLibraryUpdateOne {
-	sluo.mutation.AddLibraryReportSequence(i)
-	return sluo
+// AddLibraryReportSequence adds value to the "library_report_sequence" field.
+func (_u *SentinelLibraryUpdateOne) AddLibraryReportSequence(v int64) *SentinelLibraryUpdateOne {
+	_u.mutation.AddLibraryReportSequence(v)
+	return _u
 }
 
 // SetSentinel sets the "sentinel" edge to the Sentinel entity.
-func (sluo *SentinelLibraryUpdateOne) SetSentinel(s *Sentinel) *SentinelLibraryUpdateOne {
-	return sluo.SetSentinelID(s.ID)
+func (_u *SentinelLibraryUpdateOne) SetSentinel(v *Sentinel) *SentinelLibraryUpdateOne {
+	return _u.SetSentinelID(v.ID)
 }
 
 // Mutation returns the SentinelLibraryMutation object of the builder.
-func (sluo *SentinelLibraryUpdateOne) Mutation() *SentinelLibraryMutation {
-	return sluo.mutation
+func (_u *SentinelLibraryUpdateOne) Mutation() *SentinelLibraryMutation {
+	return _u.mutation
 }
 
 // ClearSentinel clears the "sentinel" edge to the Sentinel entity.
-func (sluo *SentinelLibraryUpdateOne) ClearSentinel() *SentinelLibraryUpdateOne {
-	sluo.mutation.ClearSentinel()
-	return sluo
+func (_u *SentinelLibraryUpdateOne) ClearSentinel() *SentinelLibraryUpdateOne {
+	_u.mutation.ClearSentinel()
+	return _u
 }
 
 // Where appends a list predicates to the SentinelLibraryUpdate builder.
-func (sluo *SentinelLibraryUpdateOne) Where(ps ...predicate.SentinelLibrary) *SentinelLibraryUpdateOne {
-	sluo.mutation.Where(ps...)
-	return sluo
+func (_u *SentinelLibraryUpdateOne) Where(ps ...predicate.SentinelLibrary) *SentinelLibraryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (sluo *SentinelLibraryUpdateOne) Select(field string, fields ...string) *SentinelLibraryUpdateOne {
-	sluo.fields = append([]string{field}, fields...)
-	return sluo
+func (_u *SentinelLibraryUpdateOne) Select(field string, fields ...string) *SentinelLibraryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated SentinelLibrary entity.
-func (sluo *SentinelLibraryUpdateOne) Save(ctx context.Context) (*SentinelLibrary, error) {
-	sluo.defaults()
-	return withHooks(ctx, sluo.sqlSave, sluo.mutation, sluo.hooks)
+func (_u *SentinelLibraryUpdateOne) Save(ctx context.Context) (*SentinelLibrary, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sluo *SentinelLibraryUpdateOne) SaveX(ctx context.Context) *SentinelLibrary {
-	node, err := sluo.Save(ctx)
+func (_u *SentinelLibraryUpdateOne) SaveX(ctx context.Context) *SentinelLibrary {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -443,45 +443,45 @@ func (sluo *SentinelLibraryUpdateOne) SaveX(ctx context.Context) *SentinelLibrar
 }
 
 // Exec executes the query on the entity.
-func (sluo *SentinelLibraryUpdateOne) Exec(ctx context.Context) error {
-	_, err := sluo.Save(ctx)
+func (_u *SentinelLibraryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sluo *SentinelLibraryUpdateOne) ExecX(ctx context.Context) {
-	if err := sluo.Exec(ctx); err != nil {
+func (_u *SentinelLibraryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sluo *SentinelLibraryUpdateOne) defaults() {
-	if _, ok := sluo.mutation.UpdatedAt(); !ok {
+func (_u *SentinelLibraryUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinellibrary.UpdateDefaultUpdatedAt()
-		sluo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (sluo *SentinelLibraryUpdateOne) check() error {
-	if sluo.mutation.SentinelCleared() && len(sluo.mutation.SentinelIDs()) > 0 {
+func (_u *SentinelLibraryUpdateOne) check() error {
+	if _u.mutation.SentinelCleared() && len(_u.mutation.SentinelIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "SentinelLibrary.sentinel"`)
 	}
 	return nil
 }
 
-func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *SentinelLibrary, err error) {
-	if err := sluo.check(); err != nil {
+func (_u *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *SentinelLibrary, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
-	id, ok := sluo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelLibrary.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := sluo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sentinellibrary.FieldID)
 		for _, f := range fields {
@@ -493,41 +493,41 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 			}
 		}
 	}
-	if ps := sluo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := sluo.mutation.ReportedID(); ok {
+	if value, ok := _u.mutation.ReportedID(); ok {
 		_spec.SetField(sentinellibrary.FieldReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sluo.mutation.AddedReportedID(); ok {
+	if value, ok := _u.mutation.AddedReportedID(); ok {
 		_spec.AddField(sentinellibrary.FieldReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sluo.mutation.DownloadBasePath(); ok {
+	if value, ok := _u.mutation.DownloadBasePath(); ok {
 		_spec.SetField(sentinellibrary.FieldDownloadBasePath, field.TypeString, value)
 	}
-	if value, ok := sluo.mutation.ActiveSnapshot(); ok {
+	if value, ok := _u.mutation.ActiveSnapshot(); ok {
 		_spec.SetField(sentinellibrary.FieldActiveSnapshot, field.TypeTime, value)
 	}
-	if sluo.mutation.ActiveSnapshotCleared() {
+	if _u.mutation.ActiveSnapshotCleared() {
 		_spec.ClearField(sentinellibrary.FieldActiveSnapshot, field.TypeTime)
 	}
-	if value, ok := sluo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinellibrary.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := sluo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinellibrary.FieldCreatedAt, field.TypeTime, value)
 	}
-	if value, ok := sluo.mutation.LibraryReportSequence(); ok {
+	if value, ok := _u.mutation.LibraryReportSequence(); ok {
 		_spec.SetField(sentinellibrary.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if value, ok := sluo.mutation.AddedLibraryReportSequence(); ok {
+	if value, ok := _u.mutation.AddedLibraryReportSequence(); ok {
 		_spec.AddField(sentinellibrary.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if sluo.mutation.SentinelCleared() {
+	if _u.mutation.SentinelCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -540,7 +540,7 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sluo.mutation.SentinelIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SentinelIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -556,10 +556,10 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &SentinelLibrary{config: sluo.config}
+	_node = &SentinelLibrary{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, sluo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinellibrary.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -567,6 +567,6 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 		}
 		return nil, err
 	}
-	sluo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

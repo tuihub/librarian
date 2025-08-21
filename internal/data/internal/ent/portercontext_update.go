@@ -25,174 +25,174 @@ type PorterContextUpdate struct {
 }
 
 // Where appends a list predicates to the PorterContextUpdate builder.
-func (pcu *PorterContextUpdate) Where(ps ...predicate.PorterContext) *PorterContextUpdate {
-	pcu.mutation.Where(ps...)
-	return pcu
+func (_u *PorterContextUpdate) Where(ps ...predicate.PorterContext) *PorterContextUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetGlobalName sets the "global_name" field.
-func (pcu *PorterContextUpdate) SetGlobalName(s string) *PorterContextUpdate {
-	pcu.mutation.SetGlobalName(s)
-	return pcu
+func (_u *PorterContextUpdate) SetGlobalName(v string) *PorterContextUpdate {
+	_u.mutation.SetGlobalName(v)
+	return _u
 }
 
 // SetNillableGlobalName sets the "global_name" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableGlobalName(s *string) *PorterContextUpdate {
-	if s != nil {
-		pcu.SetGlobalName(*s)
+func (_u *PorterContextUpdate) SetNillableGlobalName(v *string) *PorterContextUpdate {
+	if v != nil {
+		_u.SetGlobalName(*v)
 	}
-	return pcu
+	return _u
 }
 
 // SetRegion sets the "region" field.
-func (pcu *PorterContextUpdate) SetRegion(s string) *PorterContextUpdate {
-	pcu.mutation.SetRegion(s)
-	return pcu
+func (_u *PorterContextUpdate) SetRegion(v string) *PorterContextUpdate {
+	_u.mutation.SetRegion(v)
+	return _u
 }
 
 // SetNillableRegion sets the "region" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableRegion(s *string) *PorterContextUpdate {
-	if s != nil {
-		pcu.SetRegion(*s)
+func (_u *PorterContextUpdate) SetNillableRegion(v *string) *PorterContextUpdate {
+	if v != nil {
+		_u.SetRegion(*v)
 	}
-	return pcu
+	return _u
 }
 
 // SetContextJSON sets the "context_json" field.
-func (pcu *PorterContextUpdate) SetContextJSON(s string) *PorterContextUpdate {
-	pcu.mutation.SetContextJSON(s)
-	return pcu
+func (_u *PorterContextUpdate) SetContextJSON(v string) *PorterContextUpdate {
+	_u.mutation.SetContextJSON(v)
+	return _u
 }
 
 // SetNillableContextJSON sets the "context_json" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableContextJSON(s *string) *PorterContextUpdate {
-	if s != nil {
-		pcu.SetContextJSON(*s)
+func (_u *PorterContextUpdate) SetNillableContextJSON(v *string) *PorterContextUpdate {
+	if v != nil {
+		_u.SetContextJSON(*v)
 	}
-	return pcu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (pcu *PorterContextUpdate) SetName(s string) *PorterContextUpdate {
-	pcu.mutation.SetName(s)
-	return pcu
+func (_u *PorterContextUpdate) SetName(v string) *PorterContextUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableName(s *string) *PorterContextUpdate {
-	if s != nil {
-		pcu.SetName(*s)
+func (_u *PorterContextUpdate) SetNillableName(v *string) *PorterContextUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return pcu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (pcu *PorterContextUpdate) SetDescription(s string) *PorterContextUpdate {
-	pcu.mutation.SetDescription(s)
-	return pcu
+func (_u *PorterContextUpdate) SetDescription(v string) *PorterContextUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableDescription(s *string) *PorterContextUpdate {
-	if s != nil {
-		pcu.SetDescription(*s)
+func (_u *PorterContextUpdate) SetNillableDescription(v *string) *PorterContextUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return pcu
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (pcu *PorterContextUpdate) SetStatus(po portercontext.Status) *PorterContextUpdate {
-	pcu.mutation.SetStatus(po)
-	return pcu
+func (_u *PorterContextUpdate) SetStatus(v portercontext.Status) *PorterContextUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableStatus(po *portercontext.Status) *PorterContextUpdate {
-	if po != nil {
-		pcu.SetStatus(*po)
+func (_u *PorterContextUpdate) SetNillableStatus(v *portercontext.Status) *PorterContextUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return pcu
+	return _u
 }
 
 // SetHandleStatus sets the "handle_status" field.
-func (pcu *PorterContextUpdate) SetHandleStatus(ps portercontext.HandleStatus) *PorterContextUpdate {
-	pcu.mutation.SetHandleStatus(ps)
-	return pcu
+func (_u *PorterContextUpdate) SetHandleStatus(v portercontext.HandleStatus) *PorterContextUpdate {
+	_u.mutation.SetHandleStatus(v)
+	return _u
 }
 
 // SetNillableHandleStatus sets the "handle_status" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableHandleStatus(ps *portercontext.HandleStatus) *PorterContextUpdate {
-	if ps != nil {
-		pcu.SetHandleStatus(*ps)
+func (_u *PorterContextUpdate) SetNillableHandleStatus(v *portercontext.HandleStatus) *PorterContextUpdate {
+	if v != nil {
+		_u.SetHandleStatus(*v)
 	}
-	return pcu
+	return _u
 }
 
 // SetHandleStatusMessage sets the "handle_status_message" field.
-func (pcu *PorterContextUpdate) SetHandleStatusMessage(s string) *PorterContextUpdate {
-	pcu.mutation.SetHandleStatusMessage(s)
-	return pcu
+func (_u *PorterContextUpdate) SetHandleStatusMessage(v string) *PorterContextUpdate {
+	_u.mutation.SetHandleStatusMessage(v)
+	return _u
 }
 
 // SetNillableHandleStatusMessage sets the "handle_status_message" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableHandleStatusMessage(s *string) *PorterContextUpdate {
-	if s != nil {
-		pcu.SetHandleStatusMessage(*s)
+func (_u *PorterContextUpdate) SetNillableHandleStatusMessage(v *string) *PorterContextUpdate {
+	if v != nil {
+		_u.SetHandleStatusMessage(*v)
 	}
-	return pcu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (pcu *PorterContextUpdate) SetUpdatedAt(t time.Time) *PorterContextUpdate {
-	pcu.mutation.SetUpdatedAt(t)
-	return pcu
+func (_u *PorterContextUpdate) SetUpdatedAt(v time.Time) *PorterContextUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (pcu *PorterContextUpdate) SetCreatedAt(t time.Time) *PorterContextUpdate {
-	pcu.mutation.SetCreatedAt(t)
-	return pcu
+func (_u *PorterContextUpdate) SetCreatedAt(v time.Time) *PorterContextUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableCreatedAt(t *time.Time) *PorterContextUpdate {
-	if t != nil {
-		pcu.SetCreatedAt(*t)
+func (_u *PorterContextUpdate) SetNillableCreatedAt(v *time.Time) *PorterContextUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return pcu
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (pcu *PorterContextUpdate) SetOwnerID(id model.InternalID) *PorterContextUpdate {
-	pcu.mutation.SetOwnerID(id)
-	return pcu
+func (_u *PorterContextUpdate) SetOwnerID(id model.InternalID) *PorterContextUpdate {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (pcu *PorterContextUpdate) SetOwner(u *User) *PorterContextUpdate {
-	return pcu.SetOwnerID(u.ID)
+func (_u *PorterContextUpdate) SetOwner(v *User) *PorterContextUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // Mutation returns the PorterContextMutation object of the builder.
-func (pcu *PorterContextUpdate) Mutation() *PorterContextMutation {
-	return pcu.mutation
+func (_u *PorterContextUpdate) Mutation() *PorterContextMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (pcu *PorterContextUpdate) ClearOwner() *PorterContextUpdate {
-	pcu.mutation.ClearOwner()
-	return pcu
+func (_u *PorterContextUpdate) ClearOwner() *PorterContextUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (pcu *PorterContextUpdate) Save(ctx context.Context) (int, error) {
-	pcu.defaults()
-	return withHooks(ctx, pcu.sqlSave, pcu.mutation, pcu.hooks)
+func (_u *PorterContextUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (pcu *PorterContextUpdate) SaveX(ctx context.Context) int {
-	affected, err := pcu.Save(ctx)
+func (_u *PorterContextUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -200,87 +200,87 @@ func (pcu *PorterContextUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (pcu *PorterContextUpdate) Exec(ctx context.Context) error {
-	_, err := pcu.Save(ctx)
+func (_u *PorterContextUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pcu *PorterContextUpdate) ExecX(ctx context.Context) {
-	if err := pcu.Exec(ctx); err != nil {
+func (_u *PorterContextUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (pcu *PorterContextUpdate) defaults() {
-	if _, ok := pcu.mutation.UpdatedAt(); !ok {
+func (_u *PorterContextUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := portercontext.UpdateDefaultUpdatedAt()
-		pcu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (pcu *PorterContextUpdate) check() error {
-	if v, ok := pcu.mutation.Status(); ok {
+func (_u *PorterContextUpdate) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := portercontext.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
 		}
 	}
-	if v, ok := pcu.mutation.HandleStatus(); ok {
+	if v, ok := _u.mutation.HandleStatus(); ok {
 		if err := portercontext.HandleStatusValidator(v); err != nil {
 			return &ValidationError{Name: "handle_status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.handle_status": %w`, err)}
 		}
 	}
-	if pcu.mutation.OwnerCleared() && len(pcu.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "PorterContext.owner"`)
 	}
 	return nil
 }
 
-func (pcu *PorterContextUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := pcu.check(); err != nil {
-		return n, err
+func (_u *PorterContextUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(portercontext.Table, portercontext.Columns, sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64))
-	if ps := pcu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := pcu.mutation.GlobalName(); ok {
+	if value, ok := _u.mutation.GlobalName(); ok {
 		_spec.SetField(portercontext.FieldGlobalName, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.Region(); ok {
+	if value, ok := _u.mutation.Region(); ok {
 		_spec.SetField(portercontext.FieldRegion, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.ContextJSON(); ok {
+	if value, ok := _u.mutation.ContextJSON(); ok {
 		_spec.SetField(portercontext.FieldContextJSON, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(portercontext.FieldName, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(portercontext.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(portercontext.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := pcu.mutation.HandleStatus(); ok {
+	if value, ok := _u.mutation.HandleStatus(); ok {
 		_spec.SetField(portercontext.FieldHandleStatus, field.TypeEnum, value)
 	}
-	if value, ok := pcu.mutation.HandleStatusMessage(); ok {
+	if value, ok := _u.mutation.HandleStatusMessage(); ok {
 		_spec.SetField(portercontext.FieldHandleStatusMessage, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(portercontext.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := pcu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(portercontext.FieldCreatedAt, field.TypeTime, value)
 	}
-	if pcu.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -293,7 +293,7 @@ func (pcu *PorterContextUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := pcu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -309,7 +309,7 @@ func (pcu *PorterContextUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, pcu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{portercontext.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -317,8 +317,8 @@ func (pcu *PorterContextUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		return 0, err
 	}
-	pcu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // PorterContextUpdateOne is the builder for updating a single PorterContext entity.
@@ -330,181 +330,181 @@ type PorterContextUpdateOne struct {
 }
 
 // SetGlobalName sets the "global_name" field.
-func (pcuo *PorterContextUpdateOne) SetGlobalName(s string) *PorterContextUpdateOne {
-	pcuo.mutation.SetGlobalName(s)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetGlobalName(v string) *PorterContextUpdateOne {
+	_u.mutation.SetGlobalName(v)
+	return _u
 }
 
 // SetNillableGlobalName sets the "global_name" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableGlobalName(s *string) *PorterContextUpdateOne {
-	if s != nil {
-		pcuo.SetGlobalName(*s)
+func (_u *PorterContextUpdateOne) SetNillableGlobalName(v *string) *PorterContextUpdateOne {
+	if v != nil {
+		_u.SetGlobalName(*v)
 	}
-	return pcuo
+	return _u
 }
 
 // SetRegion sets the "region" field.
-func (pcuo *PorterContextUpdateOne) SetRegion(s string) *PorterContextUpdateOne {
-	pcuo.mutation.SetRegion(s)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetRegion(v string) *PorterContextUpdateOne {
+	_u.mutation.SetRegion(v)
+	return _u
 }
 
 // SetNillableRegion sets the "region" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableRegion(s *string) *PorterContextUpdateOne {
-	if s != nil {
-		pcuo.SetRegion(*s)
+func (_u *PorterContextUpdateOne) SetNillableRegion(v *string) *PorterContextUpdateOne {
+	if v != nil {
+		_u.SetRegion(*v)
 	}
-	return pcuo
+	return _u
 }
 
 // SetContextJSON sets the "context_json" field.
-func (pcuo *PorterContextUpdateOne) SetContextJSON(s string) *PorterContextUpdateOne {
-	pcuo.mutation.SetContextJSON(s)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetContextJSON(v string) *PorterContextUpdateOne {
+	_u.mutation.SetContextJSON(v)
+	return _u
 }
 
 // SetNillableContextJSON sets the "context_json" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableContextJSON(s *string) *PorterContextUpdateOne {
-	if s != nil {
-		pcuo.SetContextJSON(*s)
+func (_u *PorterContextUpdateOne) SetNillableContextJSON(v *string) *PorterContextUpdateOne {
+	if v != nil {
+		_u.SetContextJSON(*v)
 	}
-	return pcuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (pcuo *PorterContextUpdateOne) SetName(s string) *PorterContextUpdateOne {
-	pcuo.mutation.SetName(s)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetName(v string) *PorterContextUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableName(s *string) *PorterContextUpdateOne {
-	if s != nil {
-		pcuo.SetName(*s)
+func (_u *PorterContextUpdateOne) SetNillableName(v *string) *PorterContextUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return pcuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (pcuo *PorterContextUpdateOne) SetDescription(s string) *PorterContextUpdateOne {
-	pcuo.mutation.SetDescription(s)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetDescription(v string) *PorterContextUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableDescription(s *string) *PorterContextUpdateOne {
-	if s != nil {
-		pcuo.SetDescription(*s)
+func (_u *PorterContextUpdateOne) SetNillableDescription(v *string) *PorterContextUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return pcuo
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (pcuo *PorterContextUpdateOne) SetStatus(po portercontext.Status) *PorterContextUpdateOne {
-	pcuo.mutation.SetStatus(po)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetStatus(v portercontext.Status) *PorterContextUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableStatus(po *portercontext.Status) *PorterContextUpdateOne {
-	if po != nil {
-		pcuo.SetStatus(*po)
+func (_u *PorterContextUpdateOne) SetNillableStatus(v *portercontext.Status) *PorterContextUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return pcuo
+	return _u
 }
 
 // SetHandleStatus sets the "handle_status" field.
-func (pcuo *PorterContextUpdateOne) SetHandleStatus(ps portercontext.HandleStatus) *PorterContextUpdateOne {
-	pcuo.mutation.SetHandleStatus(ps)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetHandleStatus(v portercontext.HandleStatus) *PorterContextUpdateOne {
+	_u.mutation.SetHandleStatus(v)
+	return _u
 }
 
 // SetNillableHandleStatus sets the "handle_status" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableHandleStatus(ps *portercontext.HandleStatus) *PorterContextUpdateOne {
-	if ps != nil {
-		pcuo.SetHandleStatus(*ps)
+func (_u *PorterContextUpdateOne) SetNillableHandleStatus(v *portercontext.HandleStatus) *PorterContextUpdateOne {
+	if v != nil {
+		_u.SetHandleStatus(*v)
 	}
-	return pcuo
+	return _u
 }
 
 // SetHandleStatusMessage sets the "handle_status_message" field.
-func (pcuo *PorterContextUpdateOne) SetHandleStatusMessage(s string) *PorterContextUpdateOne {
-	pcuo.mutation.SetHandleStatusMessage(s)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetHandleStatusMessage(v string) *PorterContextUpdateOne {
+	_u.mutation.SetHandleStatusMessage(v)
+	return _u
 }
 
 // SetNillableHandleStatusMessage sets the "handle_status_message" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableHandleStatusMessage(s *string) *PorterContextUpdateOne {
-	if s != nil {
-		pcuo.SetHandleStatusMessage(*s)
+func (_u *PorterContextUpdateOne) SetNillableHandleStatusMessage(v *string) *PorterContextUpdateOne {
+	if v != nil {
+		_u.SetHandleStatusMessage(*v)
 	}
-	return pcuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (pcuo *PorterContextUpdateOne) SetUpdatedAt(t time.Time) *PorterContextUpdateOne {
-	pcuo.mutation.SetUpdatedAt(t)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetUpdatedAt(v time.Time) *PorterContextUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (pcuo *PorterContextUpdateOne) SetCreatedAt(t time.Time) *PorterContextUpdateOne {
-	pcuo.mutation.SetCreatedAt(t)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetCreatedAt(v time.Time) *PorterContextUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableCreatedAt(t *time.Time) *PorterContextUpdateOne {
-	if t != nil {
-		pcuo.SetCreatedAt(*t)
+func (_u *PorterContextUpdateOne) SetNillableCreatedAt(v *time.Time) *PorterContextUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return pcuo
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (pcuo *PorterContextUpdateOne) SetOwnerID(id model.InternalID) *PorterContextUpdateOne {
-	pcuo.mutation.SetOwnerID(id)
-	return pcuo
+func (_u *PorterContextUpdateOne) SetOwnerID(id model.InternalID) *PorterContextUpdateOne {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (pcuo *PorterContextUpdateOne) SetOwner(u *User) *PorterContextUpdateOne {
-	return pcuo.SetOwnerID(u.ID)
+func (_u *PorterContextUpdateOne) SetOwner(v *User) *PorterContextUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // Mutation returns the PorterContextMutation object of the builder.
-func (pcuo *PorterContextUpdateOne) Mutation() *PorterContextMutation {
-	return pcuo.mutation
+func (_u *PorterContextUpdateOne) Mutation() *PorterContextMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (pcuo *PorterContextUpdateOne) ClearOwner() *PorterContextUpdateOne {
-	pcuo.mutation.ClearOwner()
-	return pcuo
+func (_u *PorterContextUpdateOne) ClearOwner() *PorterContextUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // Where appends a list predicates to the PorterContextUpdate builder.
-func (pcuo *PorterContextUpdateOne) Where(ps ...predicate.PorterContext) *PorterContextUpdateOne {
-	pcuo.mutation.Where(ps...)
-	return pcuo
+func (_u *PorterContextUpdateOne) Where(ps ...predicate.PorterContext) *PorterContextUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (pcuo *PorterContextUpdateOne) Select(field string, fields ...string) *PorterContextUpdateOne {
-	pcuo.fields = append([]string{field}, fields...)
-	return pcuo
+func (_u *PorterContextUpdateOne) Select(field string, fields ...string) *PorterContextUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated PorterContext entity.
-func (pcuo *PorterContextUpdateOne) Save(ctx context.Context) (*PorterContext, error) {
-	pcuo.defaults()
-	return withHooks(ctx, pcuo.sqlSave, pcuo.mutation, pcuo.hooks)
+func (_u *PorterContextUpdateOne) Save(ctx context.Context) (*PorterContext, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (pcuo *PorterContextUpdateOne) SaveX(ctx context.Context) *PorterContext {
-	node, err := pcuo.Save(ctx)
+func (_u *PorterContextUpdateOne) SaveX(ctx context.Context) *PorterContext {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -512,55 +512,55 @@ func (pcuo *PorterContextUpdateOne) SaveX(ctx context.Context) *PorterContext {
 }
 
 // Exec executes the query on the entity.
-func (pcuo *PorterContextUpdateOne) Exec(ctx context.Context) error {
-	_, err := pcuo.Save(ctx)
+func (_u *PorterContextUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pcuo *PorterContextUpdateOne) ExecX(ctx context.Context) {
-	if err := pcuo.Exec(ctx); err != nil {
+func (_u *PorterContextUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (pcuo *PorterContextUpdateOne) defaults() {
-	if _, ok := pcuo.mutation.UpdatedAt(); !ok {
+func (_u *PorterContextUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := portercontext.UpdateDefaultUpdatedAt()
-		pcuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (pcuo *PorterContextUpdateOne) check() error {
-	if v, ok := pcuo.mutation.Status(); ok {
+func (_u *PorterContextUpdateOne) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := portercontext.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
 		}
 	}
-	if v, ok := pcuo.mutation.HandleStatus(); ok {
+	if v, ok := _u.mutation.HandleStatus(); ok {
 		if err := portercontext.HandleStatusValidator(v); err != nil {
 			return &ValidationError{Name: "handle_status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.handle_status": %w`, err)}
 		}
 	}
-	if pcuo.mutation.OwnerCleared() && len(pcuo.mutation.OwnerIDs()) > 0 {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "PorterContext.owner"`)
 	}
 	return nil
 }
 
-func (pcuo *PorterContextUpdateOne) sqlSave(ctx context.Context) (_node *PorterContext, err error) {
-	if err := pcuo.check(); err != nil {
+func (_u *PorterContextUpdateOne) sqlSave(ctx context.Context) (_node *PorterContext, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(portercontext.Table, portercontext.Columns, sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64))
-	id, ok := pcuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "PorterContext.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := pcuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, portercontext.FieldID)
 		for _, f := range fields {
@@ -572,44 +572,44 @@ func (pcuo *PorterContextUpdateOne) sqlSave(ctx context.Context) (_node *PorterC
 			}
 		}
 	}
-	if ps := pcuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := pcuo.mutation.GlobalName(); ok {
+	if value, ok := _u.mutation.GlobalName(); ok {
 		_spec.SetField(portercontext.FieldGlobalName, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.Region(); ok {
+	if value, ok := _u.mutation.Region(); ok {
 		_spec.SetField(portercontext.FieldRegion, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.ContextJSON(); ok {
+	if value, ok := _u.mutation.ContextJSON(); ok {
 		_spec.SetField(portercontext.FieldContextJSON, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(portercontext.FieldName, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(portercontext.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(portercontext.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := pcuo.mutation.HandleStatus(); ok {
+	if value, ok := _u.mutation.HandleStatus(); ok {
 		_spec.SetField(portercontext.FieldHandleStatus, field.TypeEnum, value)
 	}
-	if value, ok := pcuo.mutation.HandleStatusMessage(); ok {
+	if value, ok := _u.mutation.HandleStatusMessage(); ok {
 		_spec.SetField(portercontext.FieldHandleStatusMessage, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(portercontext.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := pcuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(portercontext.FieldCreatedAt, field.TypeTime, value)
 	}
-	if pcuo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -622,7 +622,7 @@ func (pcuo *PorterContextUpdateOne) sqlSave(ctx context.Context) (_node *PorterC
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := pcuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -638,10 +638,10 @@ func (pcuo *PorterContextUpdateOne) sqlSave(ctx context.Context) (_node *PorterC
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &PorterContext{config: pcuo.config}
+	_node = &PorterContext{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, pcuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{portercontext.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -649,6 +649,6 @@ func (pcuo *PorterContextUpdateOne) sqlSave(ctx context.Context) (_node *PorterC
 		}
 		return nil, err
 	}
-	pcuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

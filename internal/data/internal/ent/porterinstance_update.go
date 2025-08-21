@@ -24,233 +24,233 @@ type PorterInstanceUpdate struct {
 }
 
 // Where appends a list predicates to the PorterInstanceUpdate builder.
-func (piu *PorterInstanceUpdate) Where(ps ...predicate.PorterInstance) *PorterInstanceUpdate {
-	piu.mutation.Where(ps...)
-	return piu
+func (_u *PorterInstanceUpdate) Where(ps ...predicate.PorterInstance) *PorterInstanceUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (piu *PorterInstanceUpdate) SetName(s string) *PorterInstanceUpdate {
-	piu.mutation.SetName(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetName(v string) *PorterInstanceUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableName(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetName(*s)
+func (_u *PorterInstanceUpdate) SetNillableName(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetVersion sets the "version" field.
-func (piu *PorterInstanceUpdate) SetVersion(s string) *PorterInstanceUpdate {
-	piu.mutation.SetVersion(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetVersion(v string) *PorterInstanceUpdate {
+	_u.mutation.SetVersion(v)
+	return _u
 }
 
 // SetNillableVersion sets the "version" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableVersion(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetVersion(*s)
+func (_u *PorterInstanceUpdate) SetNillableVersion(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetVersion(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (piu *PorterInstanceUpdate) SetDescription(s string) *PorterInstanceUpdate {
-	piu.mutation.SetDescription(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetDescription(v string) *PorterInstanceUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableDescription(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetDescription(*s)
+func (_u *PorterInstanceUpdate) SetNillableDescription(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetSourceCodeAddress sets the "source_code_address" field.
-func (piu *PorterInstanceUpdate) SetSourceCodeAddress(s string) *PorterInstanceUpdate {
-	piu.mutation.SetSourceCodeAddress(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetSourceCodeAddress(v string) *PorterInstanceUpdate {
+	_u.mutation.SetSourceCodeAddress(v)
+	return _u
 }
 
 // SetNillableSourceCodeAddress sets the "source_code_address" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableSourceCodeAddress(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetSourceCodeAddress(*s)
+func (_u *PorterInstanceUpdate) SetNillableSourceCodeAddress(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetSourceCodeAddress(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetBuildVersion sets the "build_version" field.
-func (piu *PorterInstanceUpdate) SetBuildVersion(s string) *PorterInstanceUpdate {
-	piu.mutation.SetBuildVersion(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetBuildVersion(v string) *PorterInstanceUpdate {
+	_u.mutation.SetBuildVersion(v)
+	return _u
 }
 
 // SetNillableBuildVersion sets the "build_version" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableBuildVersion(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetBuildVersion(*s)
+func (_u *PorterInstanceUpdate) SetNillableBuildVersion(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetBuildVersion(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetBuildDate sets the "build_date" field.
-func (piu *PorterInstanceUpdate) SetBuildDate(s string) *PorterInstanceUpdate {
-	piu.mutation.SetBuildDate(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetBuildDate(v string) *PorterInstanceUpdate {
+	_u.mutation.SetBuildDate(v)
+	return _u
 }
 
 // SetNillableBuildDate sets the "build_date" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableBuildDate(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetBuildDate(*s)
+func (_u *PorterInstanceUpdate) SetNillableBuildDate(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetBuildDate(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetGlobalName sets the "global_name" field.
-func (piu *PorterInstanceUpdate) SetGlobalName(s string) *PorterInstanceUpdate {
-	piu.mutation.SetGlobalName(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetGlobalName(v string) *PorterInstanceUpdate {
+	_u.mutation.SetGlobalName(v)
+	return _u
 }
 
 // SetNillableGlobalName sets the "global_name" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableGlobalName(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetGlobalName(*s)
+func (_u *PorterInstanceUpdate) SetNillableGlobalName(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetGlobalName(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetAddress sets the "address" field.
-func (piu *PorterInstanceUpdate) SetAddress(s string) *PorterInstanceUpdate {
-	piu.mutation.SetAddress(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetAddress(v string) *PorterInstanceUpdate {
+	_u.mutation.SetAddress(v)
+	return _u
 }
 
 // SetNillableAddress sets the "address" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableAddress(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetAddress(*s)
+func (_u *PorterInstanceUpdate) SetNillableAddress(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetAddress(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetRegion sets the "region" field.
-func (piu *PorterInstanceUpdate) SetRegion(s string) *PorterInstanceUpdate {
-	piu.mutation.SetRegion(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetRegion(v string) *PorterInstanceUpdate {
+	_u.mutation.SetRegion(v)
+	return _u
 }
 
 // SetNillableRegion sets the "region" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableRegion(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetRegion(*s)
+func (_u *PorterInstanceUpdate) SetNillableRegion(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetRegion(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (piu *PorterInstanceUpdate) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpdate {
-	piu.mutation.SetFeatureSummary(mfs)
-	return piu
+func (_u *PorterInstanceUpdate) SetFeatureSummary(v *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpdate {
+	_u.mutation.SetFeatureSummary(v)
+	return _u
 }
 
 // SetContextJSONSchema sets the "context_json_schema" field.
-func (piu *PorterInstanceUpdate) SetContextJSONSchema(s string) *PorterInstanceUpdate {
-	piu.mutation.SetContextJSONSchema(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetContextJSONSchema(v string) *PorterInstanceUpdate {
+	_u.mutation.SetContextJSONSchema(v)
+	return _u
 }
 
 // SetNillableContextJSONSchema sets the "context_json_schema" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableContextJSONSchema(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetContextJSONSchema(*s)
+func (_u *PorterInstanceUpdate) SetNillableContextJSONSchema(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetContextJSONSchema(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (piu *PorterInstanceUpdate) SetStatus(po porterinstance.Status) *PorterInstanceUpdate {
-	piu.mutation.SetStatus(po)
-	return piu
+func (_u *PorterInstanceUpdate) SetStatus(v porterinstance.Status) *PorterInstanceUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableStatus(po *porterinstance.Status) *PorterInstanceUpdate {
-	if po != nil {
-		piu.SetStatus(*po)
+func (_u *PorterInstanceUpdate) SetNillableStatus(v *porterinstance.Status) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetConnectionStatus sets the "connection_status" field.
-func (piu *PorterInstanceUpdate) SetConnectionStatus(ps porterinstance.ConnectionStatus) *PorterInstanceUpdate {
-	piu.mutation.SetConnectionStatus(ps)
-	return piu
+func (_u *PorterInstanceUpdate) SetConnectionStatus(v porterinstance.ConnectionStatus) *PorterInstanceUpdate {
+	_u.mutation.SetConnectionStatus(v)
+	return _u
 }
 
 // SetNillableConnectionStatus sets the "connection_status" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableConnectionStatus(ps *porterinstance.ConnectionStatus) *PorterInstanceUpdate {
-	if ps != nil {
-		piu.SetConnectionStatus(*ps)
+func (_u *PorterInstanceUpdate) SetNillableConnectionStatus(v *porterinstance.ConnectionStatus) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetConnectionStatus(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetConnectionStatusMessage sets the "connection_status_message" field.
-func (piu *PorterInstanceUpdate) SetConnectionStatusMessage(s string) *PorterInstanceUpdate {
-	piu.mutation.SetConnectionStatusMessage(s)
-	return piu
+func (_u *PorterInstanceUpdate) SetConnectionStatusMessage(v string) *PorterInstanceUpdate {
+	_u.mutation.SetConnectionStatusMessage(v)
+	return _u
 }
 
 // SetNillableConnectionStatusMessage sets the "connection_status_message" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableConnectionStatusMessage(s *string) *PorterInstanceUpdate {
-	if s != nil {
-		piu.SetConnectionStatusMessage(*s)
+func (_u *PorterInstanceUpdate) SetNillableConnectionStatusMessage(v *string) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetConnectionStatusMessage(*v)
 	}
-	return piu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (piu *PorterInstanceUpdate) SetUpdatedAt(t time.Time) *PorterInstanceUpdate {
-	piu.mutation.SetUpdatedAt(t)
-	return piu
+func (_u *PorterInstanceUpdate) SetUpdatedAt(v time.Time) *PorterInstanceUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (piu *PorterInstanceUpdate) SetCreatedAt(t time.Time) *PorterInstanceUpdate {
-	piu.mutation.SetCreatedAt(t)
-	return piu
+func (_u *PorterInstanceUpdate) SetCreatedAt(v time.Time) *PorterInstanceUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (piu *PorterInstanceUpdate) SetNillableCreatedAt(t *time.Time) *PorterInstanceUpdate {
-	if t != nil {
-		piu.SetCreatedAt(*t)
+func (_u *PorterInstanceUpdate) SetNillableCreatedAt(v *time.Time) *PorterInstanceUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return piu
+	return _u
 }
 
 // Mutation returns the PorterInstanceMutation object of the builder.
-func (piu *PorterInstanceUpdate) Mutation() *PorterInstanceMutation {
-	return piu.mutation
+func (_u *PorterInstanceUpdate) Mutation() *PorterInstanceMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (piu *PorterInstanceUpdate) Save(ctx context.Context) (int, error) {
-	piu.defaults()
-	return withHooks(ctx, piu.sqlSave, piu.mutation, piu.hooks)
+func (_u *PorterInstanceUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (piu *PorterInstanceUpdate) SaveX(ctx context.Context) int {
-	affected, err := piu.Save(ctx)
+func (_u *PorterInstanceUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -258,34 +258,34 @@ func (piu *PorterInstanceUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (piu *PorterInstanceUpdate) Exec(ctx context.Context) error {
-	_, err := piu.Save(ctx)
+func (_u *PorterInstanceUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (piu *PorterInstanceUpdate) ExecX(ctx context.Context) {
-	if err := piu.Exec(ctx); err != nil {
+func (_u *PorterInstanceUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (piu *PorterInstanceUpdate) defaults() {
-	if _, ok := piu.mutation.UpdatedAt(); !ok {
+func (_u *PorterInstanceUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := porterinstance.UpdateDefaultUpdatedAt()
-		piu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (piu *PorterInstanceUpdate) check() error {
-	if v, ok := piu.mutation.Status(); ok {
+func (_u *PorterInstanceUpdate) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := porterinstance.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.status": %w`, err)}
 		}
 	}
-	if v, ok := piu.mutation.ConnectionStatus(); ok {
+	if v, ok := _u.mutation.ConnectionStatus(); ok {
 		if err := porterinstance.ConnectionStatusValidator(v); err != nil {
 			return &ValidationError{Name: "connection_status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.connection_status": %w`, err)}
 		}
@@ -293,67 +293,67 @@ func (piu *PorterInstanceUpdate) check() error {
 	return nil
 }
 
-func (piu *PorterInstanceUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := piu.check(); err != nil {
-		return n, err
+func (_u *PorterInstanceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(porterinstance.Table, porterinstance.Columns, sqlgraph.NewFieldSpec(porterinstance.FieldID, field.TypeInt64))
-	if ps := piu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := piu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(porterinstance.FieldName, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.Version(); ok {
+	if value, ok := _u.mutation.Version(); ok {
 		_spec.SetField(porterinstance.FieldVersion, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(porterinstance.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.SourceCodeAddress(); ok {
+	if value, ok := _u.mutation.SourceCodeAddress(); ok {
 		_spec.SetField(porterinstance.FieldSourceCodeAddress, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.BuildVersion(); ok {
+	if value, ok := _u.mutation.BuildVersion(); ok {
 		_spec.SetField(porterinstance.FieldBuildVersion, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.BuildDate(); ok {
+	if value, ok := _u.mutation.BuildDate(); ok {
 		_spec.SetField(porterinstance.FieldBuildDate, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.GlobalName(); ok {
+	if value, ok := _u.mutation.GlobalName(); ok {
 		_spec.SetField(porterinstance.FieldGlobalName, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.Address(); ok {
+	if value, ok := _u.mutation.Address(); ok {
 		_spec.SetField(porterinstance.FieldAddress, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.Region(); ok {
+	if value, ok := _u.mutation.Region(); ok {
 		_spec.SetField(porterinstance.FieldRegion, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.FeatureSummary(); ok {
+	if value, ok := _u.mutation.FeatureSummary(); ok {
 		_spec.SetField(porterinstance.FieldFeatureSummary, field.TypeJSON, value)
 	}
-	if value, ok := piu.mutation.ContextJSONSchema(); ok {
+	if value, ok := _u.mutation.ContextJSONSchema(); ok {
 		_spec.SetField(porterinstance.FieldContextJSONSchema, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(porterinstance.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := piu.mutation.ConnectionStatus(); ok {
+	if value, ok := _u.mutation.ConnectionStatus(); ok {
 		_spec.SetField(porterinstance.FieldConnectionStatus, field.TypeEnum, value)
 	}
-	if value, ok := piu.mutation.ConnectionStatusMessage(); ok {
+	if value, ok := _u.mutation.ConnectionStatusMessage(); ok {
 		_spec.SetField(porterinstance.FieldConnectionStatusMessage, field.TypeString, value)
 	}
-	if value, ok := piu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(porterinstance.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := piu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(porterinstance.FieldCreatedAt, field.TypeTime, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, piu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{porterinstance.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -361,8 +361,8 @@ func (piu *PorterInstanceUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		return 0, err
 	}
-	piu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // PorterInstanceUpdateOne is the builder for updating a single PorterInstance entity.
@@ -374,240 +374,240 @@ type PorterInstanceUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (piuo *PorterInstanceUpdateOne) SetName(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetName(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetName(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableName(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetName(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableName(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetVersion sets the "version" field.
-func (piuo *PorterInstanceUpdateOne) SetVersion(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetVersion(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetVersion(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetVersion(v)
+	return _u
 }
 
 // SetNillableVersion sets the "version" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableVersion(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetVersion(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableVersion(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetVersion(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (piuo *PorterInstanceUpdateOne) SetDescription(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetDescription(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetDescription(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableDescription(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetDescription(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableDescription(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetSourceCodeAddress sets the "source_code_address" field.
-func (piuo *PorterInstanceUpdateOne) SetSourceCodeAddress(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetSourceCodeAddress(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetSourceCodeAddress(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetSourceCodeAddress(v)
+	return _u
 }
 
 // SetNillableSourceCodeAddress sets the "source_code_address" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableSourceCodeAddress(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetSourceCodeAddress(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableSourceCodeAddress(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetSourceCodeAddress(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetBuildVersion sets the "build_version" field.
-func (piuo *PorterInstanceUpdateOne) SetBuildVersion(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetBuildVersion(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetBuildVersion(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetBuildVersion(v)
+	return _u
 }
 
 // SetNillableBuildVersion sets the "build_version" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableBuildVersion(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetBuildVersion(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableBuildVersion(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetBuildVersion(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetBuildDate sets the "build_date" field.
-func (piuo *PorterInstanceUpdateOne) SetBuildDate(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetBuildDate(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetBuildDate(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetBuildDate(v)
+	return _u
 }
 
 // SetNillableBuildDate sets the "build_date" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableBuildDate(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetBuildDate(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableBuildDate(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetBuildDate(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetGlobalName sets the "global_name" field.
-func (piuo *PorterInstanceUpdateOne) SetGlobalName(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetGlobalName(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetGlobalName(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetGlobalName(v)
+	return _u
 }
 
 // SetNillableGlobalName sets the "global_name" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableGlobalName(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetGlobalName(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableGlobalName(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetGlobalName(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetAddress sets the "address" field.
-func (piuo *PorterInstanceUpdateOne) SetAddress(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetAddress(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetAddress(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetAddress(v)
+	return _u
 }
 
 // SetNillableAddress sets the "address" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableAddress(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetAddress(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableAddress(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetAddress(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetRegion sets the "region" field.
-func (piuo *PorterInstanceUpdateOne) SetRegion(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetRegion(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetRegion(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetRegion(v)
+	return _u
 }
 
 // SetNillableRegion sets the "region" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableRegion(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetRegion(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableRegion(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetRegion(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (piuo *PorterInstanceUpdateOne) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpdateOne {
-	piuo.mutation.SetFeatureSummary(mfs)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetFeatureSummary(v *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpdateOne {
+	_u.mutation.SetFeatureSummary(v)
+	return _u
 }
 
 // SetContextJSONSchema sets the "context_json_schema" field.
-func (piuo *PorterInstanceUpdateOne) SetContextJSONSchema(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetContextJSONSchema(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetContextJSONSchema(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetContextJSONSchema(v)
+	return _u
 }
 
 // SetNillableContextJSONSchema sets the "context_json_schema" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableContextJSONSchema(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetContextJSONSchema(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableContextJSONSchema(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetContextJSONSchema(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetStatus sets the "status" field.
-func (piuo *PorterInstanceUpdateOne) SetStatus(po porterinstance.Status) *PorterInstanceUpdateOne {
-	piuo.mutation.SetStatus(po)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetStatus(v porterinstance.Status) *PorterInstanceUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableStatus(po *porterinstance.Status) *PorterInstanceUpdateOne {
-	if po != nil {
-		piuo.SetStatus(*po)
+func (_u *PorterInstanceUpdateOne) SetNillableStatus(v *porterinstance.Status) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetConnectionStatus sets the "connection_status" field.
-func (piuo *PorterInstanceUpdateOne) SetConnectionStatus(ps porterinstance.ConnectionStatus) *PorterInstanceUpdateOne {
-	piuo.mutation.SetConnectionStatus(ps)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetConnectionStatus(v porterinstance.ConnectionStatus) *PorterInstanceUpdateOne {
+	_u.mutation.SetConnectionStatus(v)
+	return _u
 }
 
 // SetNillableConnectionStatus sets the "connection_status" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableConnectionStatus(ps *porterinstance.ConnectionStatus) *PorterInstanceUpdateOne {
-	if ps != nil {
-		piuo.SetConnectionStatus(*ps)
+func (_u *PorterInstanceUpdateOne) SetNillableConnectionStatus(v *porterinstance.ConnectionStatus) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetConnectionStatus(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetConnectionStatusMessage sets the "connection_status_message" field.
-func (piuo *PorterInstanceUpdateOne) SetConnectionStatusMessage(s string) *PorterInstanceUpdateOne {
-	piuo.mutation.SetConnectionStatusMessage(s)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetConnectionStatusMessage(v string) *PorterInstanceUpdateOne {
+	_u.mutation.SetConnectionStatusMessage(v)
+	return _u
 }
 
 // SetNillableConnectionStatusMessage sets the "connection_status_message" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableConnectionStatusMessage(s *string) *PorterInstanceUpdateOne {
-	if s != nil {
-		piuo.SetConnectionStatusMessage(*s)
+func (_u *PorterInstanceUpdateOne) SetNillableConnectionStatusMessage(v *string) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetConnectionStatusMessage(*v)
 	}
-	return piuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (piuo *PorterInstanceUpdateOne) SetUpdatedAt(t time.Time) *PorterInstanceUpdateOne {
-	piuo.mutation.SetUpdatedAt(t)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetUpdatedAt(v time.Time) *PorterInstanceUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (piuo *PorterInstanceUpdateOne) SetCreatedAt(t time.Time) *PorterInstanceUpdateOne {
-	piuo.mutation.SetCreatedAt(t)
-	return piuo
+func (_u *PorterInstanceUpdateOne) SetCreatedAt(v time.Time) *PorterInstanceUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (piuo *PorterInstanceUpdateOne) SetNillableCreatedAt(t *time.Time) *PorterInstanceUpdateOne {
-	if t != nil {
-		piuo.SetCreatedAt(*t)
+func (_u *PorterInstanceUpdateOne) SetNillableCreatedAt(v *time.Time) *PorterInstanceUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return piuo
+	return _u
 }
 
 // Mutation returns the PorterInstanceMutation object of the builder.
-func (piuo *PorterInstanceUpdateOne) Mutation() *PorterInstanceMutation {
-	return piuo.mutation
+func (_u *PorterInstanceUpdateOne) Mutation() *PorterInstanceMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the PorterInstanceUpdate builder.
-func (piuo *PorterInstanceUpdateOne) Where(ps ...predicate.PorterInstance) *PorterInstanceUpdateOne {
-	piuo.mutation.Where(ps...)
-	return piuo
+func (_u *PorterInstanceUpdateOne) Where(ps ...predicate.PorterInstance) *PorterInstanceUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (piuo *PorterInstanceUpdateOne) Select(field string, fields ...string) *PorterInstanceUpdateOne {
-	piuo.fields = append([]string{field}, fields...)
-	return piuo
+func (_u *PorterInstanceUpdateOne) Select(field string, fields ...string) *PorterInstanceUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated PorterInstance entity.
-func (piuo *PorterInstanceUpdateOne) Save(ctx context.Context) (*PorterInstance, error) {
-	piuo.defaults()
-	return withHooks(ctx, piuo.sqlSave, piuo.mutation, piuo.hooks)
+func (_u *PorterInstanceUpdateOne) Save(ctx context.Context) (*PorterInstance, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (piuo *PorterInstanceUpdateOne) SaveX(ctx context.Context) *PorterInstance {
-	node, err := piuo.Save(ctx)
+func (_u *PorterInstanceUpdateOne) SaveX(ctx context.Context) *PorterInstance {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -615,34 +615,34 @@ func (piuo *PorterInstanceUpdateOne) SaveX(ctx context.Context) *PorterInstance 
 }
 
 // Exec executes the query on the entity.
-func (piuo *PorterInstanceUpdateOne) Exec(ctx context.Context) error {
-	_, err := piuo.Save(ctx)
+func (_u *PorterInstanceUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (piuo *PorterInstanceUpdateOne) ExecX(ctx context.Context) {
-	if err := piuo.Exec(ctx); err != nil {
+func (_u *PorterInstanceUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (piuo *PorterInstanceUpdateOne) defaults() {
-	if _, ok := piuo.mutation.UpdatedAt(); !ok {
+func (_u *PorterInstanceUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := porterinstance.UpdateDefaultUpdatedAt()
-		piuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (piuo *PorterInstanceUpdateOne) check() error {
-	if v, ok := piuo.mutation.Status(); ok {
+func (_u *PorterInstanceUpdateOne) check() error {
+	if v, ok := _u.mutation.Status(); ok {
 		if err := porterinstance.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.status": %w`, err)}
 		}
 	}
-	if v, ok := piuo.mutation.ConnectionStatus(); ok {
+	if v, ok := _u.mutation.ConnectionStatus(); ok {
 		if err := porterinstance.ConnectionStatusValidator(v); err != nil {
 			return &ValidationError{Name: "connection_status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.connection_status": %w`, err)}
 		}
@@ -650,17 +650,17 @@ func (piuo *PorterInstanceUpdateOne) check() error {
 	return nil
 }
 
-func (piuo *PorterInstanceUpdateOne) sqlSave(ctx context.Context) (_node *PorterInstance, err error) {
-	if err := piuo.check(); err != nil {
+func (_u *PorterInstanceUpdateOne) sqlSave(ctx context.Context) (_node *PorterInstance, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(porterinstance.Table, porterinstance.Columns, sqlgraph.NewFieldSpec(porterinstance.FieldID, field.TypeInt64))
-	id, ok := piuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "PorterInstance.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := piuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, porterinstance.FieldID)
 		for _, f := range fields {
@@ -672,65 +672,65 @@ func (piuo *PorterInstanceUpdateOne) sqlSave(ctx context.Context) (_node *Porter
 			}
 		}
 	}
-	if ps := piuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := piuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(porterinstance.FieldName, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.Version(); ok {
+	if value, ok := _u.mutation.Version(); ok {
 		_spec.SetField(porterinstance.FieldVersion, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(porterinstance.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.SourceCodeAddress(); ok {
+	if value, ok := _u.mutation.SourceCodeAddress(); ok {
 		_spec.SetField(porterinstance.FieldSourceCodeAddress, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.BuildVersion(); ok {
+	if value, ok := _u.mutation.BuildVersion(); ok {
 		_spec.SetField(porterinstance.FieldBuildVersion, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.BuildDate(); ok {
+	if value, ok := _u.mutation.BuildDate(); ok {
 		_spec.SetField(porterinstance.FieldBuildDate, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.GlobalName(); ok {
+	if value, ok := _u.mutation.GlobalName(); ok {
 		_spec.SetField(porterinstance.FieldGlobalName, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.Address(); ok {
+	if value, ok := _u.mutation.Address(); ok {
 		_spec.SetField(porterinstance.FieldAddress, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.Region(); ok {
+	if value, ok := _u.mutation.Region(); ok {
 		_spec.SetField(porterinstance.FieldRegion, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.FeatureSummary(); ok {
+	if value, ok := _u.mutation.FeatureSummary(); ok {
 		_spec.SetField(porterinstance.FieldFeatureSummary, field.TypeJSON, value)
 	}
-	if value, ok := piuo.mutation.ContextJSONSchema(); ok {
+	if value, ok := _u.mutation.ContextJSONSchema(); ok {
 		_spec.SetField(porterinstance.FieldContextJSONSchema, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.Status(); ok {
+	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(porterinstance.FieldStatus, field.TypeEnum, value)
 	}
-	if value, ok := piuo.mutation.ConnectionStatus(); ok {
+	if value, ok := _u.mutation.ConnectionStatus(); ok {
 		_spec.SetField(porterinstance.FieldConnectionStatus, field.TypeEnum, value)
 	}
-	if value, ok := piuo.mutation.ConnectionStatusMessage(); ok {
+	if value, ok := _u.mutation.ConnectionStatusMessage(); ok {
 		_spec.SetField(porterinstance.FieldConnectionStatusMessage, field.TypeString, value)
 	}
-	if value, ok := piuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(porterinstance.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := piuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(porterinstance.FieldCreatedAt, field.TypeTime, value)
 	}
-	_node = &PorterInstance{config: piuo.config}
+	_node = &PorterInstance{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, piuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{porterinstance.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -738,6 +738,6 @@ func (piuo *PorterInstanceUpdateOne) sqlSave(ctx context.Context) (_node *Porter
 		}
 		return nil, err
 	}
-	piuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

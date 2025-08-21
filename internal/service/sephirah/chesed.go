@@ -6,9 +6,8 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelchesed"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
-	librarian "github.com/tuihub/protos/pkg/librarian/v1"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	pb "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -42,7 +41,7 @@ func (s *LibrarianSephirahService) ListImages(ctx context.Context, req *sephirah
 		return nil, err
 	}
 	return &sephirah.ListImagesResponse{
-		Paging: &librarian.PagingResponse{TotalSize: total},
+		Paging: &pb.PagingResponse{TotalSize: total},
 		Ids:    converter.ToPBInternalIDList(res),
 	}, nil
 }
@@ -53,7 +52,7 @@ func (s *LibrarianSephirahService) SearchImages(ctx context.Context,
 		return nil, err
 	}
 	return &sephirah.SearchImagesResponse{
-		Paging: &librarian.PagingResponse{TotalSize: int64(len(res))},
+		Paging: &pb.PagingResponse{TotalSize: int64(len(res))},
 		Ids:    converter.ToPBInternalIDList(res),
 	}, nil
 }

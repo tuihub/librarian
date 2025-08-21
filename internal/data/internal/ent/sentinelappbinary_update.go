@@ -26,310 +26,310 @@ type SentinelAppBinaryUpdate struct {
 }
 
 // Where appends a list predicates to the SentinelAppBinaryUpdate builder.
-func (sabu *SentinelAppBinaryUpdate) Where(ps ...predicate.SentinelAppBinary) *SentinelAppBinaryUpdate {
-	sabu.mutation.Where(ps...)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) Where(ps ...predicate.SentinelAppBinary) *SentinelAppBinaryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUnionID sets the "union_id" field.
-func (sabu *SentinelAppBinaryUpdate) SetUnionID(s string) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetUnionID(s)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetUnionID(v string) *SentinelAppBinaryUpdate {
+	_u.mutation.SetUnionID(v)
+	return _u
 }
 
 // SetNillableUnionID sets the "union_id" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableUnionID(s *string) *SentinelAppBinaryUpdate {
-	if s != nil {
-		sabu.SetUnionID(*s)
+func (_u *SentinelAppBinaryUpdate) SetNillableUnionID(v *string) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetUnionID(*v)
 	}
-	return sabu
+	return _u
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (sabu *SentinelAppBinaryUpdate) SetSentinelID(mi model.InternalID) *SentinelAppBinaryUpdate {
-	sabu.mutation.ResetSentinelID()
-	sabu.mutation.SetSentinelID(mi)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetSentinelID(v model.InternalID) *SentinelAppBinaryUpdate {
+	_u.mutation.ResetSentinelID()
+	_u.mutation.SetSentinelID(v)
+	return _u
 }
 
 // SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableSentinelID(mi *model.InternalID) *SentinelAppBinaryUpdate {
-	if mi != nil {
-		sabu.SetSentinelID(*mi)
+func (_u *SentinelAppBinaryUpdate) SetNillableSentinelID(v *model.InternalID) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetSentinelID(*v)
 	}
-	return sabu
+	return _u
 }
 
-// AddSentinelID adds mi to the "sentinel_id" field.
-func (sabu *SentinelAppBinaryUpdate) AddSentinelID(mi model.InternalID) *SentinelAppBinaryUpdate {
-	sabu.mutation.AddSentinelID(mi)
-	return sabu
+// AddSentinelID adds value to the "sentinel_id" field.
+func (_u *SentinelAppBinaryUpdate) AddSentinelID(v model.InternalID) *SentinelAppBinaryUpdate {
+	_u.mutation.AddSentinelID(v)
+	return _u
 }
 
 // SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
-func (sabu *SentinelAppBinaryUpdate) SetSentinelLibraryReportedID(i int64) *SentinelAppBinaryUpdate {
-	sabu.mutation.ResetSentinelLibraryReportedID()
-	sabu.mutation.SetSentinelLibraryReportedID(i)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetSentinelLibraryReportedID(v int64) *SentinelAppBinaryUpdate {
+	_u.mutation.ResetSentinelLibraryReportedID()
+	_u.mutation.SetSentinelLibraryReportedID(v)
+	return _u
 }
 
 // SetNillableSentinelLibraryReportedID sets the "sentinel_library_reported_id" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableSentinelLibraryReportedID(i *int64) *SentinelAppBinaryUpdate {
-	if i != nil {
-		sabu.SetSentinelLibraryReportedID(*i)
+func (_u *SentinelAppBinaryUpdate) SetNillableSentinelLibraryReportedID(v *int64) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetSentinelLibraryReportedID(*v)
 	}
-	return sabu
+	return _u
 }
 
-// AddSentinelLibraryReportedID adds i to the "sentinel_library_reported_id" field.
-func (sabu *SentinelAppBinaryUpdate) AddSentinelLibraryReportedID(i int64) *SentinelAppBinaryUpdate {
-	sabu.mutation.AddSentinelLibraryReportedID(i)
-	return sabu
+// AddSentinelLibraryReportedID adds value to the "sentinel_library_reported_id" field.
+func (_u *SentinelAppBinaryUpdate) AddSentinelLibraryReportedID(v int64) *SentinelAppBinaryUpdate {
+	_u.mutation.AddSentinelLibraryReportedID(v)
+	return _u
 }
 
 // SetLibrarySnapshot sets the "library_snapshot" field.
-func (sabu *SentinelAppBinaryUpdate) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetLibrarySnapshot(t)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetLibrarySnapshot(v time.Time) *SentinelAppBinaryUpdate {
+	_u.mutation.SetLibrarySnapshot(v)
+	return _u
 }
 
 // SetNillableLibrarySnapshot sets the "library_snapshot" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableLibrarySnapshot(t *time.Time) *SentinelAppBinaryUpdate {
-	if t != nil {
-		sabu.SetLibrarySnapshot(*t)
+func (_u *SentinelAppBinaryUpdate) SetNillableLibrarySnapshot(v *time.Time) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetLibrarySnapshot(*v)
 	}
-	return sabu
+	return _u
 }
 
 // SetGeneratedID sets the "generated_id" field.
-func (sabu *SentinelAppBinaryUpdate) SetGeneratedID(s string) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetGeneratedID(s)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetGeneratedID(v string) *SentinelAppBinaryUpdate {
+	_u.mutation.SetGeneratedID(v)
+	return _u
 }
 
 // SetNillableGeneratedID sets the "generated_id" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableGeneratedID(s *string) *SentinelAppBinaryUpdate {
-	if s != nil {
-		sabu.SetGeneratedID(*s)
+func (_u *SentinelAppBinaryUpdate) SetNillableGeneratedID(v *string) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetGeneratedID(*v)
 	}
-	return sabu
+	return _u
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (sabu *SentinelAppBinaryUpdate) SetSizeBytes(i int64) *SentinelAppBinaryUpdate {
-	sabu.mutation.ResetSizeBytes()
-	sabu.mutation.SetSizeBytes(i)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetSizeBytes(v int64) *SentinelAppBinaryUpdate {
+	_u.mutation.ResetSizeBytes()
+	_u.mutation.SetSizeBytes(v)
+	return _u
 }
 
 // SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableSizeBytes(i *int64) *SentinelAppBinaryUpdate {
-	if i != nil {
-		sabu.SetSizeBytes(*i)
+func (_u *SentinelAppBinaryUpdate) SetNillableSizeBytes(v *int64) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetSizeBytes(*v)
 	}
-	return sabu
+	return _u
 }
 
-// AddSizeBytes adds i to the "size_bytes" field.
-func (sabu *SentinelAppBinaryUpdate) AddSizeBytes(i int64) *SentinelAppBinaryUpdate {
-	sabu.mutation.AddSizeBytes(i)
-	return sabu
+// AddSizeBytes adds value to the "size_bytes" field.
+func (_u *SentinelAppBinaryUpdate) AddSizeBytes(v int64) *SentinelAppBinaryUpdate {
+	_u.mutation.AddSizeBytes(v)
+	return _u
 }
 
 // SetNeedToken sets the "need_token" field.
-func (sabu *SentinelAppBinaryUpdate) SetNeedToken(b bool) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetNeedToken(b)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetNeedToken(v bool) *SentinelAppBinaryUpdate {
+	_u.mutation.SetNeedToken(v)
+	return _u
 }
 
 // SetNillableNeedToken sets the "need_token" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableNeedToken(b *bool) *SentinelAppBinaryUpdate {
-	if b != nil {
-		sabu.SetNeedToken(*b)
+func (_u *SentinelAppBinaryUpdate) SetNillableNeedToken(v *bool) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetNeedToken(*v)
 	}
-	return sabu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (sabu *SentinelAppBinaryUpdate) SetName(s string) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetName(s)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetName(v string) *SentinelAppBinaryUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableName(s *string) *SentinelAppBinaryUpdate {
-	if s != nil {
-		sabu.SetName(*s)
+func (_u *SentinelAppBinaryUpdate) SetNillableName(v *string) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return sabu
+	return _u
 }
 
 // SetVersion sets the "version" field.
-func (sabu *SentinelAppBinaryUpdate) SetVersion(s string) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetVersion(s)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetVersion(v string) *SentinelAppBinaryUpdate {
+	_u.mutation.SetVersion(v)
+	return _u
 }
 
 // SetNillableVersion sets the "version" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableVersion(s *string) *SentinelAppBinaryUpdate {
-	if s != nil {
-		sabu.SetVersion(*s)
+func (_u *SentinelAppBinaryUpdate) SetNillableVersion(v *string) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetVersion(*v)
 	}
-	return sabu
+	return _u
 }
 
 // ClearVersion clears the value of the "version" field.
-func (sabu *SentinelAppBinaryUpdate) ClearVersion() *SentinelAppBinaryUpdate {
-	sabu.mutation.ClearVersion()
-	return sabu
+func (_u *SentinelAppBinaryUpdate) ClearVersion() *SentinelAppBinaryUpdate {
+	_u.mutation.ClearVersion()
+	return _u
 }
 
 // SetDeveloper sets the "developer" field.
-func (sabu *SentinelAppBinaryUpdate) SetDeveloper(s string) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetDeveloper(s)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetDeveloper(v string) *SentinelAppBinaryUpdate {
+	_u.mutation.SetDeveloper(v)
+	return _u
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableDeveloper(s *string) *SentinelAppBinaryUpdate {
-	if s != nil {
-		sabu.SetDeveloper(*s)
+func (_u *SentinelAppBinaryUpdate) SetNillableDeveloper(v *string) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetDeveloper(*v)
 	}
-	return sabu
+	return _u
 }
 
 // ClearDeveloper clears the value of the "developer" field.
-func (sabu *SentinelAppBinaryUpdate) ClearDeveloper() *SentinelAppBinaryUpdate {
-	sabu.mutation.ClearDeveloper()
-	return sabu
+func (_u *SentinelAppBinaryUpdate) ClearDeveloper() *SentinelAppBinaryUpdate {
+	_u.mutation.ClearDeveloper()
+	return _u
 }
 
 // SetPublisher sets the "publisher" field.
-func (sabu *SentinelAppBinaryUpdate) SetPublisher(s string) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetPublisher(s)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetPublisher(v string) *SentinelAppBinaryUpdate {
+	_u.mutation.SetPublisher(v)
+	return _u
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillablePublisher(s *string) *SentinelAppBinaryUpdate {
-	if s != nil {
-		sabu.SetPublisher(*s)
+func (_u *SentinelAppBinaryUpdate) SetNillablePublisher(v *string) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetPublisher(*v)
 	}
-	return sabu
+	return _u
 }
 
 // ClearPublisher clears the value of the "publisher" field.
-func (sabu *SentinelAppBinaryUpdate) ClearPublisher() *SentinelAppBinaryUpdate {
-	sabu.mutation.ClearPublisher()
-	return sabu
+func (_u *SentinelAppBinaryUpdate) ClearPublisher() *SentinelAppBinaryUpdate {
+	_u.mutation.ClearPublisher()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sabu *SentinelAppBinaryUpdate) SetUpdatedAt(t time.Time) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetUpdatedAt(t)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetUpdatedAt(v time.Time) *SentinelAppBinaryUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sabu *SentinelAppBinaryUpdate) SetCreatedAt(t time.Time) *SentinelAppBinaryUpdate {
-	sabu.mutation.SetCreatedAt(t)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) SetCreatedAt(v time.Time) *SentinelAppBinaryUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableCreatedAt(t *time.Time) *SentinelAppBinaryUpdate {
-	if t != nil {
-		sabu.SetCreatedAt(*t)
+func (_u *SentinelAppBinaryUpdate) SetNillableCreatedAt(v *time.Time) *SentinelAppBinaryUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return sabu
+	return _u
 }
 
 // AddStoreAppIDs adds the "store_app" edge to the StoreApp entity by IDs.
-func (sabu *SentinelAppBinaryUpdate) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdate {
-	sabu.mutation.AddStoreAppIDs(ids...)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdate {
+	_u.mutation.AddStoreAppIDs(ids...)
+	return _u
 }
 
 // AddStoreApp adds the "store_app" edges to the StoreApp entity.
-func (sabu *SentinelAppBinaryUpdate) AddStoreApp(s ...*StoreApp) *SentinelAppBinaryUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelAppBinaryUpdate) AddStoreApp(v ...*StoreApp) *SentinelAppBinaryUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabu.AddStoreAppIDs(ids...)
+	return _u.AddStoreAppIDs(ids...)
 }
 
 // AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by IDs.
-func (sabu *SentinelAppBinaryUpdate) AddStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdate {
-	sabu.mutation.AddStoreAppBinaryIDs(ids...)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) AddStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdate {
+	_u.mutation.AddStoreAppBinaryIDs(ids...)
+	return _u
 }
 
 // AddStoreAppBinary adds the "store_app_binary" edges to the StoreAppBinary entity.
-func (sabu *SentinelAppBinaryUpdate) AddStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelAppBinaryUpdate) AddStoreAppBinary(v ...*StoreAppBinary) *SentinelAppBinaryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabu.AddStoreAppBinaryIDs(ids...)
+	return _u.AddStoreAppBinaryIDs(ids...)
 }
 
 // Mutation returns the SentinelAppBinaryMutation object of the builder.
-func (sabu *SentinelAppBinaryUpdate) Mutation() *SentinelAppBinaryMutation {
-	return sabu.mutation
+func (_u *SentinelAppBinaryUpdate) Mutation() *SentinelAppBinaryMutation {
+	return _u.mutation
 }
 
 // ClearStoreApp clears all "store_app" edges to the StoreApp entity.
-func (sabu *SentinelAppBinaryUpdate) ClearStoreApp() *SentinelAppBinaryUpdate {
-	sabu.mutation.ClearStoreApp()
-	return sabu
+func (_u *SentinelAppBinaryUpdate) ClearStoreApp() *SentinelAppBinaryUpdate {
+	_u.mutation.ClearStoreApp()
+	return _u
 }
 
 // RemoveStoreAppIDs removes the "store_app" edge to StoreApp entities by IDs.
-func (sabu *SentinelAppBinaryUpdate) RemoveStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdate {
-	sabu.mutation.RemoveStoreAppIDs(ids...)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) RemoveStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdate {
+	_u.mutation.RemoveStoreAppIDs(ids...)
+	return _u
 }
 
 // RemoveStoreApp removes "store_app" edges to StoreApp entities.
-func (sabu *SentinelAppBinaryUpdate) RemoveStoreApp(s ...*StoreApp) *SentinelAppBinaryUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelAppBinaryUpdate) RemoveStoreApp(v ...*StoreApp) *SentinelAppBinaryUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabu.RemoveStoreAppIDs(ids...)
+	return _u.RemoveStoreAppIDs(ids...)
 }
 
 // ClearStoreAppBinary clears all "store_app_binary" edges to the StoreAppBinary entity.
-func (sabu *SentinelAppBinaryUpdate) ClearStoreAppBinary() *SentinelAppBinaryUpdate {
-	sabu.mutation.ClearStoreAppBinary()
-	return sabu
+func (_u *SentinelAppBinaryUpdate) ClearStoreAppBinary() *SentinelAppBinaryUpdate {
+	_u.mutation.ClearStoreAppBinary()
+	return _u
 }
 
 // RemoveStoreAppBinaryIDs removes the "store_app_binary" edge to StoreAppBinary entities by IDs.
-func (sabu *SentinelAppBinaryUpdate) RemoveStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdate {
-	sabu.mutation.RemoveStoreAppBinaryIDs(ids...)
-	return sabu
+func (_u *SentinelAppBinaryUpdate) RemoveStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdate {
+	_u.mutation.RemoveStoreAppBinaryIDs(ids...)
+	return _u
 }
 
 // RemoveStoreAppBinary removes "store_app_binary" edges to StoreAppBinary entities.
-func (sabu *SentinelAppBinaryUpdate) RemoveStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelAppBinaryUpdate) RemoveStoreAppBinary(v ...*StoreAppBinary) *SentinelAppBinaryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabu.RemoveStoreAppBinaryIDs(ids...)
+	return _u.RemoveStoreAppBinaryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (sabu *SentinelAppBinaryUpdate) Save(ctx context.Context) (int, error) {
-	sabu.defaults()
-	return withHooks(ctx, sabu.sqlSave, sabu.mutation, sabu.hooks)
+func (_u *SentinelAppBinaryUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sabu *SentinelAppBinaryUpdate) SaveX(ctx context.Context) int {
-	affected, err := sabu.Save(ctx)
+func (_u *SentinelAppBinaryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -337,93 +337,93 @@ func (sabu *SentinelAppBinaryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (sabu *SentinelAppBinaryUpdate) Exec(ctx context.Context) error {
-	_, err := sabu.Save(ctx)
+func (_u *SentinelAppBinaryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabu *SentinelAppBinaryUpdate) ExecX(ctx context.Context) {
-	if err := sabu.Exec(ctx); err != nil {
+func (_u *SentinelAppBinaryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sabu *SentinelAppBinaryUpdate) defaults() {
-	if _, ok := sabu.mutation.UpdatedAt(); !ok {
+func (_u *SentinelAppBinaryUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinelappbinary.UpdateDefaultUpdatedAt()
-		sabu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sentinelappbinary.Table, sentinelappbinary.Columns, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64))
-	if ps := sabu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := sabu.mutation.UnionID(); ok {
+	if value, ok := _u.mutation.UnionID(); ok {
 		_spec.SetField(sentinelappbinary.FieldUnionID, field.TypeString, value)
 	}
-	if value, ok := sabu.mutation.SentinelID(); ok {
+	if value, ok := _u.mutation.SentinelID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabu.mutation.AddedSentinelID(); ok {
+	if value, ok := _u.mutation.AddedSentinelID(); ok {
 		_spec.AddField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabu.mutation.SentinelLibraryReportedID(); ok {
+	if value, ok := _u.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sabu.mutation.AddedSentinelLibraryReportedID(); ok {
+	if value, ok := _u.mutation.AddedSentinelLibraryReportedID(); ok {
 		_spec.AddField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sabu.mutation.LibrarySnapshot(); ok {
+	if value, ok := _u.mutation.LibrarySnapshot(); ok {
 		_spec.SetField(sentinelappbinary.FieldLibrarySnapshot, field.TypeTime, value)
 	}
-	if value, ok := sabu.mutation.GeneratedID(); ok {
+	if value, ok := _u.mutation.GeneratedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldGeneratedID, field.TypeString, value)
 	}
-	if value, ok := sabu.mutation.SizeBytes(); ok {
+	if value, ok := _u.mutation.SizeBytes(); ok {
 		_spec.SetField(sentinelappbinary.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := sabu.mutation.AddedSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeBytes(); ok {
 		_spec.AddField(sentinelappbinary.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := sabu.mutation.NeedToken(); ok {
+	if value, ok := _u.mutation.NeedToken(); ok {
 		_spec.SetField(sentinelappbinary.FieldNeedToken, field.TypeBool, value)
 	}
-	if value, ok := sabu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinary.FieldName, field.TypeString, value)
 	}
-	if value, ok := sabu.mutation.Version(); ok {
+	if value, ok := _u.mutation.Version(); ok {
 		_spec.SetField(sentinelappbinary.FieldVersion, field.TypeString, value)
 	}
-	if sabu.mutation.VersionCleared() {
+	if _u.mutation.VersionCleared() {
 		_spec.ClearField(sentinelappbinary.FieldVersion, field.TypeString)
 	}
-	if value, ok := sabu.mutation.Developer(); ok {
+	if value, ok := _u.mutation.Developer(); ok {
 		_spec.SetField(sentinelappbinary.FieldDeveloper, field.TypeString, value)
 	}
-	if sabu.mutation.DeveloperCleared() {
+	if _u.mutation.DeveloperCleared() {
 		_spec.ClearField(sentinelappbinary.FieldDeveloper, field.TypeString)
 	}
-	if value, ok := sabu.mutation.Publisher(); ok {
+	if value, ok := _u.mutation.Publisher(); ok {
 		_spec.SetField(sentinelappbinary.FieldPublisher, field.TypeString, value)
 	}
-	if sabu.mutation.PublisherCleared() {
+	if _u.mutation.PublisherCleared() {
 		_spec.ClearField(sentinelappbinary.FieldPublisher, field.TypeString)
 	}
-	if value, ok := sabu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinelappbinary.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := sabu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinary.FieldCreatedAt, field.TypeTime, value)
 	}
-	if sabu.mutation.StoreAppCleared() {
+	if _u.mutation.StoreAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -434,13 +434,13 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &StoreAppBinaryCreate{config: sabu.config, mutation: newStoreAppBinaryMutation(sabu.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sabu.mutation.RemovedStoreAppIDs(); len(nodes) > 0 && !sabu.mutation.StoreAppCleared() {
+	if nodes := _u.mutation.RemovedStoreAppIDs(); len(nodes) > 0 && !_u.mutation.StoreAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -454,13 +454,13 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &StoreAppBinaryCreate{config: sabu.config, mutation: newStoreAppBinaryMutation(sabu.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sabu.mutation.StoreAppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.StoreAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -474,13 +474,13 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &StoreAppBinaryCreate{config: sabu.config, mutation: newStoreAppBinaryMutation(sabu.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if sabu.mutation.StoreAppBinaryCleared() {
+	if _u.mutation.StoreAppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -493,7 +493,7 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sabu.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !sabu.mutation.StoreAppBinaryCleared() {
+	if nodes := _u.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !_u.mutation.StoreAppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -509,7 +509,7 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sabu.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -525,7 +525,7 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, sabu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinelappbinary.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -533,8 +533,8 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 		}
 		return 0, err
 	}
-	sabu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // SentinelAppBinaryUpdateOne is the builder for updating a single SentinelAppBinary entity.
@@ -546,317 +546,317 @@ type SentinelAppBinaryUpdateOne struct {
 }
 
 // SetUnionID sets the "union_id" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetUnionID(s string) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetUnionID(s)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetUnionID(v string) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetUnionID(v)
+	return _u
 }
 
 // SetNillableUnionID sets the "union_id" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableUnionID(s *string) *SentinelAppBinaryUpdateOne {
-	if s != nil {
-		sabuo.SetUnionID(*s)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableUnionID(v *string) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetUnionID(*v)
 	}
-	return sabuo
+	return _u
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetSentinelID(mi model.InternalID) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ResetSentinelID()
-	sabuo.mutation.SetSentinelID(mi)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetSentinelID(v model.InternalID) *SentinelAppBinaryUpdateOne {
+	_u.mutation.ResetSentinelID()
+	_u.mutation.SetSentinelID(v)
+	return _u
 }
 
 // SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableSentinelID(mi *model.InternalID) *SentinelAppBinaryUpdateOne {
-	if mi != nil {
-		sabuo.SetSentinelID(*mi)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableSentinelID(v *model.InternalID) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetSentinelID(*v)
 	}
-	return sabuo
+	return _u
 }
 
-// AddSentinelID adds mi to the "sentinel_id" field.
-func (sabuo *SentinelAppBinaryUpdateOne) AddSentinelID(mi model.InternalID) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.AddSentinelID(mi)
-	return sabuo
+// AddSentinelID adds value to the "sentinel_id" field.
+func (_u *SentinelAppBinaryUpdateOne) AddSentinelID(v model.InternalID) *SentinelAppBinaryUpdateOne {
+	_u.mutation.AddSentinelID(v)
+	return _u
 }
 
 // SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetSentinelLibraryReportedID(i int64) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ResetSentinelLibraryReportedID()
-	sabuo.mutation.SetSentinelLibraryReportedID(i)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetSentinelLibraryReportedID(v int64) *SentinelAppBinaryUpdateOne {
+	_u.mutation.ResetSentinelLibraryReportedID()
+	_u.mutation.SetSentinelLibraryReportedID(v)
+	return _u
 }
 
 // SetNillableSentinelLibraryReportedID sets the "sentinel_library_reported_id" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableSentinelLibraryReportedID(i *int64) *SentinelAppBinaryUpdateOne {
-	if i != nil {
-		sabuo.SetSentinelLibraryReportedID(*i)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableSentinelLibraryReportedID(v *int64) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetSentinelLibraryReportedID(*v)
 	}
-	return sabuo
+	return _u
 }
 
-// AddSentinelLibraryReportedID adds i to the "sentinel_library_reported_id" field.
-func (sabuo *SentinelAppBinaryUpdateOne) AddSentinelLibraryReportedID(i int64) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.AddSentinelLibraryReportedID(i)
-	return sabuo
+// AddSentinelLibraryReportedID adds value to the "sentinel_library_reported_id" field.
+func (_u *SentinelAppBinaryUpdateOne) AddSentinelLibraryReportedID(v int64) *SentinelAppBinaryUpdateOne {
+	_u.mutation.AddSentinelLibraryReportedID(v)
+	return _u
 }
 
 // SetLibrarySnapshot sets the "library_snapshot" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetLibrarySnapshot(t)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetLibrarySnapshot(v time.Time) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetLibrarySnapshot(v)
+	return _u
 }
 
 // SetNillableLibrarySnapshot sets the "library_snapshot" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableLibrarySnapshot(t *time.Time) *SentinelAppBinaryUpdateOne {
-	if t != nil {
-		sabuo.SetLibrarySnapshot(*t)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableLibrarySnapshot(v *time.Time) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetLibrarySnapshot(*v)
 	}
-	return sabuo
+	return _u
 }
 
 // SetGeneratedID sets the "generated_id" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetGeneratedID(s string) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetGeneratedID(s)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetGeneratedID(v string) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetGeneratedID(v)
+	return _u
 }
 
 // SetNillableGeneratedID sets the "generated_id" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableGeneratedID(s *string) *SentinelAppBinaryUpdateOne {
-	if s != nil {
-		sabuo.SetGeneratedID(*s)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableGeneratedID(v *string) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetGeneratedID(*v)
 	}
-	return sabuo
+	return _u
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetSizeBytes(i int64) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ResetSizeBytes()
-	sabuo.mutation.SetSizeBytes(i)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetSizeBytes(v int64) *SentinelAppBinaryUpdateOne {
+	_u.mutation.ResetSizeBytes()
+	_u.mutation.SetSizeBytes(v)
+	return _u
 }
 
 // SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableSizeBytes(i *int64) *SentinelAppBinaryUpdateOne {
-	if i != nil {
-		sabuo.SetSizeBytes(*i)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableSizeBytes(v *int64) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetSizeBytes(*v)
 	}
-	return sabuo
+	return _u
 }
 
-// AddSizeBytes adds i to the "size_bytes" field.
-func (sabuo *SentinelAppBinaryUpdateOne) AddSizeBytes(i int64) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.AddSizeBytes(i)
-	return sabuo
+// AddSizeBytes adds value to the "size_bytes" field.
+func (_u *SentinelAppBinaryUpdateOne) AddSizeBytes(v int64) *SentinelAppBinaryUpdateOne {
+	_u.mutation.AddSizeBytes(v)
+	return _u
 }
 
 // SetNeedToken sets the "need_token" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNeedToken(b bool) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetNeedToken(b)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetNeedToken(v bool) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetNeedToken(v)
+	return _u
 }
 
 // SetNillableNeedToken sets the "need_token" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableNeedToken(b *bool) *SentinelAppBinaryUpdateOne {
-	if b != nil {
-		sabuo.SetNeedToken(*b)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableNeedToken(v *bool) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetNeedToken(*v)
 	}
-	return sabuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetName(s string) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetName(s)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetName(v string) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableName(s *string) *SentinelAppBinaryUpdateOne {
-	if s != nil {
-		sabuo.SetName(*s)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableName(v *string) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return sabuo
+	return _u
 }
 
 // SetVersion sets the "version" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetVersion(s string) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetVersion(s)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetVersion(v string) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetVersion(v)
+	return _u
 }
 
 // SetNillableVersion sets the "version" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableVersion(s *string) *SentinelAppBinaryUpdateOne {
-	if s != nil {
-		sabuo.SetVersion(*s)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableVersion(v *string) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetVersion(*v)
 	}
-	return sabuo
+	return _u
 }
 
 // ClearVersion clears the value of the "version" field.
-func (sabuo *SentinelAppBinaryUpdateOne) ClearVersion() *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ClearVersion()
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) ClearVersion() *SentinelAppBinaryUpdateOne {
+	_u.mutation.ClearVersion()
+	return _u
 }
 
 // SetDeveloper sets the "developer" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetDeveloper(s string) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetDeveloper(s)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetDeveloper(v string) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetDeveloper(v)
+	return _u
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableDeveloper(s *string) *SentinelAppBinaryUpdateOne {
-	if s != nil {
-		sabuo.SetDeveloper(*s)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableDeveloper(v *string) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetDeveloper(*v)
 	}
-	return sabuo
+	return _u
 }
 
 // ClearDeveloper clears the value of the "developer" field.
-func (sabuo *SentinelAppBinaryUpdateOne) ClearDeveloper() *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ClearDeveloper()
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) ClearDeveloper() *SentinelAppBinaryUpdateOne {
+	_u.mutation.ClearDeveloper()
+	return _u
 }
 
 // SetPublisher sets the "publisher" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetPublisher(s string) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetPublisher(s)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetPublisher(v string) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetPublisher(v)
+	return _u
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillablePublisher(s *string) *SentinelAppBinaryUpdateOne {
-	if s != nil {
-		sabuo.SetPublisher(*s)
+func (_u *SentinelAppBinaryUpdateOne) SetNillablePublisher(v *string) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetPublisher(*v)
 	}
-	return sabuo
+	return _u
 }
 
 // ClearPublisher clears the value of the "publisher" field.
-func (sabuo *SentinelAppBinaryUpdateOne) ClearPublisher() *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ClearPublisher()
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) ClearPublisher() *SentinelAppBinaryUpdateOne {
+	_u.mutation.ClearPublisher()
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetUpdatedAt(t time.Time) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetUpdatedAt(t)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetUpdatedAt(v time.Time) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetCreatedAt(t time.Time) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.SetCreatedAt(t)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) SetCreatedAt(v time.Time) *SentinelAppBinaryUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableCreatedAt(t *time.Time) *SentinelAppBinaryUpdateOne {
-	if t != nil {
-		sabuo.SetCreatedAt(*t)
+func (_u *SentinelAppBinaryUpdateOne) SetNillableCreatedAt(v *time.Time) *SentinelAppBinaryUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return sabuo
+	return _u
 }
 
 // AddStoreAppIDs adds the "store_app" edge to the StoreApp entity by IDs.
-func (sabuo *SentinelAppBinaryUpdateOne) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.AddStoreAppIDs(ids...)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdateOne {
+	_u.mutation.AddStoreAppIDs(ids...)
+	return _u
 }
 
 // AddStoreApp adds the "store_app" edges to the StoreApp entity.
-func (sabuo *SentinelAppBinaryUpdateOne) AddStoreApp(s ...*StoreApp) *SentinelAppBinaryUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelAppBinaryUpdateOne) AddStoreApp(v ...*StoreApp) *SentinelAppBinaryUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabuo.AddStoreAppIDs(ids...)
+	return _u.AddStoreAppIDs(ids...)
 }
 
 // AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by IDs.
-func (sabuo *SentinelAppBinaryUpdateOne) AddStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.AddStoreAppBinaryIDs(ids...)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) AddStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdateOne {
+	_u.mutation.AddStoreAppBinaryIDs(ids...)
+	return _u
 }
 
 // AddStoreAppBinary adds the "store_app_binary" edges to the StoreAppBinary entity.
-func (sabuo *SentinelAppBinaryUpdateOne) AddStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelAppBinaryUpdateOne) AddStoreAppBinary(v ...*StoreAppBinary) *SentinelAppBinaryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabuo.AddStoreAppBinaryIDs(ids...)
+	return _u.AddStoreAppBinaryIDs(ids...)
 }
 
 // Mutation returns the SentinelAppBinaryMutation object of the builder.
-func (sabuo *SentinelAppBinaryUpdateOne) Mutation() *SentinelAppBinaryMutation {
-	return sabuo.mutation
+func (_u *SentinelAppBinaryUpdateOne) Mutation() *SentinelAppBinaryMutation {
+	return _u.mutation
 }
 
 // ClearStoreApp clears all "store_app" edges to the StoreApp entity.
-func (sabuo *SentinelAppBinaryUpdateOne) ClearStoreApp() *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ClearStoreApp()
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) ClearStoreApp() *SentinelAppBinaryUpdateOne {
+	_u.mutation.ClearStoreApp()
+	return _u
 }
 
 // RemoveStoreAppIDs removes the "store_app" edge to StoreApp entities by IDs.
-func (sabuo *SentinelAppBinaryUpdateOne) RemoveStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.RemoveStoreAppIDs(ids...)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) RemoveStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdateOne {
+	_u.mutation.RemoveStoreAppIDs(ids...)
+	return _u
 }
 
 // RemoveStoreApp removes "store_app" edges to StoreApp entities.
-func (sabuo *SentinelAppBinaryUpdateOne) RemoveStoreApp(s ...*StoreApp) *SentinelAppBinaryUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelAppBinaryUpdateOne) RemoveStoreApp(v ...*StoreApp) *SentinelAppBinaryUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabuo.RemoveStoreAppIDs(ids...)
+	return _u.RemoveStoreAppIDs(ids...)
 }
 
 // ClearStoreAppBinary clears all "store_app_binary" edges to the StoreAppBinary entity.
-func (sabuo *SentinelAppBinaryUpdateOne) ClearStoreAppBinary() *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ClearStoreAppBinary()
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) ClearStoreAppBinary() *SentinelAppBinaryUpdateOne {
+	_u.mutation.ClearStoreAppBinary()
+	return _u
 }
 
 // RemoveStoreAppBinaryIDs removes the "store_app_binary" edge to StoreAppBinary entities by IDs.
-func (sabuo *SentinelAppBinaryUpdateOne) RemoveStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.RemoveStoreAppBinaryIDs(ids...)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) RemoveStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdateOne {
+	_u.mutation.RemoveStoreAppBinaryIDs(ids...)
+	return _u
 }
 
 // RemoveStoreAppBinary removes "store_app_binary" edges to StoreAppBinary entities.
-func (sabuo *SentinelAppBinaryUpdateOne) RemoveStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelAppBinaryUpdateOne) RemoveStoreAppBinary(v ...*StoreAppBinary) *SentinelAppBinaryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabuo.RemoveStoreAppBinaryIDs(ids...)
+	return _u.RemoveStoreAppBinaryIDs(ids...)
 }
 
 // Where appends a list predicates to the SentinelAppBinaryUpdate builder.
-func (sabuo *SentinelAppBinaryUpdateOne) Where(ps ...predicate.SentinelAppBinary) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.Where(ps...)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) Where(ps ...predicate.SentinelAppBinary) *SentinelAppBinaryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (sabuo *SentinelAppBinaryUpdateOne) Select(field string, fields ...string) *SentinelAppBinaryUpdateOne {
-	sabuo.fields = append([]string{field}, fields...)
-	return sabuo
+func (_u *SentinelAppBinaryUpdateOne) Select(field string, fields ...string) *SentinelAppBinaryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated SentinelAppBinary entity.
-func (sabuo *SentinelAppBinaryUpdateOne) Save(ctx context.Context) (*SentinelAppBinary, error) {
-	sabuo.defaults()
-	return withHooks(ctx, sabuo.sqlSave, sabuo.mutation, sabuo.hooks)
+func (_u *SentinelAppBinaryUpdateOne) Save(ctx context.Context) (*SentinelAppBinary, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sabuo *SentinelAppBinaryUpdateOne) SaveX(ctx context.Context) *SentinelAppBinary {
-	node, err := sabuo.Save(ctx)
+func (_u *SentinelAppBinaryUpdateOne) SaveX(ctx context.Context) *SentinelAppBinary {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -864,34 +864,34 @@ func (sabuo *SentinelAppBinaryUpdateOne) SaveX(ctx context.Context) *SentinelApp
 }
 
 // Exec executes the query on the entity.
-func (sabuo *SentinelAppBinaryUpdateOne) Exec(ctx context.Context) error {
-	_, err := sabuo.Save(ctx)
+func (_u *SentinelAppBinaryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabuo *SentinelAppBinaryUpdateOne) ExecX(ctx context.Context) {
-	if err := sabuo.Exec(ctx); err != nil {
+func (_u *SentinelAppBinaryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sabuo *SentinelAppBinaryUpdateOne) defaults() {
-	if _, ok := sabuo.mutation.UpdatedAt(); !ok {
+func (_u *SentinelAppBinaryUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinelappbinary.UpdateDefaultUpdatedAt()
-		sabuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *SentinelAppBinary, err error) {
+func (_u *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *SentinelAppBinary, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sentinelappbinary.Table, sentinelappbinary.Columns, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64))
-	id, ok := sabuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelAppBinary.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := sabuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sentinelappbinary.FieldID)
 		for _, f := range fields {
@@ -903,71 +903,71 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 			}
 		}
 	}
-	if ps := sabuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := sabuo.mutation.UnionID(); ok {
+	if value, ok := _u.mutation.UnionID(); ok {
 		_spec.SetField(sentinelappbinary.FieldUnionID, field.TypeString, value)
 	}
-	if value, ok := sabuo.mutation.SentinelID(); ok {
+	if value, ok := _u.mutation.SentinelID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabuo.mutation.AddedSentinelID(); ok {
+	if value, ok := _u.mutation.AddedSentinelID(); ok {
 		_spec.AddField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabuo.mutation.SentinelLibraryReportedID(); ok {
+	if value, ok := _u.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sabuo.mutation.AddedSentinelLibraryReportedID(); ok {
+	if value, ok := _u.mutation.AddedSentinelLibraryReportedID(); ok {
 		_spec.AddField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
-	if value, ok := sabuo.mutation.LibrarySnapshot(); ok {
+	if value, ok := _u.mutation.LibrarySnapshot(); ok {
 		_spec.SetField(sentinelappbinary.FieldLibrarySnapshot, field.TypeTime, value)
 	}
-	if value, ok := sabuo.mutation.GeneratedID(); ok {
+	if value, ok := _u.mutation.GeneratedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldGeneratedID, field.TypeString, value)
 	}
-	if value, ok := sabuo.mutation.SizeBytes(); ok {
+	if value, ok := _u.mutation.SizeBytes(); ok {
 		_spec.SetField(sentinelappbinary.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := sabuo.mutation.AddedSizeBytes(); ok {
+	if value, ok := _u.mutation.AddedSizeBytes(); ok {
 		_spec.AddField(sentinelappbinary.FieldSizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := sabuo.mutation.NeedToken(); ok {
+	if value, ok := _u.mutation.NeedToken(); ok {
 		_spec.SetField(sentinelappbinary.FieldNeedToken, field.TypeBool, value)
 	}
-	if value, ok := sabuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinary.FieldName, field.TypeString, value)
 	}
-	if value, ok := sabuo.mutation.Version(); ok {
+	if value, ok := _u.mutation.Version(); ok {
 		_spec.SetField(sentinelappbinary.FieldVersion, field.TypeString, value)
 	}
-	if sabuo.mutation.VersionCleared() {
+	if _u.mutation.VersionCleared() {
 		_spec.ClearField(sentinelappbinary.FieldVersion, field.TypeString)
 	}
-	if value, ok := sabuo.mutation.Developer(); ok {
+	if value, ok := _u.mutation.Developer(); ok {
 		_spec.SetField(sentinelappbinary.FieldDeveloper, field.TypeString, value)
 	}
-	if sabuo.mutation.DeveloperCleared() {
+	if _u.mutation.DeveloperCleared() {
 		_spec.ClearField(sentinelappbinary.FieldDeveloper, field.TypeString)
 	}
-	if value, ok := sabuo.mutation.Publisher(); ok {
+	if value, ok := _u.mutation.Publisher(); ok {
 		_spec.SetField(sentinelappbinary.FieldPublisher, field.TypeString, value)
 	}
-	if sabuo.mutation.PublisherCleared() {
+	if _u.mutation.PublisherCleared() {
 		_spec.ClearField(sentinelappbinary.FieldPublisher, field.TypeString)
 	}
-	if value, ok := sabuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinelappbinary.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := sabuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinary.FieldCreatedAt, field.TypeTime, value)
 	}
-	if sabuo.mutation.StoreAppCleared() {
+	if _u.mutation.StoreAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -978,13 +978,13 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
 			},
 		}
-		createE := &StoreAppBinaryCreate{config: sabuo.config, mutation: newStoreAppBinaryMutation(sabuo.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sabuo.mutation.RemovedStoreAppIDs(); len(nodes) > 0 && !sabuo.mutation.StoreAppCleared() {
+	if nodes := _u.mutation.RemovedStoreAppIDs(); len(nodes) > 0 && !_u.mutation.StoreAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -998,13 +998,13 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &StoreAppBinaryCreate{config: sabuo.config, mutation: newStoreAppBinaryMutation(sabuo.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sabuo.mutation.StoreAppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.StoreAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -1018,13 +1018,13 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &StoreAppBinaryCreate{config: sabuo.config, mutation: newStoreAppBinaryMutation(sabuo.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _u.config, mutation: newStoreAppBinaryMutation(_u.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if sabuo.mutation.StoreAppBinaryCleared() {
+	if _u.mutation.StoreAppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1037,7 +1037,7 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sabuo.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !sabuo.mutation.StoreAppBinaryCleared() {
+	if nodes := _u.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !_u.mutation.StoreAppBinaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1053,7 +1053,7 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sabuo.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -1069,10 +1069,10 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &SentinelAppBinary{config: sabuo.config}
+	_node = &SentinelAppBinary{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, sabuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinelappbinary.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -1080,6 +1080,6 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 		}
 		return nil, err
 	}
-	sabuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

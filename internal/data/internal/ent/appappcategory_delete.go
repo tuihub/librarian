@@ -20,56 +20,56 @@ type AppAppCategoryDelete struct {
 }
 
 // Where appends a list predicates to the AppAppCategoryDelete builder.
-func (aacd *AppAppCategoryDelete) Where(ps ...predicate.AppAppCategory) *AppAppCategoryDelete {
-	aacd.mutation.Where(ps...)
-	return aacd
+func (_d *AppAppCategoryDelete) Where(ps ...predicate.AppAppCategory) *AppAppCategoryDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (aacd *AppAppCategoryDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, aacd.sqlExec, aacd.mutation, aacd.hooks)
+func (_d *AppAppCategoryDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aacd *AppAppCategoryDelete) ExecX(ctx context.Context) int {
-	n, err := aacd.Exec(ctx)
+func (_d *AppAppCategoryDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (aacd *AppAppCategoryDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *AppAppCategoryDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(appappcategory.Table, sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt))
-	if ps := aacd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, aacd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	aacd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // AppAppCategoryDeleteOne is the builder for deleting a single AppAppCategory entity.
 type AppAppCategoryDeleteOne struct {
-	aacd *AppAppCategoryDelete
+	_d *AppAppCategoryDelete
 }
 
 // Where appends a list predicates to the AppAppCategoryDelete builder.
-func (aacdo *AppAppCategoryDeleteOne) Where(ps ...predicate.AppAppCategory) *AppAppCategoryDeleteOne {
-	aacdo.aacd.mutation.Where(ps...)
-	return aacdo
+func (_d *AppAppCategoryDeleteOne) Where(ps ...predicate.AppAppCategory) *AppAppCategoryDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (aacdo *AppAppCategoryDeleteOne) Exec(ctx context.Context) error {
-	n, err := aacdo.aacd.Exec(ctx)
+func (_d *AppAppCategoryDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (aacdo *AppAppCategoryDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (aacdo *AppAppCategoryDeleteOne) ExecX(ctx context.Context) {
-	if err := aacdo.Exec(ctx); err != nil {
+func (_d *AppAppCategoryDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

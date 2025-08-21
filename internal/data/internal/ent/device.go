@@ -91,7 +91,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Device fields.
-func (d *Device) assignValues(columns []string, values []any) error {
+func (_m *Device) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -101,64 +101,64 @@ func (d *Device) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				d.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case device.FieldDeviceName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_name", values[i])
 			} else if value.Valid {
-				d.DeviceName = value.String
+				_m.DeviceName = value.String
 			}
 		case device.FieldSystemType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field system_type", values[i])
 			} else if value.Valid {
-				d.SystemType = device.SystemType(value.String)
+				_m.SystemType = device.SystemType(value.String)
 			}
 		case device.FieldSystemVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field system_version", values[i])
 			} else if value.Valid {
-				d.SystemVersion = value.String
+				_m.SystemVersion = value.String
 			}
 		case device.FieldClientName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field client_name", values[i])
 			} else if value.Valid {
-				d.ClientName = value.String
+				_m.ClientName = value.String
 			}
 		case device.FieldClientSourceCodeAddress:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field client_source_code_address", values[i])
 			} else if value.Valid {
-				d.ClientSourceCodeAddress = value.String
+				_m.ClientSourceCodeAddress = value.String
 			}
 		case device.FieldClientVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field client_version", values[i])
 			} else if value.Valid {
-				d.ClientVersion = value.String
+				_m.ClientVersion = value.String
 			}
 		case device.FieldClientLocalID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field client_local_id", values[i])
 			} else if value.Valid {
-				d.ClientLocalID = value.String
+				_m.ClientLocalID = value.String
 			}
 		case device.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				d.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case device.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				d.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			d.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -166,69 +166,69 @@ func (d *Device) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Device.
 // This includes values selected through modifiers, order, etc.
-func (d *Device) Value(name string) (ent.Value, error) {
-	return d.selectValues.Get(name)
+func (_m *Device) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QuerySession queries the "session" edge of the Device entity.
-func (d *Device) QuerySession() *SessionQuery {
-	return NewDeviceClient(d.config).QuerySession(d)
+func (_m *Device) QuerySession() *SessionQuery {
+	return NewDeviceClient(_m.config).QuerySession(_m)
 }
 
 // QueryApp queries the "app" edge of the Device entity.
-func (d *Device) QueryApp() *AppQuery {
-	return NewDeviceClient(d.config).QueryApp(d)
+func (_m *Device) QueryApp() *AppQuery {
+	return NewDeviceClient(_m.config).QueryApp(_m)
 }
 
 // Update returns a builder for updating this Device.
 // Note that you need to call Device.Unwrap() before calling this method if this Device
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (d *Device) Update() *DeviceUpdateOne {
-	return NewDeviceClient(d.config).UpdateOne(d)
+func (_m *Device) Update() *DeviceUpdateOne {
+	return NewDeviceClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Device entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (d *Device) Unwrap() *Device {
-	_tx, ok := d.config.driver.(*txDriver)
+func (_m *Device) Unwrap() *Device {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Device is not a transactional entity")
 	}
-	d.config.driver = _tx.drv
-	return d
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (d *Device) String() string {
+func (_m *Device) String() string {
 	var builder strings.Builder
 	builder.WriteString("Device(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", d.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("device_name=")
-	builder.WriteString(d.DeviceName)
+	builder.WriteString(_m.DeviceName)
 	builder.WriteString(", ")
 	builder.WriteString("system_type=")
-	builder.WriteString(fmt.Sprintf("%v", d.SystemType))
+	builder.WriteString(fmt.Sprintf("%v", _m.SystemType))
 	builder.WriteString(", ")
 	builder.WriteString("system_version=")
-	builder.WriteString(d.SystemVersion)
+	builder.WriteString(_m.SystemVersion)
 	builder.WriteString(", ")
 	builder.WriteString("client_name=")
-	builder.WriteString(d.ClientName)
+	builder.WriteString(_m.ClientName)
 	builder.WriteString(", ")
 	builder.WriteString("client_source_code_address=")
-	builder.WriteString(d.ClientSourceCodeAddress)
+	builder.WriteString(_m.ClientSourceCodeAddress)
 	builder.WriteString(", ")
 	builder.WriteString("client_version=")
-	builder.WriteString(d.ClientVersion)
+	builder.WriteString(_m.ClientVersion)
 	builder.WriteString(", ")
 	builder.WriteString("client_local_id=")
-	builder.WriteString(d.ClientLocalID)
+	builder.WriteString(_m.ClientLocalID)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(d.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(d.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -5,8 +5,8 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	porter "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
+	pb "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 func (s *LibrarianSephirahPorterService) RefreshToken(ctx context.Context, req *porter.RefreshTokenRequest) (

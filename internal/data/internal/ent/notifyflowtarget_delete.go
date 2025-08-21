@@ -20,56 +20,56 @@ type NotifyFlowTargetDelete struct {
 }
 
 // Where appends a list predicates to the NotifyFlowTargetDelete builder.
-func (nftd *NotifyFlowTargetDelete) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetDelete {
-	nftd.mutation.Where(ps...)
-	return nftd
+func (_d *NotifyFlowTargetDelete) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (nftd *NotifyFlowTargetDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, nftd.sqlExec, nftd.mutation, nftd.hooks)
+func (_d *NotifyFlowTargetDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nftd *NotifyFlowTargetDelete) ExecX(ctx context.Context) int {
-	n, err := nftd.Exec(ctx)
+func (_d *NotifyFlowTargetDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (nftd *NotifyFlowTargetDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *NotifyFlowTargetDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(notifyflowtarget.Table, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
-	if ps := nftd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, nftd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	nftd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // NotifyFlowTargetDeleteOne is the builder for deleting a single NotifyFlowTarget entity.
 type NotifyFlowTargetDeleteOne struct {
-	nftd *NotifyFlowTargetDelete
+	_d *NotifyFlowTargetDelete
 }
 
 // Where appends a list predicates to the NotifyFlowTargetDelete builder.
-func (nftdo *NotifyFlowTargetDeleteOne) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetDeleteOne {
-	nftdo.nftd.mutation.Where(ps...)
-	return nftdo
+func (_d *NotifyFlowTargetDeleteOne) Where(ps ...predicate.NotifyFlowTarget) *NotifyFlowTargetDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (nftdo *NotifyFlowTargetDeleteOne) Exec(ctx context.Context) error {
-	n, err := nftdo.nftd.Exec(ctx)
+func (_d *NotifyFlowTargetDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (nftdo *NotifyFlowTargetDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nftdo *NotifyFlowTargetDeleteOne) ExecX(ctx context.Context) {
-	if err := nftdo.Exec(ctx); err != nil {
+func (_d *NotifyFlowTargetDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

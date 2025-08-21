@@ -57,7 +57,7 @@ func (*SystemNotification) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the SystemNotification fields.
-func (sn *SystemNotification) assignValues(columns []string, values []any) error {
+func (_m *SystemNotification) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -67,58 +67,58 @@ func (sn *SystemNotification) assignValues(columns []string, values []any) error
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				sn.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case systemnotification.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				sn.UserID = model.InternalID(value.Int64)
+				_m.UserID = model.InternalID(value.Int64)
 			}
 		case systemnotification.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				sn.Type = systemnotification.Type(value.String)
+				_m.Type = systemnotification.Type(value.String)
 			}
 		case systemnotification.FieldLevel:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field level", values[i])
 			} else if value.Valid {
-				sn.Level = systemnotification.Level(value.String)
+				_m.Level = systemnotification.Level(value.String)
 			}
 		case systemnotification.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				sn.Status = systemnotification.Status(value.String)
+				_m.Status = systemnotification.Status(value.String)
 			}
 		case systemnotification.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
-				sn.Title = value.String
+				_m.Title = value.String
 			}
 		case systemnotification.FieldContent:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field content", values[i])
 			} else if value.Valid {
-				sn.Content = value.String
+				_m.Content = value.String
 			}
 		case systemnotification.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				sn.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case systemnotification.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				sn.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			sn.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -126,56 +126,56 @@ func (sn *SystemNotification) assignValues(columns []string, values []any) error
 
 // Value returns the ent.Value that was dynamically selected and assigned to the SystemNotification.
 // This includes values selected through modifiers, order, etc.
-func (sn *SystemNotification) Value(name string) (ent.Value, error) {
-	return sn.selectValues.Get(name)
+func (_m *SystemNotification) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this SystemNotification.
 // Note that you need to call SystemNotification.Unwrap() before calling this method if this SystemNotification
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (sn *SystemNotification) Update() *SystemNotificationUpdateOne {
-	return NewSystemNotificationClient(sn.config).UpdateOne(sn)
+func (_m *SystemNotification) Update() *SystemNotificationUpdateOne {
+	return NewSystemNotificationClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the SystemNotification entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (sn *SystemNotification) Unwrap() *SystemNotification {
-	_tx, ok := sn.config.driver.(*txDriver)
+func (_m *SystemNotification) Unwrap() *SystemNotification {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: SystemNotification is not a transactional entity")
 	}
-	sn.config.driver = _tx.drv
-	return sn
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (sn *SystemNotification) String() string {
+func (_m *SystemNotification) String() string {
 	var builder strings.Builder
 	builder.WriteString("SystemNotification(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", sn.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", sn.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("type=")
-	builder.WriteString(fmt.Sprintf("%v", sn.Type))
+	builder.WriteString(fmt.Sprintf("%v", _m.Type))
 	builder.WriteString(", ")
 	builder.WriteString("level=")
-	builder.WriteString(fmt.Sprintf("%v", sn.Level))
+	builder.WriteString(fmt.Sprintf("%v", _m.Level))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", sn.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("title=")
-	builder.WriteString(sn.Title)
+	builder.WriteString(_m.Title)
 	builder.WriteString(", ")
 	builder.WriteString("content=")
-	builder.WriteString(sn.Content)
+	builder.WriteString(_m.Content)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(sn.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(sn.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

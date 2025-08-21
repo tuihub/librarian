@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"google.golang.org/grpc/metadata"

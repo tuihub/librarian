@@ -81,7 +81,7 @@ func (*Account) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Account fields.
-func (a *Account) assignValues(columns []string, values []any) error {
+func (_m *Account) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -91,58 +91,58 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				a.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case account.FieldPlatform:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field platform", values[i])
 			} else if value.Valid {
-				a.Platform = value.String
+				_m.Platform = value.String
 			}
 		case account.FieldPlatformAccountID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field platform_account_id", values[i])
 			} else if value.Valid {
-				a.PlatformAccountID = value.String
+				_m.PlatformAccountID = value.String
 			}
 		case account.FieldBoundUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field bound_user_id", values[i])
 			} else if value.Valid {
-				a.BoundUserID = model.InternalID(value.Int64)
+				_m.BoundUserID = model.InternalID(value.Int64)
 			}
 		case account.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				a.Name = value.String
+				_m.Name = value.String
 			}
 		case account.FieldProfileURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field profile_url", values[i])
 			} else if value.Valid {
-				a.ProfileURL = value.String
+				_m.ProfileURL = value.String
 			}
 		case account.FieldAvatarURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field avatar_url", values[i])
 			} else if value.Valid {
-				a.AvatarURL = value.String
+				_m.AvatarURL = value.String
 			}
 		case account.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				a.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case account.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				a.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			a.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -150,61 +150,61 @@ func (a *Account) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Account.
 // This includes values selected through modifiers, order, etc.
-func (a *Account) Value(name string) (ent.Value, error) {
-	return a.selectValues.Get(name)
+func (_m *Account) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryBoundUser queries the "bound_user" edge of the Account entity.
-func (a *Account) QueryBoundUser() *UserQuery {
-	return NewAccountClient(a.config).QueryBoundUser(a)
+func (_m *Account) QueryBoundUser() *UserQuery {
+	return NewAccountClient(_m.config).QueryBoundUser(_m)
 }
 
 // Update returns a builder for updating this Account.
 // Note that you need to call Account.Unwrap() before calling this method if this Account
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (a *Account) Update() *AccountUpdateOne {
-	return NewAccountClient(a.config).UpdateOne(a)
+func (_m *Account) Update() *AccountUpdateOne {
+	return NewAccountClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Account entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (a *Account) Unwrap() *Account {
-	_tx, ok := a.config.driver.(*txDriver)
+func (_m *Account) Unwrap() *Account {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Account is not a transactional entity")
 	}
-	a.config.driver = _tx.drv
-	return a
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (a *Account) String() string {
+func (_m *Account) String() string {
 	var builder strings.Builder
 	builder.WriteString("Account(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("platform=")
-	builder.WriteString(a.Platform)
+	builder.WriteString(_m.Platform)
 	builder.WriteString(", ")
 	builder.WriteString("platform_account_id=")
-	builder.WriteString(a.PlatformAccountID)
+	builder.WriteString(_m.PlatformAccountID)
 	builder.WriteString(", ")
 	builder.WriteString("bound_user_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.BoundUserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.BoundUserID))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(a.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("profile_url=")
-	builder.WriteString(a.ProfileURL)
+	builder.WriteString(_m.ProfileURL)
 	builder.WriteString(", ")
 	builder.WriteString("avatar_url=")
-	builder.WriteString(a.AvatarURL)
+	builder.WriteString(_m.AvatarURL)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(a.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(a.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

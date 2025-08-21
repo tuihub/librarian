@@ -24,97 +24,97 @@ type SystemNotificationCreate struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (snc *SystemNotificationCreate) SetUserID(mi model.InternalID) *SystemNotificationCreate {
-	snc.mutation.SetUserID(mi)
-	return snc
+func (_c *SystemNotificationCreate) SetUserID(v model.InternalID) *SystemNotificationCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (snc *SystemNotificationCreate) SetNillableUserID(mi *model.InternalID) *SystemNotificationCreate {
-	if mi != nil {
-		snc.SetUserID(*mi)
+func (_c *SystemNotificationCreate) SetNillableUserID(v *model.InternalID) *SystemNotificationCreate {
+	if v != nil {
+		_c.SetUserID(*v)
 	}
-	return snc
+	return _c
 }
 
 // SetType sets the "type" field.
-func (snc *SystemNotificationCreate) SetType(s systemnotification.Type) *SystemNotificationCreate {
-	snc.mutation.SetType(s)
-	return snc
+func (_c *SystemNotificationCreate) SetType(v systemnotification.Type) *SystemNotificationCreate {
+	_c.mutation.SetType(v)
+	return _c
 }
 
 // SetLevel sets the "level" field.
-func (snc *SystemNotificationCreate) SetLevel(s systemnotification.Level) *SystemNotificationCreate {
-	snc.mutation.SetLevel(s)
-	return snc
+func (_c *SystemNotificationCreate) SetLevel(v systemnotification.Level) *SystemNotificationCreate {
+	_c.mutation.SetLevel(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (snc *SystemNotificationCreate) SetStatus(s systemnotification.Status) *SystemNotificationCreate {
-	snc.mutation.SetStatus(s)
-	return snc
+func (_c *SystemNotificationCreate) SetStatus(v systemnotification.Status) *SystemNotificationCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetTitle sets the "title" field.
-func (snc *SystemNotificationCreate) SetTitle(s string) *SystemNotificationCreate {
-	snc.mutation.SetTitle(s)
-	return snc
+func (_c *SystemNotificationCreate) SetTitle(v string) *SystemNotificationCreate {
+	_c.mutation.SetTitle(v)
+	return _c
 }
 
 // SetContent sets the "content" field.
-func (snc *SystemNotificationCreate) SetContent(s string) *SystemNotificationCreate {
-	snc.mutation.SetContent(s)
-	return snc
+func (_c *SystemNotificationCreate) SetContent(v string) *SystemNotificationCreate {
+	_c.mutation.SetContent(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (snc *SystemNotificationCreate) SetUpdatedAt(t time.Time) *SystemNotificationCreate {
-	snc.mutation.SetUpdatedAt(t)
-	return snc
+func (_c *SystemNotificationCreate) SetUpdatedAt(v time.Time) *SystemNotificationCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (snc *SystemNotificationCreate) SetNillableUpdatedAt(t *time.Time) *SystemNotificationCreate {
-	if t != nil {
-		snc.SetUpdatedAt(*t)
+func (_c *SystemNotificationCreate) SetNillableUpdatedAt(v *time.Time) *SystemNotificationCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return snc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (snc *SystemNotificationCreate) SetCreatedAt(t time.Time) *SystemNotificationCreate {
-	snc.mutation.SetCreatedAt(t)
-	return snc
+func (_c *SystemNotificationCreate) SetCreatedAt(v time.Time) *SystemNotificationCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (snc *SystemNotificationCreate) SetNillableCreatedAt(t *time.Time) *SystemNotificationCreate {
-	if t != nil {
-		snc.SetCreatedAt(*t)
+func (_c *SystemNotificationCreate) SetNillableCreatedAt(v *time.Time) *SystemNotificationCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return snc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (snc *SystemNotificationCreate) SetID(mi model.InternalID) *SystemNotificationCreate {
-	snc.mutation.SetID(mi)
-	return snc
+func (_c *SystemNotificationCreate) SetID(v model.InternalID) *SystemNotificationCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // Mutation returns the SystemNotificationMutation object of the builder.
-func (snc *SystemNotificationCreate) Mutation() *SystemNotificationMutation {
-	return snc.mutation
+func (_c *SystemNotificationCreate) Mutation() *SystemNotificationMutation {
+	return _c.mutation
 }
 
 // Save creates the SystemNotification in the database.
-func (snc *SystemNotificationCreate) Save(ctx context.Context) (*SystemNotification, error) {
-	snc.defaults()
-	return withHooks(ctx, snc.sqlSave, snc.mutation, snc.hooks)
+func (_c *SystemNotificationCreate) Save(ctx context.Context) (*SystemNotification, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (snc *SystemNotificationCreate) SaveX(ctx context.Context) *SystemNotification {
-	v, err := snc.Save(ctx)
+func (_c *SystemNotificationCreate) SaveX(ctx context.Context) *SystemNotification {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -122,77 +122,77 @@ func (snc *SystemNotificationCreate) SaveX(ctx context.Context) *SystemNotificat
 }
 
 // Exec executes the query.
-func (snc *SystemNotificationCreate) Exec(ctx context.Context) error {
-	_, err := snc.Save(ctx)
+func (_c *SystemNotificationCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (snc *SystemNotificationCreate) ExecX(ctx context.Context) {
-	if err := snc.Exec(ctx); err != nil {
+func (_c *SystemNotificationCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (snc *SystemNotificationCreate) defaults() {
-	if _, ok := snc.mutation.UpdatedAt(); !ok {
+func (_c *SystemNotificationCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := systemnotification.DefaultUpdatedAt()
-		snc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := snc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := systemnotification.DefaultCreatedAt()
-		snc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (snc *SystemNotificationCreate) check() error {
-	if _, ok := snc.mutation.GetType(); !ok {
+func (_c *SystemNotificationCreate) check() error {
+	if _, ok := _c.mutation.GetType(); !ok {
 		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "SystemNotification.type"`)}
 	}
-	if v, ok := snc.mutation.GetType(); ok {
+	if v, ok := _c.mutation.GetType(); ok {
 		if err := systemnotification.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "SystemNotification.type": %w`, err)}
 		}
 	}
-	if _, ok := snc.mutation.Level(); !ok {
+	if _, ok := _c.mutation.Level(); !ok {
 		return &ValidationError{Name: "level", err: errors.New(`ent: missing required field "SystemNotification.level"`)}
 	}
-	if v, ok := snc.mutation.Level(); ok {
+	if v, ok := _c.mutation.Level(); ok {
 		if err := systemnotification.LevelValidator(v); err != nil {
 			return &ValidationError{Name: "level", err: fmt.Errorf(`ent: validator failed for field "SystemNotification.level": %w`, err)}
 		}
 	}
-	if _, ok := snc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "SystemNotification.status"`)}
 	}
-	if v, ok := snc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := systemnotification.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SystemNotification.status": %w`, err)}
 		}
 	}
-	if _, ok := snc.mutation.Title(); !ok {
+	if _, ok := _c.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "SystemNotification.title"`)}
 	}
-	if _, ok := snc.mutation.Content(); !ok {
+	if _, ok := _c.mutation.Content(); !ok {
 		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "SystemNotification.content"`)}
 	}
-	if _, ok := snc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "SystemNotification.updated_at"`)}
 	}
-	if _, ok := snc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SystemNotification.created_at"`)}
 	}
 	return nil
 }
 
-func (snc *SystemNotificationCreate) sqlSave(ctx context.Context) (*SystemNotification, error) {
-	if err := snc.check(); err != nil {
+func (_c *SystemNotificationCreate) sqlSave(ctx context.Context) (*SystemNotification, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := snc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, snc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -202,50 +202,50 @@ func (snc *SystemNotificationCreate) sqlSave(ctx context.Context) (*SystemNotifi
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	snc.mutation.id = &_node.ID
-	snc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (snc *SystemNotificationCreate) createSpec() (*SystemNotification, *sqlgraph.CreateSpec) {
+func (_c *SystemNotificationCreate) createSpec() (*SystemNotification, *sqlgraph.CreateSpec) {
 	var (
-		_node = &SystemNotification{config: snc.config}
+		_node = &SystemNotification{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(systemnotification.Table, sqlgraph.NewFieldSpec(systemnotification.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = snc.conflict
-	if id, ok := snc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := snc.mutation.UserID(); ok {
+	if value, ok := _c.mutation.UserID(); ok {
 		_spec.SetField(systemnotification.FieldUserID, field.TypeInt64, value)
 		_node.UserID = value
 	}
-	if value, ok := snc.mutation.GetType(); ok {
+	if value, ok := _c.mutation.GetType(); ok {
 		_spec.SetField(systemnotification.FieldType, field.TypeEnum, value)
 		_node.Type = value
 	}
-	if value, ok := snc.mutation.Level(); ok {
+	if value, ok := _c.mutation.Level(); ok {
 		_spec.SetField(systemnotification.FieldLevel, field.TypeEnum, value)
 		_node.Level = value
 	}
-	if value, ok := snc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(systemnotification.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := snc.mutation.Title(); ok {
+	if value, ok := _c.mutation.Title(); ok {
 		_spec.SetField(systemnotification.FieldTitle, field.TypeString, value)
 		_node.Title = value
 	}
-	if value, ok := snc.mutation.Content(); ok {
+	if value, ok := _c.mutation.Content(); ok {
 		_spec.SetField(systemnotification.FieldContent, field.TypeString, value)
 		_node.Content = value
 	}
-	if value, ok := snc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(systemnotification.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := snc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(systemnotification.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
@@ -268,10 +268,10 @@ func (snc *SystemNotificationCreate) createSpec() (*SystemNotification, *sqlgrap
 //			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
-func (snc *SystemNotificationCreate) OnConflict(opts ...sql.ConflictOption) *SystemNotificationUpsertOne {
-	snc.conflict = opts
+func (_c *SystemNotificationCreate) OnConflict(opts ...sql.ConflictOption) *SystemNotificationUpsertOne {
+	_c.conflict = opts
 	return &SystemNotificationUpsertOne{
-		create: snc,
+		create: _c,
 	}
 }
 
@@ -281,10 +281,10 @@ func (snc *SystemNotificationCreate) OnConflict(opts ...sql.ConflictOption) *Sys
 //	client.SystemNotification.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (snc *SystemNotificationCreate) OnConflictColumns(columns ...string) *SystemNotificationUpsertOne {
-	snc.conflict = append(snc.conflict, sql.ConflictColumns(columns...))
+func (_c *SystemNotificationCreate) OnConflictColumns(columns ...string) *SystemNotificationUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SystemNotificationUpsertOne{
-		create: snc,
+		create: _c,
 	}
 }
 
@@ -625,16 +625,16 @@ type SystemNotificationCreateBulk struct {
 }
 
 // Save creates the SystemNotification entities in the database.
-func (sncb *SystemNotificationCreateBulk) Save(ctx context.Context) ([]*SystemNotification, error) {
-	if sncb.err != nil {
-		return nil, sncb.err
+func (_c *SystemNotificationCreateBulk) Save(ctx context.Context) ([]*SystemNotification, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(sncb.builders))
-	nodes := make([]*SystemNotification, len(sncb.builders))
-	mutators := make([]Mutator, len(sncb.builders))
-	for i := range sncb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*SystemNotification, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := sncb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SystemNotificationMutation)
@@ -648,12 +648,12 @@ func (sncb *SystemNotificationCreateBulk) Save(ctx context.Context) ([]*SystemNo
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, sncb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = sncb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, sncb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -677,7 +677,7 @@ func (sncb *SystemNotificationCreateBulk) Save(ctx context.Context) ([]*SystemNo
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, sncb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -685,8 +685,8 @@ func (sncb *SystemNotificationCreateBulk) Save(ctx context.Context) ([]*SystemNo
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sncb *SystemNotificationCreateBulk) SaveX(ctx context.Context) []*SystemNotification {
-	v, err := sncb.Save(ctx)
+func (_c *SystemNotificationCreateBulk) SaveX(ctx context.Context) []*SystemNotification {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -694,14 +694,14 @@ func (sncb *SystemNotificationCreateBulk) SaveX(ctx context.Context) []*SystemNo
 }
 
 // Exec executes the query.
-func (sncb *SystemNotificationCreateBulk) Exec(ctx context.Context) error {
-	_, err := sncb.Save(ctx)
+func (_c *SystemNotificationCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sncb *SystemNotificationCreateBulk) ExecX(ctx context.Context) {
-	if err := sncb.Exec(ctx); err != nil {
+func (_c *SystemNotificationCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -721,10 +721,10 @@ func (sncb *SystemNotificationCreateBulk) ExecX(ctx context.Context) {
 //			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
-func (sncb *SystemNotificationCreateBulk) OnConflict(opts ...sql.ConflictOption) *SystemNotificationUpsertBulk {
-	sncb.conflict = opts
+func (_c *SystemNotificationCreateBulk) OnConflict(opts ...sql.ConflictOption) *SystemNotificationUpsertBulk {
+	_c.conflict = opts
 	return &SystemNotificationUpsertBulk{
-		create: sncb,
+		create: _c,
 	}
 }
 
@@ -734,10 +734,10 @@ func (sncb *SystemNotificationCreateBulk) OnConflict(opts ...sql.ConflictOption)
 //	client.SystemNotification.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sncb *SystemNotificationCreateBulk) OnConflictColumns(columns ...string) *SystemNotificationUpsertBulk {
-	sncb.conflict = append(sncb.conflict, sql.ConflictColumns(columns...))
+func (_c *SystemNotificationCreateBulk) OnConflictColumns(columns ...string) *SystemNotificationUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SystemNotificationUpsertBulk{
-		create: sncb,
+		create: _c,
 	}
 }
 

@@ -26,187 +26,187 @@ type AppCategoryUpdate struct {
 }
 
 // Where appends a list predicates to the AppCategoryUpdate builder.
-func (acu *AppCategoryUpdate) Where(ps ...predicate.AppCategory) *AppCategoryUpdate {
-	acu.mutation.Where(ps...)
-	return acu
+func (_u *AppCategoryUpdate) Where(ps ...predicate.AppCategory) *AppCategoryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (acu *AppCategoryUpdate) SetUserID(mi model.InternalID) *AppCategoryUpdate {
-	acu.mutation.ResetUserID()
-	acu.mutation.SetUserID(mi)
-	return acu
+func (_u *AppCategoryUpdate) SetUserID(v model.InternalID) *AppCategoryUpdate {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (acu *AppCategoryUpdate) SetNillableUserID(mi *model.InternalID) *AppCategoryUpdate {
-	if mi != nil {
-		acu.SetUserID(*mi)
+func (_u *AppCategoryUpdate) SetNillableUserID(v *model.InternalID) *AppCategoryUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return acu
+	return _u
 }
 
-// AddUserID adds mi to the "user_id" field.
-func (acu *AppCategoryUpdate) AddUserID(mi model.InternalID) *AppCategoryUpdate {
-	acu.mutation.AddUserID(mi)
-	return acu
+// AddUserID adds value to the "user_id" field.
+func (_u *AppCategoryUpdate) AddUserID(v model.InternalID) *AppCategoryUpdate {
+	_u.mutation.AddUserID(v)
+	return _u
 }
 
 // SetVersionNumber sets the "version_number" field.
-func (acu *AppCategoryUpdate) SetVersionNumber(u uint64) *AppCategoryUpdate {
-	acu.mutation.ResetVersionNumber()
-	acu.mutation.SetVersionNumber(u)
-	return acu
+func (_u *AppCategoryUpdate) SetVersionNumber(v uint64) *AppCategoryUpdate {
+	_u.mutation.ResetVersionNumber()
+	_u.mutation.SetVersionNumber(v)
+	return _u
 }
 
 // SetNillableVersionNumber sets the "version_number" field if the given value is not nil.
-func (acu *AppCategoryUpdate) SetNillableVersionNumber(u *uint64) *AppCategoryUpdate {
-	if u != nil {
-		acu.SetVersionNumber(*u)
+func (_u *AppCategoryUpdate) SetNillableVersionNumber(v *uint64) *AppCategoryUpdate {
+	if v != nil {
+		_u.SetVersionNumber(*v)
 	}
-	return acu
+	return _u
 }
 
-// AddVersionNumber adds u to the "version_number" field.
-func (acu *AppCategoryUpdate) AddVersionNumber(u int64) *AppCategoryUpdate {
-	acu.mutation.AddVersionNumber(u)
-	return acu
+// AddVersionNumber adds value to the "version_number" field.
+func (_u *AppCategoryUpdate) AddVersionNumber(v int64) *AppCategoryUpdate {
+	_u.mutation.AddVersionNumber(v)
+	return _u
 }
 
 // SetVersionDate sets the "version_date" field.
-func (acu *AppCategoryUpdate) SetVersionDate(t time.Time) *AppCategoryUpdate {
-	acu.mutation.SetVersionDate(t)
-	return acu
+func (_u *AppCategoryUpdate) SetVersionDate(v time.Time) *AppCategoryUpdate {
+	_u.mutation.SetVersionDate(v)
+	return _u
 }
 
 // SetNillableVersionDate sets the "version_date" field if the given value is not nil.
-func (acu *AppCategoryUpdate) SetNillableVersionDate(t *time.Time) *AppCategoryUpdate {
-	if t != nil {
-		acu.SetVersionDate(*t)
+func (_u *AppCategoryUpdate) SetNillableVersionDate(v *time.Time) *AppCategoryUpdate {
+	if v != nil {
+		_u.SetVersionDate(*v)
 	}
-	return acu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (acu *AppCategoryUpdate) SetName(s string) *AppCategoryUpdate {
-	acu.mutation.SetName(s)
-	return acu
+func (_u *AppCategoryUpdate) SetName(v string) *AppCategoryUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (acu *AppCategoryUpdate) SetNillableName(s *string) *AppCategoryUpdate {
-	if s != nil {
-		acu.SetName(*s)
+func (_u *AppCategoryUpdate) SetNillableName(v *string) *AppCategoryUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return acu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (acu *AppCategoryUpdate) SetUpdatedAt(t time.Time) *AppCategoryUpdate {
-	acu.mutation.SetUpdatedAt(t)
-	return acu
+func (_u *AppCategoryUpdate) SetUpdatedAt(v time.Time) *AppCategoryUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (acu *AppCategoryUpdate) SetCreatedAt(t time.Time) *AppCategoryUpdate {
-	acu.mutation.SetCreatedAt(t)
-	return acu
+func (_u *AppCategoryUpdate) SetCreatedAt(v time.Time) *AppCategoryUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (acu *AppCategoryUpdate) SetNillableCreatedAt(t *time.Time) *AppCategoryUpdate {
-	if t != nil {
-		acu.SetCreatedAt(*t)
+func (_u *AppCategoryUpdate) SetNillableCreatedAt(v *time.Time) *AppCategoryUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return acu
+	return _u
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
-func (acu *AppCategoryUpdate) AddAppIDs(ids ...model.InternalID) *AppCategoryUpdate {
-	acu.mutation.AddAppIDs(ids...)
-	return acu
+func (_u *AppCategoryUpdate) AddAppIDs(ids ...model.InternalID) *AppCategoryUpdate {
+	_u.mutation.AddAppIDs(ids...)
+	return _u
 }
 
 // AddApp adds the "app" edges to the App entity.
-func (acu *AppCategoryUpdate) AddApp(a ...*App) *AppCategoryUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppCategoryUpdate) AddApp(v ...*App) *AppCategoryUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acu.AddAppIDs(ids...)
+	return _u.AddAppIDs(ids...)
 }
 
 // AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by IDs.
-func (acu *AppCategoryUpdate) AddAppAppCategoryIDs(ids ...int) *AppCategoryUpdate {
-	acu.mutation.AddAppAppCategoryIDs(ids...)
-	return acu
+func (_u *AppCategoryUpdate) AddAppAppCategoryIDs(ids ...int) *AppCategoryUpdate {
+	_u.mutation.AddAppAppCategoryIDs(ids...)
+	return _u
 }
 
 // AddAppAppCategory adds the "app_app_category" edges to the AppAppCategory entity.
-func (acu *AppCategoryUpdate) AddAppAppCategory(a ...*AppAppCategory) *AppCategoryUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppCategoryUpdate) AddAppAppCategory(v ...*AppAppCategory) *AppCategoryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acu.AddAppAppCategoryIDs(ids...)
+	return _u.AddAppAppCategoryIDs(ids...)
 }
 
 // Mutation returns the AppCategoryMutation object of the builder.
-func (acu *AppCategoryUpdate) Mutation() *AppCategoryMutation {
-	return acu.mutation
+func (_u *AppCategoryUpdate) Mutation() *AppCategoryMutation {
+	return _u.mutation
 }
 
 // ClearApp clears all "app" edges to the App entity.
-func (acu *AppCategoryUpdate) ClearApp() *AppCategoryUpdate {
-	acu.mutation.ClearApp()
-	return acu
+func (_u *AppCategoryUpdate) ClearApp() *AppCategoryUpdate {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (acu *AppCategoryUpdate) RemoveAppIDs(ids ...model.InternalID) *AppCategoryUpdate {
-	acu.mutation.RemoveAppIDs(ids...)
-	return acu
+func (_u *AppCategoryUpdate) RemoveAppIDs(ids ...model.InternalID) *AppCategoryUpdate {
+	_u.mutation.RemoveAppIDs(ids...)
+	return _u
 }
 
 // RemoveApp removes "app" edges to App entities.
-func (acu *AppCategoryUpdate) RemoveApp(a ...*App) *AppCategoryUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppCategoryUpdate) RemoveApp(v ...*App) *AppCategoryUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acu.RemoveAppIDs(ids...)
+	return _u.RemoveAppIDs(ids...)
 }
 
 // ClearAppAppCategory clears all "app_app_category" edges to the AppAppCategory entity.
-func (acu *AppCategoryUpdate) ClearAppAppCategory() *AppCategoryUpdate {
-	acu.mutation.ClearAppAppCategory()
-	return acu
+func (_u *AppCategoryUpdate) ClearAppAppCategory() *AppCategoryUpdate {
+	_u.mutation.ClearAppAppCategory()
+	return _u
 }
 
 // RemoveAppAppCategoryIDs removes the "app_app_category" edge to AppAppCategory entities by IDs.
-func (acu *AppCategoryUpdate) RemoveAppAppCategoryIDs(ids ...int) *AppCategoryUpdate {
-	acu.mutation.RemoveAppAppCategoryIDs(ids...)
-	return acu
+func (_u *AppCategoryUpdate) RemoveAppAppCategoryIDs(ids ...int) *AppCategoryUpdate {
+	_u.mutation.RemoveAppAppCategoryIDs(ids...)
+	return _u
 }
 
 // RemoveAppAppCategory removes "app_app_category" edges to AppAppCategory entities.
-func (acu *AppCategoryUpdate) RemoveAppAppCategory(a ...*AppAppCategory) *AppCategoryUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppCategoryUpdate) RemoveAppAppCategory(v ...*AppAppCategory) *AppCategoryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acu.RemoveAppAppCategoryIDs(ids...)
+	return _u.RemoveAppAppCategoryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (acu *AppCategoryUpdate) Save(ctx context.Context) (int, error) {
-	acu.defaults()
-	return withHooks(ctx, acu.sqlSave, acu.mutation, acu.hooks)
+func (_u *AppCategoryUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acu *AppCategoryUpdate) SaveX(ctx context.Context) int {
-	affected, err := acu.Save(ctx)
+func (_u *AppCategoryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -214,60 +214,60 @@ func (acu *AppCategoryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (acu *AppCategoryUpdate) Exec(ctx context.Context) error {
-	_, err := acu.Save(ctx)
+func (_u *AppCategoryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (acu *AppCategoryUpdate) ExecX(ctx context.Context) {
-	if err := acu.Exec(ctx); err != nil {
+func (_u *AppCategoryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (acu *AppCategoryUpdate) defaults() {
-	if _, ok := acu.mutation.UpdatedAt(); !ok {
+func (_u *AppCategoryUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := appcategory.UpdateDefaultUpdatedAt()
-		acu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (acu *AppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *AppCategoryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(appcategory.Table, appcategory.Columns, sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64))
-	if ps := acu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := acu.mutation.UserID(); ok {
+	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(appcategory.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := acu.mutation.AddedUserID(); ok {
+	if value, ok := _u.mutation.AddedUserID(); ok {
 		_spec.AddField(appcategory.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := acu.mutation.VersionNumber(); ok {
+	if value, ok := _u.mutation.VersionNumber(); ok {
 		_spec.SetField(appcategory.FieldVersionNumber, field.TypeUint64, value)
 	}
-	if value, ok := acu.mutation.AddedVersionNumber(); ok {
+	if value, ok := _u.mutation.AddedVersionNumber(); ok {
 		_spec.AddField(appcategory.FieldVersionNumber, field.TypeUint64, value)
 	}
-	if value, ok := acu.mutation.VersionDate(); ok {
+	if value, ok := _u.mutation.VersionDate(); ok {
 		_spec.SetField(appcategory.FieldVersionDate, field.TypeTime, value)
 	}
-	if value, ok := acu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appcategory.FieldName, field.TypeString, value)
 	}
-	if value, ok := acu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appcategory.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := acu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(appcategory.FieldCreatedAt, field.TypeTime, value)
 	}
-	if acu.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -280,7 +280,7 @@ func (acu *AppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acu.mutation.RemovedAppIDs(); len(nodes) > 0 && !acu.mutation.AppCleared() {
+	if nodes := _u.mutation.RemovedAppIDs(); len(nodes) > 0 && !_u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -296,7 +296,7 @@ func (acu *AppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acu.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -312,7 +312,7 @@ func (acu *AppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if acu.mutation.AppAppCategoryCleared() {
+	if _u.mutation.AppAppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -325,7 +325,7 @@ func (acu *AppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acu.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !acu.mutation.AppAppCategoryCleared() {
+	if nodes := _u.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !_u.mutation.AppAppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -341,7 +341,7 @@ func (acu *AppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acu.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -357,7 +357,7 @@ func (acu *AppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, acu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appcategory.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -365,8 +365,8 @@ func (acu *AppCategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	acu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // AppCategoryUpdateOne is the builder for updating a single AppCategory entity.
@@ -378,194 +378,194 @@ type AppCategoryUpdateOne struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (acuo *AppCategoryUpdateOne) SetUserID(mi model.InternalID) *AppCategoryUpdateOne {
-	acuo.mutation.ResetUserID()
-	acuo.mutation.SetUserID(mi)
-	return acuo
+func (_u *AppCategoryUpdateOne) SetUserID(v model.InternalID) *AppCategoryUpdateOne {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (acuo *AppCategoryUpdateOne) SetNillableUserID(mi *model.InternalID) *AppCategoryUpdateOne {
-	if mi != nil {
-		acuo.SetUserID(*mi)
+func (_u *AppCategoryUpdateOne) SetNillableUserID(v *model.InternalID) *AppCategoryUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return acuo
+	return _u
 }
 
-// AddUserID adds mi to the "user_id" field.
-func (acuo *AppCategoryUpdateOne) AddUserID(mi model.InternalID) *AppCategoryUpdateOne {
-	acuo.mutation.AddUserID(mi)
-	return acuo
+// AddUserID adds value to the "user_id" field.
+func (_u *AppCategoryUpdateOne) AddUserID(v model.InternalID) *AppCategoryUpdateOne {
+	_u.mutation.AddUserID(v)
+	return _u
 }
 
 // SetVersionNumber sets the "version_number" field.
-func (acuo *AppCategoryUpdateOne) SetVersionNumber(u uint64) *AppCategoryUpdateOne {
-	acuo.mutation.ResetVersionNumber()
-	acuo.mutation.SetVersionNumber(u)
-	return acuo
+func (_u *AppCategoryUpdateOne) SetVersionNumber(v uint64) *AppCategoryUpdateOne {
+	_u.mutation.ResetVersionNumber()
+	_u.mutation.SetVersionNumber(v)
+	return _u
 }
 
 // SetNillableVersionNumber sets the "version_number" field if the given value is not nil.
-func (acuo *AppCategoryUpdateOne) SetNillableVersionNumber(u *uint64) *AppCategoryUpdateOne {
-	if u != nil {
-		acuo.SetVersionNumber(*u)
+func (_u *AppCategoryUpdateOne) SetNillableVersionNumber(v *uint64) *AppCategoryUpdateOne {
+	if v != nil {
+		_u.SetVersionNumber(*v)
 	}
-	return acuo
+	return _u
 }
 
-// AddVersionNumber adds u to the "version_number" field.
-func (acuo *AppCategoryUpdateOne) AddVersionNumber(u int64) *AppCategoryUpdateOne {
-	acuo.mutation.AddVersionNumber(u)
-	return acuo
+// AddVersionNumber adds value to the "version_number" field.
+func (_u *AppCategoryUpdateOne) AddVersionNumber(v int64) *AppCategoryUpdateOne {
+	_u.mutation.AddVersionNumber(v)
+	return _u
 }
 
 // SetVersionDate sets the "version_date" field.
-func (acuo *AppCategoryUpdateOne) SetVersionDate(t time.Time) *AppCategoryUpdateOne {
-	acuo.mutation.SetVersionDate(t)
-	return acuo
+func (_u *AppCategoryUpdateOne) SetVersionDate(v time.Time) *AppCategoryUpdateOne {
+	_u.mutation.SetVersionDate(v)
+	return _u
 }
 
 // SetNillableVersionDate sets the "version_date" field if the given value is not nil.
-func (acuo *AppCategoryUpdateOne) SetNillableVersionDate(t *time.Time) *AppCategoryUpdateOne {
-	if t != nil {
-		acuo.SetVersionDate(*t)
+func (_u *AppCategoryUpdateOne) SetNillableVersionDate(v *time.Time) *AppCategoryUpdateOne {
+	if v != nil {
+		_u.SetVersionDate(*v)
 	}
-	return acuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (acuo *AppCategoryUpdateOne) SetName(s string) *AppCategoryUpdateOne {
-	acuo.mutation.SetName(s)
-	return acuo
+func (_u *AppCategoryUpdateOne) SetName(v string) *AppCategoryUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (acuo *AppCategoryUpdateOne) SetNillableName(s *string) *AppCategoryUpdateOne {
-	if s != nil {
-		acuo.SetName(*s)
+func (_u *AppCategoryUpdateOne) SetNillableName(v *string) *AppCategoryUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return acuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (acuo *AppCategoryUpdateOne) SetUpdatedAt(t time.Time) *AppCategoryUpdateOne {
-	acuo.mutation.SetUpdatedAt(t)
-	return acuo
+func (_u *AppCategoryUpdateOne) SetUpdatedAt(v time.Time) *AppCategoryUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (acuo *AppCategoryUpdateOne) SetCreatedAt(t time.Time) *AppCategoryUpdateOne {
-	acuo.mutation.SetCreatedAt(t)
-	return acuo
+func (_u *AppCategoryUpdateOne) SetCreatedAt(v time.Time) *AppCategoryUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (acuo *AppCategoryUpdateOne) SetNillableCreatedAt(t *time.Time) *AppCategoryUpdateOne {
-	if t != nil {
-		acuo.SetCreatedAt(*t)
+func (_u *AppCategoryUpdateOne) SetNillableCreatedAt(v *time.Time) *AppCategoryUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return acuo
+	return _u
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
-func (acuo *AppCategoryUpdateOne) AddAppIDs(ids ...model.InternalID) *AppCategoryUpdateOne {
-	acuo.mutation.AddAppIDs(ids...)
-	return acuo
+func (_u *AppCategoryUpdateOne) AddAppIDs(ids ...model.InternalID) *AppCategoryUpdateOne {
+	_u.mutation.AddAppIDs(ids...)
+	return _u
 }
 
 // AddApp adds the "app" edges to the App entity.
-func (acuo *AppCategoryUpdateOne) AddApp(a ...*App) *AppCategoryUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppCategoryUpdateOne) AddApp(v ...*App) *AppCategoryUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acuo.AddAppIDs(ids...)
+	return _u.AddAppIDs(ids...)
 }
 
 // AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by IDs.
-func (acuo *AppCategoryUpdateOne) AddAppAppCategoryIDs(ids ...int) *AppCategoryUpdateOne {
-	acuo.mutation.AddAppAppCategoryIDs(ids...)
-	return acuo
+func (_u *AppCategoryUpdateOne) AddAppAppCategoryIDs(ids ...int) *AppCategoryUpdateOne {
+	_u.mutation.AddAppAppCategoryIDs(ids...)
+	return _u
 }
 
 // AddAppAppCategory adds the "app_app_category" edges to the AppAppCategory entity.
-func (acuo *AppCategoryUpdateOne) AddAppAppCategory(a ...*AppAppCategory) *AppCategoryUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppCategoryUpdateOne) AddAppAppCategory(v ...*AppAppCategory) *AppCategoryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acuo.AddAppAppCategoryIDs(ids...)
+	return _u.AddAppAppCategoryIDs(ids...)
 }
 
 // Mutation returns the AppCategoryMutation object of the builder.
-func (acuo *AppCategoryUpdateOne) Mutation() *AppCategoryMutation {
-	return acuo.mutation
+func (_u *AppCategoryUpdateOne) Mutation() *AppCategoryMutation {
+	return _u.mutation
 }
 
 // ClearApp clears all "app" edges to the App entity.
-func (acuo *AppCategoryUpdateOne) ClearApp() *AppCategoryUpdateOne {
-	acuo.mutation.ClearApp()
-	return acuo
+func (_u *AppCategoryUpdateOne) ClearApp() *AppCategoryUpdateOne {
+	_u.mutation.ClearApp()
+	return _u
 }
 
 // RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (acuo *AppCategoryUpdateOne) RemoveAppIDs(ids ...model.InternalID) *AppCategoryUpdateOne {
-	acuo.mutation.RemoveAppIDs(ids...)
-	return acuo
+func (_u *AppCategoryUpdateOne) RemoveAppIDs(ids ...model.InternalID) *AppCategoryUpdateOne {
+	_u.mutation.RemoveAppIDs(ids...)
+	return _u
 }
 
 // RemoveApp removes "app" edges to App entities.
-func (acuo *AppCategoryUpdateOne) RemoveApp(a ...*App) *AppCategoryUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppCategoryUpdateOne) RemoveApp(v ...*App) *AppCategoryUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acuo.RemoveAppIDs(ids...)
+	return _u.RemoveAppIDs(ids...)
 }
 
 // ClearAppAppCategory clears all "app_app_category" edges to the AppAppCategory entity.
-func (acuo *AppCategoryUpdateOne) ClearAppAppCategory() *AppCategoryUpdateOne {
-	acuo.mutation.ClearAppAppCategory()
-	return acuo
+func (_u *AppCategoryUpdateOne) ClearAppAppCategory() *AppCategoryUpdateOne {
+	_u.mutation.ClearAppAppCategory()
+	return _u
 }
 
 // RemoveAppAppCategoryIDs removes the "app_app_category" edge to AppAppCategory entities by IDs.
-func (acuo *AppCategoryUpdateOne) RemoveAppAppCategoryIDs(ids ...int) *AppCategoryUpdateOne {
-	acuo.mutation.RemoveAppAppCategoryIDs(ids...)
-	return acuo
+func (_u *AppCategoryUpdateOne) RemoveAppAppCategoryIDs(ids ...int) *AppCategoryUpdateOne {
+	_u.mutation.RemoveAppAppCategoryIDs(ids...)
+	return _u
 }
 
 // RemoveAppAppCategory removes "app_app_category" edges to AppAppCategory entities.
-func (acuo *AppCategoryUpdateOne) RemoveAppAppCategory(a ...*AppAppCategory) *AppCategoryUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+func (_u *AppCategoryUpdateOne) RemoveAppAppCategory(v ...*AppAppCategory) *AppCategoryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return acuo.RemoveAppAppCategoryIDs(ids...)
+	return _u.RemoveAppAppCategoryIDs(ids...)
 }
 
 // Where appends a list predicates to the AppCategoryUpdate builder.
-func (acuo *AppCategoryUpdateOne) Where(ps ...predicate.AppCategory) *AppCategoryUpdateOne {
-	acuo.mutation.Where(ps...)
-	return acuo
+func (_u *AppCategoryUpdateOne) Where(ps ...predicate.AppCategory) *AppCategoryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (acuo *AppCategoryUpdateOne) Select(field string, fields ...string) *AppCategoryUpdateOne {
-	acuo.fields = append([]string{field}, fields...)
-	return acuo
+func (_u *AppCategoryUpdateOne) Select(field string, fields ...string) *AppCategoryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated AppCategory entity.
-func (acuo *AppCategoryUpdateOne) Save(ctx context.Context) (*AppCategory, error) {
-	acuo.defaults()
-	return withHooks(ctx, acuo.sqlSave, acuo.mutation, acuo.hooks)
+func (_u *AppCategoryUpdateOne) Save(ctx context.Context) (*AppCategory, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acuo *AppCategoryUpdateOne) SaveX(ctx context.Context) *AppCategory {
-	node, err := acuo.Save(ctx)
+func (_u *AppCategoryUpdateOne) SaveX(ctx context.Context) *AppCategory {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -573,34 +573,34 @@ func (acuo *AppCategoryUpdateOne) SaveX(ctx context.Context) *AppCategory {
 }
 
 // Exec executes the query on the entity.
-func (acuo *AppCategoryUpdateOne) Exec(ctx context.Context) error {
-	_, err := acuo.Save(ctx)
+func (_u *AppCategoryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (acuo *AppCategoryUpdateOne) ExecX(ctx context.Context) {
-	if err := acuo.Exec(ctx); err != nil {
+func (_u *AppCategoryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (acuo *AppCategoryUpdateOne) defaults() {
-	if _, ok := acuo.mutation.UpdatedAt(); !ok {
+func (_u *AppCategoryUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := appcategory.UpdateDefaultUpdatedAt()
-		acuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (acuo *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCategory, err error) {
+func (_u *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCategory, err error) {
 	_spec := sqlgraph.NewUpdateSpec(appcategory.Table, appcategory.Columns, sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64))
-	id, ok := acuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppCategory.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := acuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, appcategory.FieldID)
 		for _, f := range fields {
@@ -612,38 +612,38 @@ func (acuo *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCatego
 			}
 		}
 	}
-	if ps := acuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := acuo.mutation.UserID(); ok {
+	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(appcategory.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := acuo.mutation.AddedUserID(); ok {
+	if value, ok := _u.mutation.AddedUserID(); ok {
 		_spec.AddField(appcategory.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := acuo.mutation.VersionNumber(); ok {
+	if value, ok := _u.mutation.VersionNumber(); ok {
 		_spec.SetField(appcategory.FieldVersionNumber, field.TypeUint64, value)
 	}
-	if value, ok := acuo.mutation.AddedVersionNumber(); ok {
+	if value, ok := _u.mutation.AddedVersionNumber(); ok {
 		_spec.AddField(appcategory.FieldVersionNumber, field.TypeUint64, value)
 	}
-	if value, ok := acuo.mutation.VersionDate(); ok {
+	if value, ok := _u.mutation.VersionDate(); ok {
 		_spec.SetField(appcategory.FieldVersionDate, field.TypeTime, value)
 	}
-	if value, ok := acuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(appcategory.FieldName, field.TypeString, value)
 	}
-	if value, ok := acuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(appcategory.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := acuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(appcategory.FieldCreatedAt, field.TypeTime, value)
 	}
-	if acuo.mutation.AppCleared() {
+	if _u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -656,7 +656,7 @@ func (acuo *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCatego
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acuo.mutation.RemovedAppIDs(); len(nodes) > 0 && !acuo.mutation.AppCleared() {
+	if nodes := _u.mutation.RemovedAppIDs(); len(nodes) > 0 && !_u.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -672,7 +672,7 @@ func (acuo *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCatego
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acuo.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -688,7 +688,7 @@ func (acuo *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCatego
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if acuo.mutation.AppAppCategoryCleared() {
+	if _u.mutation.AppAppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -701,7 +701,7 @@ func (acuo *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCatego
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acuo.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !acuo.mutation.AppAppCategoryCleared() {
+	if nodes := _u.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !_u.mutation.AppAppCategoryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -717,7 +717,7 @@ func (acuo *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCatego
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := acuo.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -733,10 +733,10 @@ func (acuo *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCatego
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &AppCategory{config: acuo.config}
+	_node = &AppCategory{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, acuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appcategory.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -744,6 +744,6 @@ func (acuo *AppCategoryUpdateOne) sqlSave(ctx context.Context) (_node *AppCatego
 		}
 		return nil, err
 	}
-	acuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

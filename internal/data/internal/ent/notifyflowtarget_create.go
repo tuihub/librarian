@@ -26,81 +26,81 @@ type NotifyFlowTargetCreate struct {
 }
 
 // SetNotifyFlowID sets the "notify_flow_id" field.
-func (nftc *NotifyFlowTargetCreate) SetNotifyFlowID(mi model.InternalID) *NotifyFlowTargetCreate {
-	nftc.mutation.SetNotifyFlowID(mi)
-	return nftc
+func (_c *NotifyFlowTargetCreate) SetNotifyFlowID(v model.InternalID) *NotifyFlowTargetCreate {
+	_c.mutation.SetNotifyFlowID(v)
+	return _c
 }
 
 // SetNotifyTargetID sets the "notify_target_id" field.
-func (nftc *NotifyFlowTargetCreate) SetNotifyTargetID(mi model.InternalID) *NotifyFlowTargetCreate {
-	nftc.mutation.SetNotifyTargetID(mi)
-	return nftc
+func (_c *NotifyFlowTargetCreate) SetNotifyTargetID(v model.InternalID) *NotifyFlowTargetCreate {
+	_c.mutation.SetNotifyTargetID(v)
+	return _c
 }
 
 // SetFilterIncludeKeywords sets the "filter_include_keywords" field.
-func (nftc *NotifyFlowTargetCreate) SetFilterIncludeKeywords(s []string) *NotifyFlowTargetCreate {
-	nftc.mutation.SetFilterIncludeKeywords(s)
-	return nftc
+func (_c *NotifyFlowTargetCreate) SetFilterIncludeKeywords(v []string) *NotifyFlowTargetCreate {
+	_c.mutation.SetFilterIncludeKeywords(v)
+	return _c
 }
 
 // SetFilterExcludeKeywords sets the "filter_exclude_keywords" field.
-func (nftc *NotifyFlowTargetCreate) SetFilterExcludeKeywords(s []string) *NotifyFlowTargetCreate {
-	nftc.mutation.SetFilterExcludeKeywords(s)
-	return nftc
+func (_c *NotifyFlowTargetCreate) SetFilterExcludeKeywords(v []string) *NotifyFlowTargetCreate {
+	_c.mutation.SetFilterExcludeKeywords(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (nftc *NotifyFlowTargetCreate) SetUpdatedAt(t time.Time) *NotifyFlowTargetCreate {
-	nftc.mutation.SetUpdatedAt(t)
-	return nftc
+func (_c *NotifyFlowTargetCreate) SetUpdatedAt(v time.Time) *NotifyFlowTargetCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (nftc *NotifyFlowTargetCreate) SetNillableUpdatedAt(t *time.Time) *NotifyFlowTargetCreate {
-	if t != nil {
-		nftc.SetUpdatedAt(*t)
+func (_c *NotifyFlowTargetCreate) SetNillableUpdatedAt(v *time.Time) *NotifyFlowTargetCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return nftc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (nftc *NotifyFlowTargetCreate) SetCreatedAt(t time.Time) *NotifyFlowTargetCreate {
-	nftc.mutation.SetCreatedAt(t)
-	return nftc
+func (_c *NotifyFlowTargetCreate) SetCreatedAt(v time.Time) *NotifyFlowTargetCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (nftc *NotifyFlowTargetCreate) SetNillableCreatedAt(t *time.Time) *NotifyFlowTargetCreate {
-	if t != nil {
-		nftc.SetCreatedAt(*t)
+func (_c *NotifyFlowTargetCreate) SetNillableCreatedAt(v *time.Time) *NotifyFlowTargetCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return nftc
+	return _c
 }
 
 // SetNotifyFlow sets the "notify_flow" edge to the NotifyFlow entity.
-func (nftc *NotifyFlowTargetCreate) SetNotifyFlow(n *NotifyFlow) *NotifyFlowTargetCreate {
-	return nftc.SetNotifyFlowID(n.ID)
+func (_c *NotifyFlowTargetCreate) SetNotifyFlow(v *NotifyFlow) *NotifyFlowTargetCreate {
+	return _c.SetNotifyFlowID(v.ID)
 }
 
 // SetNotifyTarget sets the "notify_target" edge to the NotifyTarget entity.
-func (nftc *NotifyFlowTargetCreate) SetNotifyTarget(n *NotifyTarget) *NotifyFlowTargetCreate {
-	return nftc.SetNotifyTargetID(n.ID)
+func (_c *NotifyFlowTargetCreate) SetNotifyTarget(v *NotifyTarget) *NotifyFlowTargetCreate {
+	return _c.SetNotifyTargetID(v.ID)
 }
 
 // Mutation returns the NotifyFlowTargetMutation object of the builder.
-func (nftc *NotifyFlowTargetCreate) Mutation() *NotifyFlowTargetMutation {
-	return nftc.mutation
+func (_c *NotifyFlowTargetCreate) Mutation() *NotifyFlowTargetMutation {
+	return _c.mutation
 }
 
 // Save creates the NotifyFlowTarget in the database.
-func (nftc *NotifyFlowTargetCreate) Save(ctx context.Context) (*NotifyFlowTarget, error) {
-	nftc.defaults()
-	return withHooks(ctx, nftc.sqlSave, nftc.mutation, nftc.hooks)
+func (_c *NotifyFlowTargetCreate) Save(ctx context.Context) (*NotifyFlowTarget, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (nftc *NotifyFlowTargetCreate) SaveX(ctx context.Context) *NotifyFlowTarget {
-	v, err := nftc.Save(ctx)
+func (_c *NotifyFlowTargetCreate) SaveX(ctx context.Context) *NotifyFlowTarget {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -108,65 +108,65 @@ func (nftc *NotifyFlowTargetCreate) SaveX(ctx context.Context) *NotifyFlowTarget
 }
 
 // Exec executes the query.
-func (nftc *NotifyFlowTargetCreate) Exec(ctx context.Context) error {
-	_, err := nftc.Save(ctx)
+func (_c *NotifyFlowTargetCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nftc *NotifyFlowTargetCreate) ExecX(ctx context.Context) {
-	if err := nftc.Exec(ctx); err != nil {
+func (_c *NotifyFlowTargetCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (nftc *NotifyFlowTargetCreate) defaults() {
-	if _, ok := nftc.mutation.UpdatedAt(); !ok {
+func (_c *NotifyFlowTargetCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := notifyflowtarget.DefaultUpdatedAt()
-		nftc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := nftc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := notifyflowtarget.DefaultCreatedAt()
-		nftc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (nftc *NotifyFlowTargetCreate) check() error {
-	if _, ok := nftc.mutation.NotifyFlowID(); !ok {
+func (_c *NotifyFlowTargetCreate) check() error {
+	if _, ok := _c.mutation.NotifyFlowID(); !ok {
 		return &ValidationError{Name: "notify_flow_id", err: errors.New(`ent: missing required field "NotifyFlowTarget.notify_flow_id"`)}
 	}
-	if _, ok := nftc.mutation.NotifyTargetID(); !ok {
+	if _, ok := _c.mutation.NotifyTargetID(); !ok {
 		return &ValidationError{Name: "notify_target_id", err: errors.New(`ent: missing required field "NotifyFlowTarget.notify_target_id"`)}
 	}
-	if _, ok := nftc.mutation.FilterIncludeKeywords(); !ok {
+	if _, ok := _c.mutation.FilterIncludeKeywords(); !ok {
 		return &ValidationError{Name: "filter_include_keywords", err: errors.New(`ent: missing required field "NotifyFlowTarget.filter_include_keywords"`)}
 	}
-	if _, ok := nftc.mutation.FilterExcludeKeywords(); !ok {
+	if _, ok := _c.mutation.FilterExcludeKeywords(); !ok {
 		return &ValidationError{Name: "filter_exclude_keywords", err: errors.New(`ent: missing required field "NotifyFlowTarget.filter_exclude_keywords"`)}
 	}
-	if _, ok := nftc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "NotifyFlowTarget.updated_at"`)}
 	}
-	if _, ok := nftc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "NotifyFlowTarget.created_at"`)}
 	}
-	if len(nftc.mutation.NotifyFlowIDs()) == 0 {
+	if len(_c.mutation.NotifyFlowIDs()) == 0 {
 		return &ValidationError{Name: "notify_flow", err: errors.New(`ent: missing required edge "NotifyFlowTarget.notify_flow"`)}
 	}
-	if len(nftc.mutation.NotifyTargetIDs()) == 0 {
+	if len(_c.mutation.NotifyTargetIDs()) == 0 {
 		return &ValidationError{Name: "notify_target", err: errors.New(`ent: missing required edge "NotifyFlowTarget.notify_target"`)}
 	}
 	return nil
 }
 
-func (nftc *NotifyFlowTargetCreate) sqlSave(ctx context.Context) (*NotifyFlowTarget, error) {
-	if err := nftc.check(); err != nil {
+func (_c *NotifyFlowTargetCreate) sqlSave(ctx context.Context) (*NotifyFlowTarget, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := nftc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, nftc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -174,34 +174,34 @@ func (nftc *NotifyFlowTargetCreate) sqlSave(ctx context.Context) (*NotifyFlowTar
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	nftc.mutation.id = &_node.ID
-	nftc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (nftc *NotifyFlowTargetCreate) createSpec() (*NotifyFlowTarget, *sqlgraph.CreateSpec) {
+func (_c *NotifyFlowTargetCreate) createSpec() (*NotifyFlowTarget, *sqlgraph.CreateSpec) {
 	var (
-		_node = &NotifyFlowTarget{config: nftc.config}
+		_node = &NotifyFlowTarget{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(notifyflowtarget.Table, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = nftc.conflict
-	if value, ok := nftc.mutation.FilterIncludeKeywords(); ok {
+	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.FilterIncludeKeywords(); ok {
 		_spec.SetField(notifyflowtarget.FieldFilterIncludeKeywords, field.TypeJSON, value)
 		_node.FilterIncludeKeywords = value
 	}
-	if value, ok := nftc.mutation.FilterExcludeKeywords(); ok {
+	if value, ok := _c.mutation.FilterExcludeKeywords(); ok {
 		_spec.SetField(notifyflowtarget.FieldFilterExcludeKeywords, field.TypeJSON, value)
 		_node.FilterExcludeKeywords = value
 	}
-	if value, ok := nftc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifyflowtarget.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := nftc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(notifyflowtarget.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := nftc.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifyFlowIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -218,7 +218,7 @@ func (nftc *NotifyFlowTargetCreate) createSpec() (*NotifyFlowTarget, *sqlgraph.C
 		_node.NotifyFlowID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nftc.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.NotifyTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -254,10 +254,10 @@ func (nftc *NotifyFlowTargetCreate) createSpec() (*NotifyFlowTarget, *sqlgraph.C
 //			SetNotifyFlowID(v+v).
 //		}).
 //		Exec(ctx)
-func (nftc *NotifyFlowTargetCreate) OnConflict(opts ...sql.ConflictOption) *NotifyFlowTargetUpsertOne {
-	nftc.conflict = opts
+func (_c *NotifyFlowTargetCreate) OnConflict(opts ...sql.ConflictOption) *NotifyFlowTargetUpsertOne {
+	_c.conflict = opts
 	return &NotifyFlowTargetUpsertOne{
-		create: nftc,
+		create: _c,
 	}
 }
 
@@ -267,10 +267,10 @@ func (nftc *NotifyFlowTargetCreate) OnConflict(opts ...sql.ConflictOption) *Noti
 //	client.NotifyFlowTarget.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (nftc *NotifyFlowTargetCreate) OnConflictColumns(columns ...string) *NotifyFlowTargetUpsertOne {
-	nftc.conflict = append(nftc.conflict, sql.ConflictColumns(columns...))
+func (_c *NotifyFlowTargetCreate) OnConflictColumns(columns ...string) *NotifyFlowTargetUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NotifyFlowTargetUpsertOne{
-		create: nftc,
+		create: _c,
 	}
 }
 
@@ -525,16 +525,16 @@ type NotifyFlowTargetCreateBulk struct {
 }
 
 // Save creates the NotifyFlowTarget entities in the database.
-func (nftcb *NotifyFlowTargetCreateBulk) Save(ctx context.Context) ([]*NotifyFlowTarget, error) {
-	if nftcb.err != nil {
-		return nil, nftcb.err
+func (_c *NotifyFlowTargetCreateBulk) Save(ctx context.Context) ([]*NotifyFlowTarget, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(nftcb.builders))
-	nodes := make([]*NotifyFlowTarget, len(nftcb.builders))
-	mutators := make([]Mutator, len(nftcb.builders))
-	for i := range nftcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*NotifyFlowTarget, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := nftcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*NotifyFlowTargetMutation)
@@ -548,12 +548,12 @@ func (nftcb *NotifyFlowTargetCreateBulk) Save(ctx context.Context) ([]*NotifyFlo
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, nftcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = nftcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, nftcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -577,7 +577,7 @@ func (nftcb *NotifyFlowTargetCreateBulk) Save(ctx context.Context) ([]*NotifyFlo
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, nftcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -585,8 +585,8 @@ func (nftcb *NotifyFlowTargetCreateBulk) Save(ctx context.Context) ([]*NotifyFlo
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (nftcb *NotifyFlowTargetCreateBulk) SaveX(ctx context.Context) []*NotifyFlowTarget {
-	v, err := nftcb.Save(ctx)
+func (_c *NotifyFlowTargetCreateBulk) SaveX(ctx context.Context) []*NotifyFlowTarget {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -594,14 +594,14 @@ func (nftcb *NotifyFlowTargetCreateBulk) SaveX(ctx context.Context) []*NotifyFlo
 }
 
 // Exec executes the query.
-func (nftcb *NotifyFlowTargetCreateBulk) Exec(ctx context.Context) error {
-	_, err := nftcb.Save(ctx)
+func (_c *NotifyFlowTargetCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nftcb *NotifyFlowTargetCreateBulk) ExecX(ctx context.Context) {
-	if err := nftcb.Exec(ctx); err != nil {
+func (_c *NotifyFlowTargetCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -621,10 +621,10 @@ func (nftcb *NotifyFlowTargetCreateBulk) ExecX(ctx context.Context) {
 //			SetNotifyFlowID(v+v).
 //		}).
 //		Exec(ctx)
-func (nftcb *NotifyFlowTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *NotifyFlowTargetUpsertBulk {
-	nftcb.conflict = opts
+func (_c *NotifyFlowTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *NotifyFlowTargetUpsertBulk {
+	_c.conflict = opts
 	return &NotifyFlowTargetUpsertBulk{
-		create: nftcb,
+		create: _c,
 	}
 }
 
@@ -634,10 +634,10 @@ func (nftcb *NotifyFlowTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) 
 //	client.NotifyFlowTarget.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (nftcb *NotifyFlowTargetCreateBulk) OnConflictColumns(columns ...string) *NotifyFlowTargetUpsertBulk {
-	nftcb.conflict = append(nftcb.conflict, sql.ConflictColumns(columns...))
+func (_c *NotifyFlowTargetCreateBulk) OnConflictColumns(columns ...string) *NotifyFlowTargetUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &NotifyFlowTargetUpsertBulk{
-		create: nftcb,
+		create: _c,
 	}
 }
 

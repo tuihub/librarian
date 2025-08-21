@@ -25,137 +25,137 @@ type PorterInstanceCreate struct {
 }
 
 // SetName sets the "name" field.
-func (pic *PorterInstanceCreate) SetName(s string) *PorterInstanceCreate {
-	pic.mutation.SetName(s)
-	return pic
+func (_c *PorterInstanceCreate) SetName(v string) *PorterInstanceCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetVersion sets the "version" field.
-func (pic *PorterInstanceCreate) SetVersion(s string) *PorterInstanceCreate {
-	pic.mutation.SetVersion(s)
-	return pic
+func (_c *PorterInstanceCreate) SetVersion(v string) *PorterInstanceCreate {
+	_c.mutation.SetVersion(v)
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (pic *PorterInstanceCreate) SetDescription(s string) *PorterInstanceCreate {
-	pic.mutation.SetDescription(s)
-	return pic
+func (_c *PorterInstanceCreate) SetDescription(v string) *PorterInstanceCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetSourceCodeAddress sets the "source_code_address" field.
-func (pic *PorterInstanceCreate) SetSourceCodeAddress(s string) *PorterInstanceCreate {
-	pic.mutation.SetSourceCodeAddress(s)
-	return pic
+func (_c *PorterInstanceCreate) SetSourceCodeAddress(v string) *PorterInstanceCreate {
+	_c.mutation.SetSourceCodeAddress(v)
+	return _c
 }
 
 // SetBuildVersion sets the "build_version" field.
-func (pic *PorterInstanceCreate) SetBuildVersion(s string) *PorterInstanceCreate {
-	pic.mutation.SetBuildVersion(s)
-	return pic
+func (_c *PorterInstanceCreate) SetBuildVersion(v string) *PorterInstanceCreate {
+	_c.mutation.SetBuildVersion(v)
+	return _c
 }
 
 // SetBuildDate sets the "build_date" field.
-func (pic *PorterInstanceCreate) SetBuildDate(s string) *PorterInstanceCreate {
-	pic.mutation.SetBuildDate(s)
-	return pic
+func (_c *PorterInstanceCreate) SetBuildDate(v string) *PorterInstanceCreate {
+	_c.mutation.SetBuildDate(v)
+	return _c
 }
 
 // SetGlobalName sets the "global_name" field.
-func (pic *PorterInstanceCreate) SetGlobalName(s string) *PorterInstanceCreate {
-	pic.mutation.SetGlobalName(s)
-	return pic
+func (_c *PorterInstanceCreate) SetGlobalName(v string) *PorterInstanceCreate {
+	_c.mutation.SetGlobalName(v)
+	return _c
 }
 
 // SetAddress sets the "address" field.
-func (pic *PorterInstanceCreate) SetAddress(s string) *PorterInstanceCreate {
-	pic.mutation.SetAddress(s)
-	return pic
+func (_c *PorterInstanceCreate) SetAddress(v string) *PorterInstanceCreate {
+	_c.mutation.SetAddress(v)
+	return _c
 }
 
 // SetRegion sets the "region" field.
-func (pic *PorterInstanceCreate) SetRegion(s string) *PorterInstanceCreate {
-	pic.mutation.SetRegion(s)
-	return pic
+func (_c *PorterInstanceCreate) SetRegion(v string) *PorterInstanceCreate {
+	_c.mutation.SetRegion(v)
+	return _c
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (pic *PorterInstanceCreate) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) *PorterInstanceCreate {
-	pic.mutation.SetFeatureSummary(mfs)
-	return pic
+func (_c *PorterInstanceCreate) SetFeatureSummary(v *modelsupervisor.PorterFeatureSummary) *PorterInstanceCreate {
+	_c.mutation.SetFeatureSummary(v)
+	return _c
 }
 
 // SetContextJSONSchema sets the "context_json_schema" field.
-func (pic *PorterInstanceCreate) SetContextJSONSchema(s string) *PorterInstanceCreate {
-	pic.mutation.SetContextJSONSchema(s)
-	return pic
+func (_c *PorterInstanceCreate) SetContextJSONSchema(v string) *PorterInstanceCreate {
+	_c.mutation.SetContextJSONSchema(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (pic *PorterInstanceCreate) SetStatus(po porterinstance.Status) *PorterInstanceCreate {
-	pic.mutation.SetStatus(po)
-	return pic
+func (_c *PorterInstanceCreate) SetStatus(v porterinstance.Status) *PorterInstanceCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetConnectionStatus sets the "connection_status" field.
-func (pic *PorterInstanceCreate) SetConnectionStatus(ps porterinstance.ConnectionStatus) *PorterInstanceCreate {
-	pic.mutation.SetConnectionStatus(ps)
-	return pic
+func (_c *PorterInstanceCreate) SetConnectionStatus(v porterinstance.ConnectionStatus) *PorterInstanceCreate {
+	_c.mutation.SetConnectionStatus(v)
+	return _c
 }
 
 // SetConnectionStatusMessage sets the "connection_status_message" field.
-func (pic *PorterInstanceCreate) SetConnectionStatusMessage(s string) *PorterInstanceCreate {
-	pic.mutation.SetConnectionStatusMessage(s)
-	return pic
+func (_c *PorterInstanceCreate) SetConnectionStatusMessage(v string) *PorterInstanceCreate {
+	_c.mutation.SetConnectionStatusMessage(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (pic *PorterInstanceCreate) SetUpdatedAt(t time.Time) *PorterInstanceCreate {
-	pic.mutation.SetUpdatedAt(t)
-	return pic
+func (_c *PorterInstanceCreate) SetUpdatedAt(v time.Time) *PorterInstanceCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (pic *PorterInstanceCreate) SetNillableUpdatedAt(t *time.Time) *PorterInstanceCreate {
-	if t != nil {
-		pic.SetUpdatedAt(*t)
+func (_c *PorterInstanceCreate) SetNillableUpdatedAt(v *time.Time) *PorterInstanceCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return pic
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (pic *PorterInstanceCreate) SetCreatedAt(t time.Time) *PorterInstanceCreate {
-	pic.mutation.SetCreatedAt(t)
-	return pic
+func (_c *PorterInstanceCreate) SetCreatedAt(v time.Time) *PorterInstanceCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (pic *PorterInstanceCreate) SetNillableCreatedAt(t *time.Time) *PorterInstanceCreate {
-	if t != nil {
-		pic.SetCreatedAt(*t)
+func (_c *PorterInstanceCreate) SetNillableCreatedAt(v *time.Time) *PorterInstanceCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return pic
+	return _c
 }
 
 // SetID sets the "id" field.
-func (pic *PorterInstanceCreate) SetID(mi model.InternalID) *PorterInstanceCreate {
-	pic.mutation.SetID(mi)
-	return pic
+func (_c *PorterInstanceCreate) SetID(v model.InternalID) *PorterInstanceCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // Mutation returns the PorterInstanceMutation object of the builder.
-func (pic *PorterInstanceCreate) Mutation() *PorterInstanceMutation {
-	return pic.mutation
+func (_c *PorterInstanceCreate) Mutation() *PorterInstanceMutation {
+	return _c.mutation
 }
 
 // Save creates the PorterInstance in the database.
-func (pic *PorterInstanceCreate) Save(ctx context.Context) (*PorterInstance, error) {
-	pic.defaults()
-	return withHooks(ctx, pic.sqlSave, pic.mutation, pic.hooks)
+func (_c *PorterInstanceCreate) Save(ctx context.Context) (*PorterInstance, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (pic *PorterInstanceCreate) SaveX(ctx context.Context) *PorterInstance {
-	v, err := pic.Save(ctx)
+func (_c *PorterInstanceCreate) SaveX(ctx context.Context) *PorterInstance {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -163,99 +163,99 @@ func (pic *PorterInstanceCreate) SaveX(ctx context.Context) *PorterInstance {
 }
 
 // Exec executes the query.
-func (pic *PorterInstanceCreate) Exec(ctx context.Context) error {
-	_, err := pic.Save(ctx)
+func (_c *PorterInstanceCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pic *PorterInstanceCreate) ExecX(ctx context.Context) {
-	if err := pic.Exec(ctx); err != nil {
+func (_c *PorterInstanceCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (pic *PorterInstanceCreate) defaults() {
-	if _, ok := pic.mutation.UpdatedAt(); !ok {
+func (_c *PorterInstanceCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := porterinstance.DefaultUpdatedAt()
-		pic.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := pic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := porterinstance.DefaultCreatedAt()
-		pic.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (pic *PorterInstanceCreate) check() error {
-	if _, ok := pic.mutation.Name(); !ok {
+func (_c *PorterInstanceCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "PorterInstance.name"`)}
 	}
-	if _, ok := pic.mutation.Version(); !ok {
+	if _, ok := _c.mutation.Version(); !ok {
 		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "PorterInstance.version"`)}
 	}
-	if _, ok := pic.mutation.Description(); !ok {
+	if _, ok := _c.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "PorterInstance.description"`)}
 	}
-	if _, ok := pic.mutation.SourceCodeAddress(); !ok {
+	if _, ok := _c.mutation.SourceCodeAddress(); !ok {
 		return &ValidationError{Name: "source_code_address", err: errors.New(`ent: missing required field "PorterInstance.source_code_address"`)}
 	}
-	if _, ok := pic.mutation.BuildVersion(); !ok {
+	if _, ok := _c.mutation.BuildVersion(); !ok {
 		return &ValidationError{Name: "build_version", err: errors.New(`ent: missing required field "PorterInstance.build_version"`)}
 	}
-	if _, ok := pic.mutation.BuildDate(); !ok {
+	if _, ok := _c.mutation.BuildDate(); !ok {
 		return &ValidationError{Name: "build_date", err: errors.New(`ent: missing required field "PorterInstance.build_date"`)}
 	}
-	if _, ok := pic.mutation.GlobalName(); !ok {
+	if _, ok := _c.mutation.GlobalName(); !ok {
 		return &ValidationError{Name: "global_name", err: errors.New(`ent: missing required field "PorterInstance.global_name"`)}
 	}
-	if _, ok := pic.mutation.Address(); !ok {
+	if _, ok := _c.mutation.Address(); !ok {
 		return &ValidationError{Name: "address", err: errors.New(`ent: missing required field "PorterInstance.address"`)}
 	}
-	if _, ok := pic.mutation.Region(); !ok {
+	if _, ok := _c.mutation.Region(); !ok {
 		return &ValidationError{Name: "region", err: errors.New(`ent: missing required field "PorterInstance.region"`)}
 	}
-	if _, ok := pic.mutation.FeatureSummary(); !ok {
+	if _, ok := _c.mutation.FeatureSummary(); !ok {
 		return &ValidationError{Name: "feature_summary", err: errors.New(`ent: missing required field "PorterInstance.feature_summary"`)}
 	}
-	if _, ok := pic.mutation.ContextJSONSchema(); !ok {
+	if _, ok := _c.mutation.ContextJSONSchema(); !ok {
 		return &ValidationError{Name: "context_json_schema", err: errors.New(`ent: missing required field "PorterInstance.context_json_schema"`)}
 	}
-	if _, ok := pic.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "PorterInstance.status"`)}
 	}
-	if v, ok := pic.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := porterinstance.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.status": %w`, err)}
 		}
 	}
-	if _, ok := pic.mutation.ConnectionStatus(); !ok {
+	if _, ok := _c.mutation.ConnectionStatus(); !ok {
 		return &ValidationError{Name: "connection_status", err: errors.New(`ent: missing required field "PorterInstance.connection_status"`)}
 	}
-	if v, ok := pic.mutation.ConnectionStatus(); ok {
+	if v, ok := _c.mutation.ConnectionStatus(); ok {
 		if err := porterinstance.ConnectionStatusValidator(v); err != nil {
 			return &ValidationError{Name: "connection_status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.connection_status": %w`, err)}
 		}
 	}
-	if _, ok := pic.mutation.ConnectionStatusMessage(); !ok {
+	if _, ok := _c.mutation.ConnectionStatusMessage(); !ok {
 		return &ValidationError{Name: "connection_status_message", err: errors.New(`ent: missing required field "PorterInstance.connection_status_message"`)}
 	}
-	if _, ok := pic.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "PorterInstance.updated_at"`)}
 	}
-	if _, ok := pic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "PorterInstance.created_at"`)}
 	}
 	return nil
 }
 
-func (pic *PorterInstanceCreate) sqlSave(ctx context.Context) (*PorterInstance, error) {
-	if err := pic.check(); err != nil {
+func (_c *PorterInstanceCreate) sqlSave(ctx context.Context) (*PorterInstance, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := pic.createSpec()
-	if err := sqlgraph.CreateNode(ctx, pic.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -265,82 +265,82 @@ func (pic *PorterInstanceCreate) sqlSave(ctx context.Context) (*PorterInstance, 
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	pic.mutation.id = &_node.ID
-	pic.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (pic *PorterInstanceCreate) createSpec() (*PorterInstance, *sqlgraph.CreateSpec) {
+func (_c *PorterInstanceCreate) createSpec() (*PorterInstance, *sqlgraph.CreateSpec) {
 	var (
-		_node = &PorterInstance{config: pic.config}
+		_node = &PorterInstance{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(porterinstance.Table, sqlgraph.NewFieldSpec(porterinstance.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = pic.conflict
-	if id, ok := pic.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := pic.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(porterinstance.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := pic.mutation.Version(); ok {
+	if value, ok := _c.mutation.Version(); ok {
 		_spec.SetField(porterinstance.FieldVersion, field.TypeString, value)
 		_node.Version = value
 	}
-	if value, ok := pic.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(porterinstance.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := pic.mutation.SourceCodeAddress(); ok {
+	if value, ok := _c.mutation.SourceCodeAddress(); ok {
 		_spec.SetField(porterinstance.FieldSourceCodeAddress, field.TypeString, value)
 		_node.SourceCodeAddress = value
 	}
-	if value, ok := pic.mutation.BuildVersion(); ok {
+	if value, ok := _c.mutation.BuildVersion(); ok {
 		_spec.SetField(porterinstance.FieldBuildVersion, field.TypeString, value)
 		_node.BuildVersion = value
 	}
-	if value, ok := pic.mutation.BuildDate(); ok {
+	if value, ok := _c.mutation.BuildDate(); ok {
 		_spec.SetField(porterinstance.FieldBuildDate, field.TypeString, value)
 		_node.BuildDate = value
 	}
-	if value, ok := pic.mutation.GlobalName(); ok {
+	if value, ok := _c.mutation.GlobalName(); ok {
 		_spec.SetField(porterinstance.FieldGlobalName, field.TypeString, value)
 		_node.GlobalName = value
 	}
-	if value, ok := pic.mutation.Address(); ok {
+	if value, ok := _c.mutation.Address(); ok {
 		_spec.SetField(porterinstance.FieldAddress, field.TypeString, value)
 		_node.Address = value
 	}
-	if value, ok := pic.mutation.Region(); ok {
+	if value, ok := _c.mutation.Region(); ok {
 		_spec.SetField(porterinstance.FieldRegion, field.TypeString, value)
 		_node.Region = value
 	}
-	if value, ok := pic.mutation.FeatureSummary(); ok {
+	if value, ok := _c.mutation.FeatureSummary(); ok {
 		_spec.SetField(porterinstance.FieldFeatureSummary, field.TypeJSON, value)
 		_node.FeatureSummary = value
 	}
-	if value, ok := pic.mutation.ContextJSONSchema(); ok {
+	if value, ok := _c.mutation.ContextJSONSchema(); ok {
 		_spec.SetField(porterinstance.FieldContextJSONSchema, field.TypeString, value)
 		_node.ContextJSONSchema = value
 	}
-	if value, ok := pic.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(porterinstance.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := pic.mutation.ConnectionStatus(); ok {
+	if value, ok := _c.mutation.ConnectionStatus(); ok {
 		_spec.SetField(porterinstance.FieldConnectionStatus, field.TypeEnum, value)
 		_node.ConnectionStatus = value
 	}
-	if value, ok := pic.mutation.ConnectionStatusMessage(); ok {
+	if value, ok := _c.mutation.ConnectionStatusMessage(); ok {
 		_spec.SetField(porterinstance.FieldConnectionStatusMessage, field.TypeString, value)
 		_node.ConnectionStatusMessage = value
 	}
-	if value, ok := pic.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(porterinstance.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := pic.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(porterinstance.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
@@ -363,10 +363,10 @@ func (pic *PorterInstanceCreate) createSpec() (*PorterInstance, *sqlgraph.Create
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (pic *PorterInstanceCreate) OnConflict(opts ...sql.ConflictOption) *PorterInstanceUpsertOne {
-	pic.conflict = opts
+func (_c *PorterInstanceCreate) OnConflict(opts ...sql.ConflictOption) *PorterInstanceUpsertOne {
+	_c.conflict = opts
 	return &PorterInstanceUpsertOne{
-		create: pic,
+		create: _c,
 	}
 }
 
@@ -376,10 +376,10 @@ func (pic *PorterInstanceCreate) OnConflict(opts ...sql.ConflictOption) *PorterI
 //	client.PorterInstance.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (pic *PorterInstanceCreate) OnConflictColumns(columns ...string) *PorterInstanceUpsertOne {
-	pic.conflict = append(pic.conflict, sql.ConflictColumns(columns...))
+func (_c *PorterInstanceCreate) OnConflictColumns(columns ...string) *PorterInstanceUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &PorterInstanceUpsertOne{
-		create: pic,
+		create: _c,
 	}
 }
 
@@ -902,16 +902,16 @@ type PorterInstanceCreateBulk struct {
 }
 
 // Save creates the PorterInstance entities in the database.
-func (picb *PorterInstanceCreateBulk) Save(ctx context.Context) ([]*PorterInstance, error) {
-	if picb.err != nil {
-		return nil, picb.err
+func (_c *PorterInstanceCreateBulk) Save(ctx context.Context) ([]*PorterInstance, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(picb.builders))
-	nodes := make([]*PorterInstance, len(picb.builders))
-	mutators := make([]Mutator, len(picb.builders))
-	for i := range picb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*PorterInstance, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := picb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*PorterInstanceMutation)
@@ -925,12 +925,12 @@ func (picb *PorterInstanceCreateBulk) Save(ctx context.Context) ([]*PorterInstan
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, picb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = picb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, picb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -954,7 +954,7 @@ func (picb *PorterInstanceCreateBulk) Save(ctx context.Context) ([]*PorterInstan
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, picb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -962,8 +962,8 @@ func (picb *PorterInstanceCreateBulk) Save(ctx context.Context) ([]*PorterInstan
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (picb *PorterInstanceCreateBulk) SaveX(ctx context.Context) []*PorterInstance {
-	v, err := picb.Save(ctx)
+func (_c *PorterInstanceCreateBulk) SaveX(ctx context.Context) []*PorterInstance {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -971,14 +971,14 @@ func (picb *PorterInstanceCreateBulk) SaveX(ctx context.Context) []*PorterInstan
 }
 
 // Exec executes the query.
-func (picb *PorterInstanceCreateBulk) Exec(ctx context.Context) error {
-	_, err := picb.Save(ctx)
+func (_c *PorterInstanceCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (picb *PorterInstanceCreateBulk) ExecX(ctx context.Context) {
-	if err := picb.Exec(ctx); err != nil {
+func (_c *PorterInstanceCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -998,10 +998,10 @@ func (picb *PorterInstanceCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (picb *PorterInstanceCreateBulk) OnConflict(opts ...sql.ConflictOption) *PorterInstanceUpsertBulk {
-	picb.conflict = opts
+func (_c *PorterInstanceCreateBulk) OnConflict(opts ...sql.ConflictOption) *PorterInstanceUpsertBulk {
+	_c.conflict = opts
 	return &PorterInstanceUpsertBulk{
-		create: picb,
+		create: _c,
 	}
 }
 
@@ -1011,10 +1011,10 @@ func (picb *PorterInstanceCreateBulk) OnConflict(opts ...sql.ConflictOption) *Po
 //	client.PorterInstance.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (picb *PorterInstanceCreateBulk) OnConflictColumns(columns ...string) *PorterInstanceUpsertBulk {
-	picb.conflict = append(picb.conflict, sql.ConflictColumns(columns...))
+func (_c *PorterInstanceCreateBulk) OnConflictColumns(columns ...string) *PorterInstanceUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &PorterInstanceUpsertBulk{
-		create: picb,
+		create: _c,
 	}
 }
 

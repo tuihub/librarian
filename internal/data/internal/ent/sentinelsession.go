@@ -85,7 +85,7 @@ func (*SentinelSession) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the SentinelSession fields.
-func (ss *SentinelSession) assignValues(columns []string, values []any) error {
+func (_m *SentinelSession) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -95,72 +95,72 @@ func (ss *SentinelSession) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				ss.ID = model.InternalID(value.Int64)
+				_m.ID = model.InternalID(value.Int64)
 			}
 		case sentinelsession.FieldSentinelID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_id", values[i])
 			} else if value.Valid {
-				ss.SentinelID = model.InternalID(value.Int64)
+				_m.SentinelID = model.InternalID(value.Int64)
 			}
 		case sentinelsession.FieldRefreshToken:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field refresh_token", values[i])
 			} else if value.Valid {
-				ss.RefreshToken = value.String
+				_m.RefreshToken = value.String
 			}
 		case sentinelsession.FieldExpireAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field expire_at", values[i])
 			} else if value.Valid {
-				ss.ExpireAt = value.Time
+				_m.ExpireAt = value.Time
 			}
 		case sentinelsession.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				ss.Status = sentinelsession.Status(value.String)
+				_m.Status = sentinelsession.Status(value.String)
 			}
 		case sentinelsession.FieldCreatorID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field creator_id", values[i])
 			} else if value.Valid {
-				ss.CreatorID = model.InternalID(value.Int64)
+				_m.CreatorID = model.InternalID(value.Int64)
 			}
 		case sentinelsession.FieldLastUsedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_used_at", values[i])
 			} else if value.Valid {
-				ss.LastUsedAt = new(time.Time)
-				*ss.LastUsedAt = value.Time
+				_m.LastUsedAt = new(time.Time)
+				*_m.LastUsedAt = value.Time
 			}
 		case sentinelsession.FieldLastRefreshedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_refreshed_at", values[i])
 			} else if value.Valid {
-				ss.LastRefreshedAt = new(time.Time)
-				*ss.LastRefreshedAt = value.Time
+				_m.LastRefreshedAt = new(time.Time)
+				*_m.LastRefreshedAt = value.Time
 			}
 		case sentinelsession.FieldRefreshCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field refresh_count", values[i])
 			} else if value.Valid {
-				ss.RefreshCount = value.Int64
+				_m.RefreshCount = value.Int64
 			}
 		case sentinelsession.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				ss.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case sentinelsession.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				ss.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		default:
-			ss.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -168,71 +168,71 @@ func (ss *SentinelSession) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the SentinelSession.
 // This includes values selected through modifiers, order, etc.
-func (ss *SentinelSession) Value(name string) (ent.Value, error) {
-	return ss.selectValues.Get(name)
+func (_m *SentinelSession) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QuerySentinel queries the "sentinel" edge of the SentinelSession entity.
-func (ss *SentinelSession) QuerySentinel() *SentinelQuery {
-	return NewSentinelSessionClient(ss.config).QuerySentinel(ss)
+func (_m *SentinelSession) QuerySentinel() *SentinelQuery {
+	return NewSentinelSessionClient(_m.config).QuerySentinel(_m)
 }
 
 // Update returns a builder for updating this SentinelSession.
 // Note that you need to call SentinelSession.Unwrap() before calling this method if this SentinelSession
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (ss *SentinelSession) Update() *SentinelSessionUpdateOne {
-	return NewSentinelSessionClient(ss.config).UpdateOne(ss)
+func (_m *SentinelSession) Update() *SentinelSessionUpdateOne {
+	return NewSentinelSessionClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the SentinelSession entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (ss *SentinelSession) Unwrap() *SentinelSession {
-	_tx, ok := ss.config.driver.(*txDriver)
+func (_m *SentinelSession) Unwrap() *SentinelSession {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: SentinelSession is not a transactional entity")
 	}
-	ss.config.driver = _tx.drv
-	return ss
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (ss *SentinelSession) String() string {
+func (_m *SentinelSession) String() string {
 	var builder strings.Builder
 	builder.WriteString("SentinelSession(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", ss.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("sentinel_id=")
-	builder.WriteString(fmt.Sprintf("%v", ss.SentinelID))
+	builder.WriteString(fmt.Sprintf("%v", _m.SentinelID))
 	builder.WriteString(", ")
 	builder.WriteString("refresh_token=")
-	builder.WriteString(ss.RefreshToken)
+	builder.WriteString(_m.RefreshToken)
 	builder.WriteString(", ")
 	builder.WriteString("expire_at=")
-	builder.WriteString(ss.ExpireAt.Format(time.ANSIC))
+	builder.WriteString(_m.ExpireAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
-	builder.WriteString(fmt.Sprintf("%v", ss.Status))
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("creator_id=")
-	builder.WriteString(fmt.Sprintf("%v", ss.CreatorID))
+	builder.WriteString(fmt.Sprintf("%v", _m.CreatorID))
 	builder.WriteString(", ")
-	if v := ss.LastUsedAt; v != nil {
+	if v := _m.LastUsedAt; v != nil {
 		builder.WriteString("last_used_at=")
 		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
-	if v := ss.LastRefreshedAt; v != nil {
+	if v := _m.LastRefreshedAt; v != nil {
 		builder.WriteString("last_refreshed_at=")
 		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("refresh_count=")
-	builder.WriteString(fmt.Sprintf("%v", ss.RefreshCount))
+	builder.WriteString(fmt.Sprintf("%v", _m.RefreshCount))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(ss.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(ss.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

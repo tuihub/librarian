@@ -25,130 +25,130 @@ type SentinelSessionCreate struct {
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (ssc *SentinelSessionCreate) SetSentinelID(mi model.InternalID) *SentinelSessionCreate {
-	ssc.mutation.SetSentinelID(mi)
-	return ssc
+func (_c *SentinelSessionCreate) SetSentinelID(v model.InternalID) *SentinelSessionCreate {
+	_c.mutation.SetSentinelID(v)
+	return _c
 }
 
 // SetRefreshToken sets the "refresh_token" field.
-func (ssc *SentinelSessionCreate) SetRefreshToken(s string) *SentinelSessionCreate {
-	ssc.mutation.SetRefreshToken(s)
-	return ssc
+func (_c *SentinelSessionCreate) SetRefreshToken(v string) *SentinelSessionCreate {
+	_c.mutation.SetRefreshToken(v)
+	return _c
 }
 
 // SetExpireAt sets the "expire_at" field.
-func (ssc *SentinelSessionCreate) SetExpireAt(t time.Time) *SentinelSessionCreate {
-	ssc.mutation.SetExpireAt(t)
-	return ssc
+func (_c *SentinelSessionCreate) SetExpireAt(v time.Time) *SentinelSessionCreate {
+	_c.mutation.SetExpireAt(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (ssc *SentinelSessionCreate) SetStatus(s sentinelsession.Status) *SentinelSessionCreate {
-	ssc.mutation.SetStatus(s)
-	return ssc
+func (_c *SentinelSessionCreate) SetStatus(v sentinelsession.Status) *SentinelSessionCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetCreatorID sets the "creator_id" field.
-func (ssc *SentinelSessionCreate) SetCreatorID(mi model.InternalID) *SentinelSessionCreate {
-	ssc.mutation.SetCreatorID(mi)
-	return ssc
+func (_c *SentinelSessionCreate) SetCreatorID(v model.InternalID) *SentinelSessionCreate {
+	_c.mutation.SetCreatorID(v)
+	return _c
 }
 
 // SetLastUsedAt sets the "last_used_at" field.
-func (ssc *SentinelSessionCreate) SetLastUsedAt(t time.Time) *SentinelSessionCreate {
-	ssc.mutation.SetLastUsedAt(t)
-	return ssc
+func (_c *SentinelSessionCreate) SetLastUsedAt(v time.Time) *SentinelSessionCreate {
+	_c.mutation.SetLastUsedAt(v)
+	return _c
 }
 
 // SetNillableLastUsedAt sets the "last_used_at" field if the given value is not nil.
-func (ssc *SentinelSessionCreate) SetNillableLastUsedAt(t *time.Time) *SentinelSessionCreate {
-	if t != nil {
-		ssc.SetLastUsedAt(*t)
+func (_c *SentinelSessionCreate) SetNillableLastUsedAt(v *time.Time) *SentinelSessionCreate {
+	if v != nil {
+		_c.SetLastUsedAt(*v)
 	}
-	return ssc
+	return _c
 }
 
 // SetLastRefreshedAt sets the "last_refreshed_at" field.
-func (ssc *SentinelSessionCreate) SetLastRefreshedAt(t time.Time) *SentinelSessionCreate {
-	ssc.mutation.SetLastRefreshedAt(t)
-	return ssc
+func (_c *SentinelSessionCreate) SetLastRefreshedAt(v time.Time) *SentinelSessionCreate {
+	_c.mutation.SetLastRefreshedAt(v)
+	return _c
 }
 
 // SetNillableLastRefreshedAt sets the "last_refreshed_at" field if the given value is not nil.
-func (ssc *SentinelSessionCreate) SetNillableLastRefreshedAt(t *time.Time) *SentinelSessionCreate {
-	if t != nil {
-		ssc.SetLastRefreshedAt(*t)
+func (_c *SentinelSessionCreate) SetNillableLastRefreshedAt(v *time.Time) *SentinelSessionCreate {
+	if v != nil {
+		_c.SetLastRefreshedAt(*v)
 	}
-	return ssc
+	return _c
 }
 
 // SetRefreshCount sets the "refresh_count" field.
-func (ssc *SentinelSessionCreate) SetRefreshCount(i int64) *SentinelSessionCreate {
-	ssc.mutation.SetRefreshCount(i)
-	return ssc
+func (_c *SentinelSessionCreate) SetRefreshCount(v int64) *SentinelSessionCreate {
+	_c.mutation.SetRefreshCount(v)
+	return _c
 }
 
 // SetNillableRefreshCount sets the "refresh_count" field if the given value is not nil.
-func (ssc *SentinelSessionCreate) SetNillableRefreshCount(i *int64) *SentinelSessionCreate {
-	if i != nil {
-		ssc.SetRefreshCount(*i)
+func (_c *SentinelSessionCreate) SetNillableRefreshCount(v *int64) *SentinelSessionCreate {
+	if v != nil {
+		_c.SetRefreshCount(*v)
 	}
-	return ssc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ssc *SentinelSessionCreate) SetUpdatedAt(t time.Time) *SentinelSessionCreate {
-	ssc.mutation.SetUpdatedAt(t)
-	return ssc
+func (_c *SentinelSessionCreate) SetUpdatedAt(v time.Time) *SentinelSessionCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ssc *SentinelSessionCreate) SetNillableUpdatedAt(t *time.Time) *SentinelSessionCreate {
-	if t != nil {
-		ssc.SetUpdatedAt(*t)
+func (_c *SentinelSessionCreate) SetNillableUpdatedAt(v *time.Time) *SentinelSessionCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return ssc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ssc *SentinelSessionCreate) SetCreatedAt(t time.Time) *SentinelSessionCreate {
-	ssc.mutation.SetCreatedAt(t)
-	return ssc
+func (_c *SentinelSessionCreate) SetCreatedAt(v time.Time) *SentinelSessionCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ssc *SentinelSessionCreate) SetNillableCreatedAt(t *time.Time) *SentinelSessionCreate {
-	if t != nil {
-		ssc.SetCreatedAt(*t)
+func (_c *SentinelSessionCreate) SetNillableCreatedAt(v *time.Time) *SentinelSessionCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return ssc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ssc *SentinelSessionCreate) SetID(mi model.InternalID) *SentinelSessionCreate {
-	ssc.mutation.SetID(mi)
-	return ssc
+func (_c *SentinelSessionCreate) SetID(v model.InternalID) *SentinelSessionCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetSentinel sets the "sentinel" edge to the Sentinel entity.
-func (ssc *SentinelSessionCreate) SetSentinel(s *Sentinel) *SentinelSessionCreate {
-	return ssc.SetSentinelID(s.ID)
+func (_c *SentinelSessionCreate) SetSentinel(v *Sentinel) *SentinelSessionCreate {
+	return _c.SetSentinelID(v.ID)
 }
 
 // Mutation returns the SentinelSessionMutation object of the builder.
-func (ssc *SentinelSessionCreate) Mutation() *SentinelSessionMutation {
-	return ssc.mutation
+func (_c *SentinelSessionCreate) Mutation() *SentinelSessionMutation {
+	return _c.mutation
 }
 
 // Save creates the SentinelSession in the database.
-func (ssc *SentinelSessionCreate) Save(ctx context.Context) (*SentinelSession, error) {
-	ssc.defaults()
-	return withHooks(ctx, ssc.sqlSave, ssc.mutation, ssc.hooks)
+func (_c *SentinelSessionCreate) Save(ctx context.Context) (*SentinelSession, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ssc *SentinelSessionCreate) SaveX(ctx context.Context) *SentinelSession {
-	v, err := ssc.Save(ctx)
+func (_c *SentinelSessionCreate) SaveX(ctx context.Context) *SentinelSession {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -156,77 +156,77 @@ func (ssc *SentinelSessionCreate) SaveX(ctx context.Context) *SentinelSession {
 }
 
 // Exec executes the query.
-func (ssc *SentinelSessionCreate) Exec(ctx context.Context) error {
-	_, err := ssc.Save(ctx)
+func (_c *SentinelSessionCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ssc *SentinelSessionCreate) ExecX(ctx context.Context) {
-	if err := ssc.Exec(ctx); err != nil {
+func (_c *SentinelSessionCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ssc *SentinelSessionCreate) defaults() {
-	if _, ok := ssc.mutation.RefreshCount(); !ok {
+func (_c *SentinelSessionCreate) defaults() {
+	if _, ok := _c.mutation.RefreshCount(); !ok {
 		v := sentinelsession.DefaultRefreshCount
-		ssc.mutation.SetRefreshCount(v)
+		_c.mutation.SetRefreshCount(v)
 	}
-	if _, ok := ssc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := sentinelsession.DefaultUpdatedAt()
-		ssc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := ssc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := sentinelsession.DefaultCreatedAt()
-		ssc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ssc *SentinelSessionCreate) check() error {
-	if _, ok := ssc.mutation.SentinelID(); !ok {
+func (_c *SentinelSessionCreate) check() error {
+	if _, ok := _c.mutation.SentinelID(); !ok {
 		return &ValidationError{Name: "sentinel_id", err: errors.New(`ent: missing required field "SentinelSession.sentinel_id"`)}
 	}
-	if _, ok := ssc.mutation.RefreshToken(); !ok {
+	if _, ok := _c.mutation.RefreshToken(); !ok {
 		return &ValidationError{Name: "refresh_token", err: errors.New(`ent: missing required field "SentinelSession.refresh_token"`)}
 	}
-	if _, ok := ssc.mutation.ExpireAt(); !ok {
+	if _, ok := _c.mutation.ExpireAt(); !ok {
 		return &ValidationError{Name: "expire_at", err: errors.New(`ent: missing required field "SentinelSession.expire_at"`)}
 	}
-	if _, ok := ssc.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "SentinelSession.status"`)}
 	}
-	if v, ok := ssc.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := sentinelsession.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SentinelSession.status": %w`, err)}
 		}
 	}
-	if _, ok := ssc.mutation.CreatorID(); !ok {
+	if _, ok := _c.mutation.CreatorID(); !ok {
 		return &ValidationError{Name: "creator_id", err: errors.New(`ent: missing required field "SentinelSession.creator_id"`)}
 	}
-	if _, ok := ssc.mutation.RefreshCount(); !ok {
+	if _, ok := _c.mutation.RefreshCount(); !ok {
 		return &ValidationError{Name: "refresh_count", err: errors.New(`ent: missing required field "SentinelSession.refresh_count"`)}
 	}
-	if _, ok := ssc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "SentinelSession.updated_at"`)}
 	}
-	if _, ok := ssc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SentinelSession.created_at"`)}
 	}
-	if len(ssc.mutation.SentinelIDs()) == 0 {
+	if len(_c.mutation.SentinelIDs()) == 0 {
 		return &ValidationError{Name: "sentinel", err: errors.New(`ent: missing required edge "SentinelSession.sentinel"`)}
 	}
 	return nil
 }
 
-func (ssc *SentinelSessionCreate) sqlSave(ctx context.Context) (*SentinelSession, error) {
-	if err := ssc.check(); err != nil {
+func (_c *SentinelSessionCreate) sqlSave(ctx context.Context) (*SentinelSession, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ssc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ssc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -236,58 +236,58 @@ func (ssc *SentinelSessionCreate) sqlSave(ctx context.Context) (*SentinelSession
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	ssc.mutation.id = &_node.ID
-	ssc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ssc *SentinelSessionCreate) createSpec() (*SentinelSession, *sqlgraph.CreateSpec) {
+func (_c *SentinelSessionCreate) createSpec() (*SentinelSession, *sqlgraph.CreateSpec) {
 	var (
-		_node = &SentinelSession{config: ssc.config}
+		_node = &SentinelSession{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(sentinelsession.Table, sqlgraph.NewFieldSpec(sentinelsession.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = ssc.conflict
-	if id, ok := ssc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ssc.mutation.RefreshToken(); ok {
+	if value, ok := _c.mutation.RefreshToken(); ok {
 		_spec.SetField(sentinelsession.FieldRefreshToken, field.TypeString, value)
 		_node.RefreshToken = value
 	}
-	if value, ok := ssc.mutation.ExpireAt(); ok {
+	if value, ok := _c.mutation.ExpireAt(); ok {
 		_spec.SetField(sentinelsession.FieldExpireAt, field.TypeTime, value)
 		_node.ExpireAt = value
 	}
-	if value, ok := ssc.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(sentinelsession.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := ssc.mutation.CreatorID(); ok {
+	if value, ok := _c.mutation.CreatorID(); ok {
 		_spec.SetField(sentinelsession.FieldCreatorID, field.TypeInt64, value)
 		_node.CreatorID = value
 	}
-	if value, ok := ssc.mutation.LastUsedAt(); ok {
+	if value, ok := _c.mutation.LastUsedAt(); ok {
 		_spec.SetField(sentinelsession.FieldLastUsedAt, field.TypeTime, value)
 		_node.LastUsedAt = &value
 	}
-	if value, ok := ssc.mutation.LastRefreshedAt(); ok {
+	if value, ok := _c.mutation.LastRefreshedAt(); ok {
 		_spec.SetField(sentinelsession.FieldLastRefreshedAt, field.TypeTime, value)
 		_node.LastRefreshedAt = &value
 	}
-	if value, ok := ssc.mutation.RefreshCount(); ok {
+	if value, ok := _c.mutation.RefreshCount(); ok {
 		_spec.SetField(sentinelsession.FieldRefreshCount, field.TypeInt64, value)
 		_node.RefreshCount = value
 	}
-	if value, ok := ssc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinelsession.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := ssc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelsession.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ssc.mutation.SentinelIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.SentinelIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -323,10 +323,10 @@ func (ssc *SentinelSessionCreate) createSpec() (*SentinelSession, *sqlgraph.Crea
 //			SetSentinelID(v+v).
 //		}).
 //		Exec(ctx)
-func (ssc *SentinelSessionCreate) OnConflict(opts ...sql.ConflictOption) *SentinelSessionUpsertOne {
-	ssc.conflict = opts
+func (_c *SentinelSessionCreate) OnConflict(opts ...sql.ConflictOption) *SentinelSessionUpsertOne {
+	_c.conflict = opts
 	return &SentinelSessionUpsertOne{
-		create: ssc,
+		create: _c,
 	}
 }
 
@@ -336,10 +336,10 @@ func (ssc *SentinelSessionCreate) OnConflict(opts ...sql.ConflictOption) *Sentin
 //	client.SentinelSession.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ssc *SentinelSessionCreate) OnConflictColumns(columns ...string) *SentinelSessionUpsertOne {
-	ssc.conflict = append(ssc.conflict, sql.ConflictColumns(columns...))
+func (_c *SentinelSessionCreate) OnConflictColumns(columns ...string) *SentinelSessionUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SentinelSessionUpsertOne{
-		create: ssc,
+		create: _c,
 	}
 }
 
@@ -722,16 +722,16 @@ type SentinelSessionCreateBulk struct {
 }
 
 // Save creates the SentinelSession entities in the database.
-func (sscb *SentinelSessionCreateBulk) Save(ctx context.Context) ([]*SentinelSession, error) {
-	if sscb.err != nil {
-		return nil, sscb.err
+func (_c *SentinelSessionCreateBulk) Save(ctx context.Context) ([]*SentinelSession, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(sscb.builders))
-	nodes := make([]*SentinelSession, len(sscb.builders))
-	mutators := make([]Mutator, len(sscb.builders))
-	for i := range sscb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*SentinelSession, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := sscb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SentinelSessionMutation)
@@ -745,12 +745,12 @@ func (sscb *SentinelSessionCreateBulk) Save(ctx context.Context) ([]*SentinelSes
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, sscb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = sscb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, sscb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -774,7 +774,7 @@ func (sscb *SentinelSessionCreateBulk) Save(ctx context.Context) ([]*SentinelSes
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, sscb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -782,8 +782,8 @@ func (sscb *SentinelSessionCreateBulk) Save(ctx context.Context) ([]*SentinelSes
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sscb *SentinelSessionCreateBulk) SaveX(ctx context.Context) []*SentinelSession {
-	v, err := sscb.Save(ctx)
+func (_c *SentinelSessionCreateBulk) SaveX(ctx context.Context) []*SentinelSession {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -791,14 +791,14 @@ func (sscb *SentinelSessionCreateBulk) SaveX(ctx context.Context) []*SentinelSes
 }
 
 // Exec executes the query.
-func (sscb *SentinelSessionCreateBulk) Exec(ctx context.Context) error {
-	_, err := sscb.Save(ctx)
+func (_c *SentinelSessionCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sscb *SentinelSessionCreateBulk) ExecX(ctx context.Context) {
-	if err := sscb.Exec(ctx); err != nil {
+func (_c *SentinelSessionCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -818,10 +818,10 @@ func (sscb *SentinelSessionCreateBulk) ExecX(ctx context.Context) {
 //			SetSentinelID(v+v).
 //		}).
 //		Exec(ctx)
-func (sscb *SentinelSessionCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelSessionUpsertBulk {
-	sscb.conflict = opts
+func (_c *SentinelSessionCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelSessionUpsertBulk {
+	_c.conflict = opts
 	return &SentinelSessionUpsertBulk{
-		create: sscb,
+		create: _c,
 	}
 }
 
@@ -831,10 +831,10 @@ func (sscb *SentinelSessionCreateBulk) OnConflict(opts ...sql.ConflictOption) *S
 //	client.SentinelSession.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sscb *SentinelSessionCreateBulk) OnConflictColumns(columns ...string) *SentinelSessionUpsertBulk {
-	sscb.conflict = append(sscb.conflict, sql.ConflictColumns(columns...))
+func (_c *SentinelSessionCreateBulk) OnConflictColumns(columns ...string) *SentinelSessionUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SentinelSessionUpsertBulk{
-		create: sscb,
+		create: _c,
 	}
 }
 

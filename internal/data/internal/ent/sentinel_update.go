@@ -27,232 +27,232 @@ type SentinelUpdate struct {
 }
 
 // Where appends a list predicates to the SentinelUpdate builder.
-func (su *SentinelUpdate) Where(ps ...predicate.Sentinel) *SentinelUpdate {
-	su.mutation.Where(ps...)
-	return su
+func (_u *SentinelUpdate) Where(ps ...predicate.Sentinel) *SentinelUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (su *SentinelUpdate) SetName(s string) *SentinelUpdate {
-	su.mutation.SetName(s)
-	return su
+func (_u *SentinelUpdate) SetName(v string) *SentinelUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (su *SentinelUpdate) SetNillableName(s *string) *SentinelUpdate {
-	if s != nil {
-		su.SetName(*s)
+func (_u *SentinelUpdate) SetNillableName(v *string) *SentinelUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return su
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (su *SentinelUpdate) SetDescription(s string) *SentinelUpdate {
-	su.mutation.SetDescription(s)
-	return su
+func (_u *SentinelUpdate) SetDescription(v string) *SentinelUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (su *SentinelUpdate) SetNillableDescription(s *string) *SentinelUpdate {
-	if s != nil {
-		su.SetDescription(*s)
+func (_u *SentinelUpdate) SetNillableDescription(v *string) *SentinelUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return su
+	return _u
 }
 
 // SetURL sets the "url" field.
-func (su *SentinelUpdate) SetURL(s string) *SentinelUpdate {
-	su.mutation.SetURL(s)
-	return su
+func (_u *SentinelUpdate) SetURL(v string) *SentinelUpdate {
+	_u.mutation.SetURL(v)
+	return _u
 }
 
 // SetNillableURL sets the "url" field if the given value is not nil.
-func (su *SentinelUpdate) SetNillableURL(s *string) *SentinelUpdate {
-	if s != nil {
-		su.SetURL(*s)
+func (_u *SentinelUpdate) SetNillableURL(v *string) *SentinelUpdate {
+	if v != nil {
+		_u.SetURL(*v)
 	}
-	return su
+	return _u
 }
 
 // SetAlternativeUrls sets the "alternative_urls" field.
-func (su *SentinelUpdate) SetAlternativeUrls(s []string) *SentinelUpdate {
-	su.mutation.SetAlternativeUrls(s)
-	return su
+func (_u *SentinelUpdate) SetAlternativeUrls(v []string) *SentinelUpdate {
+	_u.mutation.SetAlternativeUrls(v)
+	return _u
 }
 
-// AppendAlternativeUrls appends s to the "alternative_urls" field.
-func (su *SentinelUpdate) AppendAlternativeUrls(s []string) *SentinelUpdate {
-	su.mutation.AppendAlternativeUrls(s)
-	return su
+// AppendAlternativeUrls appends value to the "alternative_urls" field.
+func (_u *SentinelUpdate) AppendAlternativeUrls(v []string) *SentinelUpdate {
+	_u.mutation.AppendAlternativeUrls(v)
+	return _u
 }
 
 // ClearAlternativeUrls clears the value of the "alternative_urls" field.
-func (su *SentinelUpdate) ClearAlternativeUrls() *SentinelUpdate {
-	su.mutation.ClearAlternativeUrls()
-	return su
+func (_u *SentinelUpdate) ClearAlternativeUrls() *SentinelUpdate {
+	_u.mutation.ClearAlternativeUrls()
+	return _u
 }
 
 // SetGetTokenPath sets the "get_token_path" field.
-func (su *SentinelUpdate) SetGetTokenPath(s string) *SentinelUpdate {
-	su.mutation.SetGetTokenPath(s)
-	return su
+func (_u *SentinelUpdate) SetGetTokenPath(v string) *SentinelUpdate {
+	_u.mutation.SetGetTokenPath(v)
+	return _u
 }
 
 // SetNillableGetTokenPath sets the "get_token_path" field if the given value is not nil.
-func (su *SentinelUpdate) SetNillableGetTokenPath(s *string) *SentinelUpdate {
-	if s != nil {
-		su.SetGetTokenPath(*s)
+func (_u *SentinelUpdate) SetNillableGetTokenPath(v *string) *SentinelUpdate {
+	if v != nil {
+		_u.SetGetTokenPath(*v)
 	}
-	return su
+	return _u
 }
 
 // ClearGetTokenPath clears the value of the "get_token_path" field.
-func (su *SentinelUpdate) ClearGetTokenPath() *SentinelUpdate {
-	su.mutation.ClearGetTokenPath()
-	return su
+func (_u *SentinelUpdate) ClearGetTokenPath() *SentinelUpdate {
+	_u.mutation.ClearGetTokenPath()
+	return _u
 }
 
 // SetDownloadFileBasePath sets the "download_file_base_path" field.
-func (su *SentinelUpdate) SetDownloadFileBasePath(s string) *SentinelUpdate {
-	su.mutation.SetDownloadFileBasePath(s)
-	return su
+func (_u *SentinelUpdate) SetDownloadFileBasePath(v string) *SentinelUpdate {
+	_u.mutation.SetDownloadFileBasePath(v)
+	return _u
 }
 
 // SetNillableDownloadFileBasePath sets the "download_file_base_path" field if the given value is not nil.
-func (su *SentinelUpdate) SetNillableDownloadFileBasePath(s *string) *SentinelUpdate {
-	if s != nil {
-		su.SetDownloadFileBasePath(*s)
+func (_u *SentinelUpdate) SetNillableDownloadFileBasePath(v *string) *SentinelUpdate {
+	if v != nil {
+		_u.SetDownloadFileBasePath(*v)
 	}
-	return su
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (su *SentinelUpdate) SetUpdatedAt(t time.Time) *SentinelUpdate {
-	su.mutation.SetUpdatedAt(t)
-	return su
+func (_u *SentinelUpdate) SetUpdatedAt(v time.Time) *SentinelUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (su *SentinelUpdate) SetCreatedAt(t time.Time) *SentinelUpdate {
-	su.mutation.SetCreatedAt(t)
-	return su
+func (_u *SentinelUpdate) SetCreatedAt(v time.Time) *SentinelUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (su *SentinelUpdate) SetNillableCreatedAt(t *time.Time) *SentinelUpdate {
-	if t != nil {
-		su.SetCreatedAt(*t)
+func (_u *SentinelUpdate) SetNillableCreatedAt(v *time.Time) *SentinelUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return su
+	return _u
 }
 
 // SetLibraryReportSequence sets the "library_report_sequence" field.
-func (su *SentinelUpdate) SetLibraryReportSequence(i int64) *SentinelUpdate {
-	su.mutation.ResetLibraryReportSequence()
-	su.mutation.SetLibraryReportSequence(i)
-	return su
+func (_u *SentinelUpdate) SetLibraryReportSequence(v int64) *SentinelUpdate {
+	_u.mutation.ResetLibraryReportSequence()
+	_u.mutation.SetLibraryReportSequence(v)
+	return _u
 }
 
 // SetNillableLibraryReportSequence sets the "library_report_sequence" field if the given value is not nil.
-func (su *SentinelUpdate) SetNillableLibraryReportSequence(i *int64) *SentinelUpdate {
-	if i != nil {
-		su.SetLibraryReportSequence(*i)
+func (_u *SentinelUpdate) SetNillableLibraryReportSequence(v *int64) *SentinelUpdate {
+	if v != nil {
+		_u.SetLibraryReportSequence(*v)
 	}
-	return su
+	return _u
 }
 
-// AddLibraryReportSequence adds i to the "library_report_sequence" field.
-func (su *SentinelUpdate) AddLibraryReportSequence(i int64) *SentinelUpdate {
-	su.mutation.AddLibraryReportSequence(i)
-	return su
+// AddLibraryReportSequence adds value to the "library_report_sequence" field.
+func (_u *SentinelUpdate) AddLibraryReportSequence(v int64) *SentinelUpdate {
+	_u.mutation.AddLibraryReportSequence(v)
+	return _u
 }
 
 // AddSentinelSessionIDs adds the "sentinel_session" edge to the SentinelSession entity by IDs.
-func (su *SentinelUpdate) AddSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdate {
-	su.mutation.AddSentinelSessionIDs(ids...)
-	return su
+func (_u *SentinelUpdate) AddSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdate {
+	_u.mutation.AddSentinelSessionIDs(ids...)
+	return _u
 }
 
 // AddSentinelSession adds the "sentinel_session" edges to the SentinelSession entity.
-func (su *SentinelUpdate) AddSentinelSession(s ...*SentinelSession) *SentinelUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelUpdate) AddSentinelSession(v ...*SentinelSession) *SentinelUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return su.AddSentinelSessionIDs(ids...)
+	return _u.AddSentinelSessionIDs(ids...)
 }
 
 // AddSentinelLibraryIDs adds the "sentinel_library" edge to the SentinelLibrary entity by IDs.
-func (su *SentinelUpdate) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelUpdate {
-	su.mutation.AddSentinelLibraryIDs(ids...)
-	return su
+func (_u *SentinelUpdate) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelUpdate {
+	_u.mutation.AddSentinelLibraryIDs(ids...)
+	return _u
 }
 
 // AddSentinelLibrary adds the "sentinel_library" edges to the SentinelLibrary entity.
-func (su *SentinelUpdate) AddSentinelLibrary(s ...*SentinelLibrary) *SentinelUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelUpdate) AddSentinelLibrary(v ...*SentinelLibrary) *SentinelUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return su.AddSentinelLibraryIDs(ids...)
+	return _u.AddSentinelLibraryIDs(ids...)
 }
 
 // Mutation returns the SentinelMutation object of the builder.
-func (su *SentinelUpdate) Mutation() *SentinelMutation {
-	return su.mutation
+func (_u *SentinelUpdate) Mutation() *SentinelMutation {
+	return _u.mutation
 }
 
 // ClearSentinelSession clears all "sentinel_session" edges to the SentinelSession entity.
-func (su *SentinelUpdate) ClearSentinelSession() *SentinelUpdate {
-	su.mutation.ClearSentinelSession()
-	return su
+func (_u *SentinelUpdate) ClearSentinelSession() *SentinelUpdate {
+	_u.mutation.ClearSentinelSession()
+	return _u
 }
 
 // RemoveSentinelSessionIDs removes the "sentinel_session" edge to SentinelSession entities by IDs.
-func (su *SentinelUpdate) RemoveSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdate {
-	su.mutation.RemoveSentinelSessionIDs(ids...)
-	return su
+func (_u *SentinelUpdate) RemoveSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdate {
+	_u.mutation.RemoveSentinelSessionIDs(ids...)
+	return _u
 }
 
 // RemoveSentinelSession removes "sentinel_session" edges to SentinelSession entities.
-func (su *SentinelUpdate) RemoveSentinelSession(s ...*SentinelSession) *SentinelUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelUpdate) RemoveSentinelSession(v ...*SentinelSession) *SentinelUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return su.RemoveSentinelSessionIDs(ids...)
+	return _u.RemoveSentinelSessionIDs(ids...)
 }
 
 // ClearSentinelLibrary clears all "sentinel_library" edges to the SentinelLibrary entity.
-func (su *SentinelUpdate) ClearSentinelLibrary() *SentinelUpdate {
-	su.mutation.ClearSentinelLibrary()
-	return su
+func (_u *SentinelUpdate) ClearSentinelLibrary() *SentinelUpdate {
+	_u.mutation.ClearSentinelLibrary()
+	return _u
 }
 
 // RemoveSentinelLibraryIDs removes the "sentinel_library" edge to SentinelLibrary entities by IDs.
-func (su *SentinelUpdate) RemoveSentinelLibraryIDs(ids ...model.InternalID) *SentinelUpdate {
-	su.mutation.RemoveSentinelLibraryIDs(ids...)
-	return su
+func (_u *SentinelUpdate) RemoveSentinelLibraryIDs(ids ...model.InternalID) *SentinelUpdate {
+	_u.mutation.RemoveSentinelLibraryIDs(ids...)
+	return _u
 }
 
 // RemoveSentinelLibrary removes "sentinel_library" edges to SentinelLibrary entities.
-func (su *SentinelUpdate) RemoveSentinelLibrary(s ...*SentinelLibrary) *SentinelUpdate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelUpdate) RemoveSentinelLibrary(v ...*SentinelLibrary) *SentinelUpdate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return su.RemoveSentinelLibraryIDs(ids...)
+	return _u.RemoveSentinelLibraryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (su *SentinelUpdate) Save(ctx context.Context) (int, error) {
-	su.defaults()
-	return withHooks(ctx, su.sqlSave, su.mutation, su.hooks)
+func (_u *SentinelUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (su *SentinelUpdate) SaveX(ctx context.Context) int {
-	affected, err := su.Save(ctx)
+func (_u *SentinelUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -260,77 +260,77 @@ func (su *SentinelUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (su *SentinelUpdate) Exec(ctx context.Context) error {
-	_, err := su.Save(ctx)
+func (_u *SentinelUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (su *SentinelUpdate) ExecX(ctx context.Context) {
-	if err := su.Exec(ctx); err != nil {
+func (_u *SentinelUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (su *SentinelUpdate) defaults() {
-	if _, ok := su.mutation.UpdatedAt(); !ok {
+func (_u *SentinelUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinel.UpdateDefaultUpdatedAt()
-		su.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (su *SentinelUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *SentinelUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sentinel.Table, sentinel.Columns, sqlgraph.NewFieldSpec(sentinel.FieldID, field.TypeInt64))
-	if ps := su.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := su.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(sentinel.FieldName, field.TypeString, value)
 	}
-	if value, ok := su.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(sentinel.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := su.mutation.URL(); ok {
+	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(sentinel.FieldURL, field.TypeString, value)
 	}
-	if value, ok := su.mutation.AlternativeUrls(); ok {
+	if value, ok := _u.mutation.AlternativeUrls(); ok {
 		_spec.SetField(sentinel.FieldAlternativeUrls, field.TypeJSON, value)
 	}
-	if value, ok := su.mutation.AppendedAlternativeUrls(); ok {
+	if value, ok := _u.mutation.AppendedAlternativeUrls(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, sentinel.FieldAlternativeUrls, value)
 		})
 	}
-	if su.mutation.AlternativeUrlsCleared() {
+	if _u.mutation.AlternativeUrlsCleared() {
 		_spec.ClearField(sentinel.FieldAlternativeUrls, field.TypeJSON)
 	}
-	if value, ok := su.mutation.GetTokenPath(); ok {
+	if value, ok := _u.mutation.GetTokenPath(); ok {
 		_spec.SetField(sentinel.FieldGetTokenPath, field.TypeString, value)
 	}
-	if su.mutation.GetTokenPathCleared() {
+	if _u.mutation.GetTokenPathCleared() {
 		_spec.ClearField(sentinel.FieldGetTokenPath, field.TypeString)
 	}
-	if value, ok := su.mutation.DownloadFileBasePath(); ok {
+	if value, ok := _u.mutation.DownloadFileBasePath(); ok {
 		_spec.SetField(sentinel.FieldDownloadFileBasePath, field.TypeString, value)
 	}
-	if value, ok := su.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinel.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := su.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinel.FieldCreatedAt, field.TypeTime, value)
 	}
-	if value, ok := su.mutation.LibraryReportSequence(); ok {
+	if value, ok := _u.mutation.LibraryReportSequence(); ok {
 		_spec.SetField(sentinel.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if value, ok := su.mutation.AddedLibraryReportSequence(); ok {
+	if value, ok := _u.mutation.AddedLibraryReportSequence(); ok {
 		_spec.AddField(sentinel.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if su.mutation.SentinelSessionCleared() {
+	if _u.mutation.SentinelSessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -343,7 +343,7 @@ func (su *SentinelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := su.mutation.RemovedSentinelSessionIDs(); len(nodes) > 0 && !su.mutation.SentinelSessionCleared() {
+	if nodes := _u.mutation.RemovedSentinelSessionIDs(); len(nodes) > 0 && !_u.mutation.SentinelSessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -359,7 +359,7 @@ func (su *SentinelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := su.mutation.SentinelSessionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SentinelSessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -375,7 +375,7 @@ func (su *SentinelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if su.mutation.SentinelLibraryCleared() {
+	if _u.mutation.SentinelLibraryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -388,7 +388,7 @@ func (su *SentinelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := su.mutation.RemovedSentinelLibraryIDs(); len(nodes) > 0 && !su.mutation.SentinelLibraryCleared() {
+	if nodes := _u.mutation.RemovedSentinelLibraryIDs(); len(nodes) > 0 && !_u.mutation.SentinelLibraryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -404,7 +404,7 @@ func (su *SentinelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := su.mutation.SentinelLibraryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SentinelLibraryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -420,7 +420,7 @@ func (su *SentinelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, su.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinel.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -428,8 +428,8 @@ func (su *SentinelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	su.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // SentinelUpdateOne is the builder for updating a single Sentinel entity.
@@ -441,239 +441,239 @@ type SentinelUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (suo *SentinelUpdateOne) SetName(s string) *SentinelUpdateOne {
-	suo.mutation.SetName(s)
-	return suo
+func (_u *SentinelUpdateOne) SetName(v string) *SentinelUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (suo *SentinelUpdateOne) SetNillableName(s *string) *SentinelUpdateOne {
-	if s != nil {
-		suo.SetName(*s)
+func (_u *SentinelUpdateOne) SetNillableName(v *string) *SentinelUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return suo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (suo *SentinelUpdateOne) SetDescription(s string) *SentinelUpdateOne {
-	suo.mutation.SetDescription(s)
-	return suo
+func (_u *SentinelUpdateOne) SetDescription(v string) *SentinelUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (suo *SentinelUpdateOne) SetNillableDescription(s *string) *SentinelUpdateOne {
-	if s != nil {
-		suo.SetDescription(*s)
+func (_u *SentinelUpdateOne) SetNillableDescription(v *string) *SentinelUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return suo
+	return _u
 }
 
 // SetURL sets the "url" field.
-func (suo *SentinelUpdateOne) SetURL(s string) *SentinelUpdateOne {
-	suo.mutation.SetURL(s)
-	return suo
+func (_u *SentinelUpdateOne) SetURL(v string) *SentinelUpdateOne {
+	_u.mutation.SetURL(v)
+	return _u
 }
 
 // SetNillableURL sets the "url" field if the given value is not nil.
-func (suo *SentinelUpdateOne) SetNillableURL(s *string) *SentinelUpdateOne {
-	if s != nil {
-		suo.SetURL(*s)
+func (_u *SentinelUpdateOne) SetNillableURL(v *string) *SentinelUpdateOne {
+	if v != nil {
+		_u.SetURL(*v)
 	}
-	return suo
+	return _u
 }
 
 // SetAlternativeUrls sets the "alternative_urls" field.
-func (suo *SentinelUpdateOne) SetAlternativeUrls(s []string) *SentinelUpdateOne {
-	suo.mutation.SetAlternativeUrls(s)
-	return suo
+func (_u *SentinelUpdateOne) SetAlternativeUrls(v []string) *SentinelUpdateOne {
+	_u.mutation.SetAlternativeUrls(v)
+	return _u
 }
 
-// AppendAlternativeUrls appends s to the "alternative_urls" field.
-func (suo *SentinelUpdateOne) AppendAlternativeUrls(s []string) *SentinelUpdateOne {
-	suo.mutation.AppendAlternativeUrls(s)
-	return suo
+// AppendAlternativeUrls appends value to the "alternative_urls" field.
+func (_u *SentinelUpdateOne) AppendAlternativeUrls(v []string) *SentinelUpdateOne {
+	_u.mutation.AppendAlternativeUrls(v)
+	return _u
 }
 
 // ClearAlternativeUrls clears the value of the "alternative_urls" field.
-func (suo *SentinelUpdateOne) ClearAlternativeUrls() *SentinelUpdateOne {
-	suo.mutation.ClearAlternativeUrls()
-	return suo
+func (_u *SentinelUpdateOne) ClearAlternativeUrls() *SentinelUpdateOne {
+	_u.mutation.ClearAlternativeUrls()
+	return _u
 }
 
 // SetGetTokenPath sets the "get_token_path" field.
-func (suo *SentinelUpdateOne) SetGetTokenPath(s string) *SentinelUpdateOne {
-	suo.mutation.SetGetTokenPath(s)
-	return suo
+func (_u *SentinelUpdateOne) SetGetTokenPath(v string) *SentinelUpdateOne {
+	_u.mutation.SetGetTokenPath(v)
+	return _u
 }
 
 // SetNillableGetTokenPath sets the "get_token_path" field if the given value is not nil.
-func (suo *SentinelUpdateOne) SetNillableGetTokenPath(s *string) *SentinelUpdateOne {
-	if s != nil {
-		suo.SetGetTokenPath(*s)
+func (_u *SentinelUpdateOne) SetNillableGetTokenPath(v *string) *SentinelUpdateOne {
+	if v != nil {
+		_u.SetGetTokenPath(*v)
 	}
-	return suo
+	return _u
 }
 
 // ClearGetTokenPath clears the value of the "get_token_path" field.
-func (suo *SentinelUpdateOne) ClearGetTokenPath() *SentinelUpdateOne {
-	suo.mutation.ClearGetTokenPath()
-	return suo
+func (_u *SentinelUpdateOne) ClearGetTokenPath() *SentinelUpdateOne {
+	_u.mutation.ClearGetTokenPath()
+	return _u
 }
 
 // SetDownloadFileBasePath sets the "download_file_base_path" field.
-func (suo *SentinelUpdateOne) SetDownloadFileBasePath(s string) *SentinelUpdateOne {
-	suo.mutation.SetDownloadFileBasePath(s)
-	return suo
+func (_u *SentinelUpdateOne) SetDownloadFileBasePath(v string) *SentinelUpdateOne {
+	_u.mutation.SetDownloadFileBasePath(v)
+	return _u
 }
 
 // SetNillableDownloadFileBasePath sets the "download_file_base_path" field if the given value is not nil.
-func (suo *SentinelUpdateOne) SetNillableDownloadFileBasePath(s *string) *SentinelUpdateOne {
-	if s != nil {
-		suo.SetDownloadFileBasePath(*s)
+func (_u *SentinelUpdateOne) SetNillableDownloadFileBasePath(v *string) *SentinelUpdateOne {
+	if v != nil {
+		_u.SetDownloadFileBasePath(*v)
 	}
-	return suo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (suo *SentinelUpdateOne) SetUpdatedAt(t time.Time) *SentinelUpdateOne {
-	suo.mutation.SetUpdatedAt(t)
-	return suo
+func (_u *SentinelUpdateOne) SetUpdatedAt(v time.Time) *SentinelUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (suo *SentinelUpdateOne) SetCreatedAt(t time.Time) *SentinelUpdateOne {
-	suo.mutation.SetCreatedAt(t)
-	return suo
+func (_u *SentinelUpdateOne) SetCreatedAt(v time.Time) *SentinelUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (suo *SentinelUpdateOne) SetNillableCreatedAt(t *time.Time) *SentinelUpdateOne {
-	if t != nil {
-		suo.SetCreatedAt(*t)
+func (_u *SentinelUpdateOne) SetNillableCreatedAt(v *time.Time) *SentinelUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return suo
+	return _u
 }
 
 // SetLibraryReportSequence sets the "library_report_sequence" field.
-func (suo *SentinelUpdateOne) SetLibraryReportSequence(i int64) *SentinelUpdateOne {
-	suo.mutation.ResetLibraryReportSequence()
-	suo.mutation.SetLibraryReportSequence(i)
-	return suo
+func (_u *SentinelUpdateOne) SetLibraryReportSequence(v int64) *SentinelUpdateOne {
+	_u.mutation.ResetLibraryReportSequence()
+	_u.mutation.SetLibraryReportSequence(v)
+	return _u
 }
 
 // SetNillableLibraryReportSequence sets the "library_report_sequence" field if the given value is not nil.
-func (suo *SentinelUpdateOne) SetNillableLibraryReportSequence(i *int64) *SentinelUpdateOne {
-	if i != nil {
-		suo.SetLibraryReportSequence(*i)
+func (_u *SentinelUpdateOne) SetNillableLibraryReportSequence(v *int64) *SentinelUpdateOne {
+	if v != nil {
+		_u.SetLibraryReportSequence(*v)
 	}
-	return suo
+	return _u
 }
 
-// AddLibraryReportSequence adds i to the "library_report_sequence" field.
-func (suo *SentinelUpdateOne) AddLibraryReportSequence(i int64) *SentinelUpdateOne {
-	suo.mutation.AddLibraryReportSequence(i)
-	return suo
+// AddLibraryReportSequence adds value to the "library_report_sequence" field.
+func (_u *SentinelUpdateOne) AddLibraryReportSequence(v int64) *SentinelUpdateOne {
+	_u.mutation.AddLibraryReportSequence(v)
+	return _u
 }
 
 // AddSentinelSessionIDs adds the "sentinel_session" edge to the SentinelSession entity by IDs.
-func (suo *SentinelUpdateOne) AddSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdateOne {
-	suo.mutation.AddSentinelSessionIDs(ids...)
-	return suo
+func (_u *SentinelUpdateOne) AddSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdateOne {
+	_u.mutation.AddSentinelSessionIDs(ids...)
+	return _u
 }
 
 // AddSentinelSession adds the "sentinel_session" edges to the SentinelSession entity.
-func (suo *SentinelUpdateOne) AddSentinelSession(s ...*SentinelSession) *SentinelUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelUpdateOne) AddSentinelSession(v ...*SentinelSession) *SentinelUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return suo.AddSentinelSessionIDs(ids...)
+	return _u.AddSentinelSessionIDs(ids...)
 }
 
 // AddSentinelLibraryIDs adds the "sentinel_library" edge to the SentinelLibrary entity by IDs.
-func (suo *SentinelUpdateOne) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelUpdateOne {
-	suo.mutation.AddSentinelLibraryIDs(ids...)
-	return suo
+func (_u *SentinelUpdateOne) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelUpdateOne {
+	_u.mutation.AddSentinelLibraryIDs(ids...)
+	return _u
 }
 
 // AddSentinelLibrary adds the "sentinel_library" edges to the SentinelLibrary entity.
-func (suo *SentinelUpdateOne) AddSentinelLibrary(s ...*SentinelLibrary) *SentinelUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelUpdateOne) AddSentinelLibrary(v ...*SentinelLibrary) *SentinelUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return suo.AddSentinelLibraryIDs(ids...)
+	return _u.AddSentinelLibraryIDs(ids...)
 }
 
 // Mutation returns the SentinelMutation object of the builder.
-func (suo *SentinelUpdateOne) Mutation() *SentinelMutation {
-	return suo.mutation
+func (_u *SentinelUpdateOne) Mutation() *SentinelMutation {
+	return _u.mutation
 }
 
 // ClearSentinelSession clears all "sentinel_session" edges to the SentinelSession entity.
-func (suo *SentinelUpdateOne) ClearSentinelSession() *SentinelUpdateOne {
-	suo.mutation.ClearSentinelSession()
-	return suo
+func (_u *SentinelUpdateOne) ClearSentinelSession() *SentinelUpdateOne {
+	_u.mutation.ClearSentinelSession()
+	return _u
 }
 
 // RemoveSentinelSessionIDs removes the "sentinel_session" edge to SentinelSession entities by IDs.
-func (suo *SentinelUpdateOne) RemoveSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdateOne {
-	suo.mutation.RemoveSentinelSessionIDs(ids...)
-	return suo
+func (_u *SentinelUpdateOne) RemoveSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdateOne {
+	_u.mutation.RemoveSentinelSessionIDs(ids...)
+	return _u
 }
 
 // RemoveSentinelSession removes "sentinel_session" edges to SentinelSession entities.
-func (suo *SentinelUpdateOne) RemoveSentinelSession(s ...*SentinelSession) *SentinelUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelUpdateOne) RemoveSentinelSession(v ...*SentinelSession) *SentinelUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return suo.RemoveSentinelSessionIDs(ids...)
+	return _u.RemoveSentinelSessionIDs(ids...)
 }
 
 // ClearSentinelLibrary clears all "sentinel_library" edges to the SentinelLibrary entity.
-func (suo *SentinelUpdateOne) ClearSentinelLibrary() *SentinelUpdateOne {
-	suo.mutation.ClearSentinelLibrary()
-	return suo
+func (_u *SentinelUpdateOne) ClearSentinelLibrary() *SentinelUpdateOne {
+	_u.mutation.ClearSentinelLibrary()
+	return _u
 }
 
 // RemoveSentinelLibraryIDs removes the "sentinel_library" edge to SentinelLibrary entities by IDs.
-func (suo *SentinelUpdateOne) RemoveSentinelLibraryIDs(ids ...model.InternalID) *SentinelUpdateOne {
-	suo.mutation.RemoveSentinelLibraryIDs(ids...)
-	return suo
+func (_u *SentinelUpdateOne) RemoveSentinelLibraryIDs(ids ...model.InternalID) *SentinelUpdateOne {
+	_u.mutation.RemoveSentinelLibraryIDs(ids...)
+	return _u
 }
 
 // RemoveSentinelLibrary removes "sentinel_library" edges to SentinelLibrary entities.
-func (suo *SentinelUpdateOne) RemoveSentinelLibrary(s ...*SentinelLibrary) *SentinelUpdateOne {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_u *SentinelUpdateOne) RemoveSentinelLibrary(v ...*SentinelLibrary) *SentinelUpdateOne {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return suo.RemoveSentinelLibraryIDs(ids...)
+	return _u.RemoveSentinelLibraryIDs(ids...)
 }
 
 // Where appends a list predicates to the SentinelUpdate builder.
-func (suo *SentinelUpdateOne) Where(ps ...predicate.Sentinel) *SentinelUpdateOne {
-	suo.mutation.Where(ps...)
-	return suo
+func (_u *SentinelUpdateOne) Where(ps ...predicate.Sentinel) *SentinelUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (suo *SentinelUpdateOne) Select(field string, fields ...string) *SentinelUpdateOne {
-	suo.fields = append([]string{field}, fields...)
-	return suo
+func (_u *SentinelUpdateOne) Select(field string, fields ...string) *SentinelUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Sentinel entity.
-func (suo *SentinelUpdateOne) Save(ctx context.Context) (*Sentinel, error) {
-	suo.defaults()
-	return withHooks(ctx, suo.sqlSave, suo.mutation, suo.hooks)
+func (_u *SentinelUpdateOne) Save(ctx context.Context) (*Sentinel, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (suo *SentinelUpdateOne) SaveX(ctx context.Context) *Sentinel {
-	node, err := suo.Save(ctx)
+func (_u *SentinelUpdateOne) SaveX(ctx context.Context) *Sentinel {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -681,34 +681,34 @@ func (suo *SentinelUpdateOne) SaveX(ctx context.Context) *Sentinel {
 }
 
 // Exec executes the query on the entity.
-func (suo *SentinelUpdateOne) Exec(ctx context.Context) error {
-	_, err := suo.Save(ctx)
+func (_u *SentinelUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (suo *SentinelUpdateOne) ExecX(ctx context.Context) {
-	if err := suo.Exec(ctx); err != nil {
+func (_u *SentinelUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (suo *SentinelUpdateOne) defaults() {
-	if _, ok := suo.mutation.UpdatedAt(); !ok {
+func (_u *SentinelUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := sentinel.UpdateDefaultUpdatedAt()
-		suo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err error) {
+func (_u *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err error) {
 	_spec := sqlgraph.NewUpdateSpec(sentinel.Table, sentinel.Columns, sqlgraph.NewFieldSpec(sentinel.FieldID, field.TypeInt64))
-	id, ok := suo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Sentinel.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := suo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, sentinel.FieldID)
 		for _, f := range fields {
@@ -720,55 +720,55 @@ func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err
 			}
 		}
 	}
-	if ps := suo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := suo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(sentinel.FieldName, field.TypeString, value)
 	}
-	if value, ok := suo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(sentinel.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := suo.mutation.URL(); ok {
+	if value, ok := _u.mutation.URL(); ok {
 		_spec.SetField(sentinel.FieldURL, field.TypeString, value)
 	}
-	if value, ok := suo.mutation.AlternativeUrls(); ok {
+	if value, ok := _u.mutation.AlternativeUrls(); ok {
 		_spec.SetField(sentinel.FieldAlternativeUrls, field.TypeJSON, value)
 	}
-	if value, ok := suo.mutation.AppendedAlternativeUrls(); ok {
+	if value, ok := _u.mutation.AppendedAlternativeUrls(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, sentinel.FieldAlternativeUrls, value)
 		})
 	}
-	if suo.mutation.AlternativeUrlsCleared() {
+	if _u.mutation.AlternativeUrlsCleared() {
 		_spec.ClearField(sentinel.FieldAlternativeUrls, field.TypeJSON)
 	}
-	if value, ok := suo.mutation.GetTokenPath(); ok {
+	if value, ok := _u.mutation.GetTokenPath(); ok {
 		_spec.SetField(sentinel.FieldGetTokenPath, field.TypeString, value)
 	}
-	if suo.mutation.GetTokenPathCleared() {
+	if _u.mutation.GetTokenPathCleared() {
 		_spec.ClearField(sentinel.FieldGetTokenPath, field.TypeString)
 	}
-	if value, ok := suo.mutation.DownloadFileBasePath(); ok {
+	if value, ok := _u.mutation.DownloadFileBasePath(); ok {
 		_spec.SetField(sentinel.FieldDownloadFileBasePath, field.TypeString, value)
 	}
-	if value, ok := suo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinel.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := suo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinel.FieldCreatedAt, field.TypeTime, value)
 	}
-	if value, ok := suo.mutation.LibraryReportSequence(); ok {
+	if value, ok := _u.mutation.LibraryReportSequence(); ok {
 		_spec.SetField(sentinel.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if value, ok := suo.mutation.AddedLibraryReportSequence(); ok {
+	if value, ok := _u.mutation.AddedLibraryReportSequence(); ok {
 		_spec.AddField(sentinel.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if suo.mutation.SentinelSessionCleared() {
+	if _u.mutation.SentinelSessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -781,7 +781,7 @@ func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := suo.mutation.RemovedSentinelSessionIDs(); len(nodes) > 0 && !suo.mutation.SentinelSessionCleared() {
+	if nodes := _u.mutation.RemovedSentinelSessionIDs(); len(nodes) > 0 && !_u.mutation.SentinelSessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -797,7 +797,7 @@ func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := suo.mutation.SentinelSessionIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SentinelSessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -813,7 +813,7 @@ func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if suo.mutation.SentinelLibraryCleared() {
+	if _u.mutation.SentinelLibraryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -826,7 +826,7 @@ func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := suo.mutation.RemovedSentinelLibraryIDs(); len(nodes) > 0 && !suo.mutation.SentinelLibraryCleared() {
+	if nodes := _u.mutation.RemovedSentinelLibraryIDs(); len(nodes) > 0 && !_u.mutation.SentinelLibraryCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -842,7 +842,7 @@ func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := suo.mutation.SentinelLibraryIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SentinelLibraryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -858,10 +858,10 @@ func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Sentinel{config: suo.config}
+	_node = &Sentinel{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, suo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinel.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -869,6 +869,6 @@ func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err
 		}
 		return nil, err
 	}
-	suo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

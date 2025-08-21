@@ -26,101 +26,101 @@ type ImageCreate struct {
 }
 
 // SetName sets the "name" field.
-func (ic *ImageCreate) SetName(s string) *ImageCreate {
-	ic.mutation.SetName(s)
-	return ic
+func (_c *ImageCreate) SetName(v string) *ImageCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetDescription sets the "description" field.
-func (ic *ImageCreate) SetDescription(s string) *ImageCreate {
-	ic.mutation.SetDescription(s)
-	return ic
+func (_c *ImageCreate) SetDescription(v string) *ImageCreate {
+	_c.mutation.SetDescription(v)
+	return _c
 }
 
 // SetStatus sets the "status" field.
-func (ic *ImageCreate) SetStatus(i image.Status) *ImageCreate {
-	ic.mutation.SetStatus(i)
-	return ic
+func (_c *ImageCreate) SetStatus(v image.Status) *ImageCreate {
+	_c.mutation.SetStatus(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ic *ImageCreate) SetUpdatedAt(t time.Time) *ImageCreate {
-	ic.mutation.SetUpdatedAt(t)
-	return ic
+func (_c *ImageCreate) SetUpdatedAt(v time.Time) *ImageCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ic *ImageCreate) SetNillableUpdatedAt(t *time.Time) *ImageCreate {
-	if t != nil {
-		ic.SetUpdatedAt(*t)
+func (_c *ImageCreate) SetNillableUpdatedAt(v *time.Time) *ImageCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return ic
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ic *ImageCreate) SetCreatedAt(t time.Time) *ImageCreate {
-	ic.mutation.SetCreatedAt(t)
-	return ic
+func (_c *ImageCreate) SetCreatedAt(v time.Time) *ImageCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ic *ImageCreate) SetNillableCreatedAt(t *time.Time) *ImageCreate {
-	if t != nil {
-		ic.SetCreatedAt(*t)
+func (_c *ImageCreate) SetNillableCreatedAt(v *time.Time) *ImageCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return ic
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ic *ImageCreate) SetID(mi model.InternalID) *ImageCreate {
-	ic.mutation.SetID(mi)
-	return ic
+func (_c *ImageCreate) SetID(v model.InternalID) *ImageCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ic *ImageCreate) SetOwnerID(id model.InternalID) *ImageCreate {
-	ic.mutation.SetOwnerID(id)
-	return ic
+func (_c *ImageCreate) SetOwnerID(id model.InternalID) *ImageCreate {
+	_c.mutation.SetOwnerID(id)
+	return _c
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (ic *ImageCreate) SetOwner(u *User) *ImageCreate {
-	return ic.SetOwnerID(u.ID)
+func (_c *ImageCreate) SetOwner(v *User) *ImageCreate {
+	return _c.SetOwnerID(v.ID)
 }
 
 // SetFileID sets the "file" edge to the File entity by ID.
-func (ic *ImageCreate) SetFileID(id model.InternalID) *ImageCreate {
-	ic.mutation.SetFileID(id)
-	return ic
+func (_c *ImageCreate) SetFileID(id model.InternalID) *ImageCreate {
+	_c.mutation.SetFileID(id)
+	return _c
 }
 
 // SetNillableFileID sets the "file" edge to the File entity by ID if the given value is not nil.
-func (ic *ImageCreate) SetNillableFileID(id *model.InternalID) *ImageCreate {
+func (_c *ImageCreate) SetNillableFileID(id *model.InternalID) *ImageCreate {
 	if id != nil {
-		ic = ic.SetFileID(*id)
+		_c = _c.SetFileID(*id)
 	}
-	return ic
+	return _c
 }
 
 // SetFile sets the "file" edge to the File entity.
-func (ic *ImageCreate) SetFile(f *File) *ImageCreate {
-	return ic.SetFileID(f.ID)
+func (_c *ImageCreate) SetFile(v *File) *ImageCreate {
+	return _c.SetFileID(v.ID)
 }
 
 // Mutation returns the ImageMutation object of the builder.
-func (ic *ImageCreate) Mutation() *ImageMutation {
-	return ic.mutation
+func (_c *ImageCreate) Mutation() *ImageMutation {
+	return _c.mutation
 }
 
 // Save creates the Image in the database.
-func (ic *ImageCreate) Save(ctx context.Context) (*Image, error) {
-	ic.defaults()
-	return withHooks(ctx, ic.sqlSave, ic.mutation, ic.hooks)
+func (_c *ImageCreate) Save(ctx context.Context) (*Image, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ic *ImageCreate) SaveX(ctx context.Context) *Image {
-	v, err := ic.Save(ctx)
+func (_c *ImageCreate) SaveX(ctx context.Context) *Image {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -128,64 +128,64 @@ func (ic *ImageCreate) SaveX(ctx context.Context) *Image {
 }
 
 // Exec executes the query.
-func (ic *ImageCreate) Exec(ctx context.Context) error {
-	_, err := ic.Save(ctx)
+func (_c *ImageCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ic *ImageCreate) ExecX(ctx context.Context) {
-	if err := ic.Exec(ctx); err != nil {
+func (_c *ImageCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ic *ImageCreate) defaults() {
-	if _, ok := ic.mutation.UpdatedAt(); !ok {
+func (_c *ImageCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := image.DefaultUpdatedAt()
-		ic.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := ic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := image.DefaultCreatedAt()
-		ic.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ic *ImageCreate) check() error {
-	if _, ok := ic.mutation.Name(); !ok {
+func (_c *ImageCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Image.name"`)}
 	}
-	if _, ok := ic.mutation.Description(); !ok {
+	if _, ok := _c.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Image.description"`)}
 	}
-	if _, ok := ic.mutation.Status(); !ok {
+	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Image.status"`)}
 	}
-	if v, ok := ic.mutation.Status(); ok {
+	if v, ok := _c.mutation.Status(); ok {
 		if err := image.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Image.status": %w`, err)}
 		}
 	}
-	if _, ok := ic.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Image.updated_at"`)}
 	}
-	if _, ok := ic.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Image.created_at"`)}
 	}
-	if len(ic.mutation.OwnerIDs()) == 0 {
+	if len(_c.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "Image.owner"`)}
 	}
 	return nil
 }
 
-func (ic *ImageCreate) sqlSave(ctx context.Context) (*Image, error) {
-	if err := ic.check(); err != nil {
+func (_c *ImageCreate) sqlSave(ctx context.Context) (*Image, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ic.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ic.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -195,42 +195,42 @@ func (ic *ImageCreate) sqlSave(ctx context.Context) (*Image, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	ic.mutation.id = &_node.ID
-	ic.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ic *ImageCreate) createSpec() (*Image, *sqlgraph.CreateSpec) {
+func (_c *ImageCreate) createSpec() (*Image, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Image{config: ic.config}
+		_node = &Image{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(image.Table, sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = ic.conflict
-	if id, ok := ic.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ic.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(image.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := ic.mutation.Description(); ok {
+	if value, ok := _c.mutation.Description(); ok {
 		_spec.SetField(image.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := ic.mutation.Status(); ok {
+	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(image.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := ic.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(image.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := ic.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(image.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ic.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -247,7 +247,7 @@ func (ic *ImageCreate) createSpec() (*Image, *sqlgraph.CreateSpec) {
 		_node.user_image = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ic.mutation.FileIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.FileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
 			Inverse: true,
@@ -283,10 +283,10 @@ func (ic *ImageCreate) createSpec() (*Image, *sqlgraph.CreateSpec) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (ic *ImageCreate) OnConflict(opts ...sql.ConflictOption) *ImageUpsertOne {
-	ic.conflict = opts
+func (_c *ImageCreate) OnConflict(opts ...sql.ConflictOption) *ImageUpsertOne {
+	_c.conflict = opts
 	return &ImageUpsertOne{
-		create: ic,
+		create: _c,
 	}
 }
 
@@ -296,10 +296,10 @@ func (ic *ImageCreate) OnConflict(opts ...sql.ConflictOption) *ImageUpsertOne {
 //	client.Image.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ic *ImageCreate) OnConflictColumns(columns ...string) *ImageUpsertOne {
-	ic.conflict = append(ic.conflict, sql.ConflictColumns(columns...))
+func (_c *ImageCreate) OnConflictColumns(columns ...string) *ImageUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ImageUpsertOne{
-		create: ic,
+		create: _c,
 	}
 }
 
@@ -536,16 +536,16 @@ type ImageCreateBulk struct {
 }
 
 // Save creates the Image entities in the database.
-func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
-	if icb.err != nil {
-		return nil, icb.err
+func (_c *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(icb.builders))
-	nodes := make([]*Image, len(icb.builders))
-	mutators := make([]Mutator, len(icb.builders))
-	for i := range icb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Image, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := icb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ImageMutation)
@@ -559,12 +559,12 @@ func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, icb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = icb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, icb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -588,7 +588,7 @@ func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, icb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -596,8 +596,8 @@ func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (icb *ImageCreateBulk) SaveX(ctx context.Context) []*Image {
-	v, err := icb.Save(ctx)
+func (_c *ImageCreateBulk) SaveX(ctx context.Context) []*Image {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -605,14 +605,14 @@ func (icb *ImageCreateBulk) SaveX(ctx context.Context) []*Image {
 }
 
 // Exec executes the query.
-func (icb *ImageCreateBulk) Exec(ctx context.Context) error {
-	_, err := icb.Save(ctx)
+func (_c *ImageCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (icb *ImageCreateBulk) ExecX(ctx context.Context) {
-	if err := icb.Exec(ctx); err != nil {
+func (_c *ImageCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -632,10 +632,10 @@ func (icb *ImageCreateBulk) ExecX(ctx context.Context) {
 //			SetName(v+v).
 //		}).
 //		Exec(ctx)
-func (icb *ImageCreateBulk) OnConflict(opts ...sql.ConflictOption) *ImageUpsertBulk {
-	icb.conflict = opts
+func (_c *ImageCreateBulk) OnConflict(opts ...sql.ConflictOption) *ImageUpsertBulk {
+	_c.conflict = opts
 	return &ImageUpsertBulk{
-		create: icb,
+		create: _c,
 	}
 }
 
@@ -645,10 +645,10 @@ func (icb *ImageCreateBulk) OnConflict(opts ...sql.ConflictOption) *ImageUpsertB
 //	client.Image.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (icb *ImageCreateBulk) OnConflictColumns(columns ...string) *ImageUpsertBulk {
-	icb.conflict = append(icb.conflict, sql.ConflictColumns(columns...))
+func (_c *ImageCreateBulk) OnConflictColumns(columns ...string) *ImageUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &ImageUpsertBulk{
-		create: icb,
+		create: _c,
 	}
 }
 

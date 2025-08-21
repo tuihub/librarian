@@ -20,56 +20,56 @@ type StoreAppDelete struct {
 }
 
 // Where appends a list predicates to the StoreAppDelete builder.
-func (sad *StoreAppDelete) Where(ps ...predicate.StoreApp) *StoreAppDelete {
-	sad.mutation.Where(ps...)
-	return sad
+func (_d *StoreAppDelete) Where(ps ...predicate.StoreApp) *StoreAppDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (sad *StoreAppDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, sad.sqlExec, sad.mutation, sad.hooks)
+func (_d *StoreAppDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sad *StoreAppDelete) ExecX(ctx context.Context) int {
-	n, err := sad.Exec(ctx)
+func (_d *StoreAppDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (sad *StoreAppDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *StoreAppDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(storeapp.Table, sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64))
-	if ps := sad.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, sad.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	sad.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // StoreAppDeleteOne is the builder for deleting a single StoreApp entity.
 type StoreAppDeleteOne struct {
-	sad *StoreAppDelete
+	_d *StoreAppDelete
 }
 
 // Where appends a list predicates to the StoreAppDelete builder.
-func (sado *StoreAppDeleteOne) Where(ps ...predicate.StoreApp) *StoreAppDeleteOne {
-	sado.sad.mutation.Where(ps...)
-	return sado
+func (_d *StoreAppDeleteOne) Where(ps ...predicate.StoreApp) *StoreAppDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (sado *StoreAppDeleteOne) Exec(ctx context.Context) error {
-	n, err := sado.sad.Exec(ctx)
+func (_d *StoreAppDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (sado *StoreAppDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sado *StoreAppDeleteOne) ExecX(ctx context.Context) {
-	if err := sado.Exec(ctx); err != nil {
+func (_d *StoreAppDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

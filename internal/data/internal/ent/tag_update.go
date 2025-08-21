@@ -25,118 +25,118 @@ type TagUpdate struct {
 }
 
 // Where appends a list predicates to the TagUpdate builder.
-func (tu *TagUpdate) Where(ps ...predicate.Tag) *TagUpdate {
-	tu.mutation.Where(ps...)
-	return tu
+func (_u *TagUpdate) Where(ps ...predicate.Tag) *TagUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUserTag sets the "user_tag" field.
-func (tu *TagUpdate) SetUserTag(mi model.InternalID) *TagUpdate {
-	tu.mutation.SetUserTag(mi)
-	return tu
+func (_u *TagUpdate) SetUserTag(v model.InternalID) *TagUpdate {
+	_u.mutation.SetUserTag(v)
+	return _u
 }
 
 // SetNillableUserTag sets the "user_tag" field if the given value is not nil.
-func (tu *TagUpdate) SetNillableUserTag(mi *model.InternalID) *TagUpdate {
-	if mi != nil {
-		tu.SetUserTag(*mi)
+func (_u *TagUpdate) SetNillableUserTag(v *model.InternalID) *TagUpdate {
+	if v != nil {
+		_u.SetUserTag(*v)
 	}
-	return tu
+	return _u
 }
 
 // SetName sets the "name" field.
-func (tu *TagUpdate) SetName(s string) *TagUpdate {
-	tu.mutation.SetName(s)
-	return tu
+func (_u *TagUpdate) SetName(v string) *TagUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (tu *TagUpdate) SetNillableName(s *string) *TagUpdate {
-	if s != nil {
-		tu.SetName(*s)
+func (_u *TagUpdate) SetNillableName(v *string) *TagUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return tu
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (tu *TagUpdate) SetDescription(s string) *TagUpdate {
-	tu.mutation.SetDescription(s)
-	return tu
+func (_u *TagUpdate) SetDescription(v string) *TagUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (tu *TagUpdate) SetNillableDescription(s *string) *TagUpdate {
-	if s != nil {
-		tu.SetDescription(*s)
+func (_u *TagUpdate) SetNillableDescription(v *string) *TagUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return tu
+	return _u
 }
 
 // SetPublic sets the "public" field.
-func (tu *TagUpdate) SetPublic(b bool) *TagUpdate {
-	tu.mutation.SetPublic(b)
-	return tu
+func (_u *TagUpdate) SetPublic(v bool) *TagUpdate {
+	_u.mutation.SetPublic(v)
+	return _u
 }
 
 // SetNillablePublic sets the "public" field if the given value is not nil.
-func (tu *TagUpdate) SetNillablePublic(b *bool) *TagUpdate {
-	if b != nil {
-		tu.SetPublic(*b)
+func (_u *TagUpdate) SetNillablePublic(v *bool) *TagUpdate {
+	if v != nil {
+		_u.SetPublic(*v)
 	}
-	return tu
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (tu *TagUpdate) SetUpdatedAt(t time.Time) *TagUpdate {
-	tu.mutation.SetUpdatedAt(t)
-	return tu
+func (_u *TagUpdate) SetUpdatedAt(v time.Time) *TagUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (tu *TagUpdate) SetCreatedAt(t time.Time) *TagUpdate {
-	tu.mutation.SetCreatedAt(t)
-	return tu
+func (_u *TagUpdate) SetCreatedAt(v time.Time) *TagUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (tu *TagUpdate) SetNillableCreatedAt(t *time.Time) *TagUpdate {
-	if t != nil {
-		tu.SetCreatedAt(*t)
+func (_u *TagUpdate) SetNillableCreatedAt(v *time.Time) *TagUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return tu
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (tu *TagUpdate) SetOwnerID(id model.InternalID) *TagUpdate {
-	tu.mutation.SetOwnerID(id)
-	return tu
+func (_u *TagUpdate) SetOwnerID(id model.InternalID) *TagUpdate {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (tu *TagUpdate) SetOwner(u *User) *TagUpdate {
-	return tu.SetOwnerID(u.ID)
+func (_u *TagUpdate) SetOwner(v *User) *TagUpdate {
+	return _u.SetOwnerID(v.ID)
 }
 
 // Mutation returns the TagMutation object of the builder.
-func (tu *TagUpdate) Mutation() *TagMutation {
-	return tu.mutation
+func (_u *TagUpdate) Mutation() *TagMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (tu *TagUpdate) ClearOwner() *TagUpdate {
-	tu.mutation.ClearOwner()
-	return tu
+func (_u *TagUpdate) ClearOwner() *TagUpdate {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tu *TagUpdate) Save(ctx context.Context) (int, error) {
-	tu.defaults()
-	return withHooks(ctx, tu.sqlSave, tu.mutation, tu.hooks)
+func (_u *TagUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tu *TagUpdate) SaveX(ctx context.Context) int {
-	affected, err := tu.Save(ctx)
+func (_u *TagUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -144,62 +144,62 @@ func (tu *TagUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tu *TagUpdate) Exec(ctx context.Context) error {
-	_, err := tu.Save(ctx)
+func (_u *TagUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tu *TagUpdate) ExecX(ctx context.Context) {
-	if err := tu.Exec(ctx); err != nil {
+func (_u *TagUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (tu *TagUpdate) defaults() {
-	if _, ok := tu.mutation.UpdatedAt(); !ok {
+func (_u *TagUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := tag.UpdateDefaultUpdatedAt()
-		tu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tu *TagUpdate) check() error {
-	if tu.mutation.OwnerCleared() && len(tu.mutation.OwnerIDs()) > 0 {
+func (_u *TagUpdate) check() error {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Tag.owner"`)
 	}
 	return nil
 }
 
-func (tu *TagUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := tu.check(); err != nil {
-		return n, err
+func (_u *TagUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(tag.Table, tag.Columns, sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64))
-	if ps := tu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(tag.FieldName, field.TypeString, value)
 	}
-	if value, ok := tu.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(tag.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := tu.mutation.Public(); ok {
+	if value, ok := _u.mutation.Public(); ok {
 		_spec.SetField(tag.FieldPublic, field.TypeBool, value)
 	}
-	if value, ok := tu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(tag.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := tu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(tag.FieldCreatedAt, field.TypeTime, value)
 	}
-	if tu.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -212,7 +212,7 @@ func (tu *TagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -228,7 +228,7 @@ func (tu *TagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{tag.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -236,8 +236,8 @@ func (tu *TagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	tu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TagUpdateOne is the builder for updating a single Tag entity.
@@ -249,125 +249,125 @@ type TagUpdateOne struct {
 }
 
 // SetUserTag sets the "user_tag" field.
-func (tuo *TagUpdateOne) SetUserTag(mi model.InternalID) *TagUpdateOne {
-	tuo.mutation.SetUserTag(mi)
-	return tuo
+func (_u *TagUpdateOne) SetUserTag(v model.InternalID) *TagUpdateOne {
+	_u.mutation.SetUserTag(v)
+	return _u
 }
 
 // SetNillableUserTag sets the "user_tag" field if the given value is not nil.
-func (tuo *TagUpdateOne) SetNillableUserTag(mi *model.InternalID) *TagUpdateOne {
-	if mi != nil {
-		tuo.SetUserTag(*mi)
+func (_u *TagUpdateOne) SetNillableUserTag(v *model.InternalID) *TagUpdateOne {
+	if v != nil {
+		_u.SetUserTag(*v)
 	}
-	return tuo
+	return _u
 }
 
 // SetName sets the "name" field.
-func (tuo *TagUpdateOne) SetName(s string) *TagUpdateOne {
-	tuo.mutation.SetName(s)
-	return tuo
+func (_u *TagUpdateOne) SetName(v string) *TagUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (tuo *TagUpdateOne) SetNillableName(s *string) *TagUpdateOne {
-	if s != nil {
-		tuo.SetName(*s)
+func (_u *TagUpdateOne) SetNillableName(v *string) *TagUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return tuo
+	return _u
 }
 
 // SetDescription sets the "description" field.
-func (tuo *TagUpdateOne) SetDescription(s string) *TagUpdateOne {
-	tuo.mutation.SetDescription(s)
-	return tuo
+func (_u *TagUpdateOne) SetDescription(v string) *TagUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (tuo *TagUpdateOne) SetNillableDescription(s *string) *TagUpdateOne {
-	if s != nil {
-		tuo.SetDescription(*s)
+func (_u *TagUpdateOne) SetNillableDescription(v *string) *TagUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
 	}
-	return tuo
+	return _u
 }
 
 // SetPublic sets the "public" field.
-func (tuo *TagUpdateOne) SetPublic(b bool) *TagUpdateOne {
-	tuo.mutation.SetPublic(b)
-	return tuo
+func (_u *TagUpdateOne) SetPublic(v bool) *TagUpdateOne {
+	_u.mutation.SetPublic(v)
+	return _u
 }
 
 // SetNillablePublic sets the "public" field if the given value is not nil.
-func (tuo *TagUpdateOne) SetNillablePublic(b *bool) *TagUpdateOne {
-	if b != nil {
-		tuo.SetPublic(*b)
+func (_u *TagUpdateOne) SetNillablePublic(v *bool) *TagUpdateOne {
+	if v != nil {
+		_u.SetPublic(*v)
 	}
-	return tuo
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (tuo *TagUpdateOne) SetUpdatedAt(t time.Time) *TagUpdateOne {
-	tuo.mutation.SetUpdatedAt(t)
-	return tuo
+func (_u *TagUpdateOne) SetUpdatedAt(v time.Time) *TagUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (tuo *TagUpdateOne) SetCreatedAt(t time.Time) *TagUpdateOne {
-	tuo.mutation.SetCreatedAt(t)
-	return tuo
+func (_u *TagUpdateOne) SetCreatedAt(v time.Time) *TagUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (tuo *TagUpdateOne) SetNillableCreatedAt(t *time.Time) *TagUpdateOne {
-	if t != nil {
-		tuo.SetCreatedAt(*t)
+func (_u *TagUpdateOne) SetNillableCreatedAt(v *time.Time) *TagUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return tuo
+	return _u
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (tuo *TagUpdateOne) SetOwnerID(id model.InternalID) *TagUpdateOne {
-	tuo.mutation.SetOwnerID(id)
-	return tuo
+func (_u *TagUpdateOne) SetOwnerID(id model.InternalID) *TagUpdateOne {
+	_u.mutation.SetOwnerID(id)
+	return _u
 }
 
 // SetOwner sets the "owner" edge to the User entity.
-func (tuo *TagUpdateOne) SetOwner(u *User) *TagUpdateOne {
-	return tuo.SetOwnerID(u.ID)
+func (_u *TagUpdateOne) SetOwner(v *User) *TagUpdateOne {
+	return _u.SetOwnerID(v.ID)
 }
 
 // Mutation returns the TagMutation object of the builder.
-func (tuo *TagUpdateOne) Mutation() *TagMutation {
-	return tuo.mutation
+func (_u *TagUpdateOne) Mutation() *TagMutation {
+	return _u.mutation
 }
 
 // ClearOwner clears the "owner" edge to the User entity.
-func (tuo *TagUpdateOne) ClearOwner() *TagUpdateOne {
-	tuo.mutation.ClearOwner()
-	return tuo
+func (_u *TagUpdateOne) ClearOwner() *TagUpdateOne {
+	_u.mutation.ClearOwner()
+	return _u
 }
 
 // Where appends a list predicates to the TagUpdate builder.
-func (tuo *TagUpdateOne) Where(ps ...predicate.Tag) *TagUpdateOne {
-	tuo.mutation.Where(ps...)
-	return tuo
+func (_u *TagUpdateOne) Where(ps ...predicate.Tag) *TagUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tuo *TagUpdateOne) Select(field string, fields ...string) *TagUpdateOne {
-	tuo.fields = append([]string{field}, fields...)
-	return tuo
+func (_u *TagUpdateOne) Select(field string, fields ...string) *TagUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Tag entity.
-func (tuo *TagUpdateOne) Save(ctx context.Context) (*Tag, error) {
-	tuo.defaults()
-	return withHooks(ctx, tuo.sqlSave, tuo.mutation, tuo.hooks)
+func (_u *TagUpdateOne) Save(ctx context.Context) (*Tag, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tuo *TagUpdateOne) SaveX(ctx context.Context) *Tag {
-	node, err := tuo.Save(ctx)
+func (_u *TagUpdateOne) SaveX(ctx context.Context) *Tag {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -375,45 +375,45 @@ func (tuo *TagUpdateOne) SaveX(ctx context.Context) *Tag {
 }
 
 // Exec executes the query on the entity.
-func (tuo *TagUpdateOne) Exec(ctx context.Context) error {
-	_, err := tuo.Save(ctx)
+func (_u *TagUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tuo *TagUpdateOne) ExecX(ctx context.Context) {
-	if err := tuo.Exec(ctx); err != nil {
+func (_u *TagUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (tuo *TagUpdateOne) defaults() {
-	if _, ok := tuo.mutation.UpdatedAt(); !ok {
+func (_u *TagUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := tag.UpdateDefaultUpdatedAt()
-		tuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tuo *TagUpdateOne) check() error {
-	if tuo.mutation.OwnerCleared() && len(tuo.mutation.OwnerIDs()) > 0 {
+func (_u *TagUpdateOne) check() error {
+	if _u.mutation.OwnerCleared() && len(_u.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Tag.owner"`)
 	}
 	return nil
 }
 
-func (tuo *TagUpdateOne) sqlSave(ctx context.Context) (_node *Tag, err error) {
-	if err := tuo.check(); err != nil {
+func (_u *TagUpdateOne) sqlSave(ctx context.Context) (_node *Tag, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(tag.Table, tag.Columns, sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64))
-	id, ok := tuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Tag.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, tag.FieldID)
 		for _, f := range fields {
@@ -425,29 +425,29 @@ func (tuo *TagUpdateOne) sqlSave(ctx context.Context) (_node *Tag, err error) {
 			}
 		}
 	}
-	if ps := tuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(tag.FieldName, field.TypeString, value)
 	}
-	if value, ok := tuo.mutation.Description(); ok {
+	if value, ok := _u.mutation.Description(); ok {
 		_spec.SetField(tag.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := tuo.mutation.Public(); ok {
+	if value, ok := _u.mutation.Public(); ok {
 		_spec.SetField(tag.FieldPublic, field.TypeBool, value)
 	}
-	if value, ok := tuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(tag.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := tuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(tag.FieldCreatedAt, field.TypeTime, value)
 	}
-	if tuo.mutation.OwnerCleared() {
+	if _u.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -460,7 +460,7 @@ func (tuo *TagUpdateOne) sqlSave(ctx context.Context) (_node *Tag, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -476,10 +476,10 @@ func (tuo *TagUpdateOne) sqlSave(ctx context.Context) (_node *Tag, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Tag{config: tuo.config}
+	_node = &Tag{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{tag.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -487,6 +487,6 @@ func (tuo *TagUpdateOne) sqlSave(ctx context.Context) (_node *Tag, err error) {
 		}
 		return nil, err
 	}
-	tuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

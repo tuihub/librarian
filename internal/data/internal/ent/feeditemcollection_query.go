@@ -37,44 +37,44 @@ type FeedItemCollectionQuery struct {
 }
 
 // Where adds a new predicate for the FeedItemCollectionQuery builder.
-func (ficq *FeedItemCollectionQuery) Where(ps ...predicate.FeedItemCollection) *FeedItemCollectionQuery {
-	ficq.predicates = append(ficq.predicates, ps...)
-	return ficq
+func (_q *FeedItemCollectionQuery) Where(ps ...predicate.FeedItemCollection) *FeedItemCollectionQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (ficq *FeedItemCollectionQuery) Limit(limit int) *FeedItemCollectionQuery {
-	ficq.ctx.Limit = &limit
-	return ficq
+func (_q *FeedItemCollectionQuery) Limit(limit int) *FeedItemCollectionQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (ficq *FeedItemCollectionQuery) Offset(offset int) *FeedItemCollectionQuery {
-	ficq.ctx.Offset = &offset
-	return ficq
+func (_q *FeedItemCollectionQuery) Offset(offset int) *FeedItemCollectionQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (ficq *FeedItemCollectionQuery) Unique(unique bool) *FeedItemCollectionQuery {
-	ficq.ctx.Unique = &unique
-	return ficq
+func (_q *FeedItemCollectionQuery) Unique(unique bool) *FeedItemCollectionQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (ficq *FeedItemCollectionQuery) Order(o ...feeditemcollection.OrderOption) *FeedItemCollectionQuery {
-	ficq.order = append(ficq.order, o...)
-	return ficq
+func (_q *FeedItemCollectionQuery) Order(o ...feeditemcollection.OrderOption) *FeedItemCollectionQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryOwner chains the current query on the "owner" edge.
-func (ficq *FeedItemCollectionQuery) QueryOwner() *UserQuery {
-	query := (&UserClient{config: ficq.config}).Query()
+func (_q *FeedItemCollectionQuery) QueryOwner() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ficq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ficq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -83,20 +83,20 @@ func (ficq *FeedItemCollectionQuery) QueryOwner() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, feeditemcollection.OwnerTable, feeditemcollection.OwnerColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ficq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryFeedItem chains the current query on the "feed_item" edge.
-func (ficq *FeedItemCollectionQuery) QueryFeedItem() *FeedItemQuery {
-	query := (&FeedItemClient{config: ficq.config}).Query()
+func (_q *FeedItemCollectionQuery) QueryFeedItem() *FeedItemQuery {
+	query := (&FeedItemClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ficq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ficq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -105,20 +105,20 @@ func (ficq *FeedItemCollectionQuery) QueryFeedItem() *FeedItemQuery {
 			sqlgraph.To(feeditem.Table, feeditem.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, feeditemcollection.FeedItemTable, feeditemcollection.FeedItemPrimaryKey...),
 		)
-		fromU = sqlgraph.SetNeighbors(ficq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
 }
 
 // QueryNotifySource chains the current query on the "notify_source" edge.
-func (ficq *FeedItemCollectionQuery) QueryNotifySource() *NotifySourceQuery {
-	query := (&NotifySourceClient{config: ficq.config}).Query()
+func (_q *FeedItemCollectionQuery) QueryNotifySource() *NotifySourceQuery {
+	query := (&NotifySourceClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ficq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := ficq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -127,7 +127,7 @@ func (ficq *FeedItemCollectionQuery) QueryNotifySource() *NotifySourceQuery {
 			sqlgraph.To(notifysource.Table, notifysource.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, feeditemcollection.NotifySourceTable, feeditemcollection.NotifySourceColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(ficq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -135,8 +135,8 @@ func (ficq *FeedItemCollectionQuery) QueryNotifySource() *NotifySourceQuery {
 
 // First returns the first FeedItemCollection entity from the query.
 // Returns a *NotFoundError when no FeedItemCollection was found.
-func (ficq *FeedItemCollectionQuery) First(ctx context.Context) (*FeedItemCollection, error) {
-	nodes, err := ficq.Limit(1).All(setContextOp(ctx, ficq.ctx, ent.OpQueryFirst))
+func (_q *FeedItemCollectionQuery) First(ctx context.Context) (*FeedItemCollection, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +147,8 @@ func (ficq *FeedItemCollectionQuery) First(ctx context.Context) (*FeedItemCollec
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (ficq *FeedItemCollectionQuery) FirstX(ctx context.Context) *FeedItemCollection {
-	node, err := ficq.First(ctx)
+func (_q *FeedItemCollectionQuery) FirstX(ctx context.Context) *FeedItemCollection {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -157,9 +157,9 @@ func (ficq *FeedItemCollectionQuery) FirstX(ctx context.Context) *FeedItemCollec
 
 // FirstID returns the first FeedItemCollection ID from the query.
 // Returns a *NotFoundError when no FeedItemCollection ID was found.
-func (ficq *FeedItemCollectionQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *FeedItemCollectionQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = ficq.Limit(1).IDs(setContextOp(ctx, ficq.ctx, ent.OpQueryFirstID)); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -170,8 +170,8 @@ func (ficq *FeedItemCollectionQuery) FirstID(ctx context.Context) (id model.Inte
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (ficq *FeedItemCollectionQuery) FirstIDX(ctx context.Context) model.InternalID {
-	id, err := ficq.FirstID(ctx)
+func (_q *FeedItemCollectionQuery) FirstIDX(ctx context.Context) model.InternalID {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -181,8 +181,8 @@ func (ficq *FeedItemCollectionQuery) FirstIDX(ctx context.Context) model.Interna
 // Only returns a single FeedItemCollection entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one FeedItemCollection entity is found.
 // Returns a *NotFoundError when no FeedItemCollection entities are found.
-func (ficq *FeedItemCollectionQuery) Only(ctx context.Context) (*FeedItemCollection, error) {
-	nodes, err := ficq.Limit(2).All(setContextOp(ctx, ficq.ctx, ent.OpQueryOnly))
+func (_q *FeedItemCollectionQuery) Only(ctx context.Context) (*FeedItemCollection, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -197,8 +197,8 @@ func (ficq *FeedItemCollectionQuery) Only(ctx context.Context) (*FeedItemCollect
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (ficq *FeedItemCollectionQuery) OnlyX(ctx context.Context) *FeedItemCollection {
-	node, err := ficq.Only(ctx)
+func (_q *FeedItemCollectionQuery) OnlyX(ctx context.Context) *FeedItemCollection {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -208,9 +208,9 @@ func (ficq *FeedItemCollectionQuery) OnlyX(ctx context.Context) *FeedItemCollect
 // OnlyID is like Only, but returns the only FeedItemCollection ID in the query.
 // Returns a *NotSingularError when more than one FeedItemCollection ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (ficq *FeedItemCollectionQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+func (_q *FeedItemCollectionQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = ficq.Limit(2).IDs(setContextOp(ctx, ficq.ctx, ent.OpQueryOnlyID)); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -225,8 +225,8 @@ func (ficq *FeedItemCollectionQuery) OnlyID(ctx context.Context) (id model.Inter
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (ficq *FeedItemCollectionQuery) OnlyIDX(ctx context.Context) model.InternalID {
-	id, err := ficq.OnlyID(ctx)
+func (_q *FeedItemCollectionQuery) OnlyIDX(ctx context.Context) model.InternalID {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -234,18 +234,18 @@ func (ficq *FeedItemCollectionQuery) OnlyIDX(ctx context.Context) model.Internal
 }
 
 // All executes the query and returns a list of FeedItemCollections.
-func (ficq *FeedItemCollectionQuery) All(ctx context.Context) ([]*FeedItemCollection, error) {
-	ctx = setContextOp(ctx, ficq.ctx, ent.OpQueryAll)
-	if err := ficq.prepareQuery(ctx); err != nil {
+func (_q *FeedItemCollectionQuery) All(ctx context.Context) ([]*FeedItemCollection, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*FeedItemCollection, *FeedItemCollectionQuery]()
-	return withInterceptors[[]*FeedItemCollection](ctx, ficq, qr, ficq.inters)
+	return withInterceptors[[]*FeedItemCollection](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (ficq *FeedItemCollectionQuery) AllX(ctx context.Context) []*FeedItemCollection {
-	nodes, err := ficq.All(ctx)
+func (_q *FeedItemCollectionQuery) AllX(ctx context.Context) []*FeedItemCollection {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -253,20 +253,20 @@ func (ficq *FeedItemCollectionQuery) AllX(ctx context.Context) []*FeedItemCollec
 }
 
 // IDs executes the query and returns a list of FeedItemCollection IDs.
-func (ficq *FeedItemCollectionQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
-	if ficq.ctx.Unique == nil && ficq.path != nil {
-		ficq.Unique(true)
+func (_q *FeedItemCollectionQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, ficq.ctx, ent.OpQueryIDs)
-	if err = ficq.Select(feeditemcollection.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(feeditemcollection.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (ficq *FeedItemCollectionQuery) IDsX(ctx context.Context) []model.InternalID {
-	ids, err := ficq.IDs(ctx)
+func (_q *FeedItemCollectionQuery) IDsX(ctx context.Context) []model.InternalID {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -274,17 +274,17 @@ func (ficq *FeedItemCollectionQuery) IDsX(ctx context.Context) []model.InternalI
 }
 
 // Count returns the count of the given query.
-func (ficq *FeedItemCollectionQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ficq.ctx, ent.OpQueryCount)
-	if err := ficq.prepareQuery(ctx); err != nil {
+func (_q *FeedItemCollectionQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, ficq, querierCount[*FeedItemCollectionQuery](), ficq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*FeedItemCollectionQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (ficq *FeedItemCollectionQuery) CountX(ctx context.Context) int {
-	count, err := ficq.Count(ctx)
+func (_q *FeedItemCollectionQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -292,9 +292,9 @@ func (ficq *FeedItemCollectionQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (ficq *FeedItemCollectionQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ficq.ctx, ent.OpQueryExist)
-	switch _, err := ficq.FirstID(ctx); {
+func (_q *FeedItemCollectionQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -305,8 +305,8 @@ func (ficq *FeedItemCollectionQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (ficq *FeedItemCollectionQuery) ExistX(ctx context.Context) bool {
-	exist, err := ficq.Exist(ctx)
+func (_q *FeedItemCollectionQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -315,56 +315,56 @@ func (ficq *FeedItemCollectionQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the FeedItemCollectionQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (ficq *FeedItemCollectionQuery) Clone() *FeedItemCollectionQuery {
-	if ficq == nil {
+func (_q *FeedItemCollectionQuery) Clone() *FeedItemCollectionQuery {
+	if _q == nil {
 		return nil
 	}
 	return &FeedItemCollectionQuery{
-		config:           ficq.config,
-		ctx:              ficq.ctx.Clone(),
-		order:            append([]feeditemcollection.OrderOption{}, ficq.order...),
-		inters:           append([]Interceptor{}, ficq.inters...),
-		predicates:       append([]predicate.FeedItemCollection{}, ficq.predicates...),
-		withOwner:        ficq.withOwner.Clone(),
-		withFeedItem:     ficq.withFeedItem.Clone(),
-		withNotifySource: ficq.withNotifySource.Clone(),
+		config:           _q.config,
+		ctx:              _q.ctx.Clone(),
+		order:            append([]feeditemcollection.OrderOption{}, _q.order...),
+		inters:           append([]Interceptor{}, _q.inters...),
+		predicates:       append([]predicate.FeedItemCollection{}, _q.predicates...),
+		withOwner:        _q.withOwner.Clone(),
+		withFeedItem:     _q.withFeedItem.Clone(),
+		withNotifySource: _q.withNotifySource.Clone(),
 		// clone intermediate query.
-		sql:  ficq.sql.Clone(),
-		path: ficq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithOwner tells the query-builder to eager-load the nodes that are connected to
 // the "owner" edge. The optional arguments are used to configure the query builder of the edge.
-func (ficq *FeedItemCollectionQuery) WithOwner(opts ...func(*UserQuery)) *FeedItemCollectionQuery {
-	query := (&UserClient{config: ficq.config}).Query()
+func (_q *FeedItemCollectionQuery) WithOwner(opts ...func(*UserQuery)) *FeedItemCollectionQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ficq.withOwner = query
-	return ficq
+	_q.withOwner = query
+	return _q
 }
 
 // WithFeedItem tells the query-builder to eager-load the nodes that are connected to
 // the "feed_item" edge. The optional arguments are used to configure the query builder of the edge.
-func (ficq *FeedItemCollectionQuery) WithFeedItem(opts ...func(*FeedItemQuery)) *FeedItemCollectionQuery {
-	query := (&FeedItemClient{config: ficq.config}).Query()
+func (_q *FeedItemCollectionQuery) WithFeedItem(opts ...func(*FeedItemQuery)) *FeedItemCollectionQuery {
+	query := (&FeedItemClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ficq.withFeedItem = query
-	return ficq
+	_q.withFeedItem = query
+	return _q
 }
 
 // WithNotifySource tells the query-builder to eager-load the nodes that are connected to
 // the "notify_source" edge. The optional arguments are used to configure the query builder of the edge.
-func (ficq *FeedItemCollectionQuery) WithNotifySource(opts ...func(*NotifySourceQuery)) *FeedItemCollectionQuery {
-	query := (&NotifySourceClient{config: ficq.config}).Query()
+func (_q *FeedItemCollectionQuery) WithNotifySource(opts ...func(*NotifySourceQuery)) *FeedItemCollectionQuery {
+	query := (&NotifySourceClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	ficq.withNotifySource = query
-	return ficq
+	_q.withNotifySource = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -381,10 +381,10 @@ func (ficq *FeedItemCollectionQuery) WithNotifySource(opts ...func(*NotifySource
 //		GroupBy(feeditemcollection.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (ficq *FeedItemCollectionQuery) GroupBy(field string, fields ...string) *FeedItemCollectionGroupBy {
-	ficq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &FeedItemCollectionGroupBy{build: ficq}
-	grbuild.flds = &ficq.ctx.Fields
+func (_q *FeedItemCollectionQuery) GroupBy(field string, fields ...string) *FeedItemCollectionGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &FeedItemCollectionGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = feeditemcollection.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -402,57 +402,57 @@ func (ficq *FeedItemCollectionQuery) GroupBy(field string, fields ...string) *Fe
 //	client.FeedItemCollection.Query().
 //		Select(feeditemcollection.FieldName).
 //		Scan(ctx, &v)
-func (ficq *FeedItemCollectionQuery) Select(fields ...string) *FeedItemCollectionSelect {
-	ficq.ctx.Fields = append(ficq.ctx.Fields, fields...)
-	sbuild := &FeedItemCollectionSelect{FeedItemCollectionQuery: ficq}
+func (_q *FeedItemCollectionQuery) Select(fields ...string) *FeedItemCollectionSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &FeedItemCollectionSelect{FeedItemCollectionQuery: _q}
 	sbuild.label = feeditemcollection.Label
-	sbuild.flds, sbuild.scan = &ficq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a FeedItemCollectionSelect configured with the given aggregations.
-func (ficq *FeedItemCollectionQuery) Aggregate(fns ...AggregateFunc) *FeedItemCollectionSelect {
-	return ficq.Select().Aggregate(fns...)
+func (_q *FeedItemCollectionQuery) Aggregate(fns ...AggregateFunc) *FeedItemCollectionSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (ficq *FeedItemCollectionQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range ficq.inters {
+func (_q *FeedItemCollectionQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, ficq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range ficq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !feeditemcollection.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if ficq.path != nil {
-		prev, err := ficq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		ficq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (ficq *FeedItemCollectionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedItemCollection, error) {
+func (_q *FeedItemCollectionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedItemCollection, error) {
 	var (
 		nodes       = []*FeedItemCollection{}
-		withFKs     = ficq.withFKs
-		_spec       = ficq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [3]bool{
-			ficq.withOwner != nil,
-			ficq.withFeedItem != nil,
-			ficq.withNotifySource != nil,
+			_q.withOwner != nil,
+			_q.withFeedItem != nil,
+			_q.withNotifySource != nil,
 		}
 	)
-	if ficq.withOwner != nil {
+	if _q.withOwner != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -462,7 +462,7 @@ func (ficq *FeedItemCollectionQuery) sqlAll(ctx context.Context, hooks ...queryH
 		return (*FeedItemCollection).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &FeedItemCollection{config: ficq.config}
+		node := &FeedItemCollection{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -470,27 +470,27 @@ func (ficq *FeedItemCollectionQuery) sqlAll(ctx context.Context, hooks ...queryH
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, ficq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := ficq.withOwner; query != nil {
-		if err := ficq.loadOwner(ctx, query, nodes, nil,
+	if query := _q.withOwner; query != nil {
+		if err := _q.loadOwner(ctx, query, nodes, nil,
 			func(n *FeedItemCollection, e *User) { n.Edges.Owner = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := ficq.withFeedItem; query != nil {
-		if err := ficq.loadFeedItem(ctx, query, nodes,
+	if query := _q.withFeedItem; query != nil {
+		if err := _q.loadFeedItem(ctx, query, nodes,
 			func(n *FeedItemCollection) { n.Edges.FeedItem = []*FeedItem{} },
 			func(n *FeedItemCollection, e *FeedItem) { n.Edges.FeedItem = append(n.Edges.FeedItem, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := ficq.withNotifySource; query != nil {
-		if err := ficq.loadNotifySource(ctx, query, nodes,
+	if query := _q.withNotifySource; query != nil {
+		if err := _q.loadNotifySource(ctx, query, nodes,
 			func(n *FeedItemCollection) { n.Edges.NotifySource = []*NotifySource{} },
 			func(n *FeedItemCollection, e *NotifySource) { n.Edges.NotifySource = append(n.Edges.NotifySource, e) }); err != nil {
 			return nil, err
@@ -499,7 +499,7 @@ func (ficq *FeedItemCollectionQuery) sqlAll(ctx context.Context, hooks ...queryH
 	return nodes, nil
 }
 
-func (ficq *FeedItemCollectionQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*FeedItemCollection, init func(*FeedItemCollection), assign func(*FeedItemCollection, *User)) error {
+func (_q *FeedItemCollectionQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*FeedItemCollection, init func(*FeedItemCollection), assign func(*FeedItemCollection, *User)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*FeedItemCollection)
 	for i := range nodes {
@@ -531,7 +531,7 @@ func (ficq *FeedItemCollectionQuery) loadOwner(ctx context.Context, query *UserQ
 	}
 	return nil
 }
-func (ficq *FeedItemCollectionQuery) loadFeedItem(ctx context.Context, query *FeedItemQuery, nodes []*FeedItemCollection, init func(*FeedItemCollection), assign func(*FeedItemCollection, *FeedItem)) error {
+func (_q *FeedItemCollectionQuery) loadFeedItem(ctx context.Context, query *FeedItemQuery, nodes []*FeedItemCollection, init func(*FeedItemCollection), assign func(*FeedItemCollection, *FeedItem)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[model.InternalID]*FeedItemCollection)
 	nids := make(map[model.InternalID]map[*FeedItemCollection]struct{})
@@ -592,7 +592,7 @@ func (ficq *FeedItemCollectionQuery) loadFeedItem(ctx context.Context, query *Fe
 	}
 	return nil
 }
-func (ficq *FeedItemCollectionQuery) loadNotifySource(ctx context.Context, query *NotifySourceQuery, nodes []*FeedItemCollection, init func(*FeedItemCollection), assign func(*FeedItemCollection, *NotifySource)) error {
+func (_q *FeedItemCollectionQuery) loadNotifySource(ctx context.Context, query *NotifySourceQuery, nodes []*FeedItemCollection, init func(*FeedItemCollection), assign func(*FeedItemCollection, *NotifySource)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*FeedItemCollection)
 	for i := range nodes {
@@ -624,24 +624,24 @@ func (ficq *FeedItemCollectionQuery) loadNotifySource(ctx context.Context, query
 	return nil
 }
 
-func (ficq *FeedItemCollectionQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := ficq.querySpec()
-	_spec.Node.Columns = ficq.ctx.Fields
-	if len(ficq.ctx.Fields) > 0 {
-		_spec.Unique = ficq.ctx.Unique != nil && *ficq.ctx.Unique
+func (_q *FeedItemCollectionQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, ficq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (ficq *FeedItemCollectionQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *FeedItemCollectionQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(feeditemcollection.Table, feeditemcollection.Columns, sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64))
-	_spec.From = ficq.sql
-	if unique := ficq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if ficq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := ficq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, feeditemcollection.FieldID)
 		for i := range fields {
@@ -650,20 +650,20 @@ func (ficq *FeedItemCollectionQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := ficq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := ficq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := ficq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := ficq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -673,33 +673,33 @@ func (ficq *FeedItemCollectionQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (ficq *FeedItemCollectionQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(ficq.driver.Dialect())
+func (_q *FeedItemCollectionQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(feeditemcollection.Table)
-	columns := ficq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = feeditemcollection.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if ficq.sql != nil {
-		selector = ficq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if ficq.ctx.Unique != nil && *ficq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range ficq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range ficq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := ficq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := ficq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -712,41 +712,41 @@ type FeedItemCollectionGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (ficgb *FeedItemCollectionGroupBy) Aggregate(fns ...AggregateFunc) *FeedItemCollectionGroupBy {
-	ficgb.fns = append(ficgb.fns, fns...)
-	return ficgb
+func (_g *FeedItemCollectionGroupBy) Aggregate(fns ...AggregateFunc) *FeedItemCollectionGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ficgb *FeedItemCollectionGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ficgb.build.ctx, ent.OpQueryGroupBy)
-	if err := ficgb.build.prepareQuery(ctx); err != nil {
+func (_g *FeedItemCollectionGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*FeedItemCollectionQuery, *FeedItemCollectionGroupBy](ctx, ficgb.build, ficgb, ficgb.build.inters, v)
+	return scanWithInterceptors[*FeedItemCollectionQuery, *FeedItemCollectionGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (ficgb *FeedItemCollectionGroupBy) sqlScan(ctx context.Context, root *FeedItemCollectionQuery, v any) error {
+func (_g *FeedItemCollectionGroupBy) sqlScan(ctx context.Context, root *FeedItemCollectionQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(ficgb.fns))
-	for _, fn := range ficgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*ficgb.flds)+len(ficgb.fns))
-		for _, f := range *ficgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*ficgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ficgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -760,27 +760,27 @@ type FeedItemCollectionSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (fics *FeedItemCollectionSelect) Aggregate(fns ...AggregateFunc) *FeedItemCollectionSelect {
-	fics.fns = append(fics.fns, fns...)
-	return fics
+func (_s *FeedItemCollectionSelect) Aggregate(fns ...AggregateFunc) *FeedItemCollectionSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (fics *FeedItemCollectionSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fics.ctx, ent.OpQuerySelect)
-	if err := fics.prepareQuery(ctx); err != nil {
+func (_s *FeedItemCollectionSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*FeedItemCollectionQuery, *FeedItemCollectionSelect](ctx, fics.FeedItemCollectionQuery, fics, fics.inters, v)
+	return scanWithInterceptors[*FeedItemCollectionQuery, *FeedItemCollectionSelect](ctx, _s.FeedItemCollectionQuery, _s, _s.inters, v)
 }
 
-func (fics *FeedItemCollectionSelect) sqlScan(ctx context.Context, root *FeedItemCollectionQuery, v any) error {
+func (_s *FeedItemCollectionSelect) sqlScan(ctx context.Context, root *FeedItemCollectionQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(fics.fns))
-	for _, fn := range fics.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*fics.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -788,7 +788,7 @@ func (fics *FeedItemCollectionSelect) sqlScan(ctx context.Context, root *FeedIte
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := fics.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

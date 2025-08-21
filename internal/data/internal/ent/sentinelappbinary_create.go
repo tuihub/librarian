@@ -26,173 +26,173 @@ type SentinelAppBinaryCreate struct {
 }
 
 // SetUnionID sets the "union_id" field.
-func (sabc *SentinelAppBinaryCreate) SetUnionID(s string) *SentinelAppBinaryCreate {
-	sabc.mutation.SetUnionID(s)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetUnionID(v string) *SentinelAppBinaryCreate {
+	_c.mutation.SetUnionID(v)
+	return _c
 }
 
 // SetSentinelID sets the "sentinel_id" field.
-func (sabc *SentinelAppBinaryCreate) SetSentinelID(mi model.InternalID) *SentinelAppBinaryCreate {
-	sabc.mutation.SetSentinelID(mi)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetSentinelID(v model.InternalID) *SentinelAppBinaryCreate {
+	_c.mutation.SetSentinelID(v)
+	return _c
 }
 
 // SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
-func (sabc *SentinelAppBinaryCreate) SetSentinelLibraryReportedID(i int64) *SentinelAppBinaryCreate {
-	sabc.mutation.SetSentinelLibraryReportedID(i)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetSentinelLibraryReportedID(v int64) *SentinelAppBinaryCreate {
+	_c.mutation.SetSentinelLibraryReportedID(v)
+	return _c
 }
 
 // SetLibrarySnapshot sets the "library_snapshot" field.
-func (sabc *SentinelAppBinaryCreate) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryCreate {
-	sabc.mutation.SetLibrarySnapshot(t)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetLibrarySnapshot(v time.Time) *SentinelAppBinaryCreate {
+	_c.mutation.SetLibrarySnapshot(v)
+	return _c
 }
 
 // SetGeneratedID sets the "generated_id" field.
-func (sabc *SentinelAppBinaryCreate) SetGeneratedID(s string) *SentinelAppBinaryCreate {
-	sabc.mutation.SetGeneratedID(s)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetGeneratedID(v string) *SentinelAppBinaryCreate {
+	_c.mutation.SetGeneratedID(v)
+	return _c
 }
 
 // SetSizeBytes sets the "size_bytes" field.
-func (sabc *SentinelAppBinaryCreate) SetSizeBytes(i int64) *SentinelAppBinaryCreate {
-	sabc.mutation.SetSizeBytes(i)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetSizeBytes(v int64) *SentinelAppBinaryCreate {
+	_c.mutation.SetSizeBytes(v)
+	return _c
 }
 
 // SetNeedToken sets the "need_token" field.
-func (sabc *SentinelAppBinaryCreate) SetNeedToken(b bool) *SentinelAppBinaryCreate {
-	sabc.mutation.SetNeedToken(b)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetNeedToken(v bool) *SentinelAppBinaryCreate {
+	_c.mutation.SetNeedToken(v)
+	return _c
 }
 
 // SetName sets the "name" field.
-func (sabc *SentinelAppBinaryCreate) SetName(s string) *SentinelAppBinaryCreate {
-	sabc.mutation.SetName(s)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetName(v string) *SentinelAppBinaryCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetVersion sets the "version" field.
-func (sabc *SentinelAppBinaryCreate) SetVersion(s string) *SentinelAppBinaryCreate {
-	sabc.mutation.SetVersion(s)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetVersion(v string) *SentinelAppBinaryCreate {
+	_c.mutation.SetVersion(v)
+	return _c
 }
 
 // SetNillableVersion sets the "version" field if the given value is not nil.
-func (sabc *SentinelAppBinaryCreate) SetNillableVersion(s *string) *SentinelAppBinaryCreate {
-	if s != nil {
-		sabc.SetVersion(*s)
+func (_c *SentinelAppBinaryCreate) SetNillableVersion(v *string) *SentinelAppBinaryCreate {
+	if v != nil {
+		_c.SetVersion(*v)
 	}
-	return sabc
+	return _c
 }
 
 // SetDeveloper sets the "developer" field.
-func (sabc *SentinelAppBinaryCreate) SetDeveloper(s string) *SentinelAppBinaryCreate {
-	sabc.mutation.SetDeveloper(s)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetDeveloper(v string) *SentinelAppBinaryCreate {
+	_c.mutation.SetDeveloper(v)
+	return _c
 }
 
 // SetNillableDeveloper sets the "developer" field if the given value is not nil.
-func (sabc *SentinelAppBinaryCreate) SetNillableDeveloper(s *string) *SentinelAppBinaryCreate {
-	if s != nil {
-		sabc.SetDeveloper(*s)
+func (_c *SentinelAppBinaryCreate) SetNillableDeveloper(v *string) *SentinelAppBinaryCreate {
+	if v != nil {
+		_c.SetDeveloper(*v)
 	}
-	return sabc
+	return _c
 }
 
 // SetPublisher sets the "publisher" field.
-func (sabc *SentinelAppBinaryCreate) SetPublisher(s string) *SentinelAppBinaryCreate {
-	sabc.mutation.SetPublisher(s)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetPublisher(v string) *SentinelAppBinaryCreate {
+	_c.mutation.SetPublisher(v)
+	return _c
 }
 
 // SetNillablePublisher sets the "publisher" field if the given value is not nil.
-func (sabc *SentinelAppBinaryCreate) SetNillablePublisher(s *string) *SentinelAppBinaryCreate {
-	if s != nil {
-		sabc.SetPublisher(*s)
+func (_c *SentinelAppBinaryCreate) SetNillablePublisher(v *string) *SentinelAppBinaryCreate {
+	if v != nil {
+		_c.SetPublisher(*v)
 	}
-	return sabc
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (sabc *SentinelAppBinaryCreate) SetUpdatedAt(t time.Time) *SentinelAppBinaryCreate {
-	sabc.mutation.SetUpdatedAt(t)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetUpdatedAt(v time.Time) *SentinelAppBinaryCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (sabc *SentinelAppBinaryCreate) SetNillableUpdatedAt(t *time.Time) *SentinelAppBinaryCreate {
-	if t != nil {
-		sabc.SetUpdatedAt(*t)
+func (_c *SentinelAppBinaryCreate) SetNillableUpdatedAt(v *time.Time) *SentinelAppBinaryCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return sabc
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (sabc *SentinelAppBinaryCreate) SetCreatedAt(t time.Time) *SentinelAppBinaryCreate {
-	sabc.mutation.SetCreatedAt(t)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetCreatedAt(v time.Time) *SentinelAppBinaryCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (sabc *SentinelAppBinaryCreate) SetNillableCreatedAt(t *time.Time) *SentinelAppBinaryCreate {
-	if t != nil {
-		sabc.SetCreatedAt(*t)
+func (_c *SentinelAppBinaryCreate) SetNillableCreatedAt(v *time.Time) *SentinelAppBinaryCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return sabc
+	return _c
 }
 
 // SetID sets the "id" field.
-func (sabc *SentinelAppBinaryCreate) SetID(mi model.InternalID) *SentinelAppBinaryCreate {
-	sabc.mutation.SetID(mi)
-	return sabc
+func (_c *SentinelAppBinaryCreate) SetID(v model.InternalID) *SentinelAppBinaryCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // AddStoreAppIDs adds the "store_app" edge to the StoreApp entity by IDs.
-func (sabc *SentinelAppBinaryCreate) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryCreate {
-	sabc.mutation.AddStoreAppIDs(ids...)
-	return sabc
+func (_c *SentinelAppBinaryCreate) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryCreate {
+	_c.mutation.AddStoreAppIDs(ids...)
+	return _c
 }
 
 // AddStoreApp adds the "store_app" edges to the StoreApp entity.
-func (sabc *SentinelAppBinaryCreate) AddStoreApp(s ...*StoreApp) *SentinelAppBinaryCreate {
-	ids := make([]model.InternalID, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_c *SentinelAppBinaryCreate) AddStoreApp(v ...*StoreApp) *SentinelAppBinaryCreate {
+	ids := make([]model.InternalID, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabc.AddStoreAppIDs(ids...)
+	return _c.AddStoreAppIDs(ids...)
 }
 
 // AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by IDs.
-func (sabc *SentinelAppBinaryCreate) AddStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryCreate {
-	sabc.mutation.AddStoreAppBinaryIDs(ids...)
-	return sabc
+func (_c *SentinelAppBinaryCreate) AddStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryCreate {
+	_c.mutation.AddStoreAppBinaryIDs(ids...)
+	return _c
 }
 
 // AddStoreAppBinary adds the "store_app_binary" edges to the StoreAppBinary entity.
-func (sabc *SentinelAppBinaryCreate) AddStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryCreate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+func (_c *SentinelAppBinaryCreate) AddStoreAppBinary(v ...*StoreAppBinary) *SentinelAppBinaryCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return sabc.AddStoreAppBinaryIDs(ids...)
+	return _c.AddStoreAppBinaryIDs(ids...)
 }
 
 // Mutation returns the SentinelAppBinaryMutation object of the builder.
-func (sabc *SentinelAppBinaryCreate) Mutation() *SentinelAppBinaryMutation {
-	return sabc.mutation
+func (_c *SentinelAppBinaryCreate) Mutation() *SentinelAppBinaryMutation {
+	return _c.mutation
 }
 
 // Save creates the SentinelAppBinary in the database.
-func (sabc *SentinelAppBinaryCreate) Save(ctx context.Context) (*SentinelAppBinary, error) {
-	sabc.defaults()
-	return withHooks(ctx, sabc.sqlSave, sabc.mutation, sabc.hooks)
+func (_c *SentinelAppBinaryCreate) Save(ctx context.Context) (*SentinelAppBinary, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (sabc *SentinelAppBinaryCreate) SaveX(ctx context.Context) *SentinelAppBinary {
-	v, err := sabc.Save(ctx)
+func (_c *SentinelAppBinaryCreate) SaveX(ctx context.Context) *SentinelAppBinary {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -200,71 +200,71 @@ func (sabc *SentinelAppBinaryCreate) SaveX(ctx context.Context) *SentinelAppBina
 }
 
 // Exec executes the query.
-func (sabc *SentinelAppBinaryCreate) Exec(ctx context.Context) error {
-	_, err := sabc.Save(ctx)
+func (_c *SentinelAppBinaryCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabc *SentinelAppBinaryCreate) ExecX(ctx context.Context) {
-	if err := sabc.Exec(ctx); err != nil {
+func (_c *SentinelAppBinaryCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (sabc *SentinelAppBinaryCreate) defaults() {
-	if _, ok := sabc.mutation.UpdatedAt(); !ok {
+func (_c *SentinelAppBinaryCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := sentinelappbinary.DefaultUpdatedAt()
-		sabc.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := sabc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := sentinelappbinary.DefaultCreatedAt()
-		sabc.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (sabc *SentinelAppBinaryCreate) check() error {
-	if _, ok := sabc.mutation.UnionID(); !ok {
+func (_c *SentinelAppBinaryCreate) check() error {
+	if _, ok := _c.mutation.UnionID(); !ok {
 		return &ValidationError{Name: "union_id", err: errors.New(`ent: missing required field "SentinelAppBinary.union_id"`)}
 	}
-	if _, ok := sabc.mutation.SentinelID(); !ok {
+	if _, ok := _c.mutation.SentinelID(); !ok {
 		return &ValidationError{Name: "sentinel_id", err: errors.New(`ent: missing required field "SentinelAppBinary.sentinel_id"`)}
 	}
-	if _, ok := sabc.mutation.SentinelLibraryReportedID(); !ok {
+	if _, ok := _c.mutation.SentinelLibraryReportedID(); !ok {
 		return &ValidationError{Name: "sentinel_library_reported_id", err: errors.New(`ent: missing required field "SentinelAppBinary.sentinel_library_reported_id"`)}
 	}
-	if _, ok := sabc.mutation.LibrarySnapshot(); !ok {
+	if _, ok := _c.mutation.LibrarySnapshot(); !ok {
 		return &ValidationError{Name: "library_snapshot", err: errors.New(`ent: missing required field "SentinelAppBinary.library_snapshot"`)}
 	}
-	if _, ok := sabc.mutation.GeneratedID(); !ok {
+	if _, ok := _c.mutation.GeneratedID(); !ok {
 		return &ValidationError{Name: "generated_id", err: errors.New(`ent: missing required field "SentinelAppBinary.generated_id"`)}
 	}
-	if _, ok := sabc.mutation.SizeBytes(); !ok {
+	if _, ok := _c.mutation.SizeBytes(); !ok {
 		return &ValidationError{Name: "size_bytes", err: errors.New(`ent: missing required field "SentinelAppBinary.size_bytes"`)}
 	}
-	if _, ok := sabc.mutation.NeedToken(); !ok {
+	if _, ok := _c.mutation.NeedToken(); !ok {
 		return &ValidationError{Name: "need_token", err: errors.New(`ent: missing required field "SentinelAppBinary.need_token"`)}
 	}
-	if _, ok := sabc.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "SentinelAppBinary.name"`)}
 	}
-	if _, ok := sabc.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "SentinelAppBinary.updated_at"`)}
 	}
-	if _, ok := sabc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SentinelAppBinary.created_at"`)}
 	}
 	return nil
 }
 
-func (sabc *SentinelAppBinaryCreate) sqlSave(ctx context.Context) (*SentinelAppBinary, error) {
-	if err := sabc.check(); err != nil {
+func (_c *SentinelAppBinaryCreate) sqlSave(ctx context.Context) (*SentinelAppBinary, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := sabc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, sabc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -274,74 +274,74 @@ func (sabc *SentinelAppBinaryCreate) sqlSave(ctx context.Context) (*SentinelAppB
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	sabc.mutation.id = &_node.ID
-	sabc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph.CreateSpec) {
+func (_c *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph.CreateSpec) {
 	var (
-		_node = &SentinelAppBinary{config: sabc.config}
+		_node = &SentinelAppBinary{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(sentinelappbinary.Table, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = sabc.conflict
-	if id, ok := sabc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := sabc.mutation.UnionID(); ok {
+	if value, ok := _c.mutation.UnionID(); ok {
 		_spec.SetField(sentinelappbinary.FieldUnionID, field.TypeString, value)
 		_node.UnionID = value
 	}
-	if value, ok := sabc.mutation.SentinelID(); ok {
+	if value, ok := _c.mutation.SentinelID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 		_node.SentinelID = value
 	}
-	if value, ok := sabc.mutation.SentinelLibraryReportedID(); ok {
+	if value, ok := _c.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 		_node.SentinelLibraryReportedID = value
 	}
-	if value, ok := sabc.mutation.LibrarySnapshot(); ok {
+	if value, ok := _c.mutation.LibrarySnapshot(); ok {
 		_spec.SetField(sentinelappbinary.FieldLibrarySnapshot, field.TypeTime, value)
 		_node.LibrarySnapshot = value
 	}
-	if value, ok := sabc.mutation.GeneratedID(); ok {
+	if value, ok := _c.mutation.GeneratedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldGeneratedID, field.TypeString, value)
 		_node.GeneratedID = value
 	}
-	if value, ok := sabc.mutation.SizeBytes(); ok {
+	if value, ok := _c.mutation.SizeBytes(); ok {
 		_spec.SetField(sentinelappbinary.FieldSizeBytes, field.TypeInt64, value)
 		_node.SizeBytes = value
 	}
-	if value, ok := sabc.mutation.NeedToken(); ok {
+	if value, ok := _c.mutation.NeedToken(); ok {
 		_spec.SetField(sentinelappbinary.FieldNeedToken, field.TypeBool, value)
 		_node.NeedToken = value
 	}
-	if value, ok := sabc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinary.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := sabc.mutation.Version(); ok {
+	if value, ok := _c.mutation.Version(); ok {
 		_spec.SetField(sentinelappbinary.FieldVersion, field.TypeString, value)
 		_node.Version = value
 	}
-	if value, ok := sabc.mutation.Developer(); ok {
+	if value, ok := _c.mutation.Developer(); ok {
 		_spec.SetField(sentinelappbinary.FieldDeveloper, field.TypeString, value)
 		_node.Developer = value
 	}
-	if value, ok := sabc.mutation.Publisher(); ok {
+	if value, ok := _c.mutation.Publisher(); ok {
 		_spec.SetField(sentinelappbinary.FieldPublisher, field.TypeString, value)
 		_node.Publisher = value
 	}
-	if value, ok := sabc.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinelappbinary.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := sabc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinary.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := sabc.mutation.StoreAppIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.StoreAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
@@ -355,13 +355,13 @@ func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &StoreAppBinaryCreate{config: sabc.config, mutation: newStoreAppBinaryMutation(sabc.config, OpCreate)}
+		createE := &StoreAppBinaryCreate{config: _c.config, mutation: newStoreAppBinaryMutation(_c.config, OpCreate)}
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := sabc.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
@@ -396,10 +396,10 @@ func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph
 //			SetUnionID(v+v).
 //		}).
 //		Exec(ctx)
-func (sabc *SentinelAppBinaryCreate) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryUpsertOne {
-	sabc.conflict = opts
+func (_c *SentinelAppBinaryCreate) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryUpsertOne {
+	_c.conflict = opts
 	return &SentinelAppBinaryUpsertOne{
-		create: sabc,
+		create: _c,
 	}
 }
 
@@ -409,10 +409,10 @@ func (sabc *SentinelAppBinaryCreate) OnConflict(opts ...sql.ConflictOption) *Sen
 //	client.SentinelAppBinary.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sabc *SentinelAppBinaryCreate) OnConflictColumns(columns ...string) *SentinelAppBinaryUpsertOne {
-	sabc.conflict = append(sabc.conflict, sql.ConflictColumns(columns...))
+func (_c *SentinelAppBinaryCreate) OnConflictColumns(columns ...string) *SentinelAppBinaryUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SentinelAppBinaryUpsertOne{
-		create: sabc,
+		create: _c,
 	}
 }
 
@@ -935,16 +935,16 @@ type SentinelAppBinaryCreateBulk struct {
 }
 
 // Save creates the SentinelAppBinary entities in the database.
-func (sabcb *SentinelAppBinaryCreateBulk) Save(ctx context.Context) ([]*SentinelAppBinary, error) {
-	if sabcb.err != nil {
-		return nil, sabcb.err
+func (_c *SentinelAppBinaryCreateBulk) Save(ctx context.Context) ([]*SentinelAppBinary, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(sabcb.builders))
-	nodes := make([]*SentinelAppBinary, len(sabcb.builders))
-	mutators := make([]Mutator, len(sabcb.builders))
-	for i := range sabcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*SentinelAppBinary, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := sabcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SentinelAppBinaryMutation)
@@ -958,12 +958,12 @@ func (sabcb *SentinelAppBinaryCreateBulk) Save(ctx context.Context) ([]*Sentinel
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, sabcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = sabcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, sabcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -987,7 +987,7 @@ func (sabcb *SentinelAppBinaryCreateBulk) Save(ctx context.Context) ([]*Sentinel
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, sabcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -995,8 +995,8 @@ func (sabcb *SentinelAppBinaryCreateBulk) Save(ctx context.Context) ([]*Sentinel
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (sabcb *SentinelAppBinaryCreateBulk) SaveX(ctx context.Context) []*SentinelAppBinary {
-	v, err := sabcb.Save(ctx)
+func (_c *SentinelAppBinaryCreateBulk) SaveX(ctx context.Context) []*SentinelAppBinary {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -1004,14 +1004,14 @@ func (sabcb *SentinelAppBinaryCreateBulk) SaveX(ctx context.Context) []*Sentinel
 }
 
 // Exec executes the query.
-func (sabcb *SentinelAppBinaryCreateBulk) Exec(ctx context.Context) error {
-	_, err := sabcb.Save(ctx)
+func (_c *SentinelAppBinaryCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sabcb *SentinelAppBinaryCreateBulk) ExecX(ctx context.Context) {
-	if err := sabcb.Exec(ctx); err != nil {
+func (_c *SentinelAppBinaryCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -1031,10 +1031,10 @@ func (sabcb *SentinelAppBinaryCreateBulk) ExecX(ctx context.Context) {
 //			SetUnionID(v+v).
 //		}).
 //		Exec(ctx)
-func (sabcb *SentinelAppBinaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryUpsertBulk {
-	sabcb.conflict = opts
+func (_c *SentinelAppBinaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryUpsertBulk {
+	_c.conflict = opts
 	return &SentinelAppBinaryUpsertBulk{
-		create: sabcb,
+		create: _c,
 	}
 }
 
@@ -1044,10 +1044,10 @@ func (sabcb *SentinelAppBinaryCreateBulk) OnConflict(opts ...sql.ConflictOption)
 //	client.SentinelAppBinary.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (sabcb *SentinelAppBinaryCreateBulk) OnConflictColumns(columns ...string) *SentinelAppBinaryUpsertBulk {
-	sabcb.conflict = append(sabcb.conflict, sql.ConflictColumns(columns...))
+func (_c *SentinelAppBinaryCreateBulk) OnConflictColumns(columns ...string) *SentinelAppBinaryUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &SentinelAppBinaryUpsertBulk{
-		create: sabcb,
+		create: _c,
 	}
 }
 

@@ -20,56 +20,56 @@ type NotifyFlowSourceDelete struct {
 }
 
 // Where appends a list predicates to the NotifyFlowSourceDelete builder.
-func (nfsd *NotifyFlowSourceDelete) Where(ps ...predicate.NotifyFlowSource) *NotifyFlowSourceDelete {
-	nfsd.mutation.Where(ps...)
-	return nfsd
+func (_d *NotifyFlowSourceDelete) Where(ps ...predicate.NotifyFlowSource) *NotifyFlowSourceDelete {
+	_d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (nfsd *NotifyFlowSourceDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, nfsd.sqlExec, nfsd.mutation, nfsd.hooks)
+func (_d *NotifyFlowSourceDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nfsd *NotifyFlowSourceDelete) ExecX(ctx context.Context) int {
-	n, err := nfsd.Exec(ctx)
+func (_d *NotifyFlowSourceDelete) ExecX(ctx context.Context) int {
+	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (nfsd *NotifyFlowSourceDelete) sqlExec(ctx context.Context) (int, error) {
+func (_d *NotifyFlowSourceDelete) sqlExec(ctx context.Context) (int, error) {
 	_spec := sqlgraph.NewDeleteSpec(notifyflowsource.Table, sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt))
-	if ps := nfsd.mutation.predicates; len(ps) > 0 {
+	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, nfsd.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, _d.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	nfsd.mutation.done = true
+	_d.mutation.done = true
 	return affected, err
 }
 
 // NotifyFlowSourceDeleteOne is the builder for deleting a single NotifyFlowSource entity.
 type NotifyFlowSourceDeleteOne struct {
-	nfsd *NotifyFlowSourceDelete
+	_d *NotifyFlowSourceDelete
 }
 
 // Where appends a list predicates to the NotifyFlowSourceDelete builder.
-func (nfsdo *NotifyFlowSourceDeleteOne) Where(ps ...predicate.NotifyFlowSource) *NotifyFlowSourceDeleteOne {
-	nfsdo.nfsd.mutation.Where(ps...)
-	return nfsdo
+func (_d *NotifyFlowSourceDeleteOne) Where(ps ...predicate.NotifyFlowSource) *NotifyFlowSourceDeleteOne {
+	_d._d.mutation.Where(ps...)
+	return _d
 }
 
 // Exec executes the deletion query.
-func (nfsdo *NotifyFlowSourceDeleteOne) Exec(ctx context.Context) error {
-	n, err := nfsdo.nfsd.Exec(ctx)
+func (_d *NotifyFlowSourceDeleteOne) Exec(ctx context.Context) error {
+	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
@@ -81,8 +81,8 @@ func (nfsdo *NotifyFlowSourceDeleteOne) Exec(ctx context.Context) error {
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (nfsdo *NotifyFlowSourceDeleteOne) ExecX(ctx context.Context) {
-	if err := nfsdo.Exec(ctx); err != nil {
+func (_d *NotifyFlowSourceDeleteOne) ExecX(ctx context.Context) {
+	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

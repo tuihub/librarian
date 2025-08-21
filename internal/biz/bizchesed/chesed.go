@@ -3,6 +3,7 @@ package bizchesed
 import (
 	"context"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/tuihub/librarian/internal/biz/bizutils"
@@ -18,7 +19,7 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelchesed"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	pb "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/google/wire"
@@ -163,9 +164,11 @@ func (c *Chesed) ScanImage(ctx context.Context) error {
 			return err
 		}
 		var desReq string
+		var desReqSb166 strings.Builder
 		for _, r := range results.GetResults() {
-			desReq += r.GetText() + " "
+			desReqSb166.WriteString(r.GetText() + " ")
 		}
+		desReq += desReqSb166.String()
 		if err = c.search.DescribeID(ctx,
 			image.ID,
 			libsearch.SearchIndexChesedImage,

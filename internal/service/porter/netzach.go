@@ -5,7 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	porter "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 )
 
 func (s *LibrarianSephirahPorterService) GetNotifyTargetItems(

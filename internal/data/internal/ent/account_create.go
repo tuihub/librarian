@@ -25,102 +25,102 @@ type AccountCreate struct {
 }
 
 // SetPlatform sets the "platform" field.
-func (ac *AccountCreate) SetPlatform(s string) *AccountCreate {
-	ac.mutation.SetPlatform(s)
-	return ac
+func (_c *AccountCreate) SetPlatform(v string) *AccountCreate {
+	_c.mutation.SetPlatform(v)
+	return _c
 }
 
 // SetPlatformAccountID sets the "platform_account_id" field.
-func (ac *AccountCreate) SetPlatformAccountID(s string) *AccountCreate {
-	ac.mutation.SetPlatformAccountID(s)
-	return ac
+func (_c *AccountCreate) SetPlatformAccountID(v string) *AccountCreate {
+	_c.mutation.SetPlatformAccountID(v)
+	return _c
 }
 
 // SetBoundUserID sets the "bound_user_id" field.
-func (ac *AccountCreate) SetBoundUserID(mi model.InternalID) *AccountCreate {
-	ac.mutation.SetBoundUserID(mi)
-	return ac
+func (_c *AccountCreate) SetBoundUserID(v model.InternalID) *AccountCreate {
+	_c.mutation.SetBoundUserID(v)
+	return _c
 }
 
 // SetNillableBoundUserID sets the "bound_user_id" field if the given value is not nil.
-func (ac *AccountCreate) SetNillableBoundUserID(mi *model.InternalID) *AccountCreate {
-	if mi != nil {
-		ac.SetBoundUserID(*mi)
+func (_c *AccountCreate) SetNillableBoundUserID(v *model.InternalID) *AccountCreate {
+	if v != nil {
+		_c.SetBoundUserID(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetName sets the "name" field.
-func (ac *AccountCreate) SetName(s string) *AccountCreate {
-	ac.mutation.SetName(s)
-	return ac
+func (_c *AccountCreate) SetName(v string) *AccountCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // SetProfileURL sets the "profile_url" field.
-func (ac *AccountCreate) SetProfileURL(s string) *AccountCreate {
-	ac.mutation.SetProfileURL(s)
-	return ac
+func (_c *AccountCreate) SetProfileURL(v string) *AccountCreate {
+	_c.mutation.SetProfileURL(v)
+	return _c
 }
 
 // SetAvatarURL sets the "avatar_url" field.
-func (ac *AccountCreate) SetAvatarURL(s string) *AccountCreate {
-	ac.mutation.SetAvatarURL(s)
-	return ac
+func (_c *AccountCreate) SetAvatarURL(v string) *AccountCreate {
+	_c.mutation.SetAvatarURL(v)
+	return _c
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (ac *AccountCreate) SetUpdatedAt(t time.Time) *AccountCreate {
-	ac.mutation.SetUpdatedAt(t)
-	return ac
+func (_c *AccountCreate) SetUpdatedAt(v time.Time) *AccountCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
 }
 
 // SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ac *AccountCreate) SetNillableUpdatedAt(t *time.Time) *AccountCreate {
-	if t != nil {
-		ac.SetUpdatedAt(*t)
+func (_c *AccountCreate) SetNillableUpdatedAt(v *time.Time) *AccountCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (ac *AccountCreate) SetCreatedAt(t time.Time) *AccountCreate {
-	ac.mutation.SetCreatedAt(t)
-	return ac
+func (_c *AccountCreate) SetCreatedAt(v time.Time) *AccountCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ac *AccountCreate) SetNillableCreatedAt(t *time.Time) *AccountCreate {
-	if t != nil {
-		ac.SetCreatedAt(*t)
+func (_c *AccountCreate) SetNillableCreatedAt(v *time.Time) *AccountCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
-	return ac
+	return _c
 }
 
 // SetID sets the "id" field.
-func (ac *AccountCreate) SetID(mi model.InternalID) *AccountCreate {
-	ac.mutation.SetID(mi)
-	return ac
+func (_c *AccountCreate) SetID(v model.InternalID) *AccountCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetBoundUser sets the "bound_user" edge to the User entity.
-func (ac *AccountCreate) SetBoundUser(u *User) *AccountCreate {
-	return ac.SetBoundUserID(u.ID)
+func (_c *AccountCreate) SetBoundUser(v *User) *AccountCreate {
+	return _c.SetBoundUserID(v.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
-func (ac *AccountCreate) Mutation() *AccountMutation {
-	return ac.mutation
+func (_c *AccountCreate) Mutation() *AccountMutation {
+	return _c.mutation
 }
 
 // Save creates the Account in the database.
-func (ac *AccountCreate) Save(ctx context.Context) (*Account, error) {
-	ac.defaults()
-	return withHooks(ctx, ac.sqlSave, ac.mutation, ac.hooks)
+func (_c *AccountCreate) Save(ctx context.Context) (*Account, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (ac *AccountCreate) SaveX(ctx context.Context) *Account {
-	v, err := ac.Save(ctx)
+func (_c *AccountCreate) SaveX(ctx context.Context) *Account {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -128,62 +128,62 @@ func (ac *AccountCreate) SaveX(ctx context.Context) *Account {
 }
 
 // Exec executes the query.
-func (ac *AccountCreate) Exec(ctx context.Context) error {
-	_, err := ac.Save(ctx)
+func (_c *AccountCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ac *AccountCreate) ExecX(ctx context.Context) {
-	if err := ac.Exec(ctx); err != nil {
+func (_c *AccountCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (ac *AccountCreate) defaults() {
-	if _, ok := ac.mutation.UpdatedAt(); !ok {
+func (_c *AccountCreate) defaults() {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		v := account.DefaultUpdatedAt()
-		ac.mutation.SetUpdatedAt(v)
+		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := ac.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := account.DefaultCreatedAt()
-		ac.mutation.SetCreatedAt(v)
+		_c.mutation.SetCreatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (ac *AccountCreate) check() error {
-	if _, ok := ac.mutation.Platform(); !ok {
+func (_c *AccountCreate) check() error {
+	if _, ok := _c.mutation.Platform(); !ok {
 		return &ValidationError{Name: "platform", err: errors.New(`ent: missing required field "Account.platform"`)}
 	}
-	if _, ok := ac.mutation.PlatformAccountID(); !ok {
+	if _, ok := _c.mutation.PlatformAccountID(); !ok {
 		return &ValidationError{Name: "platform_account_id", err: errors.New(`ent: missing required field "Account.platform_account_id"`)}
 	}
-	if _, ok := ac.mutation.Name(); !ok {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Account.name"`)}
 	}
-	if _, ok := ac.mutation.ProfileURL(); !ok {
+	if _, ok := _c.mutation.ProfileURL(); !ok {
 		return &ValidationError{Name: "profile_url", err: errors.New(`ent: missing required field "Account.profile_url"`)}
 	}
-	if _, ok := ac.mutation.AvatarURL(); !ok {
+	if _, ok := _c.mutation.AvatarURL(); !ok {
 		return &ValidationError{Name: "avatar_url", err: errors.New(`ent: missing required field "Account.avatar_url"`)}
 	}
-	if _, ok := ac.mutation.UpdatedAt(); !ok {
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Account.updated_at"`)}
 	}
-	if _, ok := ac.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Account.created_at"`)}
 	}
 	return nil
 }
 
-func (ac *AccountCreate) sqlSave(ctx context.Context) (*Account, error) {
-	if err := ac.check(); err != nil {
+func (_c *AccountCreate) sqlSave(ctx context.Context) (*Account, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := ac.createSpec()
-	if err := sqlgraph.CreateNode(ctx, ac.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -193,50 +193,50 @@ func (ac *AccountCreate) sqlSave(ctx context.Context) (*Account, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = model.InternalID(id)
 	}
-	ac.mutation.id = &_node.ID
-	ac.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
+func (_c *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Account{config: ac.config}
+		_node = &Account{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(account.Table, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64))
 	)
-	_spec.OnConflict = ac.conflict
-	if id, ok := ac.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ac.mutation.Platform(); ok {
+	if value, ok := _c.mutation.Platform(); ok {
 		_spec.SetField(account.FieldPlatform, field.TypeString, value)
 		_node.Platform = value
 	}
-	if value, ok := ac.mutation.PlatformAccountID(); ok {
+	if value, ok := _c.mutation.PlatformAccountID(); ok {
 		_spec.SetField(account.FieldPlatformAccountID, field.TypeString, value)
 		_node.PlatformAccountID = value
 	}
-	if value, ok := ac.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(account.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := ac.mutation.ProfileURL(); ok {
+	if value, ok := _c.mutation.ProfileURL(); ok {
 		_spec.SetField(account.FieldProfileURL, field.TypeString, value)
 		_node.ProfileURL = value
 	}
-	if value, ok := ac.mutation.AvatarURL(); ok {
+	if value, ok := _c.mutation.AvatarURL(); ok {
 		_spec.SetField(account.FieldAvatarURL, field.TypeString, value)
 		_node.AvatarURL = value
 	}
-	if value, ok := ac.mutation.UpdatedAt(); ok {
+	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(account.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := ac.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ac.mutation.BoundUserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.BoundUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -272,10 +272,10 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 //			SetPlatform(v+v).
 //		}).
 //		Exec(ctx)
-func (ac *AccountCreate) OnConflict(opts ...sql.ConflictOption) *AccountUpsertOne {
-	ac.conflict = opts
+func (_c *AccountCreate) OnConflict(opts ...sql.ConflictOption) *AccountUpsertOne {
+	_c.conflict = opts
 	return &AccountUpsertOne{
-		create: ac,
+		create: _c,
 	}
 }
 
@@ -285,10 +285,10 @@ func (ac *AccountCreate) OnConflict(opts ...sql.ConflictOption) *AccountUpsertOn
 //	client.Account.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (ac *AccountCreate) OnConflictColumns(columns ...string) *AccountUpsertOne {
-	ac.conflict = append(ac.conflict, sql.ConflictColumns(columns...))
+func (_c *AccountCreate) OnConflictColumns(columns ...string) *AccountUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AccountUpsertOne{
-		create: ac,
+		create: _c,
 	}
 }
 
@@ -616,16 +616,16 @@ type AccountCreateBulk struct {
 }
 
 // Save creates the Account entities in the database.
-func (acb *AccountCreateBulk) Save(ctx context.Context) ([]*Account, error) {
-	if acb.err != nil {
-		return nil, acb.err
+func (_c *AccountCreateBulk) Save(ctx context.Context) ([]*Account, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(acb.builders))
-	nodes := make([]*Account, len(acb.builders))
-	mutators := make([]Mutator, len(acb.builders))
-	for i := range acb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Account, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := acb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AccountMutation)
@@ -639,12 +639,12 @@ func (acb *AccountCreateBulk) Save(ctx context.Context) ([]*Account, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, acb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = acb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, acb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -668,7 +668,7 @@ func (acb *AccountCreateBulk) Save(ctx context.Context) ([]*Account, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, acb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -676,8 +676,8 @@ func (acb *AccountCreateBulk) Save(ctx context.Context) ([]*Account, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (acb *AccountCreateBulk) SaveX(ctx context.Context) []*Account {
-	v, err := acb.Save(ctx)
+func (_c *AccountCreateBulk) SaveX(ctx context.Context) []*Account {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -685,14 +685,14 @@ func (acb *AccountCreateBulk) SaveX(ctx context.Context) []*Account {
 }
 
 // Exec executes the query.
-func (acb *AccountCreateBulk) Exec(ctx context.Context) error {
-	_, err := acb.Save(ctx)
+func (_c *AccountCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (acb *AccountCreateBulk) ExecX(ctx context.Context) {
-	if err := acb.Exec(ctx); err != nil {
+func (_c *AccountCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -712,10 +712,10 @@ func (acb *AccountCreateBulk) ExecX(ctx context.Context) {
 //			SetPlatform(v+v).
 //		}).
 //		Exec(ctx)
-func (acb *AccountCreateBulk) OnConflict(opts ...sql.ConflictOption) *AccountUpsertBulk {
-	acb.conflict = opts
+func (_c *AccountCreateBulk) OnConflict(opts ...sql.ConflictOption) *AccountUpsertBulk {
+	_c.conflict = opts
 	return &AccountUpsertBulk{
-		create: acb,
+		create: _c,
 	}
 }
 
@@ -725,10 +725,10 @@ func (acb *AccountCreateBulk) OnConflict(opts ...sql.ConflictOption) *AccountUps
 //	client.Account.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (acb *AccountCreateBulk) OnConflictColumns(columns ...string) *AccountUpsertBulk {
-	acb.conflict = append(acb.conflict, sql.ConflictColumns(columns...))
+func (_c *AccountCreateBulk) OnConflictColumns(columns ...string) *AccountUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &AccountUpsertBulk{
-		create: acb,
+		create: _c,
 	}
 }
 
