@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"encoding/json"
 	"sync"
 
 	"github.com/tuihub/librarian/internal/client"
@@ -66,11 +65,7 @@ func (s *SupervisorRepo) HasAccountPlatform(request *model.FeatureRequest) bool 
 func (s *SupervisorRepo) WithAccountPlatform(ctx context.Context, request *model.FeatureRequest) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
-	var config model.PullAccountInfoConfig
-	if err := json.Unmarshal([]byte(request.ConfigJSON), &config); err != nil {
-		return client.WithPorterFastFail(ctx)
-	}
-	if platforms, ok := s.featureMap.AccountPlatforms.Load(config.Platform); ok {
+	if platforms, ok := s.featureMap.AccountPlatforms.Load(request.ID); ok {
 		return client.WithPorterAddress(ctx, platforms)
 	}
 	return client.WithPorterFastFail(ctx)
