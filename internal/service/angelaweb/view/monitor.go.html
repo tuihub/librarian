@@ -1,29 +1,32 @@
-<div class="container">
+<div>
     <div class="header">
-        <h1 class="title">{{localize .Ctx "MonitorTitle"}}</h1>
-        <div class="header-actions">
-            <button onclick="refreshMetrics()" class="btn btn-soft btn-primary">
-                {{template "icon-refresh" .}}
-                {{localize .Ctx "Refresh"}}
-            </button>
-            <button onclick="toggleAutoRefresh()" id="autoRefreshBtn" class="btn btn-soft btn-success">
-                {{template "icon-clock" .}}
-                <span id="autoRefreshText">{{localize .Ctx "AutoRefreshOn"}}</span>
-            </button>
-            {{if .Debug}}
-            <a href="/debug/pprof" target="_blank" class="btn btn-soft btn-ghost">
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
+        </div>
+        <button onclick="refreshMetrics()" class="btn btn-primary">
+            {{template "icon-refresh" .}}
+            {{localize .Ctx "Refresh"}}
+        </button>
+        <button onclick="toggleAutoRefresh()" id="autoRefreshBtn" class="btn btn-success">
+            {{template "icon-clock" .}}
+            <span id="autoRefreshText">{{localize .Ctx "AutoRefreshOn"}}</span>
+        </button>
+        {{if .Debug}}
+            <a href="/debug/pprof" target="_blank" class="btn btn-ghost">
                 {{template "icon-debug" .}}
                 {{localize .Ctx "PprofDebug"}}
             </a>
-            {{end}}
-        </div>
+        {{end}}
     </div>
 
     <!-- 控制面板 -->
     <div class="card mb-6">
         <div class="card-body">
             <div class="flex flex-wrap items-center gap-4">
-                <div class="text-sm text-slate-600 dark:text-slate-400" id="lastUpdate">
+                <div class="text-sm text-base-content/60" id="lastUpdate">
                     {{localize .Ctx "LastUpdated"}}: --
                 </div>
             </div>
@@ -31,7 +34,7 @@
     </div>
 
     <!-- 进程指标卡片 -->
-    <div class="stats-grid mb-6">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] mb-6 gap-6">
         <!-- 进程CPU使用率 -->
         <div class="stats bg-base-100 border-base-300 border">
             <div class="stat">
@@ -81,13 +84,21 @@
         </div>
     </div>
 
-    <!-- 图表区域 -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <!-- 历史趋势图表区域 -->
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6 mb-6">
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">{{localize .Ctx "CpuUsageChart"}}</h3>
-                <div class="chart-container">
-                    <canvas id="systemChart"></canvas>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="w-4 h-3 bg-primary rounded"></div>
+                        <span>System CPU</span>
+                        <div class="w-4 h-3 bg-error rounded"></div>
+                        <span>Process CPU</span>
+                    </div>
+                    <div id="cpuHistoryContainer" class="space-y-2">
+                        <!-- CPU历史数据progress条将在这里动态生成 -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,8 +106,16 @@
         <div class="card">
             <div class="card-body">
                 <h3 class="card-title">{{localize .Ctx "MemoryUsageChart"}}</h3>
-                <div class="chart-container">
-                    <canvas id="processChart"></canvas>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="w-4 h-3 bg-success rounded"></div>
+                        <span>System Memory</span>
+                        <div class="w-4 h-3 bg-secondary rounded"></div>
+                        <span>Process Memory</span>
+                    </div>
+                    <div id="memoryHistoryContainer" class="space-y-2">
+                        <!-- Memory历史数据progress条将在这里动态生成 -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,7 +125,7 @@
     <div class="card">
         <div class="card-body">
             <h3 class="card-title">{{localize .Ctx "ProcessDetails"}}</h3>
-            <div class="stats-grid">
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
                 <div class="stats bg-base-100 border-base-300 border">
                     <div class="stat">
                         <div class="stat-title">{{localize .Ctx "Goroutines"}}</div>
@@ -142,28 +161,17 @@
     </div>
 </div>
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
 
 <script>
 // 全局变量
 let autoRefreshInterval = setInterval(fetchMetrics, 10000);
-let systemChart = null;
-let processChart = null;
 let isAutoRefresh = true;
 let metricsHistory = [];
 let lastFetchTime = 0;
 
-// 等待 Chart.js 加载完成
-function waitForChart() {
-    return new Promise((resolve) => {
-        if (typeof Chart !== 'undefined') {
-            resolve();
-        } else {
-            setTimeout(() => waitForChart().then(resolve), 100);
-        }
-    });
-}
+// 历史数据点数量常量
+const MAX_HISTORY_POINTS = 10;
 
 // 防抖函数
 function debounce(func, wait) {
@@ -195,137 +203,61 @@ function formatNumber(num) {
     return num.toString();
 }
 
-// 初始化图表
-async function initCharts() {
-    await waitForChart();
+// 创建进度条HTML
+function createProgressBar(systemValue, processValue, timeLabel, type) {
+    const colors = type === 'cpu' 
+        ? { system: 'bg-primary', process: 'bg-error' }
+        : { system: 'bg-success', process: 'bg-secondary' };
+    
+    return `
+        <div class="flex flex-col items-center gap-1 w-12">
+            <div class="flex items-end gap-0.5 w-full h-32">
+                <div class="flex flex-col h-full items-center flex-1">
+                    <div class="w-full h-full bg-base-200 rounded flex flex-col-reverse p-px">
+                        <div class="${colors.system} rounded transition-all duration-300" style="height: ${systemValue}%"></div>
+                    </div>
+                    <span class="text-xs mt-1">${systemValue.toFixed(0)}%</span>
+                </div>
+                <div class="flex flex-col h-full items-center flex-1">
+                    <div class="w-full h-full bg-base-200 rounded flex flex-col-reverse p-px">
+                        <div class="${colors.process} rounded transition-all duration-300" style="height: ${processValue}%"></div>
+                    </div>
+                    <span class="text-xs mt-1">${processValue.toFixed(0)}%</span>
+                </div>
+            </div>
+            <span class="text-xs text-center w-full">${timeLabel}</span>
+        </div>
+    `;
+}
 
-    const systemCtx = document.getElementById('systemChart');
-    const processCtx = document.getElementById('processChart');
-
-    if (!systemCtx || !processCtx) {
-        console.error('Canvas elements not found');
-        return;
-    }
-
-    // CPU使用率图表（系统和进程）
-    systemChart = new Chart(systemCtx.getContext('2d'), {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'System CPU %',
-                data: [],
-                borderColor: 'rgb(59, 130, 246)',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                tension: 0.4,
-                fill: true
-            }, {
-                label: 'Process CPU %',
-                data: [],
-                borderColor: 'rgb(239, 68, 68)',
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    grid: {
-                        color: 'rgba(156, 163, 175, 0.2)'
-                    }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(156, 163, 175, 0.2)'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        font: {
-                            size: 11
-                        }
-                    }
-                }
-            },
-            elements: {
-                point: {
-                    radius: 2
-                }
-            }
-        }
-    });
-
-    // 内存使用率图表（系统和进程）
-    processChart = new Chart(processCtx.getContext('2d'), {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'System Memory %',
-                data: [],
-                borderColor: 'rgb(34, 197, 94)',
-                backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                tension: 0.4,
-                fill: true
-            }, {
-                label: 'Process Memory %',
-                data: [],
-                borderColor: 'rgb(168, 85, 247)',
-                backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    grid: {
-                        color: 'rgba(156, 163, 175, 0.2)'
-                    }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(156, 163, 175, 0.2)'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        font: {
-                            size: 11
-                        }
-                    }
-                }
-            },
-            elements: {
-                point: {
-                    radius: 2
-                }
-            }
-        }
-    });
+// 更新历史趋势图表
+function updateHistoryCharts() {
+    const cpuContainer = document.getElementById('cpuHistoryContainer');
+    const memoryContainer = document.getElementById('memoryHistoryContainer');
+    
+    if (!cpuContainer || !memoryContainer) return;
+    
+    // 获取最近的历史数据
+    const recentHistory = metricsHistory.slice(-MAX_HISTORY_POINTS);
+    
+    // 生成CPU历史progress条
+    const cpuBars = recentHistory.map(item => {
+        const time = new Date(item.timestamp).toLocaleTimeString().slice(-8, -3); // 只显示时:分
+        const systemCpu = (item.data['system.cpu.usage'] && item.data['system.cpu.usage'][0] && item.data['system.cpu.usage'][0].value) || 0;
+        const processCpu = (item.data['process.cpu.usage'] && item.data['process.cpu.usage'][0] && item.data['process.cpu.usage'][0].value) || 0;
+        return createProgressBar(systemCpu, processCpu, time, 'cpu');
+    }).join('');
+    
+    // 生成Memory历史progress条
+    const memoryBars = recentHistory.map(item => {
+        const time = new Date(item.timestamp).toLocaleTimeString().slice(-8, -3); // 只显示时:分
+        const systemMemory = (item.data['system.memory.usage'] && item.data['system.memory.usage'][0] && item.data['system.memory.usage'][0].value) || 0;
+        const processMemory = (item.data['process.memory.usage'] && item.data['process.memory.usage'][0] && item.data['process.memory.usage'][0].value) || 0;
+        return createProgressBar(systemMemory, processMemory, time, 'memory');
+    }).join('');
+    
+    cpuContainer.innerHTML = cpuBars ? `<div class="flex justify-between w-full">${cpuBars}</div>` : '<div class="text-center text-base-content/60 py-4">{{localize .Ctx "NoData"}}</div>';
+    memoryContainer.innerHTML = memoryBars ? `<div class="flex justify-between w-full">${memoryBars}</div>` : '<div class="text-center text-base-content/60 py-4">{{localize .Ctx "NoData"}}</div>';
 }
 
 // 更新指标卡片
@@ -376,60 +308,6 @@ function updateMetricCards(data) {
     }
 }
 
-// 更新图表
-function updateCharts(data) {
-    try {
-        const now = new Date();
-        const timeLabel = now.toLocaleTimeString();
-
-        // 限制历史数据点数量
-        const maxDataPoints = 50;
-
-        // CPU使用率（系统和进程）
-        const systemCpuUsage = (data['system.cpu.usage'] && data['system.cpu.usage'][0] && data['system.cpu.usage'][0].value) || 0;
-        const processCpuUsage = (data['process.cpu.usage'] && data['process.cpu.usage'][0] && data['process.cpu.usage'][0].value) || 0;
-
-        if (systemChart) {
-            systemChart.data.labels.push(timeLabel);
-            systemChart.data.datasets[0].data.push(systemCpuUsage);
-            systemChart.data.datasets[1].data.push(processCpuUsage);
-
-            // 保持数据点数量
-            if (systemChart.data.labels.length > maxDataPoints) {
-                systemChart.data.labels.shift();
-                systemChart.data.datasets.forEach(function(dataset) {
-                    dataset.data.shift();
-                });
-            }
-
-            systemChart.update('none');
-        }
-
-        // 内存使用率（系统和进程）
-        const systemMemoryUsage = (data['system.memory.usage'] && data['system.memory.usage'][0] && data['system.memory.usage'][0].value) || 0;
-        const processMemoryUsage = (data['process.memory.usage'] && data['process.memory.usage'][0] && data['process.memory.usage'][0].value) || 0;
-
-        if (processChart) {
-            processChart.data.labels.push(timeLabel);
-            processChart.data.datasets[0].data.push(systemMemoryUsage);
-            processChart.data.datasets[1].data.push(processMemoryUsage);
-
-            // 保持数据点数量
-            if (processChart.data.labels.length > maxDataPoints) {
-                processChart.data.labels.shift();
-                processChart.data.datasets.forEach(function(dataset) {
-                    dataset.data.shift();
-                });
-            }
-
-            processChart.update('none');
-        }
-
-    } catch (error) {
-        console.error('Error updating charts:', error);
-    }
-}
-
 // 获取指标数据
 function fetchMetrics() {
     const now = Date.now();
@@ -445,8 +323,8 @@ function fetchMetrics() {
         })
         .then(function(data) {
             updateMetricCards(data);
-            updateCharts(data);
             saveMetricsHistory(now, data);
+            updateHistoryCharts();
         })
         .catch(function(error) {
             console.warn('API not available, using test data:', error);
@@ -461,18 +339,9 @@ function saveMetricsHistory(timestamp, data) {
     });
 
     // 限制历史记录大小
-    if (metricsHistory.length > 1000) {
-        metricsHistory = metricsHistory.slice(-500);
+    if (metricsHistory.length > MAX_HISTORY_POINTS * 2) {
+        metricsHistory = metricsHistory.slice(-MAX_HISTORY_POINTS);
     }
-
-    // 保存到 localStorage（异步）
-    setTimeout(function() {
-        try {
-            localStorage.setItem('metricsHistory', JSON.stringify(metricsHistory.slice(-100)));
-        } catch (e) {
-            console.warn('Failed to save to localStorage:', e);
-        }
-    }, 0);
 }
 
 // 刷新指标（防抖版本）
@@ -498,20 +367,11 @@ function toggleAutoRefresh() {
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
-    // 从 localStorage 恢复历史数据
-    try {
-        const saved = localStorage.getItem('metricsHistory');
-        if (saved) {
-            metricsHistory = JSON.parse(saved);
-        }
-    } catch (e) {
-        console.warn('Failed to load from localStorage:', e);
-        metricsHistory = [];
-    }
+    // 初始化空的历史数据数组
+    metricsHistory = [];
 
-    initCharts().then(function() {
-        fetchMetrics();
-    });
+    // 获取初始数据
+    fetchMetrics();
 });
 
 // 页面卸载时清理
@@ -521,37 +381,3 @@ window.addEventListener('beforeunload', function() {
     }
 });
 </script>
-
-<style>
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-}
-
-.chart-container {
-    height: 300px;
-    margin-top: 1rem;
-}
-
-.header-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-@media (max-width: 640px) {
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .chart-container {
-        height: 250px;
-    }
-
-    .header-actions {
-        width: 100%;
-        justify-content: flex-start;
-    }
-}
-</style>

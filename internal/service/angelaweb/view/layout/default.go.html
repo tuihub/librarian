@@ -3,26 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{if .Title}}{{.Title}}{{else}}{{localize .Ctx "SystemName"}}{{end}}</title>
+    <title>{{if .Title}}{{localize .Ctx .Title}}{{else}}{{localize .Ctx "SystemName"}}{{end}}</title>
     <link href="/static/css/style.css" rel="stylesheet">
     <script>
-        function setTheme(theme) {
+        function setCookie(name, value, days = 365) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
+        }
+
+        function deleteCookie(name) {
+            setCookie(name, '', -1);
+        }
+
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, '');
+        }
+
+        // Theme start
+        function setTheme(theme, pinned = false) {
             if (theme === 'dark') {
                 document.documentElement.classList.add('dark')
                 document.documentElement.setAttribute('data-theme', 'dark')
             } else {
                 document.documentElement.classList.remove('dark')
-                document.documentElement.removeAttribute('data-theme')
+                document.documentElement.setAttribute('data-theme', 'light')
             }
-            localStorage.theme = theme
+            if (pinned) {
+                localStorage.theme = theme
+            }
+            updateToggle()
         }
 
+        // Restore theme from localStorage or system preference
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             setTheme('dark')
         } else {
             setTheme('light')
         }
 
+        // Set theme to follow system preference
         function setAutoTheme() {
             localStorage.removeItem('theme')
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -32,6 +54,16 @@
             }
         }
 
+        // Toggle theme based on checkbox
+        function toggleTheme(checkbox) {
+            if (checkbox.checked) {
+                setTheme('dark', true)
+            } else {
+                setTheme('light', true)
+            }
+        }
+
+        // Listen for system theme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
             if (!('theme' in localStorage)) {
                 if (e.matches) {
@@ -42,105 +74,135 @@
             }
         })
 
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.querySelector('.sidebar-overlay');
-            sidebar.classList.toggle('show');
-            if (overlay) {
-                overlay.classList.toggle('hidden');
+        // Update the checkbox state
+        function updateToggle() {
+            const toggle = document.getElementById('theme-toggle')
+            if (toggle) {
+                toggle.checked = document.documentElement.classList.contains('dark')
+            }
+            const autoBtn = document.getElementById('theme-auto')
+            if (autoBtn) {
+                if ('theme' in localStorage) {
+                    autoBtn.classList.remove('hidden')
+                } else {
+                    autoBtn.classList.add('hidden')
+                }
             }
         }
-        
-        function toggleSubmenu(element) {
-            const submenu = element.nextElementSibling;
-            if (!submenu || !submenu.classList.contains('sidebar-submenu')) return;
-            
-            // 切换当前菜单状态
-            element.classList.toggle('expanded');
-            submenu.classList.toggle('expanded');
+
+        // Set the checkbox state on page load
+        document.addEventListener('DOMContentLoaded', updateToggle)
+        // Theme end
+
+        // Language start
+        function changeLanguage(lang) {
+            setCookie('lang', lang);
+            window.location.reload();
         }
+
+        function resetLanguage() {
+            deleteCookie('lang');
+            window.location.reload();
+        }
+        // Language end
     </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 min-h-screen transition-colors duration-200">
-    <div class="mobile-header sm:hidden">
-        <button onclick="toggleSidebar()" class="mobile-menu-btn">
-            {{template "icon-menu" .}}
-        </button>
-        <h1 class="mobile-title">{{localize .Ctx "SystemName"}}</h1>
-    </div>
-
-    <div class="sidebar-overlay hidden sm:hidden" onclick="toggleSidebar()"></div>
-
-    <div class="sidebar">
-        <div class="sidebar-content">
-            <div class="sidebar-header">
-                <h1 class="sidebar-title">{{localize .Ctx "SystemName"}}</h1>
-                <button onclick="toggleSidebar()" class="sidebar-close-btn btn-soft sm:hidden">
-                    {{template "icon-close" .}}
-                </button>
+<body class="bg-base-200 min-h-screen transition-colors duration-200">
+<div class="drawer lg:drawer-open">
+    <input id="main-drawer" type="checkbox" class="drawer-toggle"/>
+    <div class="drawer-content flex flex-col">
+        <div class="navbar bg-base-300 w-full sticky top-0 z-648">
+            <div class="flex-none lg:hidden">
+                <label for="main-drawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
+                    {{template "icon-menu" .}}
+                </label>
             </div>
-            <nav class="sidebar-nav">
-                <a href="/" class="sidebar-nav-item">
-                    {{template "icon-home" .}}
-                    <span class="sidebar-nav-text">{{localize .Ctx "Dashboard"}}</span>
-                </a>
-                <a href="/users" class="sidebar-nav-item">
-                    {{template "icon-users" .}}
-                    <span class="sidebar-nav-text">{{localize .Ctx "UserManagement"}}</span>
-                </a>
-                <a href="/porters" class="sidebar-nav-item">
-                    {{template "icon-plugins" .}}
-                    <span class="sidebar-nav-text">{{localize .Ctx "PluginManagement"}}</span>
-                </a>
-                <div class="sidebar-nav-item {{if or (eq .Path "/sentinels") (eq .Path "/store-apps") (eq .Path "/store-app-binaries")}}expanded{{end}}" onclick="toggleSubmenu(this)" title="{{localize .Ctx "ExpandMenu"}}">
-                    <!-- Debug output -->
-                    <span style="display: none;">Current path: {{.Path}}</span>
-                    {{template "icon-store" .}}
-                    <span class="sidebar-nav-text">{{localize .Ctx "StoreManagement"}}</span>
-                    <span class="sidebar-nav-toggle">
-                        {{template "icon-chevron-down" .}}
-                    </span>
-                </div>
-                <div class="sidebar-submenu {{if or (eq .Path "/sentinels") (eq .Path "/store-apps") (eq .Path "/store-app-binaries")}}expanded{{end}}">
-                    <a href="/sentinels" class="sidebar-submenu-item {{if eq .Path "/sentinels"}}active{{end}}">
-                        <span class="sidebar-submenu-text">{{localize .Ctx "SentinelManagement"}}</span>
-                    </a>
-                    <a href="/store-apps" class="sidebar-submenu-item {{if eq .Path "/store-apps"}}active{{end}}">
-                        <span class="sidebar-submenu-text">{{localize .Ctx "StoreAppManagement"}}</span>
-                    </a>
-                    <a href="/store-app-binaries" class="sidebar-submenu-item {{if eq .Path "/store-app-binaries"}}active{{end}}">
-                        <span class="sidebar-submenu-text">{{localize .Ctx "StoreAppBinaryManagement"}}</span>
-                    </a>
-                </div>
-                <a href="/config" class="sidebar-nav-item">
-                    {{template "icon-settings" .}}
-                    <span class="sidebar-nav-text">{{localize .Ctx "SystemConfiguration"}}</span>
-                </a>
-                <a href="/monitor" class="sidebar-nav-item">
-                    {{template "icon-monitor" .}}
-                    <span class="sidebar-nav-text">{{localize .Ctx "Monitor"}}</span>
-                </a>
-            </nav>
-            <div class="sidebar-footer">
-                <div class="theme-toggle">
-                    <button onclick="setAutoTheme()" class="theme-toggle-btn" title="{{localize .Ctx "AutoTheme"}}">
-                        {{template "icon-auto" .}}
-                    </button>
-                    <button onclick="setTheme('light'); localStorage.theme = 'light'; showToast('{{localize .Ctx "LightMode"}}')"
-                        class="theme-toggle-btn" title="{{localize .Ctx "LightTheme"}}">
-                        {{template "icon-sun" .}}
-                    </button>
-                    <button onclick="setTheme('dark'); localStorage.theme = 'dark'; showToast('{{localize .Ctx "DarkMode"}}')"
-                        class="theme-toggle-btn" title="{{localize .Ctx "DarkTheme"}}">
-                        {{template "icon-moon" .}}
-                    </button>
-                </div>
+            <div class="mx-2 flex-1 px-2">{{if .Title}}{{localize .Ctx .Title}}{{end}}</div>
+            <div class="flex-none lg:block">
+                <ul class="menu menu-horizontal items-center">
+                    <li>
+                        <div class="dropdown dropdown-end">
+                            <div tabindex="0" role="button">{{template "icon-language"}}</div>
+                            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                                <li><a class="{{if not .CustomLang}}menu-active{{end}}" onclick="resetLanguage()">{{localize .Ctx "Default"}}</a></li>
+                                <li><a class="{{if eq .CustomLang "en"}}menu-active{{end}}" onclick="changeLanguage('en')"><span class="badge">en</span>English</a></li>
+                                <li><a class="{{if eq .CustomLang "zh"}}menu-active{{end}}" onclick="changeLanguage('zh')"><span class="badge">zh</span>简体中文</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <label class="toggle text-base-content">
+                                <input type="checkbox" id="theme-toggle" onchange="toggleTheme(this)"/>
+                                <svg aria-label="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></g></svg>
+                                <svg aria-label="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></g></svg>
+                            </label>
+                        </div>
+                    </li>
+                    <li>
+                        <button onclick="setAutoTheme();"
+                                id="theme-auto"
+                                class="btn btn-ghost btn-sm">
+                            {{template "icon-refresh" .}}
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-content">
+            {{embed}}
+        </div>
+    </div>
+    <div class="drawer-side">
+        <label for="main-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        <div class="flex flex-col h-full bg-base-200 w-80">
+            <div class="sticky top-0 p-4 text-xl font-bold">
+                {{localize .Ctx "SystemName"}}
+            </div>
+            <div class="flex-1 overflow-y-auto">
+                <ul class="w-80 menu pointer-coarse:menu-lg">
+                    <li class="menu-title">{{localize .Ctx "Overview"}}</li>
+                    <li><a href="/" {{if eq .Path "/"}}class="menu-active"{{end}}>
+                            {{template "icon-home" .}}{{localize .Ctx "Dashboard"}}
+                        </a></li>
+                    <li><a href="/config" {{if eq .Path "/config"}}class="menu-active"{{end}}>
+                            {{template "icon-settings" .}}{{localize .Ctx "SystemConfiguration"}}
+                        </a></li>
+                    <li><a href="/monitor" {{if eq .Path "/monitor"}}class="menu-active"{{end}}>
+                            {{template "icon-monitor" .}}{{localize .Ctx "Monitor"}}
+                        </a></li>
+                    <li class="menu-title">{{localize .Ctx "DataManagement"}}</li>
+                    <li><a href="/users" {{if eq .Path "/users"}}class="menu-active"{{end}}>
+                            {{template "icon-users" .}}{{localize .Ctx "UserManagement"}}
+                        </a></li>
+                    <li><a href="/porters" {{if eq .Path "/porters"}}class="menu-active"{{end}}>
+                            {{template "icon-plugins" .}}{{localize .Ctx "PluginManagement"}}
+                        </a></li>
+                    <li>
+                        <details open>
+                            <summary>
+                                {{template "icon-store" .}}{{localize .Ctx "StoreManagement"}}
+                            </summary>
+                            <ul>
+                                <li><a href="/sentinels" {{if eq .Path "/sentinels"}}class="menu-active"{{end}}>
+                                        {{localize .Ctx "SentinelManagement"}}
+                                    </a></li>
+                                <li><a href="/store-apps" {{if eq .Path "/store-apps"}}class="menu-active"{{end}}>
+                                        {{localize .Ctx "StoreAppManagement"}}
+                                    </a></li>
+                                <li><a href="/store-app-binaries"
+                                       {{if eq .Path "/store-app-binaries"}}class="menu-active"{{end}}>
+                                        {{localize .Ctx "StoreAppBinaryManagement"}}
+                                    </a></li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
+            </div>
+            <div class="sticky bottom-0">
             </div>
         </div>
     </div>
-
-    <div class="main-content">
-        {{embed}}
-    </div>
+</div>
 </body>
 </html>

@@ -1,33 +1,38 @@
-<div class="container">
+<div>
     <div class="header">
-        <h1 class="title">{{localize .Ctx "SentinelDetailTitle"}}</h1>
-        <div class="flex space-x-3">
-            <a href="/sentinels/edit/{{.Sentinel.ID}}" class="btn btn-soft btn-secondary">
-                {{template "icon-edit" .}}
-                {{localize .Ctx "Edit"}}
-            </a>
-            <a href="/sentinels" class="btn btn-soft btn-secondary">
-                {{template "icon-back" .}}
-                {{localize .Ctx "BackToList"}}
-            </a>
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx "StoreManagement"}}</li>
+                <li>{{localize .Ctx "SentinelManagementTitle"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
         </div>
+        <a href="/sentinels/edit/{{.Sentinel.ID}}" class="btn btn-secondary">
+            {{template "icon-edit" .}}
+            {{localize .Ctx "Edit"}}
+        </a>
+        <a href="/sentinels" class="btn btn-secondary">
+            {{template "icon-back" .}}
+            {{localize .Ctx "BackToList"}}
+        </a>
     </div>
 
     <!-- Sentinel Details Card -->
     <div class="card mb-6">
         <div class="card-body">
             <h2 class="card-title">{{localize .Ctx "SentinelInformation"}}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
                 <fieldset class="fieldset">
                     <legend class="fieldset-legend">{{localize .Ctx "ID_"}}</legend>
                     <p class="label">{{.Sentinel.ID}}</p>
                 </fieldset>
                 <fieldset class="fieldset">
-                    <legend class="fieldset-legend">{{localize .Ctx "SentinelName"}}</legend>
+                    <legend class="fieldset-legend">{{localize .Ctx "Name"}}</legend>
                     <p class="label">{{.Sentinel.Name}}</p>
                 </fieldset>
                 <fieldset class="fieldset">
-                    <legend class="fieldset-legend">{{localize .Ctx "SentinelDescription"}}</legend>
+                    <legend class="fieldset-legend">{{localize .Ctx "Description_"}}</legend>
                     <p class="label">{{.Sentinel.Description}}</p>
                 </fieldset>
                 <fieldset class="fieldset">
@@ -47,98 +52,98 @@
     </div>
 
     <!-- Sessions Section -->
-    <div class="card mb-6">
+    <div class="card mb-6 overflow-x-auto">
         <div class="card-body">
             <h2 class="card-title">{{localize .Ctx "SentinelSessions"}}</h2>
             <div class="card-actions justify-end">
-            <button class="btn btn-soft btn-primary create-session" data-sentinel-id="{{.Sentinel.ID}}">
+            <button class="btn btn-primary create-session btn-sm" data-sentinel-id="{{.Sentinel.ID}}">
                 {{template "icon-add" .}}
                 {{localize .Ctx "CreateSession"}}
             </button>
             </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>{{localize .Ctx "ID_"}}</th>
-                        <th>{{localize .Ctx "Status"}}</th>
-                        <th>{{localize .Ctx "ExpireAt"}}</th>
-                        <th>{{localize .Ctx "LastUsedAt"}}</th>
-                        <th>{{localize .Ctx "LastRefreshedAt"}}</th>
-                        <th>{{localize .Ctx "RefreshCount"}}</th>
-                        <th>{{localize .Ctx "Actions"}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{range .Sessions}}
-                    <tr>
-                        <td>{{.ID}}</td>
-                        <td>
-                            {{if eq .Status 1}}
-                            <span class="badge badge-soft badge-primary">
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>{{localize .Ctx "ID_"}}</th>
+                <th>{{localize .Ctx "Status"}}</th>
+                <th>{{localize .Ctx "ExpireAt"}}</th>
+                <th>{{localize .Ctx "LastUsedAt"}}</th>
+                <th>{{localize .Ctx "LastRefreshedAt"}}</th>
+                <th>{{localize .Ctx "RefreshCount"}}</th>
+                <th>{{localize .Ctx "Actions"}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Sessions}}
+                <tr>
+                    <td>{{.ID}}</td>
+                    <td>
+                        {{if eq .Status 1}}
+                            <span class="badge badge-primary">
                                 {{localize $.Ctx "Active"}}
                             </span>
-                            {{else if eq .Status 2}}
-                            <span class="badge badge-soft badge-warning">
+                        {{else if eq .Status 2}}
+                            <span class="badge badge-warning">
                                 {{localize $.Ctx "Suspended"}}
                             </span>
-                            {{else}}
-                            <span class="badge badge-soft badge-error">
+                        {{else}}
+                            <span class="badge badge-error">
                                 {{localize $.Ctx "Unknown"}}
                             </span>
-                            {{end}}
-                        </td>
-                        <td>{{.ExpireAt.Format "2006-01-02 15:04:05"}}</td>
-                        <td>
-                            {{if .LastUsedAt}}
-                                {{.LastUsedAt.Format "2006-01-02 15:04:05"}}
-                            {{else}}
-                                -
-                            {{end}}
-                        </td>
-                        <td>
-                            {{if .LastRefreshedAt}}
-                                {{.LastRefreshedAt.Format "2006-01-02 15:04:05"}}
-                            {{else}}
-                                -
-                            {{end}}
-                        </td>
-                        <td>{{.RefreshCount}}</td>
-                        <td>
-                            <div class="flex space-x-3">
-                                {{if eq .Status 1}}
-                                <button class="action-link suspend-session" data-id="{{.ID}}">
+                        {{end}}
+                    </td>
+                    <td>{{.ExpireAt.Format "2006-01-02 15:04:05"}}</td>
+                    <td>
+                        {{if .LastUsedAt}}
+                            {{.LastUsedAt.Format "2006-01-02 15:04:05"}}
+                        {{else}}
+                            -
+                        {{end}}
+                    </td>
+                    <td>
+                        {{if .LastRefreshedAt}}
+                            {{.LastRefreshedAt.Format "2006-01-02 15:04:05"}}
+                        {{else}}
+                            -
+                        {{end}}
+                    </td>
+                    <td>{{.RefreshCount}}</td>
+                    <td>
+                        <div class="flex space-x-3">
+                            {{if eq .Status 1}}
+                                <button class="link link-hover link-info suspend-session" data-id="{{.ID}}">
                                     {{localize $.Ctx "Suspend"}}
                                 </button>
-                                {{else if eq .Status 2}}
-                                <button class="action-link activate-session" data-id="{{.ID}}">
+                            {{else if eq .Status 2}}
+                                <button class="link link-hover link-info activate-session" data-id="{{.ID}}">
                                     {{localize $.Ctx "Activate"}}
                                 </button>
-                                {{end}}
-                                <button class="action-link show-token" data-id="{{.ID}}" data-refresh-token="{{.RefreshToken}}">
-                                    {{localize $.Ctx "ShowToken"}}
-                                </button>
-                                <button class="delete-link delete-session" data-id="{{.ID}}">
-                                    {{localize $.Ctx "Delete"}}
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    {{else}}
-                    <tr>
-                        <td colspan="7" class="text-center">
-                            {{localize .Ctx "NoSessionData"}}
-                        </td>
-                    </tr>
-                    {{end}}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Pagination Control -->
-        {{if .Pagination}}
-            {{template "pagination" .}}
-        {{end}}
+                            {{end}}
+                            <button class="link link-hover link-info show-token" data-id="{{.ID}}" data-refresh-token="{{.RefreshToken}}">
+                                {{localize $.Ctx "ShowToken"}}
+                            </button>
+                            <button class="link link-hover link-error delete-session" data-id="{{.ID}}">
+                                {{localize $.Ctx "Delete"}}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {{else}}
+                <tr>
+                    <td colspan="7" class="text-center">
+                        {{localize .Ctx "NoSessionData"}}
+                    </td>
+                </tr>
+            {{end}}
+            </tbody>
+        </table>
     </div>
+
+    <!-- Pagination Control -->
+    {{if .Pagination}}
+        {{template "pagination" .}}
+    {{end}}
 </div>
 
 <!-- Create Session Confirmation Dialog -->
@@ -185,7 +190,7 @@
 <dialog id="showTokenModal" class="modal">
     <div class="modal-box">
         <h3 class="text-lg font-bold">{{localize .Ctx "RefreshToken"}}</h3>
-        <div class="mt-4 p-3 bg-slate-100 dark:bg-slate-800 rounded-md">
+        <div class="mt-4 p-3 bg-base-200 rounded-md">
             <p id="refreshTokenText" class="break-all font-mono text-sm"></p>
         </div>
         <div class="modal-action mt-4">

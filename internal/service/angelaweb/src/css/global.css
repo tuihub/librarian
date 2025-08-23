@@ -1,0 +1,14 @@
+/*
+global layer is used to define global styles that apply throughout the entire application.
+*/
+@layer global {
+    .menu li {
+        @apply pt-1
+    }
+    .menu .menu-title {
+        @apply pt-4
+    }
+    .card {
+        @apply bg-base-100 shadow-sm;
+    }
+}

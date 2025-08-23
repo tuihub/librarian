@@ -1,36 +1,10 @@
-<div class="container">
+<div>
     <div class="header">
-        <h1 class="title">{{localize .Ctx "DashboardTitle"}}</h1>
-    </div>
-
-    <div class="dashboard">
-        <div class="stats bg-base-100 border-base-300 border">
-            <div class="stat">
-                <div class="stat-title">{{localize .Ctx "TotalUsers"}}</div>
-                <div class="stat-value">{{.UserCount}}</div>
-            </div>
-            <div class="stat">
-                <div class="stat-title">{{localize .Ctx "ActiveUsers"}}</div>
-                <div class="stat-value">{{.ActiveUserCount}}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="quick-actions">
-        <h2 class="title">{{localize .Ctx "QuickActions"}}</h2>
-        <div class="grid">
-            <a href="/users" class="card">
-                <div class="card-body">
-                    {{template "icon-users" .}}
-                    <span>{{localize .Ctx "ViewUserList"}}</span>
-                </div>
-            </a>
-            <a href="/users/new" class="card">
-                <div class="card-body">
-                    {{template "icon-add" .}}
-                    <span>{{localize .Ctx "CreateNewUser"}}</span>
-                </div>
-            </a>
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
         </div>
     </div>
 </div>

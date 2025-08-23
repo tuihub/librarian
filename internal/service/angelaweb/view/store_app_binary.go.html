@@ -1,9 +1,15 @@
-<div class="container">
+<div>
     <div class="header">
-        <h1 class="title">{{localize .Ctx "StoreAppBinaryTitle"}}</h1>
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx "StoreManagement"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="table-wrapper">
+    <div class="card overflow-x-auto">
         <table class="table">
             <thead>
                 <tr>

@@ -1,9 +1,15 @@
-<div class="container">
+<div class="form-page-container">
     <div class="header">
-        <h1 class="title">{{localize .Ctx "ServerInfoTitle"}}</h1>
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx "SystemConfiguration"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
+        </div>
     </div>
 
-    <form id="serverInfoForm" class="form">
+    <form id="serverInfoForm">
         <fieldset class="fieldset">
             <label for="name" class="label">
                 {{localize .Ctx "ServerName"}}
@@ -60,12 +66,12 @@
                 class="input">
         </fieldset>
 
-        <div class="actions">
-            <a href="/config" class="btn btn-soft btn-secondary">
+        <div class="form-actions">
+            <a href="/config" class="btn btn-secondary">
                 {{template "icon-back" .}}
                 {{localize .Ctx "BackToConfig"}}
             </a>
-            <button type="submit" class="btn btn-soft btn-primary">
+            <button type="submit" class="btn btn-primary">
                 {{localize .Ctx "Save"}}
             </button>
         </div>

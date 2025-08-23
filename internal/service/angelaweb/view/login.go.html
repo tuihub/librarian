@@ -1,39 +1,33 @@
-<div class="container">
-    <div class="login">
-        <div class="login-header">
-            <h1 class="login-title">{{localize .Ctx "LoginTitle"}}</h1>
+<div class="form-page-container">
+    <form id="loginForm">
+        <fieldset class="fieldset">
+            <label for="username" class="label">
+                {{localize .Ctx "Username"}}
+            </label>
+            <input type="text"
+                id="username"
+                name="username"
+                required
+                class="input">
+        </fieldset>
+
+        <fieldset class="fieldset">
+            <label for="password" class="label">
+                {{localize .Ctx "Password"}}
+            </label>
+            <input type="password"
+                id="password"
+                name="password"
+                required
+                class="input">
+        </fieldset>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {{localize .Ctx "Login"}}
+            </button>
         </div>
-
-        <form id="loginForm" class="form">
-            <fieldset class="fieldset">
-                <label for="username" class="label">
-                    {{localize .Ctx "Username"}}
-                </label>
-                <input type="text" 
-                    id="username" 
-                    name="username" 
-                    required
-                    class="input">
-            </fieldset>
-
-            <fieldset class="fieldset">
-                <label for="password" class="label">
-                    {{localize .Ctx "Password"}}
-                </label>
-                <input type="password" 
-                    id="password" 
-                    name="password"
-                    required
-                    class="input">
-            </fieldset>
-
-            <div class="actions">
-                <button type="submit" class="btn btn-soft btn-primary w-full">
-                    {{localize .Ctx "LoginButton"}}
-                </button>
-            </div>
-        </form>
-    </div>
+    </form>
 </div>
 
 <script>
@@ -60,7 +54,7 @@
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(data => {
-                            throw new Error(data.message || '{{localize .Ctx "LoginFailed"}}');
+                            throw new Error(data.message || '{{localize .Ctx "LoginFailedMessage"}}');
                         });
                     }
                     return response.json();
@@ -69,7 +63,7 @@
                     window.location.href = '/';
                 })
                 .catch(error => {
-                    alert(error.message || '{{localize .Ctx "LoginFailed"}}');
+                    alert(error.message || '{{localize .Ctx "LoginFailedMessage"}}');
                     console.error('Error:', error);
                 });
         });

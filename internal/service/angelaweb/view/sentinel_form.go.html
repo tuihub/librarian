@@ -1,19 +1,20 @@
-<div class="container">
+<div class="form-page-container">
     <div class="header">
-        <h2 class="title">
-            {{if .Sentinel.ID}}
-                {{localize .Ctx "SentinelEditTitle"}}
-            {{else}}
-                {{localize .Ctx "SentinelCreateTitle"}}
-            {{end}}
-        </h2>
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx "StoreManagement"}}</li>
+                <li>{{localize .Ctx "SentinelManagementTitle"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
+        </div>
     </div>
 
-    <form action="{{.Action}}" method="POST" class="form">
+    <form action="{{.Action}}" method="POST">
         <input type="hidden" name="_method" value="{{.Method}}">
         <fieldset class="fieldset">
             <label for="name" class="label">
-                {{localize .Ctx "SentinelName"}}
+                {{localize .Ctx "Name"}}
             </label>
             <input type="text" 
                 id="name" 
@@ -25,7 +26,7 @@
 
         <fieldset class="fieldset">
             <label for="description" class="label">
-                {{localize .Ctx "SentinelDescription"}}
+                {{localize .Ctx "Description_"}}
             </label>
             <textarea 
                 id="description" 
@@ -34,12 +35,12 @@
                 class="textarea">{{.Sentinel.Description}}</textarea>
         </fieldset>
 
-        <div class="actions">
-            <a href="/sentinels" class="btn btn-soft btn-secondary">
+        <div class="form-actions">
+            <a href="/sentinels" class="btn btn-secondary">
                 {{template "icon-back" .}}
                 {{localize .Ctx "Cancel"}}
             </a>
-            <button type="submit" class="btn btn-soft btn-primary">
+            <button type="submit" class="btn btn-primary">
                 {{if .Sentinel.ID}}
                     {{localize .Ctx "Save"}}
                 {{else}}

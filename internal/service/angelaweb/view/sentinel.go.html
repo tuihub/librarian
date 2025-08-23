@@ -1,18 +1,24 @@
-<div class="container">
+<div>
     <div class="header">
-        <h1 class="title">{{localize .Ctx "SentinelTitle"}}</h1>
-        <a href="/sentinels/new" class="btn btn-soft btn-primary">
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx "StoreManagement"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
+        </div>
+        <a href="/sentinels/new" class="btn btn-primary">
             {{template "icon-add" .}}
             {{localize .Ctx "SentinelCreateNew"}}
         </a>
     </div>
 
-    <div class="table-wrapper">
+    <div class="card overflow-x-auto">
         <table class="table">
             <thead>
                 <tr>
-                    <th>{{localize .Ctx "SentinelName"}}</th>
-                    <th>{{localize .Ctx "SentinelDescription"}}</th>
+                    <th>{{localize .Ctx "Name"}}</th>
+                    <th>{{localize .Ctx "Description_"}}</th>
                     <th>{{localize .Ctx "Actions"}}</th>
                 </tr>
             </thead>
@@ -23,13 +29,13 @@
                     <td>{{.Description}}</td>
                     <td>
                         <div class="flex space-x-3">
-                            <a href="/sentinels/{{.ID}}" class="action-link">
+                            <a href="/sentinels/{{.ID}}" class="link link-info link-hover">
                                 {{localize $.Ctx "View"}}
                             </a>
-                            <a href="/sentinels/edit/{{.ID}}" class="action-link">
+                            <a href="/sentinels/edit/{{.ID}}" class="link link-info link-hover">
                                 {{localize $.Ctx "Edit"}}
                             </a>
-                            <button class="delete-link delete-sentinel"
+                            <button class="link link-error link-hover delete-sentinel"
                                     data-id="{{.ID}}"
                                     data-name="{{.Name}}">
                                 {{localize $.Ctx "Delete"}}
@@ -60,7 +66,7 @@
         <h3 class="text-lg font-bold">{{localize .Ctx "ConfirmDeletion"}}</h3>
         <p class="py-4">
             {{localize .Ctx "DeleteSentinelConfirmPrefix"}}
-            <span id="deleteName" class="font-semibold text-slate-900 dark:text-slate-100"></span>
+            <span id="deleteName" class="font-semibold text-base-content"></span>
             {{localize .Ctx "DeleteSentinelConfirmSuffix"}}
         </p>
         <div class="modal-action">
@@ -69,7 +75,7 @@
                     {{localize .Ctx "Cancel"}}
                 </button>
             </form>
-            <button id="confirmDelete" class="btn btn-soft btn-warning">
+            <button id="confirmDelete" class="btn btn-warning">
                 {{localize .Ctx "Delete"}}
             </button>
         </div>

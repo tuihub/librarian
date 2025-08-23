@@ -21,17 +21,32 @@ func SupportedLanguages() []language.Tag {
 }
 
 func LangHandler(c *fiber.Ctx, defaultLang string) string {
+	lang, _ := LangHandlerWithCustom(c, defaultLang)
+	return lang
+}
+
+func LangHandlerWithCustom(c *fiber.Ctx, defaultLang string) (string, bool) {
 	if c == nil || c.Request() == nil {
-		return defaultLang
+		return defaultLang, false
 	}
 	var lang string
 	supportedLanguages := lo.Map(SupportedLanguages(), func(tag language.Tag, _ int) string {
 		return tag.String()
 	})
+
+	// 1. Query param `lang`
 	lang = utils.CopyString(c.Query("lang", ""))
 	if lang != "" && lo.Contains(supportedLanguages, lang) {
-		return lang
+		return lang, true
 	}
+
+	// 2. Cookie `lang`
+	lang = utils.CopyString(c.Cookies("lang", ""))
+	if lang != "" && lo.Contains(supportedLanguages, lang) {
+		return lang, true
+	}
+
+	// 3. Header `Accept-Language`
 	acceptLanguage := utils.CopyString(c.Get("Accept-Language", ""))
 	if acceptLanguage != "" {
 		langs := strings.Split(acceptLanguage, ",")
@@ -39,11 +54,11 @@ func LangHandler(c *fiber.Ctx, defaultLang string) string {
 			for _, l := range langs {
 				parts := strings.Split(strings.TrimSpace(l), ";")
 				if len(parts) > 0 && lo.Contains(supportedLanguages, parts[0]) {
-					return parts[0]
+					return parts[0], false
 				}
 			}
 		}
 	}
 
-	return defaultLang
+	return defaultLang, false
 }

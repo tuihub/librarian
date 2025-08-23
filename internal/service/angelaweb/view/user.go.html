@@ -1,44 +1,49 @@
-<div class="container">
+<div>
     <div class="header">
-        <h1 class="title">{{localize .Ctx "UserManagementTitle"}}</h1>
-        <a href="/users/new" class="btn btn-soft btn-primary">
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
+        </div>
+        <a href="/users/new" class="btn btn-primary gap-2">
             {{template "icon-add" .}}
             {{localize .Ctx "CreateNewUser"}}
         </a>
     </div>
 
-    <div class="table-wrapper">
-        <table class="table">
+    <div class="card overflow-x-auto">
+        <table class="table table-zebra">
             <thead>
-                <tr>
-                    <th>{{localize .Ctx "ID_"}}</th>
-                    <th>{{localize .Ctx "Username"}}</th>
-                    <th>{{localize .Ctx "Role"}}</th>
-                    <th>{{localize .Ctx "Actions"}}</th>
+                <tr class="border-base-300">
+                    <th class="text-base-content font-semibold">{{localize .Ctx "ID_"}}</th>
+                    <th class="text-base-content font-semibold">{{localize .Ctx "Username"}}</th>
+                    <th class="text-base-content font-semibold">{{localize .Ctx "Role"}}</th>
+                    <th class="text-base-content font-semibold">{{localize .Ctx "Actions"}}</th>
                 </tr>
             </thead>
             <tbody>
                 {{range .Users}}
-                <tr>
-                    <td>{{.ID}}</td>
-                    <td>{{.Username}}</td>
+                <tr class="hover:bg-base-200">
+                    <td class="text-base-content">{{.ID}}</td>
+                    <td class="text-base-content font-medium">{{.Username}}</td>
                     <td>
                         {{if eq .Type 1}}
-                        <span class="badge badge-soft badge-primary">
+                        <span class="badge badge-primary">
                             {{localize $.Ctx "Administrator"}}
                         </span>
                         {{else}}
-                        <span class="badge badge-soft badge-secondary">
+                        <span class="badge badge-secondary">
                             {{localize $.Ctx "RegularUser"}}
                         </span>
                         {{end}}
                     </td>
                     <td>
-                        <div class="flex space-x-3">
-                            <a href="/users/edit/{{.ID}}" class="action-link">
+                        <div class="flex gap-3">
+                            <a href="/users/edit/{{.ID}}" class="link link-hover link-info">
                                 {{localize $.Ctx "Edit"}}
                             </a>
-                            <button class="delete-link delete-user"
+                            <button class="link link-error link-hover delete-user"
                                     data-id="{{.ID}}"
                                     data-username="{{.Username}}">
                                 {{localize $.Ctx "Delete"}}
@@ -48,7 +53,7 @@
                 </tr>
                 {{else}}
                 <tr>
-                    <td colspan="4" class="text-center">
+                    <td colspan="4" class="text-center text-base-content/60 py-8">
                         {{localize .Ctx "NoUserData"}}
                     </td>
                 </tr>
@@ -65,11 +70,11 @@
 
 <!-- Delete Confirmation Dialog -->
 <dialog id="deleteModal" class="modal">
-    <div class="modal-box">
-        <h3 class="text-lg font-bold">{{localize .Ctx "ConfirmDeletion"}}</h3>
-        <p class="py-4">
+    <div class="modal-box border border-base-300">
+        <h3 class="text-xl font-bold text-base-content mb-4">{{localize .Ctx "ConfirmDeletion"}}</h3>
+        <p class="py-4 text-base-content/80">
             {{localize .Ctx "DeleteUserConfirmPrefix"}}
-            <span id="deleteUsername" class="font-semibold text-slate-900 dark:text-slate-100"></span>
+            <span id="deleteUsername" class="font-semibold text-base-content"></span>
             {{localize .Ctx "DeleteUserConfirmSuffix"}}
         </p>
         <div class="modal-action">
@@ -78,7 +83,7 @@
                     {{localize .Ctx "Cancel"}}
                 </button>
             </form>
-            <button id="confirmDelete" class="btn btn-warning">
+            <button id="confirmDelete" class="btn btn-error">
                 {{localize .Ctx "Delete"}}
             </button>
         </div>

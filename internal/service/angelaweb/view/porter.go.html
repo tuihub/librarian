@@ -1,9 +1,14 @@
-<div class="container">
+<div>
     <div class="header">
-        <h1 class="title">{{localize .Ctx "PluginManagementTitle"}}</h1>
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="table-wrapper">
+    <div class="card overflow-x-auto">
         <table class="table">
             <thead>
                 <tr>
@@ -23,42 +28,42 @@
                     <td>{{.GlobalName}}</td>
                     <td>
                         {{if eq .ConnectionStatus 1}}
-                        <span class="badge badge-soft badge-secondary">
+                        <span class="badge badge-secondary">
                             {{localize $.Ctx "Queueing"}}
                         </span>
                         {{else if eq .ConnectionStatus 2}}
-                        <span class="badge badge-soft badge-primary">
+                        <span class="badge badge-primary">
                             {{localize $.Ctx "Connected"}}
                         </span>
                         {{else if eq .ConnectionStatus 3}}
-                        <span class="badge badge-soft badge-danger">
+                        <span class="badge badge-error">
                             {{localize $.Ctx "Disconnected"}}
                         </span>
                         {{else if eq .ConnectionStatus 4}}
-                        <span class="badge badge-soft badge-warning">
+                        <span class="badge badge-warning">
                             {{localize $.Ctx "Active"}}
                         </span>
                         {{else if eq .ConnectionStatus 5}}
-                        <span class="badge badge-soft badge-info">
+                        <span class="badge badge-info">
                             {{localize $.Ctx "ActivationFailed"}}
                         </span>
                         {{else if eq .ConnectionStatus 6}}
-                        <span class="badge badge-soft badge-secondary">
+                        <span class="badge badge-secondary">
                             {{localize $.Ctx "Downgraded"}}
                         </span>
                         {{else}}
-                        <span class="badge badge-soft badge-light">
+                        <span class="badge badge-neutral">
                             {{localize $.Ctx "Unknown"}}
                         </span>
                         {{end}}
                     </td>
                     <td>
                         {{if eq .Status 1}}
-                        <span class="badge badge-soft badge-primary">
+                        <span class="badge badge-primary">
                             {{localize $.Ctx "Enabled"}}
                         </span>
                         {{else}}
-                        <span class="badge badge-soft badge-warning">
+                        <span class="badge badge-warning">
                             {{localize $.Ctx "Disabled"}}
                         </span>
                         {{end}}
@@ -67,7 +72,7 @@
                         <div class="flex space-x-3">
                             {{if eq .Status 1}}
                             <button
-                                class="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300
+                                class="text-error hover:text-error/80
                                 toggle-porter transition-colors duration-200"
                                 data-id="{{.ID}}"
                                 data-action="disable"
@@ -76,7 +81,7 @@
                             </button>
                             {{else}}
                             <button
-                                class="text-green-500 hover:text-green-600 dark:text-green-400 dark:hover:text-green-300
+                                class="text-success hover:text-success/80
                                 toggle-porter transition-colors duration-200"
                                 data-id="{{.ID}}"
                                 data-action="enable"
@@ -110,7 +115,7 @@
         <h3 class="text-lg font-bold">{{localize .Ctx "ConfirmAction"}}</h3>
         <p class="py-4">
             {{localize .Ctx "ConfirmActionText"}}
-            <span id="actionText" class="font-semibold text-slate-900 dark:text-slate-100"></span>
+            <span id="actionText" class="font-semibold text-base-content"></span>
             {{localize .Ctx "Plugin"}}
         </p>
         <div class="modal-action">

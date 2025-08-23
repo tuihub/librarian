@@ -1,17 +1,19 @@
-<div class="container">
+<div>
     <div class="header">
-        <h1 class="title">{{localize .Ctx "ConfigTitle"}}</h1>
-        <p class="description">{{localize .Ctx "ConfigDescription"}}</p>
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
+        </div>
+        <a href="/server-info" class="btn btn-secondary">
+            {{localize .Ctx "EditServerInfo"}}
+        </a>
     </div>
 
-    <div class="card">
+    <div class="card mb-6">
         <div class="card-body">
             <h2 class="card-title">{{localize .Ctx "ServerInformation"}}</h2>
-            <div class="card-actions justify-end">
-                <a href="/server-info" class="btn btn-secondary">
-                    {{localize .Ctx "EditServerInfo"}}
-                </a>
-            </div>
             <table class="table mt-4">
                 <tbody>
                 <tr>
@@ -39,34 +41,30 @@
         </div>
     </div>
 
-    <div class="card mt-6">
-        <div class="table-wrapper">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>{{localize .Ctx "Service"}}</th>
-                        <th>{{localize .Ctx "Status"}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{range .Configs}}
-                    <tr>
-                        <td>{{.Name}}</td>
-                        <td>
-                            <span class="badge badge-soft {{if eq .Status "Running"}}badge-primary{{else if eq .Status "Stopped"}}badge-warning{{else}}badge-error{{end}}">
-                                {{.Status}}
-                            </span>
-                        </td>
-                    </tr>
-                    {{else}}
-                    <tr>
-                        <td colspan="2" class="text-center">
-                            {{localize .Ctx "NoConfigData"}}
-                        </td>
-                    </tr>
-                    {{end}}
-                </tbody>
-            </table>
-        </div>
+    <div class="card overflow-x-auto">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>{{localize .Ctx "Service"}}</th>
+                <th>{{localize .Ctx "Status"}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Configs}}
+                <tr>
+                    <td>{{.Name}}</td>
+                    <td>
+                        {{.Status}}
+                    </td>
+                </tr>
+            {{else}}
+                <tr>
+                    <td colspan="2" class="text-center">
+                        {{localize .Ctx "NoConfigData"}}
+                    </td>
+                </tr>
+            {{end}}
+            </tbody>
+        </table>
     </div>
 </div>

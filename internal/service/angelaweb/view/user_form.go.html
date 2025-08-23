@@ -1,22 +1,26 @@
-<div class="container">
+<div class="form-page-container">
     <div class="header">
-        <h1 class="title">
-            {{if .User.ID}}{{localize .Ctx "EditUserTitle"}}{{else}}{{localize .Ctx "CreateUserTitle"}}{{end}}
-        </h1>
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx "UserManagement"}}</li>
+                <li>{{localize .Ctx .Title}}</li>
+            </ul>
+        </div>
     </div>
 
-    <form id="userForm" class="form">
+    <form id="userForm">
         <fieldset class="fieldset">
             <label for="username" class="label">
                 {{localize .Ctx "Username"}}
             </label>
             <input
-                type="text"
-                id="username"
-                name="username"
-                value="{{.User.Username}}"
-                class="input"
-                required
+                    type="text"
+                    id="username"
+                    name="username"
+                    value="{{.User.Username}}"
+                    class="input"
+                    required
             >
         </fieldset>
 
@@ -25,12 +29,12 @@
                 {{localize .Ctx "Password"}}
             </label>
             <input
-                type="password"
-                id="password"
-                name="password"
-                {{if not .User.ID}}required{{end}}
-                class="input"
-                placeholder="{{if .User.ID}}{{localize .Ctx "EmptyPasswordHint"}}{{end}}"
+                    type="password"
+                    id="password"
+                    name="password"
+                    {{if not .User.ID}}required{{end}}
+                    class="input"
+                    placeholder="{{if .User.ID}}{{localize .Ctx "EmptyPasswordHint"}}{{end}}"
             >
         </fieldset>
 
@@ -39,21 +43,21 @@
                 {{localize .Ctx "Role"}}
             </label>
             <select
-                id="role"
-                name="role"
-                class="select"
+                    id="role"
+                    name="role"
+                    class="select"
             >
                 <option value="user" {{if eq .User.Type 2}}selected{{end}}>{{localize .Ctx "RegularUser"}}</option>
                 <option value="admin" {{if eq .User.Type 1}}selected{{end}}>{{localize .Ctx "Administrator"}}</option>
             </select>
         </fieldset>
 
-        <div class="actions">
-            <a href="/users" class="btn btn-soft btn-secondary">
+        <div class="form-actions">
+            <a href="/users" class="btn btn-secondary">
                 {{template "icon-back" .}}
                 {{localize .Ctx "BackToList"}}
             </a>
-            <button type="submit" class="btn btn-soft btn-primary">
+            <button type="submit" class="btn btn-primary">
                 {{if .User.ID}}{{localize .Ctx "UpdateUser"}}{{else}}{{localize .Ctx "CreateNewUser"}}{{end}}
             </button>
         </div>

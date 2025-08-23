@@ -2,26 +2,26 @@
 <div class="card mt-6">
     <div class ="card-body">
         <div class="flex justify-between items-center">
-            <div class="text-sm text-slate-700 dark:text-slate-300">
+            <div class="text-sm text-base-content/70">
                 {{localize .Ctx "PaginationText" "CurrentPage" .Pagination.CurrentPage "TotalPages" .Pagination.TotalPages}}
             </div>
             <div class="flex space-x-2">
                 {{if .Pagination.HasPrev}}
-                <a href="?page={{.Pagination.PrevPage}}" class="btn btn-soft btn-secondary">
+                <a href="?page={{.Pagination.PrevPage}}" class="btn btn-secondary">
                     {{localize .Ctx "Previous"}}
                 </a>
                 {{else}}
-                <button disabled class="btn btn-soft btn-disabled">
+                <button disabled class="btn btn-disabled">
                     {{localize .Ctx "Previous"}}
                 </button>
                 {{end}}
 
                 {{if .Pagination.HasNext}}
-                <a href="?page={{.Pagination.NextPage}}" class="btn btn-soft btn-secondary">
+                <a href="?page={{.Pagination.NextPage}}" class="btn btn-secondary">
                     {{localize .Ctx "Next"}}
                 </a>
                 {{else}}
-                <button disabled class="btn btn-soft btn-disabled">
+                <button disabled class="btn btn-disabled">
                     {{localize .Ctx "Next"}}
                 </button>
                 {{end}}

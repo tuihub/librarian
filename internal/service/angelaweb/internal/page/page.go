@@ -83,7 +83,11 @@ func addCommonData(c *fiber.Ctx, data fiber.Map) fiber.Map {
 	}
 	// Add context for localization
 	data["Ctx"] = c
-	data["Lang"] = locales.LangHandler(c, locales.DefaultLanguage().String())
+	lang, isCustom := locales.LangHandlerWithCustom(c, locales.DefaultLanguage().String())
+	data["Lang"] = lang
+	if isCustom {
+		data["CustomLang"] = lang
+	}
 	// Add current path
 	data["Path"] = c.Path()
 	return data
@@ -102,7 +106,9 @@ func (b *Builder) TokenExpired(c *fiber.Ctx) error {
 }
 
 func (b *Builder) Login(c *fiber.Ctx) error {
-	return c.Render("login", addCommonData(c, nil))
+	return c.Render("login", addCommonData(c, fiber.Map{
+		"Title": "Login",
+	}))
 }
 
 func (b *Builder) Dashboard(c *fiber.Ctx) error {
@@ -112,6 +118,7 @@ func (b *Builder) Dashboard(c *fiber.Ctx) error {
 	}
 
 	return c.Render("dashboard", addCommonData(c, fiber.Map{
+		"Title":     "Dashboard",
 		"UserCount": userCount.Count,
 	}))
 }
@@ -128,6 +135,7 @@ func (b *Builder) UserList(c *fiber.Ctx) error {
 	}
 
 	return c.Render("user", addCommonData(c, fiber.Map{
+		"Title":      "UserManagement",
 		"Users":      users,
 		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
@@ -155,6 +163,7 @@ func (b *Builder) UserForm(c *fiber.Ctx) error {
 		user = new(model.User)
 	}
 	return c.Render("user_form", addCommonData(c, fiber.Map{
+		"Title":  "EditUserTitle",
 		"User":   user,
 		"Action": action,
 		"Method": method,
@@ -172,6 +181,7 @@ func (b *Builder) PorterList(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingPorters"))
 	}
 	return c.Render("porter", addCommonData(c, fiber.Map{
+		"Title":      "PluginManagement",
 		"Porters":    porters,
 		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
@@ -185,6 +195,7 @@ func (b *Builder) ConfigList(c *fiber.Ctx) error {
 	}
 
 	return c.Render("config", addCommonData(c, fiber.Map{
+		"Title":      "SystemConfiguration",
 		"Configs":    b.configDigests,
 		"ServerInfo": serverInfo,
 	}))
@@ -197,6 +208,7 @@ func (b *Builder) ServerInfoForm(c *fiber.Ctx) error {
 	}
 
 	return c.Render("server_info_form", addCommonData(c, fiber.Map{
+		"Title":      "ServerInfoSettings",
 		"ServerInfo": serverInfo,
 	}))
 }
@@ -213,6 +225,7 @@ func (b *Builder) SentinelList(c *fiber.Ctx) error {
 	}
 
 	return c.Render("sentinel", addCommonData(c, fiber.Map{
+		"Title":      "SentinelManagement",
 		"Sentinels":  sentinels,
 		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
@@ -223,6 +236,7 @@ func (b *Builder) SentinelForm(c *fiber.Ctx) error {
 	var sentinel *modelgebura.Sentinel
 	var action, method string
 
+	var title string
 	if idStr != "" {
 		id, err := strconv.ParseInt(idStr, 10, 64)
 		if err != nil {
@@ -235,12 +249,15 @@ func (b *Builder) SentinelForm(c *fiber.Ctx) error {
 		}
 		action = "/api/sentinels/" + idStr
 		method = "PUT"
+		title = "EditSentinel"
 	} else {
 		action = "/api/sentinels"
 		method = "POST"
+		title = "CreateSentinel"
 		sentinel = new(modelgebura.Sentinel)
 	}
 	return c.Render("sentinel_form", addCommonData(c, fiber.Map{
+		"Title":    title,
 		"Sentinel": sentinel,
 		"Action":   action,
 		"Method":   method,
@@ -275,6 +292,7 @@ func (b *Builder) SentinelDetail(c *fiber.Ctx) error {
 	}
 
 	return c.Render("sentinel_detail", addCommonData(c, fiber.Map{
+		"Title":      "SentinelDetailTitle",
 		"Sentinel":   sentinel,
 		"Sessions":   sessions,
 		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
@@ -293,6 +311,7 @@ func (b *Builder) StoreAppList(c *fiber.Ctx) error {
 	}
 
 	return c.Render("store_app", addCommonData(c, fiber.Map{
+		"Title":      "StoreAppTitle",
 		"StoreApps":  storeApps,
 		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
@@ -311,6 +330,7 @@ func (b *Builder) StoreAppBinaryList(c *fiber.Ctx) error {
 	}
 
 	return c.Render("store_app_binary", addCommonData(c, fiber.Map{
+		"Title":            "StoreAppBinaryTitle",
 		"StoreAppBinaries": storeAppBinaries,
 		"Pagination":       parsePaginationData(pageNum, pageSize, int(total)),
 	}))
@@ -319,6 +339,7 @@ func (b *Builder) StoreAppBinaryList(c *fiber.Ctx) error {
 // Monitor 显示监控页面.
 func (b *Builder) Monitor(c *fiber.Ctx) error {
 	return c.Render("monitor", addCommonData(c, fiber.Map{
+		"Title": "MonitorTitle",
 		"Debug": b.app.BuildType == libapp.BuildTypeDebug,
 	}))
 }

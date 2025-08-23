@@ -5,6 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
 	"github.com/tuihub/librarian/internal/service/angelaweb/locales"
 
@@ -60,6 +61,45 @@ func tokenMiddleware(auth *libauth.Auth, builder *page.Builder) fiber.Handler {
 			// Handle token issues - render error page for token expiration
 			return builder.TokenExpired(c)
 		}
+
+		// Check if token needs refresh
+		var newAccessToken string
+		var newClaims *libauth.Claims
+		if claims.ExpiresAt != nil && time.Until(claims.ExpiresAt.Time) <= libtime.Hour { //nolint:nestif // no need
+			// Generate new access token using the same user information from current claims
+			newAccessToken, err = auth.GenerateToken(
+				claims.UserID,
+				claims.PorterID,
+				libauth.ClaimsTypeAccessToken,
+				claims.UserType,
+				libtime.Hour,
+			)
+			if err != nil {
+				// If refresh fails, log the error but continue with the current token
+				log.Log(log.LevelWarn, "msg", "Failed to refresh access token", "error", err.Error())
+			} else {
+				// Set the new token in cookie
+				c.Cookie(&fiber.Cookie{ //nolint:exhaustruct // no need
+					Name:     "access_token",
+					Value:    newAccessToken,
+					Expires:  time.Now().Add(libtime.Day),
+					HTTPOnly: true,
+					Secure:   true,
+					SameSite: "strict",
+					Path:     "/",
+				})
+
+				// Reparse the new token to get updated claims
+				newClaims, err = libauth.FromString(accessToken, auth.KeyFunc(libauth.ClaimsTypeAccessToken))
+				if err != nil {
+					log.Log(log.LevelWarn, "msg", "Failed to parse refreshed token", "error", err.Error())
+				} else {
+					claims = newClaims
+					log.Log(log.LevelInfo, "msg", "Token successfully refreshed", "user_id", claims.UserID)
+				}
+			}
+		}
+
 		ctx := c.UserContext()
 		ctx = libauth.RawToContext(ctx, c.Cookies("access_token"))
 		ctx = jwt.NewContext(ctx, claims)
