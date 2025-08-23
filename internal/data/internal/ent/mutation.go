@@ -9099,8 +9099,8 @@ type FeedActionSetMutation struct {
 	id                 *model.InternalID
 	name               *string
 	description        *string
-	actions            *[]*modelsupervisor.FeatureRequest
-	appendactions      []*modelsupervisor.FeatureRequest
+	actions            *[]*model.FeatureRequest
+	appendactions      []*model.FeatureRequest
 	updated_at         *time.Time
 	created_at         *time.Time
 	clearedFields      map[string]struct{}
@@ -9291,13 +9291,13 @@ func (m *FeedActionSetMutation) ResetDescription() {
 }
 
 // SetActions sets the "actions" field.
-func (m *FeedActionSetMutation) SetActions(mr []*modelsupervisor.FeatureRequest) {
+func (m *FeedActionSetMutation) SetActions(mr []*model.FeatureRequest) {
 	m.actions = &mr
 	m.appendactions = nil
 }
 
 // Actions returns the value of the "actions" field in the mutation.
-func (m *FeedActionSetMutation) Actions() (r []*modelsupervisor.FeatureRequest, exists bool) {
+func (m *FeedActionSetMutation) Actions() (r []*model.FeatureRequest, exists bool) {
 	v := m.actions
 	if v == nil {
 		return
@@ -9308,7 +9308,7 @@ func (m *FeedActionSetMutation) Actions() (r []*modelsupervisor.FeatureRequest, 
 // OldActions returns the old "actions" field's value of the FeedActionSet entity.
 // If the FeedActionSet object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedActionSetMutation) OldActions(ctx context.Context) (v []*modelsupervisor.FeatureRequest, err error) {
+func (m *FeedActionSetMutation) OldActions(ctx context.Context) (v []*model.FeatureRequest, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldActions is only allowed on UpdateOne operations")
 	}
@@ -9323,12 +9323,12 @@ func (m *FeedActionSetMutation) OldActions(ctx context.Context) (v []*modelsuper
 }
 
 // AppendActions adds mr to the "actions" field.
-func (m *FeedActionSetMutation) AppendActions(mr []*modelsupervisor.FeatureRequest) {
+func (m *FeedActionSetMutation) AppendActions(mr []*model.FeatureRequest) {
 	m.appendactions = append(m.appendactions, mr...)
 }
 
 // AppendedActions returns the list of values that were appended to the "actions" field in this mutation.
-func (m *FeedActionSetMutation) AppendedActions() ([]*modelsupervisor.FeatureRequest, bool) {
+func (m *FeedActionSetMutation) AppendedActions() ([]*model.FeatureRequest, bool) {
 	if len(m.appendactions) == 0 {
 		return nil, false
 	}
@@ -9617,7 +9617,7 @@ func (m *FeedActionSetMutation) SetField(name string, value ent.Value) error {
 		m.SetDescription(v)
 		return nil
 	case feedactionset.FieldActions:
-		v, ok := value.([]*modelsupervisor.FeatureRequest)
+		v, ok := value.([]*model.FeatureRequest)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -9815,7 +9815,7 @@ type FeedConfigMutation struct {
 	id                        *model.InternalID
 	name                      *string
 	description               *string
-	source                    **modelsupervisor.FeatureRequest
+	source                    **model.FeatureRequest
 	status                    *feedconfig.Status
 	category                  *string
 	pull_interval             *time.Duration
@@ -10059,12 +10059,12 @@ func (m *FeedConfigMutation) ResetDescription() {
 }
 
 // SetSource sets the "source" field.
-func (m *FeedConfigMutation) SetSource(mr *modelsupervisor.FeatureRequest) {
+func (m *FeedConfigMutation) SetSource(mr *model.FeatureRequest) {
 	m.source = &mr
 }
 
 // Source returns the value of the "source" field in the mutation.
-func (m *FeedConfigMutation) Source() (r *modelsupervisor.FeatureRequest, exists bool) {
+func (m *FeedConfigMutation) Source() (r *model.FeatureRequest, exists bool) {
 	v := m.source
 	if v == nil {
 		return
@@ -10075,7 +10075,7 @@ func (m *FeedConfigMutation) Source() (r *modelsupervisor.FeatureRequest, exists
 // OldSource returns the old "source" field's value of the FeedConfig entity.
 // If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedConfigMutation) OldSource(ctx context.Context) (v *modelsupervisor.FeatureRequest, err error) {
+func (m *FeedConfigMutation) OldSource(ctx context.Context) (v *model.FeatureRequest, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSource is only allowed on UpdateOne operations")
 	}
@@ -10896,7 +10896,7 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 		m.SetDescription(v)
 		return nil
 	case feedconfig.FieldSource:
-		v, ok := value.(*modelsupervisor.FeatureRequest)
+		v, ok := value.(*model.FeatureRequest)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -19759,7 +19759,7 @@ type NotifyTargetMutation struct {
 	id                        *model.InternalID
 	name                      *string
 	description               *string
-	destination               **modelsupervisor.FeatureRequest
+	destination               **model.FeatureRequest
 	status                    *notifytarget.Status
 	updated_at                *time.Time
 	created_at                *time.Time
@@ -19954,12 +19954,12 @@ func (m *NotifyTargetMutation) ResetDescription() {
 }
 
 // SetDestination sets the "destination" field.
-func (m *NotifyTargetMutation) SetDestination(mr *modelsupervisor.FeatureRequest) {
+func (m *NotifyTargetMutation) SetDestination(mr *model.FeatureRequest) {
 	m.destination = &mr
 }
 
 // Destination returns the value of the "destination" field in the mutation.
-func (m *NotifyTargetMutation) Destination() (r *modelsupervisor.FeatureRequest, exists bool) {
+func (m *NotifyTargetMutation) Destination() (r *model.FeatureRequest, exists bool) {
 	v := m.destination
 	if v == nil {
 		return
@@ -19970,7 +19970,7 @@ func (m *NotifyTargetMutation) Destination() (r *modelsupervisor.FeatureRequest,
 // OldDestination returns the old "destination" field's value of the NotifyTarget entity.
 // If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NotifyTargetMutation) OldDestination(ctx context.Context) (v *modelsupervisor.FeatureRequest, err error) {
+func (m *NotifyTargetMutation) OldDestination(ctx context.Context) (v *model.FeatureRequest, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDestination is only allowed on UpdateOne operations")
 	}
@@ -20362,7 +20362,7 @@ func (m *NotifyTargetMutation) SetField(name string, value ent.Value) error {
 		m.SetDescription(v)
 		return nil
 	case notifytarget.FieldDestination:
-		v, ok := value.(*modelsupervisor.FeatureRequest)
+		v, ok := value.(*model.FeatureRequest)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

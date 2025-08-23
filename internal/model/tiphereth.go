@@ -43,10 +43,14 @@ type Account struct {
 	LatestUpdateTime  time.Time
 }
 
+type PullAccountInfoConfig struct {
+	Platform          string `json:"platform"`
+	PlatformAccountID string `json:"platform_account_id"`
+}
+
 type PullAccountInfo struct {
-	ID                InternalID
-	Platform          string
-	PlatformAccountID string
+	ID     InternalID
+	Config *FeatureRequest
 }
 
 type Session struct {

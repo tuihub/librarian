@@ -164,13 +164,8 @@ func (s *serviceServer) GetAccount(ctx context.Context, req *pb.GetAccountReques
 	if !s.serviceWrapper.Enabled() {
 		return nil, errors.Forbidden("Unauthorized caller", "")
 	}
-	if req == nil ||
-		req.GetPlatform() == "" ||
-		req.GetPlatformAccountId() == "" {
-		return nil, errors.BadRequest("Invalid account id", "")
-	}
-	for _, account := range s.serviceWrapper.Info.GetFeatureSummary().GetAccountPlatforms() {
-		if account.GetId() == req.GetPlatform() {
+	for _, source := range s.serviceWrapper.Info.GetFeatureSummary().GetAppInfoSources() {
+		if source.GetId() == req.GetConfig().GetId() {
 			return s.serviceWrapper.LibrarianPorterServiceServer.GetAccount(ctx, req)
 		}
 	}
@@ -180,13 +175,8 @@ func (s *serviceServer) GetAppInfo(ctx context.Context, req *pb.GetAppInfoReques
 	if !s.serviceWrapper.Enabled() {
 		return nil, errors.Forbidden("Unauthorized caller", "")
 	}
-	if req == nil ||
-		req.GetSource() == "" ||
-		req.GetSourceAppId() == "" {
-		return nil, errors.BadRequest("Invalid app id", "")
-	}
 	for _, source := range s.serviceWrapper.Info.GetFeatureSummary().GetAppInfoSources() {
-		if source.GetId() == req.GetSource() {
+		if source.GetId() == req.GetConfig().GetId() {
 			return s.serviceWrapper.LibrarianPorterServiceServer.GetAppInfo(ctx, req)
 		}
 	}
@@ -219,11 +209,10 @@ func (s *serviceServer) SearchAppInfo(
 	if !s.serviceWrapper.Enabled() {
 		return nil, errors.Forbidden("Unauthorized caller", "")
 	}
-	if req.GetNameLike() == "" {
-		return nil, errors.BadRequest("Invalid app name", "")
-	}
-	if len(s.serviceWrapper.Info.GetFeatureSummary().GetAppInfoSources()) > 0 {
-		return s.serviceWrapper.LibrarianPorterServiceServer.SearchAppInfo(ctx, req)
+	for _, source := range s.serviceWrapper.Info.GetFeatureSummary().GetAppInfoSources() {
+		if source.GetId() == req.GetConfig().GetId() {
+			return s.serviceWrapper.LibrarianPorterServiceServer.SearchAppInfo(ctx, req)
+		}
 	}
 	return nil, errors.BadRequest("Unsupported app source", "")
 }

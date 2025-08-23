@@ -32,9 +32,9 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
 	ToPBServerFeatureSummary(*modelsupervisor.ServerFeatureSummary) *librarian.FeatureSummary
-	ToPBFeatureFlag(*modelsupervisor.FeatureFlag) *librarian.FeatureFlag
-	ToPBFeatureFlagList([]*modelsupervisor.FeatureFlag) []*librarian.FeatureFlag
-	ToPBFeatureRequest(*modelsupervisor.FeatureRequest) *librarian.FeatureRequest
+	ToPBFeatureFlag(*model.FeatureFlag) *librarian.FeatureFlag
+	ToPBFeatureFlagList([]*model.FeatureFlag) []*librarian.FeatureFlag
+	ToPBFeatureRequest(*model.FeatureRequest) *librarian.FeatureRequest
 
 	// goverter:map LogoImageURL LogoUrl
 	// goverter:map BackgroundImageURL BackgroundUrl

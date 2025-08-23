@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 
 	"entgo.io/ent/dialect/sql"
@@ -51,20 +52,20 @@ func (s *SupervisorRepo) GetFeatureMap() *modelsupervisor.ServerFeatureSummaryMa
 	defer s.featureMu.RUnlock()
 	return s.featureMap
 }
-func (s *SupervisorRepo) HasAccountPlatform(platform string) bool {
+func (s *SupervisorRepo) HasAccountPlatform(request *model.FeatureRequest) bool {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	for _, p := range s.featureSummary.AccountPlatforms {
-		if p.ID == platform {
+		if p.ID == request.ID {
 			return true
 		}
 	}
 	return false
 }
-func (s *SupervisorRepo) WithAccountPlatform(ctx context.Context, platform string) context.Context {
+func (s *SupervisorRepo) WithAccountPlatform(ctx context.Context, request *model.FeatureRequest) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
-	if platforms, ok := s.featureMap.AccountPlatforms.Load(platform); ok {
+	if platforms, ok := s.featureMap.AccountPlatforms.Load(request.ID); ok {
 		return client.WithPorterAddress(ctx, platforms)
 	}
 	return client.WithPorterFastFail(ctx)
@@ -87,7 +88,7 @@ func (s *SupervisorRepo) WithAppInfoSource(ctx context.Context, source string) c
 	}
 	return client.WithPorterFastFail(ctx)
 }
-func (s *SupervisorRepo) HasFeedSource(source *modelsupervisor.FeatureRequest) bool {
+func (s *SupervisorRepo) HasFeedSource(source *model.FeatureRequest) bool {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	if source == nil {
@@ -100,7 +101,7 @@ func (s *SupervisorRepo) HasFeedSource(source *modelsupervisor.FeatureRequest) b
 	}
 	return false
 }
-func (s *SupervisorRepo) WithFeedSource(ctx context.Context, source *modelsupervisor.FeatureRequest) context.Context {
+func (s *SupervisorRepo) WithFeedSource(ctx context.Context, source *model.FeatureRequest) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	if sources, ok := s.featureMap.FeedSources.Load(source.ID); ok {
@@ -108,7 +109,7 @@ func (s *SupervisorRepo) WithFeedSource(ctx context.Context, source *modelsuperv
 	}
 	return client.WithPorterFastFail(ctx)
 }
-func (s *SupervisorRepo) HasNotifyDestination(destination *modelsupervisor.FeatureRequest) bool {
+func (s *SupervisorRepo) HasNotifyDestination(destination *model.FeatureRequest) bool {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	if destination == nil {
@@ -123,7 +124,7 @@ func (s *SupervisorRepo) HasNotifyDestination(destination *modelsupervisor.Featu
 }
 func (s *SupervisorRepo) WithNotifyDestination(
 	ctx context.Context,
-	destination *modelsupervisor.FeatureRequest,
+	destination *model.FeatureRequest,
 ) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
@@ -132,7 +133,7 @@ func (s *SupervisorRepo) WithNotifyDestination(
 	}
 	return client.WithPorterFastFail(ctx)
 }
-func (s *SupervisorRepo) HasFeedItemAction(request *modelsupervisor.FeatureRequest) bool {
+func (s *SupervisorRepo) HasFeedItemAction(request *model.FeatureRequest) bool {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	for _, p := range s.featureSummary.FeedItemActions {
@@ -145,7 +146,7 @@ func (s *SupervisorRepo) HasFeedItemAction(request *modelsupervisor.FeatureReque
 
 func (s *SupervisorRepo) WithFeedItemAction(
 	ctx context.Context,
-	request *modelsupervisor.FeatureRequest,
+	request *model.FeatureRequest,
 ) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()

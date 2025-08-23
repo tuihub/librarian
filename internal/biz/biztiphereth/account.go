@@ -14,44 +14,43 @@ import (
 
 func (t *Tiphereth) LinkAccount(
 	ctx context.Context,
-	a model.Account,
+	c *model.FeatureRequest,
 ) (*model.Account, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	if !t.supv.HasAccountPlatform(a.Platform) {
+	if !t.supv.HasAccountPlatform(c) {
 		return nil, bizutils.UnsupportedFeatureError()
 	}
 	id, err := t.id.New()
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
+	a := new(model.Account)
 	a.ID = id
+
 	if err = t.pullAccount.LocalCall(ctx, model.PullAccountInfo{
-		ID:                a.ID,
-		Platform:          a.Platform,
-		PlatformAccountID: a.PlatformAccountID,
+		ID:     a.ID,
+		Config: c,
 	}); err != nil {
 		logger.Errorf("PullAccountInfo failed %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("Get Account Info failed, %s", err.Error())
 	}
+	// save Account only with ID
 	a.ID, err = t.repo.LinkAccount(ctx, a, claims.UserID)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return &a, nil
+	return a, nil
 }
 
-func (t *Tiphereth) UnLinkAccount(ctx context.Context, a model.Account) *errors.Error {
+func (t *Tiphereth) UnLinkAccount(ctx context.Context, aid model.InternalID) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	if !t.supv.HasAccountPlatform(a.Platform) {
-		return bizutils.UnsupportedFeatureError()
-	}
-	if err := t.repo.UnLinkAccount(ctx, a, claims.UserID); err != nil {
+	if err := t.repo.UnLinkAccount(ctx, aid, claims.UserID); err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return nil

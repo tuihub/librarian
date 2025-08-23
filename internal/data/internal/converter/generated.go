@@ -269,9 +269,9 @@ func ToBizFeedActionSet(source *ent.FeedActionSet) *modelyesod.FeedActionSet {
 		modelyesodFeedActionSet.Name = (*source).Name
 		modelyesodFeedActionSet.Description = (*source).Description
 		if (*source).Actions != nil {
-			modelyesodFeedActionSet.Actions = make([]*modelsupervisor.FeatureRequest, len((*source).Actions))
+			modelyesodFeedActionSet.Actions = make([]*model.FeatureRequest, len((*source).Actions))
 			for i := 0; i < len((*source).Actions); i++ {
-				modelyesodFeedActionSet.Actions[i] = pModelsupervisorFeatureRequestToPModelsupervisorFeatureRequest((*source).Actions[i])
+				modelyesodFeedActionSet.Actions[i] = pModelFeatureRequestToPModelFeatureRequest((*source).Actions[i])
 			}
 		}
 		pModelyesodFeedActionSet = &modelyesodFeedActionSet
@@ -295,7 +295,7 @@ func ToBizFeedConfig(source *ent.FeedConfig) *modelyesod.FeedConfig {
 		modelyesodFeedConfig.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelyesodFeedConfig.Name = (*source).Name
 		modelyesodFeedConfig.Description = (*source).Description
-		modelyesodFeedConfig.Source = pModelsupervisorFeatureRequestToPModelsupervisorFeatureRequest((*source).Source)
+		modelyesodFeedConfig.Source = pModelFeatureRequestToPModelFeatureRequest((*source).Source)
 		modelyesodFeedConfig.Category = (*source).Category
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
@@ -480,7 +480,7 @@ func ToBizNotifyTarget(source *ent.NotifyTarget) *modelnetzach.NotifyTarget {
 		modelnetzachNotifyTarget.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
-		modelnetzachNotifyTarget.Destination = pModelsupervisorFeatureRequestToPModelsupervisorFeatureRequest((*source).Destination)
+		modelnetzachNotifyTarget.Destination = pModelFeatureRequestToPModelFeatureRequest((*source).Destination)
 		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
 	}
@@ -925,6 +925,37 @@ func modelInternalIDToPModelInternalID(source model.InternalID) *model.InternalI
 	pModelInternalID := modelInternalIDToModelInternalID(source)
 	return &pModelInternalID
 }
+func pModelFeatureFlagToPModelFeatureFlag(source *model.FeatureFlag) *model.FeatureFlag {
+	var pModelFeatureFlag *model.FeatureFlag
+	if source != nil {
+		var modelFeatureFlag model.FeatureFlag
+		modelFeatureFlag.ID = (*source).ID
+		modelFeatureFlag.Name = (*source).Name
+		modelFeatureFlag.Description = (*source).Description
+		modelFeatureFlag.ConfigJSONSchema = (*source).ConfigJSONSchema
+		modelFeatureFlag.RequireContext = (*source).RequireContext
+		if (*source).Extra != nil {
+			modelFeatureFlag.Extra = make(map[string]string, len((*source).Extra))
+			for key, value := range (*source).Extra {
+				modelFeatureFlag.Extra[key] = value
+			}
+		}
+		pModelFeatureFlag = &modelFeatureFlag
+	}
+	return pModelFeatureFlag
+}
+func pModelFeatureRequestToPModelFeatureRequest(source *model.FeatureRequest) *model.FeatureRequest {
+	var pModelFeatureRequest *model.FeatureRequest
+	if source != nil {
+		var modelFeatureRequest model.FeatureRequest
+		modelFeatureRequest.ID = (*source).ID
+		modelFeatureRequest.Region = (*source).Region
+		modelFeatureRequest.ConfigJSON = (*source).ConfigJSON
+		modelFeatureRequest.ContextID = modelInternalIDToModelInternalID((*source).ContextID)
+		pModelFeatureRequest = &modelFeatureRequest
+	}
+	return pModelFeatureRequest
+}
 func pModelfeedEnclosureToPModelfeedEnclosure(source *modelfeed.Enclosure) *modelfeed.Enclosure {
 	var pModelfeedEnclosure *modelfeed.Enclosure
 	if source != nil {
@@ -956,81 +987,50 @@ func pModelfeedPersonToPModelfeedPerson(source *modelfeed.Person) *modelfeed.Per
 	}
 	return pModelfeedPerson
 }
-func pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag(source *modelsupervisor.FeatureFlag) *modelsupervisor.FeatureFlag {
-	var pModelsupervisorFeatureFlag *modelsupervisor.FeatureFlag
-	if source != nil {
-		var modelsupervisorFeatureFlag modelsupervisor.FeatureFlag
-		modelsupervisorFeatureFlag.ID = (*source).ID
-		modelsupervisorFeatureFlag.Name = (*source).Name
-		modelsupervisorFeatureFlag.Description = (*source).Description
-		modelsupervisorFeatureFlag.ConfigJSONSchema = (*source).ConfigJSONSchema
-		modelsupervisorFeatureFlag.RequireContext = (*source).RequireContext
-		if (*source).Extra != nil {
-			modelsupervisorFeatureFlag.Extra = make(map[string]string, len((*source).Extra))
-			for key, value := range (*source).Extra {
-				modelsupervisorFeatureFlag.Extra[key] = value
-			}
-		}
-		pModelsupervisorFeatureFlag = &modelsupervisorFeatureFlag
-	}
-	return pModelsupervisorFeatureFlag
-}
-func pModelsupervisorFeatureRequestToPModelsupervisorFeatureRequest(source *modelsupervisor.FeatureRequest) *modelsupervisor.FeatureRequest {
-	var pModelsupervisorFeatureRequest *modelsupervisor.FeatureRequest
-	if source != nil {
-		var modelsupervisorFeatureRequest modelsupervisor.FeatureRequest
-		modelsupervisorFeatureRequest.ID = (*source).ID
-		modelsupervisorFeatureRequest.Region = (*source).Region
-		modelsupervisorFeatureRequest.ConfigJSON = (*source).ConfigJSON
-		modelsupervisorFeatureRequest.ContextID = modelInternalIDToModelInternalID((*source).ContextID)
-		pModelsupervisorFeatureRequest = &modelsupervisorFeatureRequest
-	}
-	return pModelsupervisorFeatureRequest
-}
 func pModelsupervisorPorterFeatureSummaryToPModelsupervisorPorterFeatureSummary(source *modelsupervisor.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary {
 	var pModelsupervisorPorterFeatureSummary *modelsupervisor.PorterFeatureSummary
 	if source != nil {
 		var modelsupervisorPorterFeatureSummary modelsupervisor.PorterFeatureSummary
 		if (*source).AccountPlatforms != nil {
-			modelsupervisorPorterFeatureSummary.AccountPlatforms = make([]*modelsupervisor.FeatureFlag, len((*source).AccountPlatforms))
+			modelsupervisorPorterFeatureSummary.AccountPlatforms = make([]*model.FeatureFlag, len((*source).AccountPlatforms))
 			for i := 0; i < len((*source).AccountPlatforms); i++ {
-				modelsupervisorPorterFeatureSummary.AccountPlatforms[i] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).AccountPlatforms[i])
+				modelsupervisorPorterFeatureSummary.AccountPlatforms[i] = pModelFeatureFlagToPModelFeatureFlag((*source).AccountPlatforms[i])
 			}
 		}
 		if (*source).AppInfoSources != nil {
-			modelsupervisorPorterFeatureSummary.AppInfoSources = make([]*modelsupervisor.FeatureFlag, len((*source).AppInfoSources))
+			modelsupervisorPorterFeatureSummary.AppInfoSources = make([]*model.FeatureFlag, len((*source).AppInfoSources))
 			for j := 0; j < len((*source).AppInfoSources); j++ {
-				modelsupervisorPorterFeatureSummary.AppInfoSources[j] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).AppInfoSources[j])
+				modelsupervisorPorterFeatureSummary.AppInfoSources[j] = pModelFeatureFlagToPModelFeatureFlag((*source).AppInfoSources[j])
 			}
 		}
 		if (*source).FeedSources != nil {
-			modelsupervisorPorterFeatureSummary.FeedSources = make([]*modelsupervisor.FeatureFlag, len((*source).FeedSources))
+			modelsupervisorPorterFeatureSummary.FeedSources = make([]*model.FeatureFlag, len((*source).FeedSources))
 			for k := 0; k < len((*source).FeedSources); k++ {
-				modelsupervisorPorterFeatureSummary.FeedSources[k] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).FeedSources[k])
+				modelsupervisorPorterFeatureSummary.FeedSources[k] = pModelFeatureFlagToPModelFeatureFlag((*source).FeedSources[k])
 			}
 		}
 		if (*source).NotifyDestinations != nil {
-			modelsupervisorPorterFeatureSummary.NotifyDestinations = make([]*modelsupervisor.FeatureFlag, len((*source).NotifyDestinations))
+			modelsupervisorPorterFeatureSummary.NotifyDestinations = make([]*model.FeatureFlag, len((*source).NotifyDestinations))
 			for l := 0; l < len((*source).NotifyDestinations); l++ {
-				modelsupervisorPorterFeatureSummary.NotifyDestinations[l] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).NotifyDestinations[l])
+				modelsupervisorPorterFeatureSummary.NotifyDestinations[l] = pModelFeatureFlagToPModelFeatureFlag((*source).NotifyDestinations[l])
 			}
 		}
 		if (*source).FeedItemActions != nil {
-			modelsupervisorPorterFeatureSummary.FeedItemActions = make([]*modelsupervisor.FeatureFlag, len((*source).FeedItemActions))
+			modelsupervisorPorterFeatureSummary.FeedItemActions = make([]*model.FeatureFlag, len((*source).FeedItemActions))
 			for m := 0; m < len((*source).FeedItemActions); m++ {
-				modelsupervisorPorterFeatureSummary.FeedItemActions[m] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).FeedItemActions[m])
+				modelsupervisorPorterFeatureSummary.FeedItemActions[m] = pModelFeatureFlagToPModelFeatureFlag((*source).FeedItemActions[m])
 			}
 		}
 		if (*source).FeedGetters != nil {
-			modelsupervisorPorterFeatureSummary.FeedGetters = make([]*modelsupervisor.FeatureFlag, len((*source).FeedGetters))
+			modelsupervisorPorterFeatureSummary.FeedGetters = make([]*model.FeatureFlag, len((*source).FeedGetters))
 			for n := 0; n < len((*source).FeedGetters); n++ {
-				modelsupervisorPorterFeatureSummary.FeedGetters[n] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).FeedGetters[n])
+				modelsupervisorPorterFeatureSummary.FeedGetters[n] = pModelFeatureFlagToPModelFeatureFlag((*source).FeedGetters[n])
 			}
 		}
 		if (*source).FeedSetters != nil {
-			modelsupervisorPorterFeatureSummary.FeedSetters = make([]*modelsupervisor.FeatureFlag, len((*source).FeedSetters))
+			modelsupervisorPorterFeatureSummary.FeedSetters = make([]*model.FeatureFlag, len((*source).FeedSetters))
 			for o := 0; o < len((*source).FeedSetters); o++ {
-				modelsupervisorPorterFeatureSummary.FeedSetters[o] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).FeedSetters[o])
+				modelsupervisorPorterFeatureSummary.FeedSetters[o] = pModelFeatureFlagToPModelFeatureFlag((*source).FeedSetters[o])
 			}
 		}
 		pModelsupervisorPorterFeatureSummary = &modelsupervisorPorterFeatureSummary

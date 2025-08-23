@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelkether"
+	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 )
 
@@ -17,14 +18,13 @@ func NewPullAccountTopic(
 	return libmq.NewTopic[model.PullAccountInfo](
 		"PullAccountInfo",
 		func(ctx context.Context, info *model.PullAccountInfo) error {
-			if !a.supv.HasAccountPlatform(info.Platform) {
+			if !a.supv.HasAccountPlatform(info.Config) {
 				return nil
 			}
 			resp, err := a.porter.GetAccount(
-				a.supv.WithAccountPlatform(ctx, info.Platform),
+				a.supv.WithAccountPlatform(ctx, info.Config),
 				&porter.GetAccountRequest{
-					Platform:          info.Platform,
-					PlatformAccountId: info.PlatformAccountID,
+					Config: converter.ToPBFeatureRequest(info.Config),
 				},
 			)
 			if err != nil {
@@ -32,8 +32,8 @@ func NewPullAccountTopic(
 			}
 			err = a.repo.UpsertAccount(ctx, model.Account{
 				ID:                info.ID,
-				Platform:          info.Platform,
-				PlatformAccountID: info.PlatformAccountID,
+				Platform:          resp.GetAccount().GetPlatform(),
+				PlatformAccountID: resp.GetAccount().GetPlatformAccountId(),
 				Name:              resp.GetAccount().GetName(),
 				ProfileURL:        resp.GetAccount().GetProfileUrl(),
 				AvatarURL:         resp.GetAccount().GetAvatarUrl(),
@@ -45,8 +45,8 @@ func NewPullAccountTopic(
 			return sr.
 				Publish(ctx, modelkether.PullAccountAppInfoRelation{
 					ID:                info.ID,
-					Platform:          info.Platform,
-					PlatformAccountID: info.PlatformAccountID,
+					Platform:          resp.GetAccount().GetPlatform(),
+					PlatformAccountID: resp.GetAccount().GetPlatformAccountId(),
 				})
 		},
 	)

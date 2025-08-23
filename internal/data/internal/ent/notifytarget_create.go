@@ -16,7 +16,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 // NotifyTargetCreate is the builder for creating a NotifyTarget entity.
@@ -40,7 +39,7 @@ func (ntc *NotifyTargetCreate) SetDescription(s string) *NotifyTargetCreate {
 }
 
 // SetDestination sets the "destination" field.
-func (ntc *NotifyTargetCreate) SetDestination(mr *modelsupervisor.FeatureRequest) *NotifyTargetCreate {
+func (ntc *NotifyTargetCreate) SetDestination(mr *model.FeatureRequest) *NotifyTargetCreate {
 	ntc.mutation.SetDestination(mr)
 	return ntc
 }
@@ -386,7 +385,7 @@ func (u *NotifyTargetUpsert) UpdateDescription() *NotifyTargetUpsert {
 }
 
 // SetDestination sets the "destination" field.
-func (u *NotifyTargetUpsert) SetDestination(v *modelsupervisor.FeatureRequest) *NotifyTargetUpsert {
+func (u *NotifyTargetUpsert) SetDestination(v *model.FeatureRequest) *NotifyTargetUpsert {
 	u.Set(notifytarget.FieldDestination, v)
 	return u
 }
@@ -510,7 +509,7 @@ func (u *NotifyTargetUpsertOne) UpdateDescription() *NotifyTargetUpsertOne {
 }
 
 // SetDestination sets the "destination" field.
-func (u *NotifyTargetUpsertOne) SetDestination(v *modelsupervisor.FeatureRequest) *NotifyTargetUpsertOne {
+func (u *NotifyTargetUpsertOne) SetDestination(v *model.FeatureRequest) *NotifyTargetUpsertOne {
 	return u.Update(func(s *NotifyTargetUpsert) {
 		s.SetDestination(v)
 	})
@@ -808,7 +807,7 @@ func (u *NotifyTargetUpsertBulk) UpdateDescription() *NotifyTargetUpsertBulk {
 }
 
 // SetDestination sets the "destination" field.
-func (u *NotifyTargetUpsertBulk) SetDestination(v *modelsupervisor.FeatureRequest) *NotifyTargetUpsertBulk {
+func (u *NotifyTargetUpsertBulk) SetDestination(v *model.FeatureRequest) *NotifyTargetUpsertBulk {
 	return u.Update(func(s *NotifyTargetUpsert) {
 		s.SetDestination(v)
 	})

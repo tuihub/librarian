@@ -17,7 +17,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 // NotifyTargetUpdate is the builder for updating NotifyTarget entities.
@@ -62,7 +61,7 @@ func (ntu *NotifyTargetUpdate) SetNillableDescription(s *string) *NotifyTargetUp
 }
 
 // SetDestination sets the "destination" field.
-func (ntu *NotifyTargetUpdate) SetDestination(mr *modelsupervisor.FeatureRequest) *NotifyTargetUpdate {
+func (ntu *NotifyTargetUpdate) SetDestination(mr *model.FeatureRequest) *NotifyTargetUpdate {
 	ntu.mutation.SetDestination(mr)
 	return ntu
 }
@@ -454,7 +453,7 @@ func (ntuo *NotifyTargetUpdateOne) SetNillableDescription(s *string) *NotifyTarg
 }
 
 // SetDestination sets the "destination" field.
-func (ntuo *NotifyTargetUpdateOne) SetDestination(mr *modelsupervisor.FeatureRequest) *NotifyTargetUpdateOne {
+func (ntuo *NotifyTargetUpdateOne) SetDestination(mr *model.FeatureRequest) *NotifyTargetUpdateOne {
 	ntuo.mutation.SetDestination(mr)
 	return ntuo
 }

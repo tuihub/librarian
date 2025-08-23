@@ -18,7 +18,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 // FeedConfigCreate is the builder for creating a FeedConfig entity.
@@ -48,7 +47,7 @@ func (fcc *FeedConfigCreate) SetDescription(s string) *FeedConfigCreate {
 }
 
 // SetSource sets the "source" field.
-func (fcc *FeedConfigCreate) SetSource(mr *modelsupervisor.FeatureRequest) *FeedConfigCreate {
+func (fcc *FeedConfigCreate) SetSource(mr *model.FeatureRequest) *FeedConfigCreate {
 	fcc.mutation.SetSource(mr)
 	return fcc
 }
@@ -607,7 +606,7 @@ func (u *FeedConfigUpsert) UpdateDescription() *FeedConfigUpsert {
 }
 
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsert) SetSource(v *modelsupervisor.FeatureRequest) *FeedConfigUpsert {
+func (u *FeedConfigUpsert) SetSource(v *model.FeatureRequest) *FeedConfigUpsert {
 	u.Set(feedconfig.FieldSource, v)
 	return u
 }
@@ -835,7 +834,7 @@ func (u *FeedConfigUpsertOne) UpdateDescription() *FeedConfigUpsertOne {
 }
 
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsertOne) SetSource(v *modelsupervisor.FeatureRequest) *FeedConfigUpsertOne {
+func (u *FeedConfigUpsertOne) SetSource(v *model.FeatureRequest) *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetSource(v)
 	})
@@ -1252,7 +1251,7 @@ func (u *FeedConfigUpsertBulk) UpdateDescription() *FeedConfigUpsertBulk {
 }
 
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsertBulk) SetSource(v *modelsupervisor.FeatureRequest) *FeedConfigUpsertBulk {
+func (u *FeedConfigUpsertBulk) SetSource(v *model.FeatureRequest) *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetSource(v)
 	})

@@ -14,7 +14,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 // FeedConfig is the model entity for the FeedConfig schema.
@@ -29,7 +28,7 @@ type FeedConfig struct {
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Source holds the value of the "source" field.
-	Source *modelsupervisor.FeatureRequest `json:"source,omitempty"`
+	Source *model.FeatureRequest `json:"source,omitempty"`
 	// Status holds the value of the "status" field.
 	Status feedconfig.Status `json:"status,omitempty"`
 	// Category holds the value of the "category" field.

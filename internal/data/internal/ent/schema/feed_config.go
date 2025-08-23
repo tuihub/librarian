@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
@@ -25,7 +24,7 @@ func (FeedConfig) Fields() []ent.Field {
 			GoType(model.InternalID(0)),
 		field.String("name"),
 		field.String("description"),
-		field.JSON("source", new(modelsupervisor.FeatureRequest)),
+		field.JSON("source", new(model.FeatureRequest)),
 		field.Enum("status").
 			Values("active", "suspend"),
 		field.String("category"),

@@ -33,8 +33,8 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
 	ToBizTimeRangeList([]*librarian.TimeRange) []*model.TimeRange
 	ToBizPorterFeatureSummary(*librarian.FeatureSummary) *modelsupervisor.PorterFeatureSummary
-	ToBizFeatureFlag(*librarian.FeatureFlag) *modelsupervisor.FeatureFlag
-	ToBizFeatureRequest(*librarian.FeatureRequest) *modelsupervisor.FeatureRequest
+	ToBizFeatureFlag(*librarian.FeatureFlag) *model.FeatureFlag
+	ToBizFeatureRequest(*librarian.FeatureRequest) *model.FeatureRequest
 
 	ToBizInternalIDList([]*librarian.InternalID) []model.InternalID
 

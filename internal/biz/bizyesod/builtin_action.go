@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/tuihub/librarian/internal/lib/libcodec"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 
 	"github.com/PuerkitoBio/goquery"
@@ -25,15 +25,15 @@ func RequiredStartAction(ctx context.Context, item *modelfeed.Item) (*modelfeed.
 
 func GetBuiltinActionMap(
 	ctx context.Context,
-) map[string]func(context.Context, *modelsupervisor.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error) {
-	return map[string]func(context.Context, *modelsupervisor.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error){
+) map[string]func(context.Context, *model.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error) {
+	return map[string]func(context.Context, *model.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error){
 		simpleKeywordFilterActionID:  simpleKeywordFilterAction,
 		keywordFilterActionID:        keywordFilterAction,
 		descriptionGeneratorActionID: descriptionGeneratorAction,
 	}
 }
 
-func getBuiltinActionFeatureFlags() ([]*modelsupervisor.FeatureFlag, error) {
+func getBuiltinActionFeatureFlags() ([]*model.FeatureFlag, error) {
 	simple, err := modelyesod.GetSimpleKeywordFilterActionConfigSchema()
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func getBuiltinActionFeatureFlags() ([]*modelsupervisor.FeatureFlag, error) {
 	if err != nil {
 		return nil, err
 	}
-	return []*modelsupervisor.FeatureFlag{
+	return []*model.FeatureFlag{
 		{
 			ID:               simpleKeywordFilterActionID,
 			Name:             "Simple Keyword Filter",
@@ -121,7 +121,7 @@ func parseDigestAction(_ context.Context, item *modelfeed.Item) (*modelfeed.Item
 
 func simpleKeywordFilterAction(
 	_ context.Context,
-	request *modelsupervisor.FeatureRequest,
+	request *model.FeatureRequest,
 	item *modelfeed.Item,
 ) (*modelfeed.Item, error) {
 	config := new(modelyesod.SimpleKeywordFilterActionConfig)
@@ -153,7 +153,7 @@ func simpleKeywordFilterAction(
 
 func keywordFilterAction(
 	ctx context.Context,
-	_ *modelsupervisor.FeatureRequest,
+	_ *model.FeatureRequest,
 	item *modelfeed.Item,
 ) (*modelfeed.Item, error) {
 	// TODO: impl
@@ -162,7 +162,7 @@ func keywordFilterAction(
 
 func descriptionGeneratorAction(
 	_ context.Context,
-	_ *modelsupervisor.FeatureRequest,
+	_ *model.FeatureRequest,
 	item *modelfeed.Item,
 ) (*modelfeed.Item, error) {
 	if len(item.Description) > 0 {

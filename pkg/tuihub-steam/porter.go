@@ -3,20 +3,17 @@ package tuihubsteam
 
 import (
 	"context"
-	"os"
 
 	"github.com/tuihub/librarian/pkg/tuihub-go"
-	"github.com/tuihub/librarian/pkg/tuihub-go/logger"
 	"github.com/tuihub/librarian/pkg/tuihub-steam/internal"
+	"github.com/tuihub/librarian/pkg/tuihub-steam/internal/model"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 func NewPorter(version string) (*tuihub.Porter, error) {
-	apiKey, exist := os.LookupEnv("STEAM_API_KEY")
-	if !exist || apiKey == "" {
-		logger.Errorf("STEAM_API_KEY environment variable not set")
-	}
+	contextSchema := tuihub.MustReflectJSONSchema(new(model.PorterContext))
+
 	config := &porter.GetPorterInformationResponse{
 		BinarySummary: &librarian.PorterBinarySummary{
 			SourceCodeAddress: "https://github.com/tuihub/librarian",
@@ -37,7 +34,7 @@ func NewPorter(version string) (*tuihub.Porter, error) {
 					Name:             "Steam",
 					Description:      "",
 					ConfigJsonSchema: "",
-					RequireContext:   false,
+					RequireContext:   true,
 				},
 			},
 			AppInfoSources: []*librarian.FeatureFlag{
@@ -48,14 +45,15 @@ func NewPorter(version string) (*tuihub.Porter, error) {
 					Name:             "Steam",
 					Description:      "",
 					ConfigJsonSchema: "",
-					RequireContext:   false,
+					RequireContext:   true,
 				},
 			},
 		},
+		ContextJsonSchema: &contextSchema,
 	}
 	return tuihub.NewPorter(
 		context.Background(),
 		config,
-		internal.NewHandler(apiKey),
+		internal.NewHandler(),
 	)
 }

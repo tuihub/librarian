@@ -17,7 +17,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 // FeedActionSetUpdate is the builder for updating FeedActionSet entities.
@@ -62,13 +61,13 @@ func (fasu *FeedActionSetUpdate) SetNillableDescription(s *string) *FeedActionSe
 }
 
 // SetActions sets the "actions" field.
-func (fasu *FeedActionSetUpdate) SetActions(mr []*modelsupervisor.FeatureRequest) *FeedActionSetUpdate {
+func (fasu *FeedActionSetUpdate) SetActions(mr []*model.FeatureRequest) *FeedActionSetUpdate {
 	fasu.mutation.SetActions(mr)
 	return fasu
 }
 
 // AppendActions appends mr to the "actions" field.
-func (fasu *FeedActionSetUpdate) AppendActions(mr []*modelsupervisor.FeatureRequest) *FeedActionSetUpdate {
+func (fasu *FeedActionSetUpdate) AppendActions(mr []*model.FeatureRequest) *FeedActionSetUpdate {
 	fasu.mutation.AppendActions(mr)
 	return fasu
 }
@@ -350,13 +349,13 @@ func (fasuo *FeedActionSetUpdateOne) SetNillableDescription(s *string) *FeedActi
 }
 
 // SetActions sets the "actions" field.
-func (fasuo *FeedActionSetUpdateOne) SetActions(mr []*modelsupervisor.FeatureRequest) *FeedActionSetUpdateOne {
+func (fasuo *FeedActionSetUpdateOne) SetActions(mr []*model.FeatureRequest) *FeedActionSetUpdateOne {
 	fasuo.mutation.SetActions(mr)
 	return fasuo
 }
 
 // AppendActions appends mr to the "actions" field.
-func (fasuo *FeedActionSetUpdateOne) AppendActions(mr []*modelsupervisor.FeatureRequest) *FeedActionSetUpdateOne {
+func (fasuo *FeedActionSetUpdateOne) AppendActions(mr []*model.FeatureRequest) *FeedActionSetUpdateOne {
 	fasuo.mutation.AppendActions(mr)
 	return fasuo
 }

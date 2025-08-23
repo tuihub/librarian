@@ -49,7 +49,7 @@ require (
 	github.com/sony/sonyflake/v2 v2.2.0
 	github.com/spf13/afero v1.14.0
 	github.com/stretchr/testify v1.10.0
-	github.com/tuihub/protos v0.5.6
+	github.com/tuihub/protos v0.5.10
 	github.com/urfave/cli/v3 v3.4.1
 	go.opentelemetry.io/otel v1.37.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.13.0
