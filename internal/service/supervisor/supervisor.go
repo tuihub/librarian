@@ -48,6 +48,7 @@ type SupervisorService struct {
 	instanceController        *libtype.SyncMap[string, *bizsupervisor.PorterInstanceController]
 	instanceContextController *libtype.SyncMap[model.InternalID, *bizsupervisor.PorterContextController]
 	featureController         *bizsupervisor.PorterFeatureController
+	heartbeatPool             *ants.Pool
 }
 
 func NewSupervisorService(
@@ -63,6 +64,11 @@ func NewSupervisorService(
 	if c == nil {
 		c = new(conf.Porter)
 	}
+	pool, err := ants.NewPool(defaultPoolSize)
+	if err != nil {
+		logger.Errorf("failed to create ants pool: %s", err.Error())
+		return nil, fmt.Errorf("failed to create ants pool: %w", err)
+	}
 	res := SupervisorService{
 		s:            s,
 		cron:         cron,
@@ -77,6 +83,7 @@ func NewSupervisorService(
 		instanceController:        libtype.NewSyncMap[string, *bizsupervisor.PorterInstanceController](),
 		instanceContextController: libtype.NewSyncMap[model.InternalID, *bizsupervisor.PorterContextController](),
 		featureController:         featureController,
+		heartbeatPool:             pool,
 	}
 	return &res, nil
 }
@@ -138,11 +145,6 @@ func (s *SupervisorService) heartbeat( //nolint:gocognit,funlen // TODO
 		fmt.Sprintf("Found %d Porter Instances", len(discoveredAddresses)),
 	)
 	notificationMu := &sync.Mutex{}
-	pool, err := ants.NewPool(defaultPoolSize)
-	if err != nil {
-		logger.Errorf("failed to create ants pool: %s", err.Error())
-		return fmt.Errorf("failed to create ants pool: %w", err)
-	}
 	wg := sync.WaitGroup{}
 	availableAddresses := map[string][]string{}
 	availableAddressesMu := sync.Mutex{}
@@ -164,7 +166,7 @@ func (s *SupervisorService) heartbeat( //nolint:gocognit,funlen // TODO
 	// Instance Heartbeat
 	s.instanceController.Range(func(address string, ctl *bizsupervisor.PorterInstanceController) bool {
 		wg.Add(1)
-		_ = pool.Submit(func() {
+		_ = s.heartbeatPool.Submit(func() {
 			defer wg.Done()
 			ctxWithTimeout, cancel := context.WithTimeout(ctx, libtime.Minute)
 			defer cancel()
@@ -198,7 +200,7 @@ func (s *SupervisorService) heartbeat( //nolint:gocognit,funlen // TODO
 	// Instance Context Heartbeat
 	s.instanceContextController.Range(func(ctxID model.InternalID, ctl *bizsupervisor.PorterContextController) bool {
 		wg.Add(1)
-		_ = pool.Submit(func() {
+		_ = s.heartbeatPool.Submit(func() {
 			defer wg.Done()
 			ctxWithTimeout, cancel := context.WithTimeout(ctx, libtime.Minute)
 			defer cancel()
