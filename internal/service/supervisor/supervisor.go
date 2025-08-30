@@ -64,11 +64,6 @@ func NewSupervisorService(
 	if c == nil {
 		c = new(conf.Porter)
 	}
-	pool, err := ants.NewPool(defaultPoolSize)
-	if err != nil {
-		logger.Errorf("failed to create ants pool: %s", err.Error())
-		return nil, fmt.Errorf("failed to create ants pool: %w", err)
-	}
 	res := SupervisorService{
 		s:            s,
 		cron:         cron,
@@ -83,7 +78,7 @@ func NewSupervisorService(
 		instanceController:        libtype.NewSyncMap[string, *bizsupervisor.PorterInstanceController](),
 		instanceContextController: libtype.NewSyncMap[model.InternalID, *bizsupervisor.PorterContextController](),
 		featureController:         featureController,
-		heartbeatPool:             pool,
+		heartbeatPool:             nil,
 	}
 	return &res, nil
 }
@@ -103,6 +98,12 @@ func (s *SupervisorService) Start(ctx context.Context) error {
 		return fmt.Errorf("failed to register cron: %w", err)
 	}
 	s.job = job
+	pool, err := ants.NewPool(defaultPoolSize)
+	if err != nil {
+		logger.Errorf("failed to create ants pool: %s", err.Error())
+		return fmt.Errorf("failed to create ants pool: %w", err)
+	}
+	s.heartbeatPool = pool
 	return nil
 }
 
@@ -112,6 +113,9 @@ func (s *SupervisorService) Stop(ctx context.Context) error {
 			return fmt.Errorf("failed to stop cron job: %w", err)
 		}
 		s.job = nil
+	}
+	if s.heartbeatPool != nil {
+		s.heartbeatPool.Release()
 	}
 	return nil
 }
