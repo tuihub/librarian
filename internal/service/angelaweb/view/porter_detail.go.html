@@ -206,14 +206,32 @@
     <div class="card mb-6">
         <div class="card-body">
             <h2 class="card-title">{{localize .Ctx "ContextJSONSchema"}}</h2>
-            <div class="mt-4 p-3 bg-base-200 rounded-md">
-                <pre id="contextSchemaText" class="text-sm overflow-x-auto">{{.Porter.ContextJSONSchema}}</pre>
-            </div>
-            <div class="card-actions justify-end mt-4">
-                <button class="btn btn-secondary btn-sm" id="copySchemaBtn">
-                    {{template "icon-copy" .}}
-                    {{localize .Ctx "Copy"}}
-                </button>
+            <div class="tabs tabs-lift">
+                <label class="tab">
+                    <input type="radio" name="my_tabs" checked="checked" />
+                    {{localize .Ctx "ConfigurationFormPreview"}}
+                </label>
+                <div class="tab-content bg-base-100 border-base-300 p-6">
+                    {{jsonforms .Porter.ContextJSONSchema}}
+                    <div class="mt-4 text-sm text-base-content/70">
+                        <p>{{localize .Ctx "FormPreviewNote"}}</p>
+                    </div>
+                </div>
+                <label class="tab">
+                    <input type="radio" name="my_tabs" />
+                    {{localize .Ctx "RawSchema"}}
+                </label>
+                <div class="tab-content bg-base-100 border-base-300 p-6">
+                    <div class="bg-base-200 p-3 rounded-md">
+                        <pre id="contextSchemaText" class="text-sm overflow-x-auto">{{formatjson .Porter.ContextJSONSchema}}</pre>
+                    </div>
+                    <div class="card-actions justify-end mt-4">
+                        <button class="btn btn-secondary btn-sm" id="copySchemaBtn">
+                            {{template "icon-copy" .}}
+                            {{localize .Ctx "Copy"}}
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

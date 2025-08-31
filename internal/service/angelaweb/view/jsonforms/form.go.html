@@ -1,0 +1,134 @@
+<!-- ============= -->
+<!-- Form template -->
+<!-- ============= -->
+{{- define "Form" }}
+{{- if eq .type "HorizontalLayout" }}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {{- template "Elements" . }}
+</div>
+{{- else if eq .type "VerticalLayout" }}
+<div class="space-y-4">
+  {{- template "Elements" . }}
+</div>
+{{- else if eq .type "Group" }}
+<div class="card bg-base-100 shadow-sm border border-base-300 mb-4">
+  {{- if .label }}
+  <div class="card-body">
+    <h2 class="card-title text-lg">{{- .label }}</h2>
+    <div class="space-y-4">
+      {{- template "Elements" . }}
+    </div>
+  </div>
+  {{- end }}
+  <div class="card-body">
+    {{- template "Elements" . }}
+  </div>
+</div>
+{{- else if eq .type "Label" }}
+<h3 class="text-xl font-semibold mb-4">{{- .text }}</h3>
+{{- else if eq .type "Control" }}
+{{- if eq .schema.type "array" }}
+{{- template "Array" . }}
+{{- else if eq .schema.type "array-select" }}
+{{- template "ArraySelect" . }}
+{{- else }}
+{{- template "Control" . }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+<!-- =============== -->
+<!-- Array template -->
+<!-- =============== -->
+{{- define "Array" }}
+{{- range .options.details }}
+{{- template "Form" . }}
+{{- end }}
+{{- end }}
+
+<!-- ================= -->
+<!-- Elements template -->
+<!-- ================= -->
+{{- define "Elements" }}
+{{- if .elements}}
+{{- range .elements }}
+{{- template "Form" . }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+<!-- ===================== -->
+<!-- Array Select template -->
+<!-- ===================== -->
+{{- define "ArraySelect" }}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="form-control{{- if .schema.col }} {{- .schema.col }}{{- end }}">
+    {{- if .schema.title}}
+    <label class="label" for="{{- .scope }}">
+      <span class="label-text">{{- .schema.title}}</span>
+    </label>
+    {{- end }}
+    <select class="select select-bordered w-full" id="{{- .scope }}" onchange="arraySelect(this)">
+      {{- range $label, $val := .data}}
+      <option value="{{- . }}" data-element="{{- json $val }}">{{- $label }}</option>
+      {{- end}}
+    </select>
+    {{- if .schema.description }}
+    <label class="label">
+      <span class="label-text-alt">{{- .schema.description }}</span>
+    </label>
+    {{- end }}
+  </div>
+</div>
+{{- template "Form" .options.detail }}
+{{- end }}
+
+<!-- ================ -->
+<!-- Control template -->
+<!-- ================ -->
+{{- define "Control" }}
+<div class="form-control{{- if .schema.col }} {{- .schema.col }}{{- end }}">
+  {{- if .schema.title}}
+  <label class="label" for="{{- .scope }}">
+    <span class="label-text">{{- .schema.title}}</span>
+  </label>
+  {{- end }}
+
+  <!-- enum -->
+  {{- if .schema.enum }}
+  <select class="select select-bordered w-full" id="{{- .scope }}">
+    {{- range .schema.enum }}
+    <option value="{{- . }}">{{- . }}</option>
+    {{- end }}
+  </select>
+  <!-- no enum -->
+
+  <!-- checkbox -->
+  {{- else if eq .schema.type "bool" }}
+  <label class="label cursor-pointer justify-start gap-3">
+    <input type="checkbox" class="checkbox" id="{{- .scope }}" name="{{- .scope }}">
+    <span class="label-text">{{- .schema.title}}</span>
+  </label>
+  {{- else }}
+
+  <!-- type -->
+  {{- $type := .schema.type }}
+  {{- if eq $type "integer" }}
+  {{- $type = "number" }}
+  {{- else if eq .schema.format "date" }}
+  {{- $type = "date" }}
+  {{- else if eq $type "string" }}
+  {{- $type = "text" }}
+  {{- end }}
+  <!-- end type -->
+  <input class="input input-bordered w-full" id="{{- .scope }}" name="{{- if .name }}{{- .name }}{{- else }}{{- .scope }}{{- end}}"
+    type="{{- $type }}" {{- if .data }}value="{{- .data }}" {{- end }} />
+  {{- end }}
+  
+  {{- if .schema.description }}
+  <label class="label">
+    <span class="label-text-alt">{{- .schema.description }}</span>
+  </label>
+  {{- end }}
+</div>
+{{- end }} <!-- control -->

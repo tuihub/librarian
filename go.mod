@@ -12,6 +12,7 @@ require (
 	github.com/ThreeDotsLabs/watermill v1.4.6
 	github.com/ThreeDotsLabs/watermill-redisstream v1.4.3
 	github.com/ThreeDotsLabs/watermill-sql/v3 v3.1.0
+	github.com/TobiEiss/go-jsonforms v1.1.8
 	github.com/Xuanwo/go-locale v1.1.3
 	github.com/blevesearch/bleve/v2 v2.5.2
 	github.com/dchest/captcha v1.1.0
@@ -77,6 +78,7 @@ require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.6-20250613105001-9f2d3c737feb.1 // indirect
 	cel.dev/expr v0.23.1 // indirect
 	dario.cat/mergo v1.0.0 // indirect
+	github.com/Jeffail/gabs/v2 v2.7.0 // indirect
 	github.com/Rican7/retry v0.3.1 // indirect
 	github.com/RoaringBitmap/roaring/v2 v2.4.5 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
@@ -229,3 +231,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 )
+
+replace github.com/TobiEiss/go-jsonforms => github.com/tuihub/go-jsonforms v1.1.9

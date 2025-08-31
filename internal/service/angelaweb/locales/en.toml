@@ -257,3 +257,10 @@ MemoryUsageChart = "Memory Usage Chart"
 # Menu
 ExpandMenu = "Expand Menu"
 CollapseMenu = "Collapse Menu"
+
+# JSON Schema Form Preview
+FormPreview = "Form Preview"
+RawSchema = "Raw Schema"
+ConfigurationFormPreview = "Configuration Form Preview"
+SchemaParseError = "Unable to parse JSON Schema. Please check the schema format."
+FormPreviewNote = "This is a preview of the configuration form based on the JSON Schema. Fields shown here represent the configuration options available for this porter."

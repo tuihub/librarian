@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Form</title>
+  <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+  {{- if ne .Css "" }}
+  <link rel="stylesheet" href="{{- .Css }}">
+  {{- else }}
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  {{- end }}
+  <style>
+    .content {
+      flex: 1;
+      padding: 1.25rem;
+      overflow-y: auto;
+    }
+
+    /* Default padding for mobile devices */
+    .container {
+      display: flex;
+      min-height: 100vh;
+      max-height: 100vh;
+      margin: 0 auto;
+    }
+
+    /* Tablet devices */
+    @media screen and (min-width: 768px) {
+      .container {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+
+    /* Desktop devices */
+    @media screen and (min-width: 1024px) {
+      .container {
+        padding-left: 0;
+        padding-right: 0;
+        max-width: 100%;
+      }
+    }
+
+    .sidebar {
+      width: 15rem;
+      padding: 1.25rem;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 0.625rem 0;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body class="bg-base-100 text-base-content">
+  {{- template "Content" . }}
+</body>
+
+<script>
+  function arraySelect(select) {
+    const selectedOption = select.options[select.selectedIndex];
+    const data = JSON.parse(selectedOption.dataset["element"]);
+    const form = document.getElementById("form");
+    const elements = form.querySelectorAll("input");
+    for (const input of elements) {
+      const val = getValueFromPath(data, input.id);
+      input.value = val;
+    }
+  }
+
+  function getValueFromPath(obj, path) {
+    const keys = path.split('.');
+    let current = obj;
+    for (const key of keys) {
+      if (current[key] === undefined) {
+        return undefined;
+      }
+      current = current[key];
+    }
+    return current;
+  }
+
+  // Pre-fill form with the first person's data on page load
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("select").forEach(selectElement => {
+      arraySelect(selectElement);
+    });
+  });
+
+  document.addEventListener("htmx:confirm", function (e) {
+    if (!e.detail.target["htmx-internal-data"].lastButtonClicked.hasAttribute('hx-confirm')) return
+    // Prevent default htmx confirm behavior
+    e.preventDefault();
+    // Create confirmation modal
+    const modal = document.createElement('div');
+    modal.className = 'modal modal-open';
+    modal.innerHTML = `{{- template "Confirm" . }}`;
+    // Add modal to body
+    document.body.appendChild(modal);
+    // Close modal function
+    const closeModal = () => {
+      document.body.removeChild(modal);
+    };
+    // Close modal buttons
+    modal.querySelectorAll('.close-modal').forEach(btn => {
+      btn.addEventListener('click', closeModal);
+    });
+    // Confirm button
+    modal.querySelector('.confirm-action').addEventListener('click', () => {
+      // Continue with the original request
+      e.detail.issueRequest(true);
+      closeModal();
+    });
+    // Close modal when clicking outside
+    modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+  })
+</script>
+
+</html>

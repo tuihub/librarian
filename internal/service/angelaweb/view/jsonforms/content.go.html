@@ -1,0 +1,35 @@
+{{ define "Content" }}
+<div class="container">
+  {{ if .Menu }}
+  <div class="sidebar bg-base-200">
+    <div class="p-4">
+      {{- if ne .Logo "" }}
+      <div class="mb-6">
+        <img src="{{- .Logo }}" alt="logo" class="w-full max-w-32 mx-auto">
+      </div>
+      {{- end }}
+      <ul class="menu menu-lg w-full">
+        {{ range .Menu }}
+        <li>
+          {{- if .ExternalLink }}
+          <a href="{{ .ExternalLink }}" class="{{if .Current}}active{{end}}">
+            {{ .Titel }}
+          </a>
+          {{- else }}
+          <a href="/{{ .Link }}" class="{{if .Current}}active{{end}}">
+            {{ .Titel }}
+          </a>
+          {{- end}}
+        </li>
+        {{ end }}
+      </ul>
+    </div>
+  </div>
+  {{end}}
+  <div class="content">
+    <div>
+      {{ template "Screen" . }}
+    </div>
+  </div>
+</div>
+{{ end }}

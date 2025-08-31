@@ -1,0 +1,13 @@
+{{- define "Confirm" }}
+<div class="modal-backdrop"></div>
+<div class="modal-box">
+  <h3 class="text-lg font-bold">{{- .Confirmation.Title }}</h3>
+  <div class="py-4">
+    {{- .Confirmation.Body }}
+  </div>
+  <div class="modal-action">
+    <button class="btn btn-primary confirm-action">{{- .Confirmation.Confirm }}</button>
+    <button class="btn close-modal">{{- .Confirmation.Cancel }}</button>
+  </div>
+</div>
+{{- end }}

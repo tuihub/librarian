@@ -3,7 +3,9 @@ package angelaweb
 import (
 	"context"
 	"embed"
+	"encoding/json"
 	"fmt"
+	"html/template"
 	"io"
 	"net"
 	"net/http"
@@ -17,11 +19,13 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
 
+	gojsonforms "github.com/TobiEiss/go-jsonforms"
 	"github.com/gofiber/contrib/fiberi18n/v2"
 	"github.com/gofiber/fiber/v2"
 	fiberlog "github.com/gofiber/fiber/v2/log"
@@ -103,6 +107,28 @@ func NewAngelaWeb(
 		return localize
 	})
 
+	viewsEngine.AddFunc("jsonforms", jsonFormsToHTML)
+
+	viewsEngine.AddFunc("json", func(v interface{}) (string, error) {
+		b, err := libcodec.Marshal(libcodec.JSON, v)
+		if err != nil {
+			return "", err
+		}
+		return string(b), nil
+	})
+
+	viewsEngine.AddFunc("formatjson", func(v string) (string, error) {
+		var obj any
+		if err := json.Unmarshal([]byte(v), &obj); err != nil {
+			return "", err
+		}
+		b, err := json.MarshalIndent(obj, "", "  ")
+		if err != nil {
+			return "", err
+		}
+		return string(b), nil
+	})
+
 	fiberlog.SetOutput(io.Discard)
 
 	app := fiber.New(fiber.Config{ //nolint:exhaustruct // no need
@@ -129,4 +155,28 @@ func (a *AngelaWeb) Start(ctx context.Context) error {
 
 func (a *AngelaWeb) Stop(ctx context.Context) error {
 	return a.app.ShutdownWithContext(ctx)
+}
+
+// jsonFormsToHTML converts JSON Schema to HTML form using go-jsonforms library
+// and adapts the output to use DaisyUI CSS classes.
+//
+//nolint:gosec // false positive
+func jsonFormsToHTML(schema string) template.HTML {
+	// Build the form using go-jsonforms
+	res, err := gojsonforms.NewBuilder().
+		WithSchemaBytes([]byte(schema)).
+		WithCustomTemplateFS("view/jsonforms", embedDirView).
+		WithCustomTemplateExt("go.html").
+		Build(false)
+
+	if err != nil {
+		// Return error message in a friendly format for debugging
+		return template.HTML(fmt.Sprintf(`<div class="alert alert-error">
+			<div>
+				<span>JSON Schema Form Error: %s</span>
+			</div>
+		</div>`, template.HTMLEscapeString(err.Error())))
+	}
+
+	return template.HTML(res)
 }
