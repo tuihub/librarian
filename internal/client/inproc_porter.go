@@ -3,6 +3,7 @@ package client
 import (
 	"github.com/tuihub/librarian/internal/lib/libkratos"
 	"github.com/tuihub/librarian/pkg/tuihub-go"
+	tuihubbangumi "github.com/tuihub/librarian/pkg/tuihub-bangumi"
 	tuihubrss "github.com/tuihub/librarian/pkg/tuihub-rss"
 	tuihubsteam "github.com/tuihub/librarian/pkg/tuihub-steam"
 	tuihubtelegram "github.com/tuihub/librarian/pkg/tuihub-telegram"
@@ -34,19 +35,25 @@ func NewInprocPorter() (*InprocPorter, error) {
 	if err != nil {
 		return nil, err
 	}
+	bangumi, err := tuihubbangumi.NewPorter("")
+	if err != nil {
+		return nil, err
+	}
 	return &InprocPorter{
 		porters: []*tuihub.Porter{
-			rss, steam, telegram,
+			rss, steam, telegram, bangumi,
 		},
 		Instances: map[string]porter.LibrarianPorterServiceServer{
 			"inproc://tuihub-rss":      rss.GetPorterService(),
 			"inproc://tuihub-steam":    steam.GetPorterService(),
 			"inproc://tuihub-telegram": telegram.GetPorterService(),
+			"inproc://tuihub-bangumi":  bangumi.GetPorterService(),
 		},
 		Servers: lo.Flatten([][]transport.Server{
 			rss.GetBackgroundServices(),
 			steam.GetBackgroundServices(),
 			telegram.GetBackgroundServices(),
+			bangumi.GetBackgroundServices(),
 		}),
 	}, nil
 }
