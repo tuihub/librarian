@@ -70,10 +70,12 @@
                     </td>
                     <td>
                         <div class="flex space-x-3">
+                            <a href="/porters/{{.ID}}" class="link link-hover link-info">
+                                {{localize $.Ctx "View"}}
+                            </a>
                             {{if eq .Status 1}}
                             <button
-                                class="text-error hover:text-error/80
-                                toggle-porter transition-colors duration-200"
+                                class="link link-error link-hover"
                                 data-id="{{.ID}}"
                                 data-action="disable"
                             >
@@ -81,8 +83,7 @@
                             </button>
                             {{else}}
                             <button
-                                class="text-success hover:text-success/80
-                                toggle-porter transition-colors duration-200"
+                                class="link link-error link-hover"
                                 data-id="{{.ID}}"
                                 data-action="enable"
                             >

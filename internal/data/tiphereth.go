@@ -351,6 +351,17 @@ func (t *TipherethRepo) ListPorters(
 	return converter.ToBizPorterList(p), int64(count), nil
 }
 
+func (t *TipherethRepo) GetPorter(
+	ctx context.Context,
+	id model.InternalID,
+) (*modelsupervisor.PorterInstance, error) {
+	p, err := t.data.db.PorterInstance.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizPorter(p), nil
+}
+
 func (t *TipherethRepo) UpdatePorterStatus(
 	ctx context.Context,
 	id model.InternalID,
@@ -391,6 +402,30 @@ func (t *TipherethRepo) ListPorterContexts(
 ) ([]*modelsupervisor.PorterContext, int64, error) {
 	q := t.data.db.PorterContext.Query().Where(
 		portercontext.HasOwnerWith(user.IDEQ(userID)),
+	)
+	count, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	p, err := q.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizPorterContextList(p), int64(count), nil
+}
+
+func (t *TipherethRepo) ListPorterContextsByGlobalName(
+	ctx context.Context,
+	userID model.InternalID,
+	globalName string,
+	paging model.Paging,
+) ([]*modelsupervisor.PorterContext, int64, error) {
+	q := t.data.db.PorterContext.Query().Where(
+		portercontext.HasOwnerWith(user.IDEQ(userID)),
+		portercontext.GlobalNameEQ(globalName),
 	)
 	count, err := q.Count(ctx)
 	if err != nil {

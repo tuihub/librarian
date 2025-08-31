@@ -10,9 +10,9 @@ import (
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/biz/bizkether"
 	"github.com/tuihub/librarian/internal/biz/biznetzach"
+	"github.com/tuihub/librarian/internal/biz/bizsupervisor"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model/modelangela"
@@ -36,7 +36,7 @@ type LibrarianSephirahService struct {
 	y    *bizyesod.Yesod
 	n    *biznetzach.Netzach
 	c    *bizchesed.Chesed
-	s    *data.SupervisorRepo
+	s    *bizsupervisor.Supervisor
 	app  *libapp.Settings
 	auth *libauth.Auth
 }
@@ -50,7 +50,7 @@ func NewLibrarianSephirahService(
 	y *bizyesod.Yesod,
 	n *biznetzach.Netzach,
 	c *bizchesed.Chesed,
-	s *data.SupervisorRepo,
+	s *bizsupervisor.Supervisor,
 	app *libapp.Settings,
 	auth *libauth.Auth,
 ) pb.LibrarianSephirahServiceServer {

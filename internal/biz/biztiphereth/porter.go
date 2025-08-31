@@ -24,6 +24,20 @@ func (t *Tiphereth) ListPorters(
 	return porters, total, nil
 }
 
+func (t *Tiphereth) GetPorter(
+	ctx context.Context,
+	id model.InternalID,
+) (*modelsupervisor.PorterInstance, error) {
+	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
+		return nil, bizutils.NoPermissionError()
+	}
+	porter, err := t.repo.GetPorter(ctx, id)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return porter, nil
+}
+
 func (t *Tiphereth) UpdatePorterStatus(
 	ctx context.Context,
 	id model.InternalID,

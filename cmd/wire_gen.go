@@ -238,7 +238,14 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(angela, kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorRepo, settings, libauthAuth)
+	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, confPorter, inprocPorter)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	bizsupervisorSupervisor := bizsupervisor.NewSupervisor(settings, supervisorRepo, clientPorter, libauthAuth, idGenerator)
+	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(angela, kether, tiphereth, gebura, binah, yesod, netzach, chesed, bizsupervisorSupervisor, settings, libauthAuth)
 	librarianSentinelServiceServer := sentinel.NewLibrarianSentinelService(tiphereth, gebura)
 	librarianSephirahPorterServiceServer := porter.NewLibrarianSephirahPorterService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, settings, libauthAuth)
 	grpcServer, err := server.NewGRPCServer(confServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, librarianSephirahPorterServiceServer, settings, inprocPorter)
@@ -261,14 +268,7 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, gebura, key, observe)
-	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, confPorter, inprocPorter)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	bizsupervisorSupervisor := bizsupervisor.NewSupervisor(settings, supervisorRepo, clientPorter, libauthAuth, idGenerator)
+	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, gebura, bizsupervisorSupervisor, key, observe)
 	porterFeatureController := bizsupervisor.NewPorterFeatureController(bizsupervisorSupervisor)
 	supervisorService, err := supervisor.NewSupervisorService(bizsupervisorSupervisor, confPorter, libauthAuth, clientPorter, topic6, cron, tipherethRepo, porterFeatureController)
 	if err != nil {

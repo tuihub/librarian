@@ -1,0 +1,239 @@
+<div>
+    <div class="header">
+        <div class="breadcrumbs text-sm">
+            <ul>
+                <li>{{localize .Ctx "Home"}}</li>
+                <li>{{localize .Ctx "PluginManagement"}}</li>
+                <li>{{localize .Ctx "PorterDetail"}}</li>
+            </ul>
+        </div>
+        <a href="/porters" class="btn btn-secondary">
+            {{template "icon-back" .}}
+            {{localize .Ctx "BackToList"}}
+        </a>
+    </div>
+
+    <!-- Porter Details Card -->
+    <div class="card mb-6">
+        <div class="card-body">
+            <h2 class="card-title">{{localize .Ctx "PorterInformation"}}</h2>
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "ID_"}}</legend>
+                    <p class="label">{{.Porter.ID}}</p>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "GlobalName"}}</legend>
+                    <p class="label">{{.Porter.GlobalName}}</p>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "Address"}}</legend>
+                    <p class="label">{{.Porter.Address}}</p>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "Region"}}</legend>
+                    <p class="label">{{.Porter.Region}}</p>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "Status"}}</legend>
+                    <p class="label">
+                        {{if eq .Porter.Status 1}}
+                            <span class="badge badge-primary">{{localize .Ctx "Enabled"}}</span>
+                        {{else}}
+                            <span class="badge badge-warning">{{localize .Ctx "Disabled"}}</span>
+                        {{end}}
+                    </p>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "ConnectionStatus"}}</legend>
+                    <p class="label">
+                        {{if eq .Porter.ConnectionStatus 1}}
+                            <span class="badge badge-secondary">{{localize .Ctx "Queueing"}}</span>
+                        {{else if eq .Porter.ConnectionStatus 2}}
+                            <span class="badge badge-primary">{{localize .Ctx "Connected"}}</span>
+                        {{else if eq .Porter.ConnectionStatus 3}}
+                            <span class="badge badge-error">{{localize .Ctx "Disconnected"}}</span>
+                        {{else if eq .Porter.ConnectionStatus 4}}
+                            <span class="badge badge-warning">{{localize .Ctx "Active"}}</span>
+                        {{else if eq .Porter.ConnectionStatus 5}}
+                            <span class="badge badge-info">{{localize .Ctx "ActivationFailed"}}</span>
+                        {{else if eq .Porter.ConnectionStatus 6}}
+                            <span class="badge badge-secondary">{{localize .Ctx "Downgraded"}}</span>
+                        {{else}}
+                            <span class="badge badge-neutral">{{localize .Ctx "Unknown"}}</span>
+                        {{end}}
+                    </p>
+                </fieldset>
+                {{if .Porter.ConnectionStatusMessage}}
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "ConnectionStatusMessage"}}</legend>
+                    <p class="label">{{.Porter.ConnectionStatusMessage}}</p>
+                </fieldset>
+                {{end}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Binary Information Card -->
+    {{if .Porter.BinarySummary}}
+    <div class="card mb-6">
+        <div class="card-body">
+            <h2 class="card-title">{{localize .Ctx "BinaryInformation"}}</h2>
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "Name"}}</legend>
+                    <p class="label">{{.Porter.BinarySummary.Name}}</p>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "Version"}}</legend>
+                    <p class="label">{{.Porter.BinarySummary.Version}}</p>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "Description_"}}</legend>
+                    <p class="label">{{.Porter.BinarySummary.Description}}</p>
+                </fieldset>
+                {{if .Porter.BinarySummary.SourceCodeAddress}}
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "SourceCodeAddress"}}</legend>
+                    <p class="label">
+                        <a href="{{.Porter.BinarySummary.SourceCodeAddress}}" target="_blank" class="link link-primary">
+                            {{.Porter.BinarySummary.SourceCodeAddress}}
+                        </a>
+                    </p>
+                </fieldset>
+                {{end}}
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "BuildVersion"}}</legend>
+                    <p class="label">{{.Porter.BinarySummary.BuildVersion}}</p>
+                </fieldset>
+                <fieldset class="fieldset">
+                    <legend class="fieldset-legend">{{localize .Ctx "BuildDate"}}</legend>
+                    <p class="label">{{.Porter.BinarySummary.BuildDate}}</p>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    {{end}}
+
+    <!-- Feature Summary Card -->
+    {{if .Porter.FeatureSummary}}
+    <div class="card mb-6">
+        <div class="card-body">
+            <h2 class="card-title">{{localize .Ctx "FeatureSummary"}}</h2>
+            
+            {{if .Porter.FeatureSummary.AccountPlatforms}}
+            <div class="mb-4">
+                <label class="label">{{localize .Ctx "AccountPlatforms"}}</label>
+                <div class="flex flex-wrap gap-2">
+                    {{range .Porter.FeatureSummary.AccountPlatforms}}
+                    <span class="badge badge-outline">{{.Name}}</span>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+
+            {{if .Porter.FeatureSummary.AppInfoSources}}
+            <div class="mb-4">
+                <label class="label">{{localize .Ctx "AppInfoSources"}}</label>
+                <div class="flex flex-wrap gap-2">
+                    {{range .Porter.FeatureSummary.AppInfoSources}}
+                    <span class="badge badge-outline">{{.Name}}</span>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+
+            {{if .Porter.FeatureSummary.FeedSources}}
+            <div class="mb-4">
+                <label class="label">{{localize .Ctx "FeedSources"}}</label>
+                <div class="flex flex-wrap gap-2">
+                    {{range .Porter.FeatureSummary.FeedSources}}
+                    <span class="badge badge-outline">{{.Name}}</span>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+
+            {{if .Porter.FeatureSummary.NotifyDestinations}}
+            <div class="mb-4">
+                <label class="label">{{localize .Ctx "NotifyDestinations"}}</label>
+                <div class="flex flex-wrap gap-2">
+                    {{range .Porter.FeatureSummary.NotifyDestinations}}
+                    <span class="badge badge-outline">{{.Name}}</span>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+
+            {{if .Porter.FeatureSummary.FeedItemActions}}
+            <div class="mb-4">
+                <label class="label">{{localize .Ctx "FeedItemActions"}}</label>
+                <div class="flex flex-wrap gap-2">
+                    {{range .Porter.FeatureSummary.FeedItemActions}}
+                    <span class="badge badge-outline">{{.Name}}</span>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+
+            {{if .Porter.FeatureSummary.FeedGetters}}
+            <div class="mb-4">
+                <label class="label">{{localize .Ctx "FeedGetters"}}</label>
+                <div class="flex flex-wrap gap-2">
+                    {{range .Porter.FeatureSummary.FeedGetters}}
+                    <span class="badge badge-outline">{{.Name}}</span>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+
+            {{if .Porter.FeatureSummary.FeedSetters}}
+            <div class="mb-4">
+                <label class="label">{{localize .Ctx "FeedSetters"}}</label>
+                <div class="flex flex-wrap gap-2">
+                    {{range .Porter.FeatureSummary.FeedSetters}}
+                    <span class="badge badge-outline">{{.Name}}</span>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+        </div>
+    </div>
+    {{end}}
+
+    <!-- Context JSON Schema Card -->
+    {{if .Porter.ContextJSONSchema}}
+    <div class="card mb-6">
+        <div class="card-body">
+            <h2 class="card-title">{{localize .Ctx "ContextJSONSchema"}}</h2>
+            <div class="mt-4 p-3 bg-base-200 rounded-md">
+                <pre id="contextSchemaText" class="text-sm overflow-x-auto">{{.Porter.ContextJSONSchema}}</pre>
+            </div>
+            <div class="card-actions justify-end mt-4">
+                <button class="btn btn-secondary btn-sm" id="copySchemaBtn">
+                    {{template "icon-copy" .}}
+                    {{localize .Ctx "Copy"}}
+                </button>
+            </div>
+        </div>
+    </div>
+    {{end}}
+</div>
+
+<script>
+// Copy schema functionality
+document.getElementById('copySchemaBtn')?.addEventListener('click', function() {
+    const schemaText = document.getElementById('contextSchemaText').textContent;
+    navigator.clipboard.writeText(schemaText).then(function() {
+        // Show temporary success feedback
+        const btn = document.getElementById('copySchemaBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '{{localize .Ctx "Copied"}}';
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+        }, 2000);
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+});
+</script>

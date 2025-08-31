@@ -47,6 +47,23 @@ func (h *Handler) ListPorters(c *fiber.Ctx) error {
 	})
 }
 
+func (h *Handler) GetPorter(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Invalid ID"})
+	}
+
+	porter, err := h.t.GetPorter(c.UserContext(), model.InternalID(id))
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Error fetching porter"})
+	}
+
+	return c.JSON(fiber.Map{
+		"porter": porter,
+	})
+}
+
 func (h *Handler) UpdatePorterStatus(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)

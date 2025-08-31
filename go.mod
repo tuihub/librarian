@@ -27,7 +27,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.6.0
-	github.com/google/wire v0.6.0
+	github.com/google/wire v0.7.0
 	github.com/gorilla/feeds v1.2.0
 	github.com/hashicorp/consul/api v1.32.1
 	github.com/improbable-eng/grpc-web v0.15.0

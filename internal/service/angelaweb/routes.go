@@ -24,6 +24,7 @@ func (a *AngelaWeb) setupRoutes() {
 	api.Put("/users/:id", a.apiHandler.UpdateUser)
 
 	api.Get("/porters", a.apiHandler.ListPorters)
+	api.Get("/porters/:id", a.apiHandler.GetPorter)
 	api.Put("/porters/:id/status", a.apiHandler.UpdatePorterStatus)
 
 	api.Post("/server-info", a.apiHandler.UpdateServerInfo)
@@ -53,6 +54,7 @@ func (a *AngelaWeb) setupRoutes() {
 	page.Get("/users/edit/:id", a.pageBuilder.UserForm)
 
 	page.Get("/porters", a.pageBuilder.PorterList)
+	page.Get("/porters/:id", a.pageBuilder.PorterDetail)
 
 	page.Get("/config", a.pageBuilder.ConfigList)
 	page.Get("/server-info", a.pageBuilder.ServerInfoForm)

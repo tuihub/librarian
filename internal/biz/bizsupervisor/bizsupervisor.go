@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libidgenerator"
+	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 
 	"github.com/google/wire"
 )
@@ -37,4 +38,8 @@ func NewSupervisor(
 		auth:   auth,
 		id:     id,
 	}
+}
+
+func (s *Supervisor) GetFeatureSummary() *modelsupervisor.ServerFeatureSummary {
+	return s.repo.GetFeatureSummary()
 }

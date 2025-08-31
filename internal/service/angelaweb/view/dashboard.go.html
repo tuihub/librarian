@@ -7,4 +7,90 @@
             </ul>
         </div>
     </div>
+    
+    <!-- Feature Summary Card -->
+    {{if .FeatureSummary}}
+        <div class="card mb-6">
+            <div class="card-body">
+                <h2 class="card-title">{{localize .Ctx "FeatureSummary"}}</h2>
+
+                {{if .FeatureSummary.AccountPlatforms}}
+                    <div class="mb-4">
+                        <label class="label">{{localize .Ctx "AccountPlatforms"}}</label>
+                        <div class="flex flex-wrap gap-2">
+                            {{range .FeatureSummary.AccountPlatforms}}
+                                <span class="badge badge-outline">{{.Name}}</span>
+                            {{end}}
+                        </div>
+                    </div>
+                {{end}}
+
+                {{if .FeatureSummary.AppInfoSources}}
+                    <div class="mb-4">
+                        <label class="label">{{localize .Ctx "AppInfoSources"}}</label>
+                        <div class="flex flex-wrap gap-2">
+                            {{range .FeatureSummary.AppInfoSources}}
+                                <span class="badge badge-outline">{{.Name}}</span>
+                            {{end}}
+                        </div>
+                    </div>
+                {{end}}
+
+                {{if .FeatureSummary.FeedSources}}
+                    <div class="mb-4">
+                        <label class="label">{{localize .Ctx "FeedSources"}}</label>
+                        <div class="flex flex-wrap gap-2">
+                            {{range .FeatureSummary.FeedSources}}
+                                <span class="badge badge-outline">{{.Name}}</span>
+                            {{end}}
+                        </div>
+                    </div>
+                {{end}}
+
+                {{if .FeatureSummary.NotifyDestinations}}
+                    <div class="mb-4">
+                        <label class="label">{{localize .Ctx "NotifyDestinations"}}</label>
+                        <div class="flex flex-wrap gap-2">
+                            {{range .FeatureSummary.NotifyDestinations}}
+                                <span class="badge badge-outline">{{.Name}}</span>
+                            {{end}}
+                        </div>
+                    </div>
+                {{end}}
+
+                {{if .FeatureSummary.FeedItemActions}}
+                    <div class="mb-4">
+                        <label class="label">{{localize .Ctx "FeedItemActions"}}</label>
+                        <div class="flex flex-wrap gap-2">
+                            {{range .FeatureSummary.FeedItemActions}}
+                                <span class="badge badge-outline">{{.Name}}</span>
+                            {{end}}
+                        </div>
+                    </div>
+                {{end}}
+
+                {{if .FeatureSummary.FeedGetters}}
+                    <div class="mb-4">
+                        <label class="label">{{localize .Ctx "FeedGetters"}}</label>
+                        <div class="flex flex-wrap gap-2">
+                            {{range .FeatureSummary.FeedGetters}}
+                                <span class="badge badge-outline">{{.Name}}</span>
+                            {{end}}
+                        </div>
+                    </div>
+                {{end}}
+
+                {{if .FeatureSummary.FeedSetters}}
+                    <div class="mb-4">
+                        <label class="label">{{localize .Ctx "FeedSetters"}}</label>
+                        <div class="flex flex-wrap gap-2">
+                            {{range .FeatureSummary.FeedSetters}}
+                                <span class="badge badge-outline">{{.Name}}</span>
+                            {{end}}
+                        </div>
+                    </div>
+                {{end}}
+            </div>
+        </div>
+    {{end}}
 </div>

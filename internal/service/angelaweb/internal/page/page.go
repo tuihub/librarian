@@ -6,6 +6,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/internal/biz/bizsupervisor"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -26,6 +27,7 @@ type Builder struct {
 	a              *bizangela.Angela
 	t              *biztiphereth.Tiphereth
 	g              *bizgebura.Gebura
+	s              *bizsupervisor.Supervisor
 	configDigests  []*conf.ConfigDigest
 	userCountCache *libcache.Key[model.UserCount]
 }
@@ -35,6 +37,7 @@ func NewBuilder(
 	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
+	s *bizsupervisor.Supervisor,
 	configDigests []*conf.ConfigDigest,
 	userCountCache *libcache.Key[model.UserCount],
 ) *Builder {
@@ -43,6 +46,7 @@ func NewBuilder(
 		a:              a,
 		t:              t,
 		g:              g,
+		s:              s,
 		configDigests:  configDigests,
 		userCountCache: userCountCache,
 	}
@@ -116,10 +120,12 @@ func (b *Builder) Dashboard(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingData"))
 	}
+	featureSummary := b.s.GetFeatureSummary()
 
 	return c.Render("dashboard", addCommonData(c, fiber.Map{
-		"Title":     "Dashboard",
-		"UserCount": userCount.Count,
+		"Title":          "Dashboard",
+		"UserCount":      userCount.Count,
+		"FeatureSummary": featureSummary,
 	}))
 }
 
@@ -184,6 +190,24 @@ func (b *Builder) PorterList(c *fiber.Ctx) error {
 		"Title":      "PluginManagement",
 		"Porters":    porters,
 		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
+	}))
+}
+
+func (b *Builder) PorterDetail(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).SendString("Invalid ID")
+	}
+
+	porter, err := b.t.GetPorter(c.UserContext(), model.InternalID(id))
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingPorters"))
+	}
+
+	return c.Render("porter_detail", addCommonData(c, fiber.Map{
+		"Title":  "PorterDetail",
+		"Porter": porter,
 	}))
 }
 
