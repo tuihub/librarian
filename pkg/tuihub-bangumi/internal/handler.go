@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/tuihub/librarian/pkg/tuihub-go"
 	"github.com/tuihub/librarian/pkg/tuihub-bangumi/internal/biz"
 	"github.com/tuihub/librarian/pkg/tuihub-bangumi/internal/model"
+	"github.com/tuihub/librarian/pkg/tuihub-go"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -57,12 +57,12 @@ func (h *Handler) EnableContext(ctx context.Context, req *porter.EnableContextRe
 	if err != nil {
 		return nil, errors.BadRequest("invalid context_json", err.Error())
 	}
-	
+
 	// Validate required token
 	if config.Token == "" {
 		return nil, errors.BadRequest("token_required", "Bangumi API token is required")
 	}
-	
+
 	h.clientMap.Store(req.GetContextId().GetId(), config)
 	return &porter.EnableContextResponse{}, nil
 }
@@ -80,7 +80,7 @@ func (h *Handler) GetAppInfo(ctx context.Context, req *porter.GetAppInfoRequest)
 	if err != nil {
 		return nil, errors.BadRequest("invalid context_json", err.Error())
 	}
-	
+
 	clientAny, ok := h.clientMap.Load(req.GetConfig().GetContextId().GetId())
 	if !ok {
 		return nil, errors.BadRequest("context not found", "")
@@ -89,13 +89,13 @@ func (h *Handler) GetAppInfo(ctx context.Context, req *porter.GetAppInfoRequest)
 	if !ok {
 		return nil, errors.BadRequest("invalid context", "")
 	}
-	
+
 	bangumi := biz.NewBangumiUseCase(client.Token)
 	app, err := bangumi.GetSubject(ctx, config.AppID)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &porter.GetAppInfoResponse{
 		AppInfo: &porter.AppInfo{
 			Source:      tuihub.WellKnownToString(librarian.WellKnownAppInfoSource_WELL_KNOWN_APP_INFO_SOURCE_BANGUMI),
@@ -129,7 +129,7 @@ func (h *Handler) SearchAppInfo(ctx context.Context, req *porter.SearchAppInfoRe
 	if err != nil {
 		return nil, errors.BadRequest("invalid context_json", err.Error())
 	}
-	
+
 	clientAny, ok := h.clientMap.Load(req.GetConfig().GetContextId().GetId())
 	if !ok {
 		return nil, errors.BadRequest("context not found", "")
@@ -138,22 +138,22 @@ func (h *Handler) SearchAppInfo(ctx context.Context, req *porter.SearchAppInfoRe
 	if !ok {
 		return nil, errors.BadRequest("invalid context", "")
 	}
-	
+
 	bangumi := biz.NewBangumiUseCase(client.Token)
 	apps, err := bangumi.SearchSubjects(ctx, config.NameLike)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	appList := make([]*porter.AppInfo, len(apps))
 	for i, app := range apps {
 		appList[i] = &porter.AppInfo{
 			Source: tuihub.WellKnownToString(
 				librarian.WellKnownAppInfoSource_WELL_KNOWN_APP_INFO_SOURCE_BANGUMI,
 			),
-			SourceAppId:        strconv.Itoa(app.ID),
-			SourceUrl:          &app.StoreURL,
-			RawDataJson:        "",
+			SourceAppId: strconv.Itoa(app.ID),
+			SourceUrl:   &app.StoreURL,
+			RawDataJson: "",
 			Details: &porter.AppInfoDetails{
 				Description: app.Description,
 				ReleaseDate: app.ReleaseDate,
@@ -172,7 +172,7 @@ func (h *Handler) SearchAppInfo(ctx context.Context, req *porter.SearchAppInfoRe
 			NameAlternatives:   []string{app.NameCN},
 		}
 	}
-	
+
 	return &porter.SearchAppInfoResponse{AppInfos: appList}, nil
 }
 

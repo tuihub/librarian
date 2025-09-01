@@ -1,6 +1,6 @@
 package model
 
-// Subject represents a Bangumi subject (anime/manga/book/game/music)
+// Subject represents a Bangumi subject (anime/manga/book/game/music).
 type Subject struct {
 	ID       int    `json:"id"`
 	URL      string `json:"url"`
@@ -39,19 +39,19 @@ type Tag struct {
 }
 
 type Rating struct {
-	Rank  int     `json:"rank"`
-	Total int     `json:"total"`
+	Rank  int            `json:"rank"`
+	Total int            `json:"total"`
 	Count map[string]int `json:"count"`
-	Score float64 `json:"score"`
+	Score float64        `json:"score"`
 }
 
-// SearchSubjectsResponse for search API
+// SearchSubjectsResponse for search API.
 type SearchSubjectsResponse struct {
 	Results int       `json:"results"`
 	List    []Subject `json:"list"`
 }
 
-// SubjectType represents the type of a Bangumi subject
+// SubjectType represents the type of a Bangumi subject.
 type SubjectType int
 
 const (

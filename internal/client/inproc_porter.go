@@ -2,8 +2,8 @@ package client
 
 import (
 	"github.com/tuihub/librarian/internal/lib/libkratos"
-	"github.com/tuihub/librarian/pkg/tuihub-go"
 	tuihubbangumi "github.com/tuihub/librarian/pkg/tuihub-bangumi"
+	"github.com/tuihub/librarian/pkg/tuihub-go"
 	tuihubrss "github.com/tuihub/librarian/pkg/tuihub-rss"
 	tuihubsteam "github.com/tuihub/librarian/pkg/tuihub-steam"
 	tuihubtelegram "github.com/tuihub/librarian/pkg/tuihub-telegram"

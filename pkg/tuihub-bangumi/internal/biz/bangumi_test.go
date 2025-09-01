@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/tuihub/librarian/pkg/tuihub-go/logger"
 	"github.com/tuihub/librarian/pkg/tuihub-bangumi/internal/biz"
+	"github.com/tuihub/librarian/pkg/tuihub-go/logger"
 )
 
 func getToken() string {
@@ -14,7 +14,7 @@ func getToken() string {
 }
 
 func getSubjectID() string {
-	return "12"  // Cowboy Bebop - a well-known anime for testing
+	return "12" // Cowboy Bebop - a well-known anime for testing
 }
 
 func TestBangumiUseCase_GetSubject(t *testing.T) {
@@ -22,7 +22,7 @@ func TestBangumiUseCase_GetSubject(t *testing.T) {
 	if token == "" {
 		t.Skip("BANGUMI_API_TOKEN not set")
 	}
-	
+
 	uc := biz.NewBangumiUseCase(token)
 	res, err := uc.GetSubject(context.Background(), getSubjectID())
 	logger.Infof("res %+v, err: %+v", res, err)
@@ -33,7 +33,7 @@ func TestBangumiUseCase_SearchSubjects(t *testing.T) {
 	if token == "" {
 		t.Skip("BANGUMI_API_TOKEN not set")
 	}
-	
+
 	uc := biz.NewBangumiUseCase(token)
 	res, err := uc.SearchSubjects(context.Background(), "cowboy bebop")
 	logger.Infof("res %+v, err: %+v", res, err)

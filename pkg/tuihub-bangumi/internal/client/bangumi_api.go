@@ -6,15 +6,18 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/tuihub/librarian/pkg/tuihub-bangumi/internal/model"
 )
 
 const (
-	baseURL     = "https://api.bgm.tv"
-	userAgent   = "tuihub-bangumi/1.0"
-	timeout     = 30 * time.Second
+	baseURL            = "https://api.bgm.tv"
+	userAgent          = "tuihub-bangumi/1.0"
+	timeout            = 30 * time.Second
+	defaultSearchLimit = 10
+	maxSearchLimit     = 25
 )
 
 type Client struct {
@@ -33,71 +36,71 @@ func NewClient(token string) *Client {
 
 func (c *Client) GetSubject(ctx context.Context, subjectID string) (*model.Subject, error) {
 	url := fmt.Sprintf("%s/v0/subjects/%s", baseURL, subjectID)
-	
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
-	
+
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Accept", "application/json")
-	
+
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 	defer resp.Body.Close()
-	
+
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
 	}
-	
+
 	var subject model.Subject
-	if err := json.NewDecoder(resp.Body).Decode(&subject); err != nil {
-		return nil, fmt.Errorf("failed to decode response: %w", err)
+	if decodeErr := json.NewDecoder(resp.Body).Decode(&subject); decodeErr != nil {
+		return nil, fmt.Errorf("failed to decode response: %w", decodeErr)
 	}
-	
+
 	return &subject, nil
 }
 
 func (c *Client) SearchSubjects(ctx context.Context, query string, limit int) (*model.SearchSubjectsResponse, error) {
 	if limit <= 0 {
-		limit = 10
+		limit = defaultSearchLimit
 	}
-	if limit > 25 {
-		limit = 25 // Bangumi API limit
+	if limit > maxSearchLimit {
+		limit = maxSearchLimit // Bangumi API limit
 	}
-	
+
 	params := url.Values{}
 	params.Set("keyword", query)
-	params.Set("limit", fmt.Sprintf("%d", limit))
-	
+	params.Set("limit", strconv.Itoa(limit))
+
 	url := fmt.Sprintf("%s/v0/search/subjects?%s", baseURL, params.Encode())
-	
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
-	
+
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Accept", "application/json")
-	
+
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
 	defer resp.Body.Close()
-	
+
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("API returned status %d", resp.StatusCode)
 	}
-	
+
 	var searchResp model.SearchSubjectsResponse
-	if err := json.NewDecoder(resp.Body).Decode(&searchResp); err != nil {
-		return nil, fmt.Errorf("failed to decode response: %w", err)
+	if decodeErr := json.NewDecoder(resp.Body).Decode(&searchResp); decodeErr != nil {
+		return nil, fmt.Errorf("failed to decode response: %w", decodeErr)
 	}
-	
+
 	return &searchResp, nil
 }

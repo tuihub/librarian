@@ -4,9 +4,9 @@ package tuihubbangumi
 import (
 	"context"
 
-	"github.com/tuihub/librarian/pkg/tuihub-go"
 	"github.com/tuihub/librarian/pkg/tuihub-bangumi/internal"
 	"github.com/tuihub/librarian/pkg/tuihub-bangumi/internal/model"
+	"github.com/tuihub/librarian/pkg/tuihub-go"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )

@@ -8,6 +8,10 @@ import (
 	"github.com/tuihub/librarian/pkg/tuihub-bangumi/internal/model"
 )
 
+const (
+	defaultSearchLimit = 10
+)
+
 type BangumiUseCase struct {
 	client *client.Client
 }
@@ -23,27 +27,27 @@ func (b *BangumiUseCase) GetSubject(ctx context.Context, subjectID string) (*App
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return b.convertSubjectToAppInfo(subject), nil
 }
 
 func (b *BangumiUseCase) SearchSubjects(ctx context.Context, query string) ([]*AppInfo, error) {
-	searchResp, err := b.client.SearchSubjects(ctx, query, 10)
+	searchResp, err := b.client.SearchSubjects(ctx, query, defaultSearchLimit)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	apps := make([]*AppInfo, len(searchResp.List))
 	for i, subject := range searchResp.List {
 		apps[i] = b.convertSubjectToAppInfo(&subject)
 	}
-	
+
 	return apps, nil
 }
 
 func (b *BangumiUseCase) convertSubjectToAppInfo(subject *model.Subject) *AppInfo {
 	appType := b.getAppType(model.SubjectType(subject.Type))
-	
+
 	// Extract developer/publisher from infobox
 	var developer, publisher []string
 	for _, info := range subject.InfoBox {
@@ -58,7 +62,7 @@ func (b *BangumiUseCase) convertSubjectToAppInfo(subject *model.Subject) *AppInf
 			}
 		}
 	}
-	
+
 	// Create image URLs list
 	var imageURLs []string
 	if subject.Images.Large != "" {
@@ -67,22 +71,22 @@ func (b *BangumiUseCase) convertSubjectToAppInfo(subject *model.Subject) *AppInf
 	if subject.Images.Medium != "" {
 		imageURLs = append(imageURLs, subject.Images.Medium)
 	}
-	
+
 	return &AppInfo{
-		ID:                  subject.ID,
-		Name:                subject.Name,
-		NameCN:              subject.NameCN,
-		Type:                appType,
-		ShortDescription:    subject.Summary,
-		Description:         subject.Summary,
-		ReleaseDate:         subject.Date,
-		Developer:           strings.Join(developer, ", "),
-		Publisher:           strings.Join(publisher, ", "),
-		CoverImageURL:       subject.Images.Large,
-		BackgroundImageURL:  subject.Images.Common,
-		ImageURLs:           imageURLs,
-		StoreURL:            subject.URL,
-		Tags:                b.extractTags(subject.Tags),
+		ID:                 subject.ID,
+		Name:               subject.Name,
+		NameCN:             subject.NameCN,
+		Type:               appType,
+		ShortDescription:   subject.Summary,
+		Description:        subject.Summary,
+		ReleaseDate:        subject.Date,
+		Developer:          strings.Join(developer, ", "),
+		Publisher:          strings.Join(publisher, ", "),
+		CoverImageURL:      subject.Images.Large,
+		BackgroundImageURL: subject.Images.Common,
+		ImageURLs:          imageURLs,
+		StoreURL:           subject.URL,
+		Tags:               b.extractTags(subject.Tags),
 	}
 }
 
@@ -109,25 +113,25 @@ func (b *BangumiUseCase) extractTags(tags []model.Tag) []string {
 	return result
 }
 
-// AppInfo represents processed Bangumi subject data
+// AppInfo represents processed Bangumi subject data.
 type AppInfo struct {
-	ID                  int
-	Name                string
-	NameCN              string
-	Type                AppType
-	ShortDescription    string
-	Description         string
-	ReleaseDate         string
-	Developer           string
-	Publisher           string
-	CoverImageURL       string
-	BackgroundImageURL  string
-	ImageURLs           []string
-	StoreURL            string
-	Tags                []string
+	ID                 int
+	Name               string
+	NameCN             string
+	Type               AppType
+	ShortDescription   string
+	Description        string
+	ReleaseDate        string
+	Developer          string
+	Publisher          string
+	CoverImageURL      string
+	BackgroundImageURL string
+	ImageURLs          []string
+	StoreURL           string
+	Tags               []string
 }
 
-// AppType represents the type of app/media
+// AppType represents the type of app/media.
 type AppType int
 
 const (
