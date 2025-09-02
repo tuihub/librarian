@@ -10,6 +10,7 @@ func newGoChannelAdapter(loggerAdapter *mqLogger) *pubSub {
 			OutputChannelBuffer:            0,
 			Persistent:                     false,
 			BlockPublishUntilSubscriberAck: false,
+			PreserveContext:                false,
 		},
 		loggerAdapter,
 	)

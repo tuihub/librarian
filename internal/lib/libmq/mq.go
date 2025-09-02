@@ -158,6 +158,8 @@ func retryMiddleware() func(h message.HandlerFunc) message.HandlerFunc {
 		MaxElapsedTime:      0,
 		RandomizationFactor: 0.2, //nolint:mnd //TODO
 		OnRetryHook:         nil,
+		ShouldRetry:         nil,
+		ResetContextOnRetry: false,
 		Logger:              newMQLogger(),
 	}.Middleware
 }
