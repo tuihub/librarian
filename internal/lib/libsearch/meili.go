@@ -50,12 +50,12 @@ func (m *meiliSearcherRepo) DescribeID(
 		}
 	}
 	if append_ {
-		_, err = m.search.Index(SearchIndexNameMap()[index]).UpdateDocuments(documents)
+		_, err = m.search.Index(SearchIndexNameMap()[index]).UpdateDocuments(documents, nil)
 		if err != nil {
 			return err
 		}
 	} else {
-		_, err = m.search.Index(SearchIndexNameMap()[index]).AddDocuments(documents)
+		_, err = m.search.Index(SearchIndexNameMap()[index]).AddDocuments(documents, nil)
 		if err != nil {
 			return err
 		}
