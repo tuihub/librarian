@@ -5,13 +5,11 @@ import (
 	"sync"
 
 	"github.com/tuihub/librarian/internal/client"
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/internal/ent"
-	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/data/internal/gormschema"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 
-	"entgo.io/ent/dialect/sql"
+	"gorm.io/gorm/clause"
 )
 
 type SupervisorRepo struct {
@@ -164,75 +162,74 @@ func (s *SupervisorRepo) UpsertPorter(
 	if err != nil {
 		return nil, err
 	}
-	res, err := s.data.db.PorterInstance.Query().Where(porterinstance.AddressEQ(instance.Address)).Only(ctx)
-	if err != nil {
+	var p gormschema.PorterInstance
+	if err := s.data.db.WithContext(ctx).Where("address = ?", instance.Address).First(&p).Error; err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorter(res), nil
+	return gormschema.ToBizPorter(&p), nil
 }
 
 func (s *SupervisorRepo) UpsertPorters(ctx context.Context, il []*modelsupervisor.PorterInstance) error {
-	instances := make([]*ent.PorterInstanceCreate, len(il))
+	instances := make([]gormschema.PorterInstance, len(il))
 	for i, instance := range il {
 		if instance.BinarySummary == nil {
 			instance.BinarySummary = new(modelsupervisor.PorterBinarySummary)
 		}
-		instances[i] = s.data.db.PorterInstance.Create().
-			SetID(instance.ID).
-			SetName(instance.BinarySummary.Name).
-			SetVersion(instance.BinarySummary.Version).
-			SetDescription(instance.BinarySummary.Description).
-			SetSourceCodeAddress(instance.BinarySummary.SourceCodeAddress).
-			SetBuildVersion(instance.BinarySummary.BuildVersion).
-			SetBuildDate(instance.BinarySummary.BuildDate).
-			SetGlobalName(instance.GlobalName).
-			SetRegion(instance.Region).
-			SetAddress(instance.Address).
-			SetStatus(converter.ToEntPorterInstanceStatus(instance.Status)).
-			SetFeatureSummary(instance.FeatureSummary).
-			SetContextJSONSchema(instance.ContextJSONSchema).
-			SetConnectionStatus(converter.ToEntPorterConnectionStatus(instance.ConnectionStatus)).
-			SetConnectionStatusMessage(instance.ConnectionStatusMessage)
+		var featureSummaryVal *gormschema.PorterFeatureSummaryVal
+		if instance.FeatureSummary != nil {
+			v := gormschema.PorterFeatureSummaryVal(*instance.FeatureSummary)
+			featureSummaryVal = &v
+		}
+		instances[i] = gormschema.PorterInstance{
+			ID:                      instance.ID,
+			Name:                    instance.BinarySummary.Name,
+			Version:                 instance.BinarySummary.Version,
+			Description:             instance.BinarySummary.Description,
+			SourceCodeAddress:       instance.BinarySummary.SourceCodeAddress,
+			BuildVersion:            instance.BinarySummary.BuildVersion,
+			BuildDate:               instance.BinarySummary.BuildDate,
+			GlobalName:              instance.GlobalName,
+			Address:                 instance.Address,
+			Region:                  instance.Region,
+			FeatureSummary:          featureSummaryVal,
+			ContextJSONSchema:       instance.ContextJSONSchema,
+			Status:                  gormschema.ToSchemaUserStatus(instance.Status),
+			ConnectionStatus:        gormschema.ToSchemaPorterConnectionStatus(instance.ConnectionStatus),
+			ConnectionStatusMessage: instance.ConnectionStatusMessage,
+		}
 	}
-	return s.data.db.PorterInstance.
-		CreateBulk(instances...).
-		OnConflict(
-			sql.ConflictColumns(porterinstance.FieldAddress),
-			resolveWithIgnores([]string{
-				porterinstance.FieldID,
-				porterinstance.FieldStatus,
-			}),
-		).
-		Exec(ctx)
+	return s.data.db.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "address"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "version", "description", "source_code_address", "build_version", "build_date", "global_name", "region", "feature_summary", "context_json_schema", "connection_status", "connection_status_message", "updated_at"}),
+	}).Create(&instances).Error
 }
 
 func (s *SupervisorRepo) FetchPorterByAddress(
 	ctx context.Context,
 	address string,
 ) (*modelsupervisor.PorterInstance, error) {
-	p, err := s.data.db.PorterInstance.Query().Where(
-		porterinstance.AddressEQ(address),
-	).Only(ctx)
-	if err != nil {
+	var p gormschema.PorterInstance
+	if err := s.data.db.WithContext(ctx).Where("address = ?", address).First(&p).Error; err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorter(p), nil
+	return gormschema.ToBizPorter(&p), nil
 }
 
 func (s *SupervisorRepo) UpdatePorterContext(
 	ctx context.Context,
 	pc *modelsupervisor.PorterContext,
 ) (*modelsupervisor.PorterContext, error) {
-	err := s.data.db.PorterContext.UpdateOneID(pc.ID).
-		SetHandleStatus(converter.ToEntPorterContextHandleStatus(pc.HandleStatus)).
-		SetHandleStatusMessage(pc.HandleStatusMessage).
-		Exec(ctx)
-	if err != nil {
+	if err := s.data.db.WithContext(ctx).Model(&gormschema.PorterContext{}).
+		Where("id = ?", pc.ID).
+		Updates(map[string]any{
+			"handle_status":         gormschema.ToSchemaPorterContextHandleStatus(pc.HandleStatus),
+			"handle_status_message": pc.HandleStatusMessage,
+		}).Error; err != nil {
 		return nil, err
 	}
-	res, err := s.data.db.PorterContext.Get(ctx, pc.ID)
-	if err != nil {
+	var res gormschema.PorterContext
+	if err := s.data.db.WithContext(ctx).First(&res, pc.ID).Error; err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorterContext(res), nil
+	return gormschema.ToBizPorterContext(&res), nil
 }

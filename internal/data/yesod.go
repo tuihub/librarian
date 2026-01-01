@@ -4,18 +4,13 @@ import (
 	"context"
 	"time"
 
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/internal/ent"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feed"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feedactionset"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feeditem"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feeditemcollection"
-	"github.com/tuihub/librarian/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/internal/data/internal/gormschema"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
+
+	"gorm.io/gorm"
 )
 
 type YesodRepo struct {
@@ -30,107 +25,123 @@ func NewYesodRepo(data *Data) *YesodRepo {
 }
 
 func (y *YesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID, c *modelyesod.FeedConfig) error {
-	return y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		err := tx.FeedConfig.Create().
-			SetOwnerID(owner).
-			SetID(c.ID).
-			SetName(c.Name).
-			SetDescription(c.Description).
-			SetCategory(c.Category).
-			SetSource(c.Source).
-			SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
-			SetPullInterval(c.PullInterval).
-			SetLatestPullStatus(converter.ToEntFeedConfigLatestPullStatus(c.LatestPullStatus)).
-			SetLatestPullMessage("").
-			SetHideItems(c.HideItems).
-			Exec(ctx)
-		if err != nil {
+	return y.data.WithTx(ctx, func(tx *gorm.DB) error {
+		var sourceVal *gormschema.FeatureRequestVal
+		if c.Source != nil {
+			v := gormschema.FeatureRequestVal(*c.Source)
+			sourceVal = &v
+		}
+		fc := gormschema.FeedConfig{
+			ID:                c.ID,
+			OwnerID:           owner,
+			Name:              c.Name,
+			Description:       c.Description,
+			Category:          c.Category,
+			Source:            sourceVal,
+			Status:            gormschema.ToSchemaFeedConfigStatus(c.Status),
+			PullInterval:      c.PullInterval,
+			LatestPullStatus:  gormschema.ToSchemaFeedConfigPullStatus(c.LatestPullStatus),
+			LatestPullMessage: "",
+			HideItems:         c.HideItems,
+		}
+		if err := tx.Create(&fc).Error; err != nil {
 			return err
 		}
-		actionCreate := make([]*ent.FeedConfigActionCreate, len(c.ActionSets))
 		for i, action := range c.ActionSets {
-			actionCreate[i] = tx.FeedConfigAction.Create().
-				SetFeedConfigID(c.ID).
-				SetFeedActionSetID(action).
-				SetIndex(int64(i))
+			fca := gormschema.FeedConfigAction{
+				FeedConfigID:    c.ID,
+				FeedActionSetID: action,
+				Index:           int64(i),
+			}
+			if err := tx.Create(&fca).Error; err != nil {
+				return err
+			}
 		}
-		return tx.FeedConfigAction.CreateBulk(actionCreate...).Exec(ctx)
+		return nil
 	})
 }
 
 func (y *YesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalID, c *modelyesod.FeedConfig) error {
-	return y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := tx.FeedConfig.Update().
-			Where(
-				feedconfig.IDEQ(c.ID),
-				feedconfig.HasOwnerWith(user.IDEQ(userID)),
-			)
+	return y.data.WithTx(ctx, func(tx *gorm.DB) error {
+		updates := make(map[string]any)
 		if len(c.Name) > 0 {
-			q.SetName(c.Name)
+			updates["name"] = c.Name
 		}
 		if len(c.Description) > 0 {
-			q.SetDescription(c.Description)
+			updates["description"] = c.Description
 		}
 		if len(c.Category) > 0 {
-			q.SetCategory(c.Category)
+			updates["category"] = c.Category
 		}
 		if c.Source != nil {
-			q.SetSource(c.Source)
+			sourceVal := gormschema.FeatureRequestVal(*c.Source)
+			updates["source"] = &sourceVal
 		}
 		if c.Status != modelyesod.FeedConfigStatusUnspecified {
-			q.SetStatus(converter.ToEntFeedConfigStatus(c.Status))
+			updates["status"] = gormschema.ToSchemaFeedConfigStatus(c.Status)
 		}
 		if c.PullInterval > 0 {
-			q.SetPullInterval(c.PullInterval).SetNextPullBeginAt(time.Now())
+			updates["pull_interval"] = c.PullInterval
+			updates["next_pull_begin_at"] = time.Now()
 		}
-		if c.ActionSets != nil {
-			q.ClearFeedActionSet()
-		}
-		q.SetHideItems(c.HideItems)
-		err := q.Exec(ctx)
-		if err != nil {
+		updates["hide_items"] = c.HideItems
+
+		if err := tx.Model(&gormschema.FeedConfig{}).
+			Where("id = ? AND owner_id = ?", c.ID, userID).
+			Updates(updates).Error; err != nil {
 			return err
 		}
-		actionCreate := make([]*ent.FeedConfigActionCreate, len(c.ActionSets))
-		for i, action := range c.ActionSets {
-			actionCreate[i] = tx.FeedConfigAction.Create().
-				SetFeedConfigID(c.ID).
-				SetFeedActionSetID(action).
-				SetIndex(int64(i))
+
+		if c.ActionSets != nil {
+			// Remove existing action sets
+			if err := tx.Where("feed_config_id = ?", c.ID).Delete(&gormschema.FeedConfigAction{}).Error; err != nil {
+				return err
+			}
+			// Create new action sets
+			for i, action := range c.ActionSets {
+				fca := gormschema.FeedConfigAction{
+					FeedConfigID:    c.ID,
+					FeedActionSetID: action,
+					Index:           int64(i),
+				}
+				if err := tx.Create(&fca).Error; err != nil {
+					return err
+				}
+			}
 		}
-		return tx.FeedConfigAction.CreateBulk(actionCreate...).Exec(ctx)
+		return nil
 	})
 }
 
 // UpdateFeedConfigAsInQueue set SetNextPullBeginAt to one day later to avoid repeat queue.
-// While pull success, UpsertFeed will set correct value.
-// While pull failed, server will retry task next day.
 func (y *YesodRepo) UpdateFeedConfigAsInQueue(ctx context.Context, id model.InternalID) error {
-	q := y.data.db.FeedConfig.UpdateOneID(id).
-		SetNextPullBeginAt(time.Now().Add(libtime.Day))
-	return q.Exec(ctx)
+	return y.data.db.WithContext(ctx).
+		Model(&gormschema.FeedConfig{}).
+		Where("id = ?", id).
+		Update("next_pull_begin_at", time.Now().Add(libtime.Day)).Error
 }
 
 func (y *YesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string,
 	statuses []modelyesod.FeedConfigStatus, order modelyesod.ListFeedOrder,
-	pullTime time.Time, i int) ([]*modelyesod.FeedConfig, error) {
-	q := y.data.db.FeedConfig.Query()
+	pullTime time.Time, limit int) ([]*modelyesod.FeedConfig, error) {
+	query := y.data.db.WithContext(ctx).Model(&gormschema.FeedConfig{})
 	if len(statuses) > 0 {
-		q.Where(feedconfig.StatusIn(converter.ToEntFeedConfigStatusList(statuses)...))
-	}
-	switch order {
-	case modelyesod.ListFeedOrderUnspecified:
-		{
+		statusStrs := make([]string, len(statuses))
+		for i, s := range statuses {
+			statusStrs[i] = gormschema.ToSchemaFeedConfigStatus(s)
 		}
-	case modelyesod.ListFeedOrderNextPull:
-		q.Where(feedconfig.NextPullBeginAtLT(pullTime))
+		query = query.Where("status IN ?", statusStrs)
 	}
-	q.Limit(i)
-	feedConfigs, err := q.All(ctx)
-	if err != nil {
+	if order == modelyesod.ListFeedOrderNextPull {
+		query = query.Where("next_pull_begin_at < ?", pullTime)
+	}
+	query = query.Limit(limit)
+
+	var configs []gormschema.FeedConfig
+	if err := query.Find(&configs).Error; err != nil {
 		return nil, err
 	}
-	return converter.ToBizFeedConfigList(feedConfigs), nil
+	return gormschema.ToBizFeedConfigList(ptrSlice(configs)), nil
 }
 
 func (y *YesodRepo) ListFeedConfigs(
@@ -142,46 +153,52 @@ func (y *YesodRepo) ListFeedConfigs(
 	categories []string,
 ) ([]*modelyesod.FeedWithConfig, int, error) {
 	var res []*modelyesod.FeedWithConfig
-	var total int
-	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		u, err := tx.User.Get(ctx, userID)
-		if err != nil {
-			return err
-		}
-		q := tx.User.QueryFeedConfig(u)
+	var total int64
+	err := y.data.WithTx(ctx, func(tx *gorm.DB) error {
+		query := tx.Model(&gormschema.FeedConfig{}).Where("owner_id = ?", userID)
 		if len(ids) > 0 {
-			q.Where(feedconfig.IDIn(ids...))
+			query = query.Where("id IN ?", ids)
 		}
 		if len(statuses) > 0 {
-			q.Where(feedconfig.StatusIn(converter.ToEntFeedConfigStatusList(statuses)...))
+			statusStrs := make([]string, len(statuses))
+			for i, s := range statuses {
+				statusStrs[i] = gormschema.ToSchemaFeedConfigStatus(s)
+			}
+			query = query.Where("status IN ?", statusStrs)
 		}
 		if len(categories) > 0 {
-			q.Where(feedconfig.CategoryIn(categories...))
+			query = query.Where("category IN ?", categories)
 		}
-		total, err = q.Count(ctx)
-		if err != nil {
+
+		if err := query.Count(&total).Error; err != nil {
 			return err
 		}
-		configs, err := q.
-			Limit(paging.ToLimit()).
-			Offset(paging.ToOffset()).
-			WithFeed().
-			WithFeedActionSet().
-			All(ctx)
-		if err != nil {
+
+		var configs []gormschema.FeedConfig
+		if err := query.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find(&configs).Error; err != nil {
 			return err
 		}
+
 		res = make([]*modelyesod.FeedWithConfig, 0, len(configs))
 		for _, config := range configs {
-			feedConfig := converter.ToBizFeedConfig(config)
-			actionSets := make([]model.InternalID, 0, len(config.Edges.FeedActionSet))
-			for _, actionSet := range config.Edges.FeedActionSet {
-				actionSets = append(actionSets, actionSet.ID)
+			fc := gormschema.ToBizFeedConfig(&config)
+			// Get action sets
+			var actions []gormschema.FeedConfigAction
+			if err := tx.Where("feed_config_id = ?", config.ID).Order("index").Find(&actions).Error; err == nil {
+				fc.ActionSets = make([]model.InternalID, len(actions))
+				for i, a := range actions {
+					fc.ActionSets[i] = a.FeedActionSetID
+				}
 			}
-			feedConfig.ActionSets = actionSets
+			// Get feed
+			var feed gormschema.Feed
+			var feedPtr *modelfeed.Feed
+			if err := tx.Where("id = ?", config.ID).First(&feed).Error; err == nil {
+				feedPtr = gormschema.ToBizFeed(&feed)
+			}
 			res = append(res, &modelyesod.FeedWithConfig{
-				FeedConfig: feedConfig,
-				Feed:       converter.ToBizFeed(config.Edges.Feed),
+				FeedConfig: fc,
+				Feed:       feedPtr,
 			})
 		}
 		return nil
@@ -189,35 +206,46 @@ func (y *YesodRepo) ListFeedConfigs(
 	if err != nil {
 		return nil, 0, err
 	}
-	return res, total, nil
+	return res, int(total), nil
 }
 
 func (y *YesodRepo) ListFeedCategories(ctx context.Context, id model.InternalID) ([]string, error) {
-	res, err := y.data.db.FeedConfig.Query().
-		Where(
-			feedconfig.HasOwnerWith(user.IDEQ(id)),
-		).
-		Select(feedconfig.FieldCategory).
-		GroupBy(feedconfig.FieldCategory).
-		Strings(ctx)
-	if err != nil {
+	var results []struct {
+		Category string
+	}
+	if err := y.data.db.WithContext(ctx).
+		Model(&gormschema.FeedConfig{}).
+		Select("DISTINCT category").
+		Where("owner_id = ?", id).
+		Find(&results).Error; err != nil {
 		return nil, err
 	}
-	return res, nil
+	categories := make([]string, len(results))
+	for i, r := range results {
+		categories[i] = r.Category
+	}
+	return categories, nil
 }
 
 func (y *YesodRepo) ListFeedPlatforms(ctx context.Context, id model.InternalID) ([]string, error) {
-	res, err := y.data.db.FeedItem.Query().
-		Where(
-			feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.HasOwnerWith(user.IDEQ(id)))),
-		).
-		Select(feeditem.FieldPublishPlatform).
-		GroupBy(feeditem.FieldPublishPlatform).
-		Strings(ctx)
-	if err != nil {
+	var results []struct {
+		PublishPlatform string
+	}
+	// Complex join query
+	if err := y.data.db.WithContext(ctx).
+		Model(&gormschema.FeedItem{}).
+		Select("DISTINCT publish_platform").
+		Joins("JOIN feeds ON feed_items.feed_id = feeds.id").
+		Joins("JOIN feed_configs ON feeds.id = feed_configs.id").
+		Where("feed_configs.owner_id = ?", id).
+		Find(&results).Error; err != nil {
 		return nil, err
 	}
-	return res, nil
+	platforms := make([]string, len(results))
+	for i, r := range results {
+		platforms[i] = r.PublishPlatform
+	}
+	return platforms, nil
 }
 
 func (y *YesodRepo) ListFeedItems(
@@ -231,57 +259,51 @@ func (y *YesodRepo) ListFeedItems(
 	categories []string,
 ) ([]*modelyesod.FeedItemDigest, int, error) {
 	var res []*modelyesod.FeedItemDigest
-	var total int
-	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		u, err := tx.User.Get(ctx, userID)
-		if err != nil {
-			return err
-		}
-		fq := tx.User.QueryFeedConfig(u).Where(
-			feedconfig.HideItemsEQ(false),
-		).QueryFeed()
+	var total int64
+
+	err := y.data.WithTx(ctx, func(tx *gorm.DB) error {
+		query := tx.Model(&gormschema.FeedItem{}).
+			Joins("JOIN feeds ON feed_items.feed_id = feeds.id").
+			Joins("JOIN feed_configs ON feeds.id = feed_configs.id").
+			Where("feed_configs.owner_id = ? AND feed_configs.hide_items = ?", userID, false)
+
 		if len(feedIDs) > 0 {
-			fq.Where(feed.IDIn(feedIDs...))
+			query = query.Where("feeds.id IN ?", feedIDs)
 		}
-		iq := fq.QueryItem()
 		if len(platforms) > 0 {
-			iq.Where(feeditem.PublishPlatformIn(platforms...))
+			query = query.Where("feed_items.publish_platform IN ?", platforms)
 		}
 		if len(categories) > 0 {
-			iq.Where(feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.CategoryIn(categories...))))
+			query = query.Where("feed_configs.category IN ?", categories)
 		}
 		if timeRange != nil {
-			iq.
-				Where(feeditem.PublishedParsedGTE(timeRange.StartTime)).
-				Where(feeditem.PublishedParsedLT(timeRange.StartTime.Add(timeRange.Duration)))
+			query = query.Where("feed_items.published_parsed >= ? AND feed_items.published_parsed < ?",
+				timeRange.StartTime, timeRange.StartTime.Add(timeRange.Duration))
 		}
-		total, err = iq.Count(ctx)
-		if err != nil {
+
+		if err := query.Count(&total).Error; err != nil {
 			return err
 		}
-		items, err := iq.
-			WithFeed(func(q *ent.FeedQuery) {
-				q.Select(feed.FieldImage).WithConfig(func(q *ent.FeedConfigQuery) {
-					q.Select(feedconfig.FieldName)
-				})
-			}).
-			Order(ent.Desc(feeditem.FieldPublishedParsed)).
+
+		var items []gormschema.FeedItem
+		if err := query.Order("feed_items.published_parsed DESC").
 			Limit(paging.ToLimit()).
 			Offset(paging.ToOffset()).
-			All(ctx)
-		if err != nil {
+			Find(&items).Error; err != nil {
 			return err
 		}
+
 		res = make([]*modelyesod.FeedItemDigest, 0, len(items))
 		for _, item := range items {
-			res = append(res, converter.ToBizFeedItemDigest(item))
+			digest := toBizFeedItemDigest(&item, tx)
+			res = append(res, digest)
 		}
 		return nil
 	})
 	if err != nil {
 		return nil, 0, err
 	}
-	return res, total, nil
+	return res, int(total), nil
 }
 
 func (y *YesodRepo) GroupFeedItems( //nolint:gocognit //TODO
@@ -295,46 +317,40 @@ func (y *YesodRepo) GroupFeedItems( //nolint:gocognit //TODO
 	categories []string,
 ) (map[model.TimeRange][]*modelyesod.FeedItemDigest, error) {
 	res := make(map[model.TimeRange][]*modelyesod.FeedItemDigest)
-	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		u, err := tx.User.Get(ctx, userID)
-		if err != nil {
-			return err
-		}
+	err := y.data.WithTx(ctx, func(tx *gorm.DB) error {
 		for _, timeRange := range groups {
-			fq := tx.User.QueryFeedConfig(u).Where(
-				feedconfig.HideItemsEQ(false),
-			).QueryFeed()
+			query := tx.Model(&gormschema.FeedItem{}).
+				Joins("JOIN feeds ON feed_items.feed_id = feeds.id").
+				Joins("JOIN feed_configs ON feeds.id = feed_configs.id").
+				Where("feed_configs.owner_id = ? AND feed_configs.hide_items = ?", userID, false)
+
 			if len(feedIDs) > 0 {
-				fq.Where(feed.IDIn(feedIDs...))
+				query = query.Where("feeds.id IN ?", feedIDs)
 			}
-			iq := fq.QueryItem()
 			if len(platforms) > 0 {
-				iq.Where(feeditem.PublishPlatformIn(platforms...))
+				query = query.Where("feed_items.publish_platform IN ?", platforms)
 			}
 			if len(categories) > 0 {
-				iq.Where(feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.CategoryIn(categories...))))
+				query = query.Where("feed_configs.category IN ?", categories)
 			}
-			var items []*ent.FeedItem
-			items, err = iq.
-				Where(feeditem.PublishedParsedGTE(timeRange.StartTime)).
-				Where(feeditem.PublishedParsedLT(timeRange.StartTime.Add(timeRange.Duration))).
-				WithFeed(func(q *ent.FeedQuery) {
-					q.Select(feed.FieldImage).WithConfig(func(q *ent.FeedConfigQuery) {
-						q.Select(feedconfig.FieldName)
-					})
-				}).
-				Order(ent.Desc(feeditem.FieldPublishedParsed)).
+
+			var items []gormschema.FeedItem
+			if err := query.
+				Where("feed_items.published_parsed >= ? AND feed_items.published_parsed < ?",
+					timeRange.StartTime, timeRange.StartTime.Add(timeRange.Duration)).
+				Order("feed_items.published_parsed DESC").
 				Limit(groupSize).
-				All(ctx)
-			if err != nil {
+				Find(&items).Error; err != nil {
 				return err
 			}
+
 			if len(items) == 0 {
 				continue
 			}
+
 			il := make([]*modelyesod.FeedItemDigest, 0, len(items))
 			for _, item := range items {
-				il = append(il, converter.ToBizFeedItemDigest(item))
+				il = append(il, toBizFeedItemDigest(&item, tx))
 			}
 			res[timeRange] = il
 		}
@@ -351,34 +367,23 @@ func (y *YesodRepo) GetFeedItems(
 	userID model.InternalID,
 	ids []model.InternalID,
 ) ([]*modelfeed.Item, error) {
-	var res []*modelfeed.Item
-	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		u, err := tx.User.Get(ctx, userID)
-		if err != nil {
-			return err
-		}
-		items, err := tx.User.
-			QueryFeedConfig(u).
-			QueryFeed().
-			QueryItem().
-			Where(feeditem.IDIn(ids...)).
-			All(ctx)
-		if err != nil {
-			return err
-		}
-		res = converter.ToBizFeedItemList(items)
-		return nil
-	})
+	var items []gormschema.FeedItem
+	err := y.data.db.WithContext(ctx).
+		Joins("JOIN feeds ON feed_items.feed_id = feeds.id").
+		Joins("JOIN feed_configs ON feeds.id = feed_configs.id").
+		Where("feed_configs.owner_id = ? AND feed_items.id IN ?", userID, ids).
+		Find(&items).Error
 	if err != nil {
 		return nil, err
 	}
-	return res, nil
+	return gormschema.ToBizFeedItemList(ptrSlice(items)), nil
 }
 
 func (y *YesodRepo) ReadFeedItem(ctx context.Context, userID model.InternalID, id model.InternalID) error {
-	return y.data.db.FeedItem.UpdateOneID(id).Where(
-		feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.HasOwnerWith(user.IDEQ(userID)))),
-	).AddReadCount(1).Exec(ctx)
+	return y.data.db.WithContext(ctx).
+		Model(&gormschema.FeedItem{}).
+		Where("id = ?", id).
+		Update("read_count", gorm.Expr("read_count + 1")).Error
 }
 
 func (y *YesodRepo) CreateFeedItemCollection(
@@ -386,13 +391,14 @@ func (y *YesodRepo) CreateFeedItemCollection(
 	ownerID model.InternalID,
 	collection *modelyesod.FeedItemCollection,
 ) error {
-	return y.data.db.FeedItemCollection.Create().
-		SetOwnerID(ownerID).
-		SetID(collection.ID).
-		SetName(collection.Name).
-		SetDescription(collection.Description).
-		SetCategory(collection.Category).
-		Exec(ctx)
+	fic := gormschema.FeedItemCollection{
+		ID:          collection.ID,
+		OwnerID:     ownerID,
+		Name:        collection.Name,
+		Description: collection.Description,
+		Category:    collection.Category,
+	}
+	return y.data.db.WithContext(ctx).Create(&fic).Error
 }
 
 func (y *YesodRepo) UpdateFeedItemCollection(
@@ -400,12 +406,14 @@ func (y *YesodRepo) UpdateFeedItemCollection(
 	ownerID model.InternalID,
 	collection *modelyesod.FeedItemCollection,
 ) error {
-	return y.data.db.FeedItemCollection.UpdateOneID(collection.ID).
-		Where(feeditemcollection.HasOwnerWith(user.IDEQ(ownerID))).
-		SetName(collection.Name).
-		SetDescription(collection.Description).
-		SetCategory(collection.Category).
-		Exec(ctx)
+	return y.data.db.WithContext(ctx).
+		Model(&gormschema.FeedItemCollection{}).
+		Where("id = ? AND owner_id = ?", collection.ID, ownerID).
+		Updates(map[string]any{
+			"name":        collection.Name,
+			"description": collection.Description,
+			"category":    collection.Category,
+		}).Error
 }
 
 func (y *YesodRepo) ListFeedItemCollections(
@@ -415,38 +423,27 @@ func (y *YesodRepo) ListFeedItemCollections(
 	ids []model.InternalID,
 	categories []string,
 ) ([]*modelyesod.FeedItemCollection, int, error) {
-	var res []*modelyesod.FeedItemCollection
-	var total int
-	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		u, err := tx.User.Get(ctx, ownerID)
-		if err != nil {
-			return err
-		}
-		q := tx.User.QueryFeedItemCollection(u)
-		if len(ids) > 0 {
-			q.Where(feeditemcollection.IDIn(ids...))
-		}
-		if len(categories) > 0 {
-			q.Where(feeditemcollection.CategoryIn(categories...))
-		}
-		total, err = q.Count(ctx)
-		if err != nil {
-			return err
-		}
-		collections, err := q.
-			Limit(paging.ToLimit()).
-			Offset(paging.ToOffset()).
-			All(ctx)
-		if err != nil {
-			return err
-		}
-		res = converter.ToBizFeedItemCollectionList(collections)
-		return nil
-	})
-	if err != nil {
+	query := y.data.db.WithContext(ctx).Model(&gormschema.FeedItemCollection{}).
+		Where("owner_id = ?", ownerID)
+
+	if len(ids) > 0 {
+		query = query.Where("id IN ?", ids)
+	}
+	if len(categories) > 0 {
+		query = query.Where("category IN ?", categories)
+	}
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	return res, total, nil
+
+	var collections []gormschema.FeedItemCollection
+	if err := query.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find(&collections).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return gormschema.ToBizFeedItemCollectionList(ptrSlice(collections)), int(total), nil
 }
 
 func (y *YesodRepo) AddFeedItemToCollection(
@@ -455,10 +452,11 @@ func (y *YesodRepo) AddFeedItemToCollection(
 	collectionID model.InternalID,
 	itemID model.InternalID,
 ) error {
-	return y.data.db.FeedItemCollection.UpdateOneID(collectionID).
-		Where(feeditemcollection.HasOwnerWith(user.IDEQ(ownerID))).
-		AddFeedItemIDs(itemID).
-		Exec(ctx)
+	item := gormschema.FeedItemCollectionItem{
+		FeedItemCollectionID: collectionID,
+		FeedItemID:           itemID,
+	}
+	return y.data.db.WithContext(ctx).Create(&item).Error
 }
 
 func (y *YesodRepo) RemoveFeedItemFromCollection(
@@ -467,10 +465,9 @@ func (y *YesodRepo) RemoveFeedItemFromCollection(
 	collectionID model.InternalID,
 	itemID model.InternalID,
 ) error {
-	return y.data.db.FeedItemCollection.UpdateOneID(collectionID).
-		Where(feeditemcollection.HasOwnerWith(user.IDEQ(ownerID))).
-		RemoveFeedItemIDs(itemID).
-		Exec(ctx)
+	return y.data.db.WithContext(ctx).
+		Where("feed_item_collection_id = ? AND feed_item_id = ?", collectionID, itemID).
+		Delete(&gormschema.FeedItemCollectionItem{}).Error
 }
 
 func (y *YesodRepo) ListFeedItemsInCollection(
@@ -484,82 +481,86 @@ func (y *YesodRepo) ListFeedItemsInCollection(
 	timeRange *model.TimeRange,
 ) ([]*modelyesod.FeedItemDigest, int, error) {
 	var res []*modelyesod.FeedItemDigest
-	var total int
-	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		u, err := tx.User.Get(ctx, ownerID)
-		if err != nil {
-			return err
-		}
-		q := tx.User.QueryFeedItemCollection(u)
+	var total int64
+
+	err := y.data.WithTx(ctx, func(tx *gorm.DB) error {
+		query := tx.Model(&gormschema.FeedItem{}).
+			Joins("JOIN feed_item_collection_feed_items ON feed_items.id = feed_item_collection_feed_items.feed_item_id").
+			Joins("JOIN feed_item_collections ON feed_item_collection_feed_items.feed_item_collection_id = feed_item_collections.id").
+			Where("feed_item_collections.owner_id = ?", ownerID)
+
 		if len(ids) > 0 {
-			q.Where(feeditemcollection.IDIn(ids...))
+			query = query.Where("feed_item_collections.id IN ?", ids)
 		}
-		iq := q.QueryFeedItem()
 		if len(platforms) > 0 {
-			iq.Where(feeditem.PublishPlatformIn(platforms...))
+			query = query.Where("feed_items.publish_platform IN ?", platforms)
 		}
 		if len(categories) > 0 {
-			iq.Where(feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.CategoryIn(categories...))))
+			query = query.Joins("JOIN feeds ON feed_items.feed_id = feeds.id").
+				Joins("JOIN feed_configs ON feeds.id = feed_configs.id").
+				Where("feed_configs.category IN ?", categories)
 		}
 		if timeRange != nil {
-			iq.
-				Where(feeditem.PublishedParsedGTE(timeRange.StartTime)).
-				Where(feeditem.PublishedParsedLT(timeRange.StartTime.Add(timeRange.Duration)))
+			query = query.Where("feed_items.published_parsed >= ? AND feed_items.published_parsed < ?",
+				timeRange.StartTime, timeRange.StartTime.Add(timeRange.Duration))
 		}
-		total, err = iq.Count(ctx)
-		if err != nil {
+
+		if err := query.Count(&total).Error; err != nil {
 			return err
 		}
-		items, err := iq.
-			WithFeed(func(q *ent.FeedQuery) {
-				q.Select(feed.FieldImage).WithConfig(func(q *ent.FeedConfigQuery) {
-					q.Select(feedconfig.FieldName)
-				})
-			}).
-			Order(ent.Desc(feeditem.FieldPublishedParsed)).
+
+		var items []gormschema.FeedItem
+		if err := query.Order("feed_items.published_parsed DESC").
 			Limit(paging.ToLimit()).
 			Offset(paging.ToOffset()).
-			All(ctx)
-		if err != nil {
+			Find(&items).Error; err != nil {
 			return err
 		}
+
 		res = make([]*modelyesod.FeedItemDigest, 0, len(items))
 		for _, item := range items {
-			res = append(res, converter.ToBizFeedItemDigest(item))
+			res = append(res, toBizFeedItemDigest(&item, tx))
 		}
 		return nil
 	})
 	if err != nil {
 		return nil, 0, err
 	}
-	return res, total, nil
+	return res, int(total), nil
 }
 
 func (y *YesodRepo) GetFeedOwner(ctx context.Context, id model.InternalID) (*model.User, error) {
-	only, err := y.data.db.FeedConfig.Query().Where(feedconfig.IDEQ(id)).QueryOwner().Only(ctx)
-	if err != nil {
+	var config gormschema.FeedConfig
+	if err := y.data.db.WithContext(ctx).Where("id = ?", id).First(&config).Error; err != nil {
 		return nil, err
 	}
-	return converter.ToBizUser(only), nil
+	var user gormschema.User
+	if err := y.data.db.WithContext(ctx).First(&user, config.OwnerID).Error; err != nil {
+		return nil, err
+	}
+	return gormschema.ToBizUser(&user), nil
 }
 
 func (y *YesodRepo) CreateFeedActionSet(ctx context.Context, id model.InternalID, set *modelyesod.FeedActionSet) error {
-	return y.data.db.FeedActionSet.Create().
-		SetOwnerID(id).
-		SetID(set.ID).
-		SetName(set.Name).
-		SetDescription(set.Description).
-		SetActions(set.Actions).
-		Exec(ctx)
+	fas := gormschema.FeedActionSet{
+		ID:          set.ID,
+		OwnerID:     id,
+		Name:        set.Name,
+		Description: set.Description,
+		Actions:     gormschema.FeatureRequestArrayVal(set.Actions),
+	}
+	return y.data.db.WithContext(ctx).Create(&fas).Error
 }
 
 func (y *YesodRepo) UpdateFeedActionSet(ctx context.Context, id model.InternalID, set *modelyesod.FeedActionSet) error {
-	return y.data.db.FeedActionSet.UpdateOneID(set.ID).
-		Where(feedactionset.HasOwnerWith(user.IDEQ(id))).
-		SetName(set.Name).
-		SetDescription(set.Description).
-		SetActions(set.Actions).
-		Exec(ctx)
+	return y.data.db.WithContext(ctx).
+		Model(&gormschema.FeedActionSet{}).
+		Where("id = ? AND owner_id = ?", set.ID, id).
+		Updates(map[string]any{
+			"name":        set.Name,
+			"description": set.Description,
+			"actions":     gormschema.FeatureRequestArrayVal(set.Actions),
+		}).Error
 }
 
 func (y *YesodRepo) ListFeedActionSets(
@@ -567,30 +568,80 @@ func (y *YesodRepo) ListFeedActionSets(
 	id model.InternalID,
 	paging model.Paging,
 ) ([]*modelyesod.FeedActionSet, int, error) {
-	var res []*modelyesod.FeedActionSet
-	var total int
-	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		u, err := tx.User.Get(ctx, id)
-		if err != nil {
-			return err
-		}
-		q := tx.User.QueryFeedActionSet(u)
-		total, err = q.Count(ctx)
-		if err != nil {
-			return err
-		}
-		sets, err := q.
-			Limit(paging.ToLimit()).
-			Offset(paging.ToOffset()).
-			All(ctx)
-		if err != nil {
-			return err
-		}
-		res = converter.ToBizFeedActionSetList(sets)
-		return nil
-	})
-	if err != nil {
+	query := y.data.db.WithContext(ctx).Model(&gormschema.FeedActionSet{}).
+		Where("owner_id = ?", id)
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	return res, total, nil
+
+	var sets []gormschema.FeedActionSet
+	if err := query.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find(&sets).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return gormschema.ToBizFeedActionSetList(ptrSlice(sets)), int(total), nil
+}
+
+// Helper function to convert slice to pointer slice
+func ptrSlice[T any](slice []T) []*T {
+	res := make([]*T, len(slice))
+	for i := range slice {
+		res[i] = &slice[i]
+	}
+	return res
+}
+
+// toBizFeedItemDigest converts a feed item to a digest with additional info
+func toBizFeedItemDigest(item *gormschema.FeedItem, tx *gorm.DB) *modelyesod.FeedItemDigest {
+	digest := &modelyesod.FeedItemDigest{
+		FeedID:              item.FeedID,
+		ItemID:              item.ID,
+		PublishedParsedTime: item.PublishedParsed,
+		Title:               item.Title,
+		PublishPlatform:     item.PublishPlatform,
+		ShortDescription:    item.DigestDescription,
+		ReadCount:           item.ReadCount,
+	}
+
+	if item.Image != nil {
+		digest.AvatarURL = item.Image.URL
+	}
+
+	if len(item.Authors) > 0 {
+		var authorNames []string
+		for _, a := range item.Authors {
+			if a != nil {
+				authorNames = append(authorNames, a.Name)
+			}
+		}
+		if len(authorNames) > 0 {
+			digest.Authors = authorNames[0]
+			for i := 1; i < len(authorNames); i++ {
+				digest.Authors += ", " + authorNames[i]
+			}
+		}
+	}
+
+	for _, img := range item.DigestImages {
+		if img != nil {
+			digest.ImageUrls = append(digest.ImageUrls, img.URL)
+		}
+	}
+
+	// Get feed info
+	var feed gormschema.Feed
+	if tx.Where("id = ?", item.FeedID).First(&feed).Error == nil {
+		if feed.Image != nil {
+			digest.FeedAvatarURL = feed.Image.URL
+		}
+		// Get feed config name
+		var config gormschema.FeedConfig
+		if tx.Where("id = ?", item.FeedID).First(&config).Error == nil {
+			digest.FeedConfigName = config.Name
+		}
+	}
+
+	return digest
 }

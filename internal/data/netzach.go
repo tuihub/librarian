@@ -4,18 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/internal/ent"
-	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflow"
-	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflowsource"
-	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflowtarget"
-	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
-	"github.com/tuihub/librarian/internal/data/internal/ent/systemnotification"
-	"github.com/tuihub/librarian/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/internal/data/internal/gormschema"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 
-	"entgo.io/ent/dialect/sql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type NetzachRepo struct {
@@ -29,14 +23,20 @@ func NewNetzachRepo(data *Data) *NetzachRepo {
 }
 
 func (n *NetzachRepo) CreateNotifyTarget(ctx context.Context, id model.InternalID, t *modelnetzach.NotifyTarget) error {
-	q := n.data.db.NotifyTarget.Create().
-		SetOwnerID(id).
-		SetID(t.ID).
-		SetName(t.Name).
-		SetDescription(t.Description).
-		SetDestination(t.Destination).
-		SetStatus(converter.ToEntNotifyTargetStatus(t.Status))
-	return q.Exec(ctx)
+	var destVal *gormschema.FeatureRequestVal
+	if t.Destination != nil {
+		v := gormschema.FeatureRequestVal(*t.Destination)
+		destVal = &v
+	}
+	target := gormschema.NotifyTarget{
+		ID:          t.ID,
+		OwnerID:     id,
+		Name:        t.Name,
+		Description: t.Description,
+		Destination: destVal,
+		Status:      gormschema.ToSchemaNotifyTargetStatus(t.Status),
+	}
+	return n.data.db.WithContext(ctx).Create(&target).Error
 }
 
 func (n *NetzachRepo) UpdateNotifyTarget(
@@ -44,23 +44,24 @@ func (n *NetzachRepo) UpdateNotifyTarget(
 	userID model.InternalID,
 	t *modelnetzach.NotifyTarget,
 ) error {
-	q := n.data.db.NotifyTarget.Update().Where(
-		notifytarget.HasOwnerWith(user.IDEQ(userID)),
-		notifytarget.IDEQ(t.ID),
-	)
+	updates := make(map[string]any)
 	if len(t.Name) > 0 {
-		q.SetName(t.Name)
+		updates["name"] = t.Name
 	}
 	if len(t.Description) > 0 {
-		q.SetDescription(t.Description)
+		updates["description"] = t.Description
 	}
 	if t.Destination != nil {
-		q.SetDestination(t.Destination)
+		v := gormschema.FeatureRequestVal(*t.Destination)
+		updates["destination"] = &v
 	}
 	if t.Status != modelnetzach.NotifyTargetStatusUnspecified {
-		q.SetStatus(converter.ToEntNotifyTargetStatus(t.Status))
+		updates["status"] = gormschema.ToSchemaNotifyTargetStatus(t.Status)
 	}
-	return q.Exec(ctx)
+	return n.data.db.WithContext(ctx).
+		Model(&gormschema.NotifyTarget{}).
+		Where("id = ? AND owner_id = ?", t.ID, userID).
+		Updates(updates).Error
 }
 
 func (n *NetzachRepo) ListNotifyTargets(
@@ -70,161 +71,145 @@ func (n *NetzachRepo) ListNotifyTargets(
 	ids []model.InternalID,
 	statuses []modelnetzach.NotifyTargetStatus,
 ) ([]*modelnetzach.NotifyTarget, int64, error) {
-	q := n.data.db.NotifyTarget.Query().Where(
-		notifytarget.HasOwnerWith(user.IDEQ(userID)),
-	)
+	query := n.data.db.WithContext(ctx).Model(&gormschema.NotifyTarget{}).
+		Where("owner_id = ?", userID)
+
 	if len(ids) > 0 {
-		q.Where(notifytarget.IDIn(ids...))
+		query = query.Where("id IN ?", ids)
 	}
 	if len(statuses) > 0 {
-		q.Where(notifytarget.StatusIn(converter.ToEntNotifyTargetStatusList(statuses)...))
+		statusStrs := make([]string, len(statuses))
+		for i, s := range statuses {
+			statusStrs[i] = gormschema.ToSchemaNotifyTargetStatus(s)
+		}
+		query = query.Where("status IN ?", statusStrs)
 	}
-	total, err := q.Count(ctx)
-	if err != nil {
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	res, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
-	if err != nil {
+
+	var targets []gormschema.NotifyTarget
+	if err := query.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find(&targets).Error; err != nil {
 		return nil, 0, err
 	}
-	return converter.ToBizNotifyTargetList(res), int64(total), nil
+
+	return gormschema.ToBizNotifyTargetList(ptrSlice(targets)), total, nil
 }
 
 func (n *NetzachRepo) GetNotifyTarget(ctx context.Context, id model.InternalID) (*modelnetzach.NotifyTarget, error) {
-	res, err := n.data.db.NotifyTarget.Query().Where(notifytarget.IDEQ(id)).Only(ctx)
-	if err != nil {
+	var target gormschema.NotifyTarget
+	if err := n.data.db.WithContext(ctx).First(&target, id).Error; err != nil {
 		return nil, err
 	}
-	return converter.ToBizNotifyTarget(res), nil
+	return gormschema.ToBizNotifyTarget(&target), nil
 }
 
 func (n *NetzachRepo) CreateNotifyFlow(ctx context.Context, userID model.InternalID, f *modelnetzach.NotifyFlow) error {
-	err := n.data.WithTx(ctx, func(tx *ent.Tx) error {
-		err := tx.NotifyFlow.Create().
-			SetID(f.ID).
-			SetOwnerID(userID).
-			SetName(f.Name).
-			SetDescription(f.Description).
-			SetStatus(converter.ToEntNotifySourceStatus(f.Status)).
-			Exec(ctx)
-		if err != nil {
+	return n.data.WithTx(ctx, func(tx *gorm.DB) error {
+		flow := gormschema.NotifyFlow{
+			ID:          f.ID,
+			OwnerID:     userID,
+			Name:        f.Name,
+			Description: f.Description,
+			Status:      gormschema.ToSchemaNotifyFlowStatus(f.Status),
+		}
+		if err := tx.Create(&flow).Error; err != nil {
 			return err
 		}
-		flowSources := make([]*ent.NotifyFlowSourceCreate, len(f.Sources))
-		for i, source := range f.Sources {
-			flowSources[i] = tx.NotifyFlowSource.Create().
-				SetNotifyFlowID(f.ID).
-				SetNotifySourceID(source.SourceID).
-				SetFilterExcludeKeywords(source.Filter.ExcludeKeywords).
-				SetFilterIncludeKeywords(source.Filter.IncludeKeywords)
+
+		for _, source := range f.Sources {
+			fs := gormschema.NotifyFlowSource{
+				NotifyFlowID:          f.ID,
+				NotifySourceID:        source.SourceID,
+				FilterExcludeKeywords: gormschema.StringArrayVal(source.Filter.ExcludeKeywords),
+				FilterIncludeKeywords: gormschema.StringArrayVal(source.Filter.IncludeKeywords),
+			}
+			if err := tx.Create(&fs).Error; err != nil {
+				return err
+			}
 		}
-		err = tx.NotifyFlowSource.CreateBulk(flowSources...).Exec(ctx)
-		if err != nil {
-			return err
+
+		for _, target := range f.Targets {
+			ft := gormschema.NotifyFlowTarget{
+				NotifyFlowID:          f.ID,
+				NotifyTargetID:        target.TargetID,
+				FilterExcludeKeywords: gormschema.StringArrayVal(target.Filter.ExcludeKeywords),
+				FilterIncludeKeywords: gormschema.StringArrayVal(target.Filter.IncludeKeywords),
+			}
+			if err := tx.Create(&ft).Error; err != nil {
+				return err
+			}
 		}
-		flowTargets := make([]*ent.NotifyFlowTargetCreate, len(f.Targets))
-		for i, target := range f.Targets {
-			flowTargets[i] = tx.NotifyFlowTarget.Create().
-				SetNotifyFlowID(f.ID).
-				SetNotifyTargetID(target.TargetID).
-				SetFilterExcludeKeywords(target.Filter.ExcludeKeywords).
-				SetFilterIncludeKeywords(target.Filter.IncludeKeywords)
-		}
-		err = tx.NotifyFlowTarget.CreateBulk(flowTargets...).Exec(ctx)
-		if err != nil {
-			return err
-		}
+
 		// For save flow items
-		err = tx.FeedItemCollection.Create().
-			SetOwnerID(userID).
-			SetID(f.ID).
-			SetName(f.Name).
-			SetDescription(f.Description).
-			SetCategory("").
-			Exec(ctx)
-		if err != nil {
-			return err
+		fic := gormschema.FeedItemCollection{
+			ID:          f.ID,
+			OwnerID:     userID,
+			Name:        f.Name,
+			Description: f.Description,
+			Category:    "",
 		}
-		return nil
+		return tx.Create(&fic).Error
 	})
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func (n *NetzachRepo) UpdateNotifyFlow( //nolint:gocognit // TODO
+func (n *NetzachRepo) UpdateNotifyFlow(
 	ctx context.Context,
 	userID model.InternalID,
 	f *modelnetzach.NotifyFlow,
 ) error {
-	err := n.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := tx.NotifyFlow.Update().Where(
-			notifyflow.HasOwnerWith(user.IDEQ(userID)),
-			notifyflow.IDEQ(f.ID),
-		)
+	return n.data.WithTx(ctx, func(tx *gorm.DB) error {
+		updates := make(map[string]any)
 		if len(f.Name) > 0 {
-			q.SetName(f.Name)
+			updates["name"] = f.Name
 		}
 		if len(f.Description) > 0 {
-			q.SetDescription(f.Description)
-		}
-		if f.Sources != nil {
-			_, err := tx.NotifyFlowSource.Delete().Where(
-				notifyflowsource.HasNotifyFlowWith(
-					notifyflow.IDEQ(f.ID),
-				),
-			).Exec(ctx)
-			if err != nil {
-				return err
-			}
-			flowSources := make([]*ent.NotifyFlowSourceCreate, len(f.Sources))
-			for i, source := range f.Sources {
-				flowSources[i] = tx.NotifyFlowSource.Create().
-					SetNotifyFlowID(f.ID).
-					SetNotifySourceID(source.SourceID).
-					SetFilterExcludeKeywords(source.Filter.ExcludeKeywords).
-					SetFilterIncludeKeywords(source.Filter.IncludeKeywords)
-			}
-			err = tx.NotifyFlowSource.CreateBulk(flowSources...).Exec(ctx)
-			if err != nil {
-				return err
-			}
-		}
-		if f.Targets != nil {
-			_, err := tx.NotifyFlowTarget.Delete().Where(
-				notifyflowtarget.HasNotifyFlowWith(
-					notifyflow.IDEQ(f.ID),
-				),
-			).Exec(ctx)
-			if err != nil {
-				return err
-			}
-			flowTargets := make([]*ent.NotifyFlowTargetCreate, len(f.Targets))
-			for i, target := range f.Targets {
-				flowTargets[i] = tx.NotifyFlowTarget.Create().
-					SetNotifyFlowID(f.ID).
-					SetNotifyTargetID(target.TargetID).
-					SetFilterExcludeKeywords(target.Filter.ExcludeKeywords).
-					SetFilterIncludeKeywords(target.Filter.IncludeKeywords)
-			}
-			err = tx.NotifyFlowTarget.CreateBulk(flowTargets...).Exec(ctx)
-			if err != nil {
-				return err
-			}
+			updates["description"] = f.Description
 		}
 		if f.Status != modelnetzach.NotifyFlowStatusUnspecified {
-			q.SetStatus(converter.ToEntNotifySourceStatus(f.Status))
+			updates["status"] = gormschema.ToSchemaNotifyFlowStatus(f.Status)
 		}
-		return q.Exec(ctx)
+
+		if f.Sources != nil {
+			if err := tx.Where("notify_flow_id = ?", f.ID).Delete(&gormschema.NotifyFlowSource{}).Error; err != nil {
+				return err
+			}
+			for _, source := range f.Sources {
+				fs := gormschema.NotifyFlowSource{
+					NotifyFlowID:          f.ID,
+					NotifySourceID:        source.SourceID,
+					FilterExcludeKeywords: gormschema.StringArrayVal(source.Filter.ExcludeKeywords),
+					FilterIncludeKeywords: gormschema.StringArrayVal(source.Filter.IncludeKeywords),
+				}
+				if err := tx.Create(&fs).Error; err != nil {
+					return err
+				}
+			}
+		}
+
+		if f.Targets != nil {
+			if err := tx.Where("notify_flow_id = ?", f.ID).Delete(&gormschema.NotifyFlowTarget{}).Error; err != nil {
+				return err
+			}
+			for _, target := range f.Targets {
+				ft := gormschema.NotifyFlowTarget{
+					NotifyFlowID:          f.ID,
+					NotifyTargetID:        target.TargetID,
+					FilterExcludeKeywords: gormschema.StringArrayVal(target.Filter.ExcludeKeywords),
+					FilterIncludeKeywords: gormschema.StringArrayVal(target.Filter.IncludeKeywords),
+				}
+				if err := tx.Create(&ft).Error; err != nil {
+					return err
+				}
+			}
+		}
+
+		return tx.Model(&gormschema.NotifyFlow{}).
+			Where("id = ? AND owner_id = ?", f.ID, userID).
+			Updates(updates).Error
 	})
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func (n *NetzachRepo) ListNotifyFlows(
@@ -233,50 +218,106 @@ func (n *NetzachRepo) ListNotifyFlows(
 	userID model.InternalID,
 	ids []model.InternalID,
 ) ([]*modelnetzach.NotifyFlow, int64, error) {
-	q := n.data.db.NotifyFlow.Query().Where(
-		notifyflow.HasOwnerWith(user.IDEQ(userID)),
-	)
+	query := n.data.db.WithContext(ctx).Model(&gormschema.NotifyFlow{}).
+		Where("owner_id = ?", userID)
+
 	if len(ids) > 0 {
-		q.Where(notifyflow.IDIn(ids...))
+		query = query.Where("id IN ?", ids)
 	}
-	total, err := q.Count(ctx)
-	if err != nil {
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	flows, err := q.
-		WithNotifyFlowSource().
-		WithNotifyFlowTarget().
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
-	if err != nil {
+
+	var flows []gormschema.NotifyFlow
+	if err := query.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find(&flows).Error; err != nil {
 		return nil, 0, err
 	}
+
 	res := make([]*modelnetzach.NotifyFlow, len(flows))
 	for i := range flows {
-		res[i] = converter.ToBizNotifyFlowExtend(flows[i])
+		res[i] = gormschema.ToBizNotifyFlow(&flows[i])
+		// Get sources
+		var sources []gormschema.NotifyFlowSource
+		if err := n.data.db.WithContext(ctx).Where("notify_flow_id = ?", flows[i].ID).Find(&sources).Error; err == nil {
+			res[i].Sources = make([]*modelnetzach.NotifyFlowSource, len(sources))
+			for j, s := range sources {
+				res[i].Sources[j] = &modelnetzach.NotifyFlowSource{
+					SourceID: s.NotifySourceID,
+					Filter: &modelnetzach.NotifyFilter{
+						ExcludeKeywords: []string(s.FilterExcludeKeywords),
+						IncludeKeywords: []string(s.FilterIncludeKeywords),
+					},
+				}
+			}
+		}
+		// Get targets
+		var targets []gormschema.NotifyFlowTarget
+		if err := n.data.db.WithContext(ctx).Where("notify_flow_id = ?", flows[i].ID).Find(&targets).Error; err == nil {
+			res[i].Targets = make([]*modelnetzach.NotifyFlowTarget, len(targets))
+			for j, t := range targets {
+				res[i].Targets[j] = &modelnetzach.NotifyFlowTarget{
+					TargetID: t.NotifyTargetID,
+					Filter: &modelnetzach.NotifyFilter{
+						ExcludeKeywords: []string(t.FilterExcludeKeywords),
+						IncludeKeywords: []string(t.FilterIncludeKeywords),
+					},
+				}
+			}
+		}
 	}
-	return res, int64(total), nil
+	return res, total, nil
 }
 
 func (n *NetzachRepo) GetNotifyFlow(ctx context.Context, id model.InternalID) (*modelnetzach.NotifyFlow, error) {
-	res, err := n.data.db.NotifyFlow.Query().
-		Where(notifyflow.IDEQ(id)).
-		WithNotifyFlowSource().
-		WithNotifyFlowTarget().
-		Only(ctx)
-	if err != nil {
+	var flow gormschema.NotifyFlow
+	if err := n.data.db.WithContext(ctx).First(&flow, id).Error; err != nil {
 		return nil, err
 	}
-	return converter.ToBizNotifyFlowExtend(res), nil
+
+	res := gormschema.ToBizNotifyFlow(&flow)
+	// Get sources
+	var sources []gormschema.NotifyFlowSource
+	if err := n.data.db.WithContext(ctx).Where("notify_flow_id = ?", flow.ID).Find(&sources).Error; err == nil {
+		res.Sources = make([]*modelnetzach.NotifyFlowSource, len(sources))
+		for i, s := range sources {
+			res.Sources[i] = &modelnetzach.NotifyFlowSource{
+				SourceID: s.NotifySourceID,
+				Filter: &modelnetzach.NotifyFilter{
+					ExcludeKeywords: []string(s.FilterExcludeKeywords),
+					IncludeKeywords: []string(s.FilterIncludeKeywords),
+				},
+			}
+		}
+	}
+	// Get targets
+	var targets []gormschema.NotifyFlowTarget
+	if err := n.data.db.WithContext(ctx).Where("notify_flow_id = ?", flow.ID).Find(&targets).Error; err == nil {
+		res.Targets = make([]*modelnetzach.NotifyFlowTarget, len(targets))
+		for i, t := range targets {
+			res.Targets[i] = &modelnetzach.NotifyFlowTarget{
+				TargetID: t.NotifyTargetID,
+				Filter: &modelnetzach.NotifyFilter{
+					ExcludeKeywords: []string(t.FilterExcludeKeywords),
+					IncludeKeywords: []string(t.FilterIncludeKeywords),
+				},
+			}
+		}
+	}
+	return res, nil
 }
 
 func (n *NetzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.InternalID) ([]model.InternalID, error) {
-	ids, err := n.data.db.NotifyFlow.Query().Where(
-		notifyflow.HasNotifyFlowSourceWith(notifyflowsource.NotifySourceIDEQ(id)),
-	).IDs(ctx)
-	if err != nil {
+	var sources []gormschema.NotifyFlowSource
+	if err := n.data.db.WithContext(ctx).
+		Where("notify_source_id = ?", id).
+		Find(&sources).Error; err != nil {
 		return nil, err
+	}
+	ids := make([]model.InternalID, len(sources))
+	for i, s := range sources {
+		ids[i] = s.NotifyFlowID
 	}
 	return ids, nil
 }
@@ -286,28 +327,28 @@ func (n *NetzachRepo) UpsertSystemNotification(
 	userID model.InternalID,
 	notification *modelnetzach.SystemNotification,
 ) error {
-	old, err := n.data.db.SystemNotification.Get(ctx, notification.ID)
-	if err == nil && n != nil && len(old.Content) > 0 {
+	// Check if exists and append content
+	var old gormschema.SystemNotification
+	if err := n.data.db.WithContext(ctx).First(&old, notification.ID).Error; err == nil && len(old.Content) > 0 {
 		notification.Content = fmt.Sprintf("%s\n%s", old.Content, notification.Content)
 	}
-	q := n.data.db.SystemNotification.Create().
-		SetID(notification.ID).
-		SetType(converter.ToEntSystemNotificationType(notification.Type)).
-		SetLevel(converter.ToEntSystemNotificationLevel(notification.Level)).
-		SetStatus(converter.ToEntSystemNotificationStatus(notification.Status)).
-		SetTitle(notification.Title).
-		SetContent(notification.Content)
-	if notification.Type == modelnetzach.SystemNotificationTypeUser {
-		q.SetUserID(userID)
+
+	sn := gormschema.SystemNotification{
+		ID:      notification.ID,
+		Type:    gormschema.ToSchemaSystemNotificationType(notification.Type),
+		Level:   gormschema.ToSchemaSystemNotificationLevel(notification.Level),
+		Status:  gormschema.ToSchemaSystemNotificationStatus(notification.Status),
+		Title:   notification.Title,
+		Content: notification.Content,
 	}
-	return q.OnConflict(
-		sql.ConflictColumns(systemnotification.FieldID),
-		resolveWithIgnores([]string{
-			systemnotification.FieldID,
-			systemnotification.FieldUserID,
-			systemnotification.FieldType,
-		}),
-	).Exec(ctx)
+	if notification.Type == modelnetzach.SystemNotificationTypeUser {
+		sn.UserID = &userID
+	}
+
+	return n.data.db.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"level", "status", "title", "content", "updated_at"}),
+	}).Create(&sn).Error
 }
 
 func (n *NetzachRepo) ListSystemNotifications(
@@ -318,30 +359,43 @@ func (n *NetzachRepo) ListSystemNotifications(
 	levels []modelnetzach.SystemNotificationLevel,
 	statuses []modelnetzach.SystemNotificationStatus,
 ) ([]*modelnetzach.SystemNotification, int64, error) {
-	q := n.data.db.SystemNotification.Query().
-		Order(ent.Desc(systemnotification.FieldUpdatedAt))
+	query := n.data.db.WithContext(ctx).Model(&gormschema.SystemNotification{}).
+		Order("updated_at DESC")
+
 	if userID != nil {
-		q.Where(systemnotification.UserIDEQ(*userID))
+		query = query.Where("user_id = ?", *userID)
 	}
 	if len(types) > 0 {
-		q.Where(systemnotification.TypeIn(converter.ToEntSystemNotificationTypeList(types)...))
+		typeStrs := make([]string, len(types))
+		for i, t := range types {
+			typeStrs[i] = gormschema.ToSchemaSystemNotificationType(t)
+		}
+		query = query.Where("type IN ?", typeStrs)
 	}
 	if len(levels) > 0 {
-		q.Where(systemnotification.LevelIn(converter.ToEntSystemNotificationLevelList(levels)...))
+		levelStrs := make([]string, len(levels))
+		for i, l := range levels {
+			levelStrs[i] = gormschema.ToSchemaSystemNotificationLevel(l)
+		}
+		query = query.Where("level IN ?", levelStrs)
 	}
 	if len(statuses) > 0 {
-		q.Where(systemnotification.StatusIn(converter.ToEntSystemNotificationStatusList(statuses)...))
+		statusStrs := make([]string, len(statuses))
+		for i, s := range statuses {
+			statusStrs[i] = gormschema.ToSchemaSystemNotificationStatus(s)
+		}
+		query = query.Where("status IN ?", statusStrs)
 	}
-	total, err := q.Count(ctx)
-	if err != nil {
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	res, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
-	if err != nil {
+
+	var notifications []gormschema.SystemNotification
+	if err := query.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find(&notifications).Error; err != nil {
 		return nil, 0, err
 	}
-	return converter.ToBizSystemNotificationList(res), int64(total), nil
+
+	return gormschema.ToBizSystemNotificationList(ptrSlice(notifications)), total, nil
 }
