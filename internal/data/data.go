@@ -7,22 +7,22 @@ import (
 	"fmt"
 	"net"
 	"path"
-	"slices"
 	"strconv"
 	"time"
 
 	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/data/internal/ent"
-	"github.com/tuihub/librarian/internal/data/internal/ent/migrate"
+	"github.com/tuihub/librarian/internal/data/internal/gormschema"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/sql"
 	"github.com/google/wire"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	gormlogger "gorm.io/gorm/logger"
 
-	_ "github.com/jackc/pgx/v5/stdlib" // required by ent
-	_ "github.com/mattn/go-sqlite3"    // required by ent
+	_ "github.com/jackc/pgx/v5/stdlib" // required by postgres
+	_ "github.com/mattn/go-sqlite3"    // required by sqlite
 )
 
 var ProviderSet = wire.NewSet(
@@ -41,7 +41,7 @@ var ProviderSet = wire.NewSet(
 
 type Data struct {
 	stdDB *stdsql.DB
-	db    *ent.Client
+	db    *gorm.DB
 }
 
 func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
@@ -50,56 +50,63 @@ func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
 		return nil, func() {}, errors.New("database config is nil")
 	}
 	driverName := c.Driver
-	var dialectName string
+
+	gormConfig := &gorm.Config{
+		Logger:                                   gormlogger.Default.LogMode(gormlogger.Silent),
+		DisableForeignKeyConstraintWhenMigrating: true,
+	}
+
+	var dialector gorm.Dialector
 	switch driverName {
 	case conf.DatabaseDriverMemory:
-		dialectName = dialect.SQLite
 		driverName = conf.DatabaseDriverSqlite
-		dataSourceName = "file:ent?mode=memory&cache=shared&_fk=1&_busy_timeout=30000&_timeout=30000"
+		dataSourceName = "file:librarian?mode=memory&cache=shared&_fk=1&_busy_timeout=30000&_timeout=30000"
+		dialector = sqlite.Open(dataSourceName)
 	case conf.DatabaseDriverSqlite:
-		dialectName = dialect.SQLite
 		dataSourceName = fmt.Sprintf(
 			"file:%s?cache=shared&_fk=1&_journal=WAL&_busy_timeout=30000",
 			path.Join(app.DataPath, "librarian.db"),
 		)
+		dialector = sqlite.Open(dataSourceName)
 	case conf.DatabaseDriverPostgres:
-		dialectName = dialect.Postgres
-		driverName = "pgx"
 		dataSourceName = fmt.Sprintf("postgresql://%s:%s@%s/%s",
 			c.Username,
 			c.Password,
 			net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port))),
 			c.DBName,
 		)
+		dialector = postgres.Open(dataSourceName)
 	default:
 		return nil, func() {}, fmt.Errorf("unsupported database driver %s", driverName)
 	}
 
-	db, err := stdsql.Open(string(driverName), dataSourceName)
+	db, err := gorm.Open(dialector, gormConfig)
 	if err != nil {
 		logger.Errorf("failed opening connection to database: %v", err)
 		return nil, func() {}, fmt.Errorf("failed opening connection to database: %w", err)
 	}
-	drv := sql.OpenDB(dialectName, db)
 
-	db.SetMaxIdleConns(10)  //nolint:mnd // no need
-	db.SetMaxOpenConns(100) //nolint:mnd // no need
-	db.SetConnMaxIdleTime(time.Hour)
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorf("failed getting underlying sql.DB: %v", err)
+		return nil, func() {}, fmt.Errorf("failed getting underlying sql.DB: %w", err)
+	}
 
-	client := ent.NewClient(ent.Driver(drv))
+	sqlDB.SetMaxIdleConns(10)  //nolint:mnd // no need
+	sqlDB.SetMaxOpenConns(100) //nolint:mnd // no need
+	sqlDB.SetConnMaxIdleTime(time.Hour)
 
-	// Run the auto migration tool.
-	if err = client.Schema.Create(context.Background(), migrate.WithForeignKeys(false)); err != nil {
+	// Run auto migration (without foreign keys)
+	if err = db.AutoMigrate(gormschema.AllModels()...); err != nil {
 		logger.Errorf("failed creating schema resources: %v", err)
 		return nil, func() {}, fmt.Errorf("failed creating schema resources: %w", err)
 	}
 
 	return &Data{
-			stdDB: db,
-			db:    client,
+			stdDB: sqlDB,
+			db:    db,
 		}, func() {
-			_ = client.Close()
-			_ = db.Close()
+			_ = sqlDB.Close()
 		}, nil
 }
 
@@ -107,46 +114,39 @@ func GetDB(d *Data) *stdsql.DB {
 	return d.stdDB
 }
 
-func (d *Data) WithTx(ctx context.Context, fn func(tx *ent.Tx) error) error {
-	tx, err := d.db.Tx(ctx)
-	if err != nil {
-		return err
+// WithTx executes a function within a database transaction.
+// If the function returns an error or panics, the transaction is rolled back.
+// On success, the transaction is committed.
+func (d *Data) WithTx(ctx context.Context, fn func(tx *gorm.DB) error) error {
+	tx := d.db.WithContext(ctx).Begin()
+	if tx.Error != nil {
+		return tx.Error
 	}
+
 	defer func() {
 		if v := recover(); v != nil {
-			_ = tx.Rollback()
+			tx.Rollback()
 			panic(v)
 		}
 	}()
-	if err = fn(tx); err != nil {
-		if rerr := tx.Rollback(); rerr != nil {
-			err = fmt.Errorf("%w: rolling back transaction: %s", err, rerr.Error())
+
+	if err := fn(tx); err != nil {
+		if rerr := tx.Rollback().Error; rerr != nil {
+			return fmt.Errorf("%w: rolling back transaction: %s", err, rerr.Error())
 		}
 		return err
 	}
-	if err = tx.Commit(); err != nil {
+
+	if err := tx.Commit().Error; err != nil {
 		return fmt.Errorf("committing transaction: %w", err)
 	}
 	return nil
 }
 
-func resolveWithIgnores(ignores []string) sql.ConflictOption {
-	return sql.ResolveWith(func(u *sql.UpdateSet) {
-		for _, c := range u.Columns() {
-			if slices.Contains(ignores, c) {
-				continue
-			}
-			u.SetExcluded(c)
-		}
-	})
-}
-
+// ErrorIsNotFound returns true if the error indicates a record was not found.
 func ErrorIsNotFound(err error) bool {
 	if err == nil {
 		return false
 	}
-	if ent.IsNotFound(err) {
-		return true
-	}
-	return false
+	return errors.Is(err, gorm.ErrRecordNotFound)
 }

@@ -4,30 +4,23 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/tuihub/librarian/internal/data/internal/ent"
-	"github.com/tuihub/librarian/internal/data/internal/ent/kv"
+	"github.com/tuihub/librarian/internal/data/internal/gormschema"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 
-	"entgo.io/ent/dialect/sql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func (d *Data) kvSet(ctx context.Context, bucket, key, value string) error {
-	err := d.db.KV.Create().
-		SetBucket(bucket).
-		SetKey(key).
-		SetValue(value).
-		OnConflict(
-			sql.ConflictColumns(
-				kv.FieldBucket,
-				kv.FieldKey,
-			),
-			resolveWithIgnores([]string{
-				kv.FieldBucket,
-				kv.FieldKey,
-			}),
-		).
-		Exec(ctx)
-	return err
+	kv := gormschema.KV{
+		Bucket: bucket,
+		Key:    key,
+		Value:  value,
+	}
+	return d.db.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "bucket"}, {Name: "key"}},
+		DoUpdates: clause.AssignmentColumns([]string{"value", "updated_at"}),
+	}).Create(&kv).Error
 }
 
 func (d *Data) kvSetJSON(ctx context.Context, bucket, key string, value any) error {
@@ -43,16 +36,14 @@ func (d *Data) kvSetInt64(ctx context.Context, bucket, key string, value int64) 
 }
 
 func (d *Data) kvGet(ctx context.Context, bucket, key string) (string, error) {
-	res, err := d.db.KV.Query().
-		Where(
-			kv.Bucket(bucket),
-			kv.Key(key),
-		).
-		Only(ctx)
+	var kv gormschema.KV
+	err := d.db.WithContext(ctx).
+		Where("bucket = ? AND key = ?", bucket, key).
+		First(&kv).Error
 	if err != nil {
 		return "", err
 	}
-	return res.Value, nil
+	return kv.Value, nil
 }
 
 func (d *Data) kvGetJSON(ctx context.Context, bucket, key string, value any) error {
@@ -78,7 +69,7 @@ func (d *Data) kvGetInt64(ctx context.Context, bucket, key string) (int64, error
 func (d *Data) kvExists(ctx context.Context, bucket, key string) (bool, error) {
 	_, err := d.kvGet(ctx, bucket, key)
 	if err != nil {
-		if ent.IsNotFound(err) {
+		if err == gorm.ErrRecordNotFound {
 			return false, nil
 		}
 		return false, err

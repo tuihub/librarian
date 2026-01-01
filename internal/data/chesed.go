@@ -3,9 +3,7 @@ package data
 import (
 	"context"
 
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/internal/ent/image"
-	"github.com/tuihub/librarian/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/internal/data/internal/gormschema"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelchesed"
 )
@@ -22,63 +20,71 @@ func NewChesedRepo(data *Data) *ChesedRepo {
 }
 
 func (c *ChesedRepo) CreateImage(ctx context.Context, userID model.InternalID, image *modelchesed.Image) error {
-	return c.data.db.Image.Create().
-		SetID(image.ID).
-		SetName(image.Name).
-		SetDescription(image.Description).
-		SetStatus(converter.ToEntImageStatus(image.Status)).
-		SetFileID(image.ID).
-		SetOwnerID(userID).
-		Exec(ctx)
+	img := gormschema.Image{
+		ID:          image.ID,
+		OwnerID:     userID,
+		FileID:      image.ID,
+		Name:        image.Name,
+		Description: image.Description,
+		Status:      gormschema.ToSchemaImageStatus(image.Status),
+	}
+	return c.data.db.WithContext(ctx).Create(&img).Error
 }
 
 func (c *ChesedRepo) ListImages(ctx context.Context, userID model.InternalID, paging model.Paging) (
 	[]*modelchesed.Image, int64, error) {
-	q := c.data.db.Image.Query().
-		Where(
-			image.HasOwnerWith(user.IDEQ(userID)),
-		)
-	total, err := q.Count(ctx)
-	if err != nil {
+	query := c.data.db.WithContext(ctx).Model(&gormschema.Image{}).
+		Where("owner_id = ?", userID)
+
+	var total int64
+	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	res, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
-	if err != nil {
+
+	var images []gormschema.Image
+	if err := query.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find(&images).Error; err != nil {
 		return nil, 0, err
 	}
-	return converter.ToBizImageList(res), int64(total), nil
+
+	res := make([]*modelchesed.Image, len(images))
+	for i := range images {
+		res[i] = gormschema.ToBizImage(&images[i])
+	}
+	return res, total, nil
 }
 
 func (c *ChesedRepo) ListImageNeedScan(ctx context.Context) ([]*modelchesed.Image, error) {
-	res, err := c.data.db.Image.Query().
-		Where(image.StatusEQ(image.StatusUploaded)).
+	var images []gormschema.Image
+	err := c.data.db.WithContext(ctx).
+		Where("status = ?", "uploaded").
 		Limit(10). //nolint:mnd //TODO
-		All(ctx)
+		Find(&images).Error
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizImageList(res), nil
+
+	res := make([]*modelchesed.Image, len(images))
+	for i := range images {
+		res[i] = gormschema.ToBizImage(&images[i])
+	}
+	return res, nil
 }
 
 func (c *ChesedRepo) SetImageStatus(ctx context.Context, id model.InternalID, status modelchesed.ImageStatus) error {
-	return c.data.db.Image.UpdateOneID(id).
-		SetStatus(converter.ToEntImageStatus(status)).
-		Exec(ctx)
+	return c.data.db.WithContext(ctx).
+		Model(&gormschema.Image{}).
+		Where("id = ?", id).
+		Update("status", gormschema.ToSchemaImageStatus(status)).Error
 }
 
 func (c *ChesedRepo) GetImage(ctx context.Context, userID model.InternalID, id model.InternalID) (
 	*modelchesed.Image, error) {
-	res, err := c.data.db.Image.Query().
-		Where(
-			image.IDEQ(id),
-			image.HasOwnerWith(user.IDEQ(userID)),
-		).
-		Only(ctx)
+	var img gormschema.Image
+	err := c.data.db.WithContext(ctx).
+		Where("id = ? AND owner_id = ?", id, userID).
+		First(&img).Error
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizImage(res), nil
+	return gormschema.ToBizImage(&img), nil
 }
