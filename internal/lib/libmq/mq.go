@@ -100,7 +100,7 @@ func (a *MQ) RegisterTopic(topic TopicInterface) error {
 		return err
 	}
 	// Normal queue
-	a.router.AddNoPublisherHandler(
+	a.router.AddConsumerHandler(
 		topic.Name(),
 		topic.Name(),
 		a.pubSub.subscriber,
@@ -110,7 +110,7 @@ func (a *MQ) RegisterTopic(topic TopicInterface) error {
 	).AddMiddleware(poisonQueue, retryMiddleware())
 	// Poison queue
 	if topic.GetOptions() != nil && topic.GetOptions().ConsumePoisoned {
-		a.router.AddNoPublisherHandler(
+		a.router.AddConsumerHandler(
 			poisonedTopicName(topic.Name()),
 			poisonedTopicName(topic.Name()),
 			a.pubSub.subscriber,
