@@ -198,9 +198,16 @@ func (s *SupervisorRepo) UpsertPorters(ctx context.Context, il []*modelsuperviso
 			ConnectionStatusMessage: instance.ConnectionStatusMessage,
 		}
 	}
+	// Columns to update on conflict (excludes ID and status which should not be overwritten)
+	porterUpdateColumns := []string{
+		"name", "version", "description", "source_code_address",
+		"build_version", "build_date", "global_name", "region",
+		"feature_summary", "context_json_schema",
+		"connection_status", "connection_status_message", "updated_at",
+	}
 	return s.data.db.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "address"}},
-		DoUpdates: clause.AssignmentColumns([]string{"name", "version", "description", "source_code_address", "build_version", "build_date", "global_name", "region", "feature_summary", "context_json_schema", "connection_status", "connection_status_message", "updated_at"}),
+		DoUpdates: clause.AssignmentColumns(porterUpdateColumns),
 	}).Create(&instances).Error
 }
 

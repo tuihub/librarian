@@ -380,9 +380,12 @@ func (y *YesodRepo) GetFeedItems(
 }
 
 func (y *YesodRepo) ReadFeedItem(ctx context.Context, userID model.InternalID, id model.InternalID) error {
+	// Validate ownership through feed config ownership
 	return y.data.db.WithContext(ctx).
 		Model(&gormschema.FeedItem{}).
-		Where("id = ?", id).
+		Joins("JOIN feeds ON feed_items.feed_id = feeds.id").
+		Joins("JOIN feed_configs ON feeds.id = feed_configs.id").
+		Where("feed_items.id = ? AND feed_configs.owner_id = ?", id, userID).
 		Update("read_count", gorm.Expr("read_count + 1")).Error
 }
 
