@@ -6,7 +6,6 @@ import (
 	"net"
 	"net/http"
 	"strconv"
-	"syscall"
 	"time"
 
 	"github.com/tuihub/librarian/internal/conf"
@@ -59,17 +58,7 @@ func NewConnectServer(
 
 func (s *ConnectServer) Start(ctx context.Context) error {
 	lc := net.ListenConfig{
-		Control: func(network, address string, c syscall.RawConn) error {
-			var err error
-			err2 := c.Control(func(fd uintptr) {
-				// Enable SO_REUSEADDR for faster restart
-				err = syscall.SetsockoptInt(int(fd), syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1)
-			})
-			if err2 != nil {
-				return err2
-			}
-			return err
-		},
+		Control:   nil,
 		KeepAlive: 3 * time.Minute, //nolint:mnd // Enable TCP keep-alive and set idle time
 		KeepAliveConfig: net.KeepAliveConfig{
 			Enable:   true,
