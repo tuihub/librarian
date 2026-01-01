@@ -287,6 +287,9 @@ linters:
         - ^golang.org/x/tools/go/analysis.Analyzer$
         - ^google.golang.org/protobuf/.+Options$
         - ^gopkg.in/yaml.v3.Node$
+        - ^github.com/tuihub/librarian/internal/data/orm/model\..+$
+        - ^gorm.io/gorm/clause\..+$
+        - ^gorm.io/gorm.Config$
 
     funcorder:
       # Checks if the exported methods of a structure are placed before the non-exported ones.
@@ -487,3 +490,5 @@ linters:
         source: ProviderSet
       - path: "cmd"
         linters: [ exhaustruct ]
+      - path: "internal/data/internal/converter/enum_converters.go"
+        linters: [ goconst ]

@@ -4,20 +4,8 @@
 package converter
 
 import (
-	ent "github.com/tuihub/librarian/internal/data/internal/ent"
-	app "github.com/tuihub/librarian/internal/data/internal/ent/app"
-	appinfo "github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	device "github.com/tuihub/librarian/internal/data/internal/ent/device"
-	feedconfig "github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
-	image "github.com/tuihub/librarian/internal/data/internal/ent/image"
-	notifyflow "github.com/tuihub/librarian/internal/data/internal/ent/notifyflow"
-	notifytarget "github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
-	portercontext "github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
-	porterinstance "github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
-	sentinelsession "github.com/tuihub/librarian/internal/data/internal/ent/sentinelsession"
-	systemnotification "github.com/tuihub/librarian/internal/data/internal/ent/systemnotification"
-	user "github.com/tuihub/librarian/internal/data/internal/ent/user"
-	model "github.com/tuihub/librarian/internal/model"
+	model "github.com/tuihub/librarian/internal/data/orm/model"
+	model1 "github.com/tuihub/librarian/internal/model"
 	modelchesed "github.com/tuihub/librarian/internal/model/modelchesed"
 	modelfeed "github.com/tuihub/librarian/internal/model/modelfeed"
 	modelgebura "github.com/tuihub/librarian/internal/model/modelgebura"
@@ -27,11 +15,11 @@ import (
 	"time"
 )
 
-func ToBizAccount(source *ent.Account) *model.Account {
-	var pModelAccount *model.Account
+func ToBizAccount(source *model.Account) *model1.Account {
+	var pModelAccount *model1.Account
 	if source != nil {
-		var modelAccount model.Account
-		modelAccount.ID = model.InternalID((*source).ID)
+		var modelAccount model1.Account
+		modelAccount.ID = model1.InternalID((*source).ID)
 		modelAccount.Platform = (*source).Platform
 		modelAccount.PlatformAccountID = (*source).PlatformAccountID
 		modelAccount.Name = (*source).Name
@@ -42,17 +30,17 @@ func ToBizAccount(source *ent.Account) *model.Account {
 	}
 	return pModelAccount
 }
-func ToBizAccountList(source []*ent.Account) []*model.Account {
-	var pModelAccountList []*model.Account
+func ToBizAccountList(source []*model.Account) []*model1.Account {
+	var pModelAccountList []*model1.Account
 	if source != nil {
-		pModelAccountList = make([]*model.Account, len(source))
+		pModelAccountList = make([]*model1.Account, len(source))
 		for i := 0; i < len(source); i++ {
 			pModelAccountList[i] = ToBizAccount(source[i])
 		}
 	}
 	return pModelAccountList
 }
-func ToBizApp(source *ent.App) *modelgebura.App {
+func ToBizApp(source *model.App) *modelgebura.App {
 	var pModelgeburaApp *modelgebura.App
 	if source != nil {
 		var modelgeburaApp modelgebura.App
@@ -71,7 +59,7 @@ func ToBizApp(source *ent.App) *modelgebura.App {
 		pBool := (*source).StopStoreManage
 		modelgeburaApp.StopStoreManage = &pBool
 		modelgeburaApp.Name = (*source).Name
-		modelgeburaApp.Type = ToBizAppType((*source).Type)
+		modelgeburaApp.Type = ToBizAppInfoType((*source).Type)
 		modelgeburaApp.ShortDescription = (*source).ShortDescription
 		modelgeburaApp.Description = (*source).Description
 		modelgeburaApp.IconImageURL = (*source).IconImageURL
@@ -99,7 +87,7 @@ func ToBizApp(source *ent.App) *modelgebura.App {
 	}
 	return pModelgeburaApp
 }
-func ToBizAppCategory(source *ent.AppCategory) *modelgebura.AppCategory {
+func ToBizAppCategory(source *model.AppCategory) *modelgebura.AppCategory {
 	var pModelgeburaAppCategory *modelgebura.AppCategory
 	if source != nil {
 		var modelgeburaAppCategory modelgebura.AppCategory
@@ -111,7 +99,7 @@ func ToBizAppCategory(source *ent.AppCategory) *modelgebura.AppCategory {
 	}
 	return pModelgeburaAppCategory
 }
-func ToBizAppInfo(source *ent.AppInfo) *modelgebura.AppInfo {
+func ToBizAppInfo(source *model.AppInfo) *modelgebura.AppInfo {
 	var pModelgeburaAppInfo *modelgebura.AppInfo
 	if source != nil {
 		var modelgeburaAppInfo modelgebura.AppInfo
@@ -150,7 +138,7 @@ func ToBizAppInfo(source *ent.AppInfo) *modelgebura.AppInfo {
 	}
 	return pModelgeburaAppInfo
 }
-func ToBizAppInfoList(source []*ent.AppInfo) []*modelgebura.AppInfo {
+func ToBizAppInfoList(source []*model.AppInfo) []*modelgebura.AppInfo {
 	var pModelgeburaAppInfoList []*modelgebura.AppInfo
 	if source != nil {
 		pModelgeburaAppInfoList = make([]*modelgebura.AppInfo, len(source))
@@ -160,19 +148,7 @@ func ToBizAppInfoList(source []*ent.AppInfo) []*modelgebura.AppInfo {
 	}
 	return pModelgeburaAppInfoList
 }
-func ToBizAppInfoType(source appinfo.Type) modelgebura.AppType {
-	var modelgeburaAppType modelgebura.AppType
-	switch source {
-	case appinfo.TypeGame:
-		modelgeburaAppType = modelgebura.AppTypeGame
-	case appinfo.TypeUnknown:
-		modelgeburaAppType = modelgebura.AppTypeUnspecified
-	default:
-		modelgeburaAppType = modelgebura.AppTypeUnspecified
-	}
-	return modelgeburaAppType
-}
-func ToBizAppList(source []*ent.App) []*modelgebura.App {
+func ToBizAppList(source []*model.App) []*modelgebura.App {
 	var pModelgeburaAppList []*modelgebura.App
 	if source != nil {
 		pModelgeburaAppList = make([]*modelgebura.App, len(source))
@@ -182,19 +158,19 @@ func ToBizAppList(source []*ent.App) []*modelgebura.App {
 	}
 	return pModelgeburaAppList
 }
-func ToBizAppRunTime(source *ent.AppRunTime) *modelgebura.AppRunTime {
+func ToBizAppRunTime(source *model.AppRunTime) *modelgebura.AppRunTime {
 	var pModelgeburaAppRunTime *modelgebura.AppRunTime
 	if source != nil {
 		var modelgeburaAppRunTime modelgebura.AppRunTime
 		modelgeburaAppRunTime.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelgeburaAppRunTime.AppID = modelInternalIDToModelInternalID((*source).AppID)
 		modelgeburaAppRunTime.DeviceID = modelInternalIDToModelInternalID((*source).DeviceID)
-		modelgeburaAppRunTime.RunTime = entAppRunTimeToPModelTimeRange((*source))
+		modelgeburaAppRunTime.RunTime = modelAppRunTimeToPModelTimeRange((*source))
 		pModelgeburaAppRunTime = &modelgeburaAppRunTime
 	}
 	return pModelgeburaAppRunTime
 }
-func ToBizAppRunTimeList(source []*ent.AppRunTime) []*modelgebura.AppRunTime {
+func ToBizAppRunTimeList(source []*model.AppRunTime) []*modelgebura.AppRunTime {
 	var pModelgeburaAppRunTimeList []*modelgebura.AppRunTime
 	if source != nil {
 		pModelgeburaAppRunTimeList = make([]*modelgebura.AppRunTime, len(source))
@@ -204,22 +180,10 @@ func ToBizAppRunTimeList(source []*ent.AppRunTime) []*modelgebura.AppRunTime {
 	}
 	return pModelgeburaAppRunTimeList
 }
-func ToBizAppType(source app.Type) modelgebura.AppType {
-	var modelgeburaAppType modelgebura.AppType
-	switch source {
-	case app.TypeGame:
-		modelgeburaAppType = modelgebura.AppTypeGame
-	case app.TypeUnknown:
-		modelgeburaAppType = modelgebura.AppTypeUnspecified
-	default:
-		modelgeburaAppType = modelgebura.AppTypeUnspecified
-	}
-	return modelgeburaAppType
-}
-func ToBizDeviceInfo(source *ent.Device) *model.Device {
-	var pModelDevice *model.Device
+func ToBizDeviceInfo(source *model.Device) *model1.Device {
+	var pModelDevice *model1.Device
 	if source != nil {
-		var modelDevice model.Device
+		var modelDevice model1.Device
 		modelDevice.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelDevice.DeviceName = (*source).DeviceName
 		modelDevice.SystemType = ToBizSystemType((*source).SystemType)
@@ -231,17 +195,17 @@ func ToBizDeviceInfo(source *ent.Device) *model.Device {
 	}
 	return pModelDevice
 }
-func ToBizDeviceInfoList(source []*ent.Device) []*model.Device {
-	var pModelDeviceList []*model.Device
+func ToBizDeviceInfoList(source []*model.Device) []*model1.Device {
+	var pModelDeviceList []*model1.Device
 	if source != nil {
-		pModelDeviceList = make([]*model.Device, len(source))
+		pModelDeviceList = make([]*model1.Device, len(source))
 		for i := 0; i < len(source); i++ {
 			pModelDeviceList[i] = ToBizDeviceInfo(source[i])
 		}
 	}
 	return pModelDeviceList
 }
-func ToBizFeed(source *ent.Feed) *modelfeed.Feed {
+func ToBizFeed(source *model.Feed) *modelfeed.Feed {
 	var pModelfeedFeed *modelfeed.Feed
 	if source != nil {
 		var modelfeedFeed modelfeed.Feed
@@ -261,7 +225,7 @@ func ToBizFeed(source *ent.Feed) *modelfeed.Feed {
 	}
 	return pModelfeedFeed
 }
-func ToBizFeedActionSet(source *ent.FeedActionSet) *modelyesod.FeedActionSet {
+func ToBizFeedActionSet(source *model.FeedActionSet) *modelyesod.FeedActionSet {
 	var pModelyesodFeedActionSet *modelyesod.FeedActionSet
 	if source != nil {
 		var modelyesodFeedActionSet modelyesod.FeedActionSet
@@ -269,7 +233,7 @@ func ToBizFeedActionSet(source *ent.FeedActionSet) *modelyesod.FeedActionSet {
 		modelyesodFeedActionSet.Name = (*source).Name
 		modelyesodFeedActionSet.Description = (*source).Description
 		if (*source).Actions != nil {
-			modelyesodFeedActionSet.Actions = make([]*model.FeatureRequest, len((*source).Actions))
+			modelyesodFeedActionSet.Actions = make([]*model1.FeatureRequest, len((*source).Actions))
 			for i := 0; i < len((*source).Actions); i++ {
 				modelyesodFeedActionSet.Actions[i] = pModelFeatureRequestToPModelFeatureRequest((*source).Actions[i])
 			}
@@ -278,7 +242,7 @@ func ToBizFeedActionSet(source *ent.FeedActionSet) *modelyesod.FeedActionSet {
 	}
 	return pModelyesodFeedActionSet
 }
-func ToBizFeedActionSetList(source []*ent.FeedActionSet) []*modelyesod.FeedActionSet {
+func ToBizFeedActionSetList(source []*model.FeedActionSet) []*modelyesod.FeedActionSet {
 	var pModelyesodFeedActionSetList []*modelyesod.FeedActionSet
 	if source != nil {
 		pModelyesodFeedActionSetList = make([]*modelyesod.FeedActionSet, len(source))
@@ -288,7 +252,7 @@ func ToBizFeedActionSetList(source []*ent.FeedActionSet) []*modelyesod.FeedActio
 	}
 	return pModelyesodFeedActionSetList
 }
-func ToBizFeedConfig(source *ent.FeedConfig) *modelyesod.FeedConfig {
+func ToBizFeedConfig(source *model.FeedConfig) *modelyesod.FeedConfig {
 	var pModelyesodFeedConfig *modelyesod.FeedConfig
 	if source != nil {
 		var modelyesodFeedConfig modelyesod.FeedConfig
@@ -307,7 +271,7 @@ func ToBizFeedConfig(source *ent.FeedConfig) *modelyesod.FeedConfig {
 	}
 	return pModelyesodFeedConfig
 }
-func ToBizFeedConfigList(source []*ent.FeedConfig) []*modelyesod.FeedConfig {
+func ToBizFeedConfigList(source []*model.FeedConfig) []*modelyesod.FeedConfig {
 	var pModelyesodFeedConfigList []*modelyesod.FeedConfig
 	if source != nil {
 		pModelyesodFeedConfigList = make([]*modelyesod.FeedConfig, len(source))
@@ -317,33 +281,7 @@ func ToBizFeedConfigList(source []*ent.FeedConfig) []*modelyesod.FeedConfig {
 	}
 	return pModelyesodFeedConfigList
 }
-func ToBizFeedConfigPullStatus(source feedconfig.LatestPullStatus) modelyesod.FeedConfigPullStatus {
-	var modelyesodFeedConfigPullStatus modelyesod.FeedConfigPullStatus
-	switch source {
-	case feedconfig.LatestPullStatusFailed:
-		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusFailed
-	case feedconfig.LatestPullStatusProcessing:
-		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusProcessing
-	case feedconfig.LatestPullStatusSuccess:
-		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusSuccess
-	default:
-		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusUnspecified
-	}
-	return modelyesodFeedConfigPullStatus
-}
-func ToBizFeedConfigStatus(source feedconfig.Status) modelyesod.FeedConfigStatus {
-	var modelyesodFeedConfigStatus modelyesod.FeedConfigStatus
-	switch source {
-	case feedconfig.StatusActive:
-		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusActive
-	case feedconfig.StatusSuspend:
-		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusSuspend
-	default:
-		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusUnspecified
-	}
-	return modelyesodFeedConfigStatus
-}
-func ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item {
+func ToBizFeedItem(source *model.FeedItem) *modelfeed.Item {
 	var pModelfeedItem *modelfeed.Item
 	if source != nil {
 		var modelfeedItem modelfeed.Item
@@ -383,7 +321,7 @@ func ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item {
 	}
 	return pModelfeedItem
 }
-func ToBizFeedItemCollection(source *ent.FeedItemCollection) *modelyesod.FeedItemCollection {
+func ToBizFeedItemCollection(source *model.FeedItemCollection) *modelyesod.FeedItemCollection {
 	var pModelyesodFeedItemCollection *modelyesod.FeedItemCollection
 	if source != nil {
 		var modelyesodFeedItemCollection modelyesod.FeedItemCollection
@@ -395,7 +333,7 @@ func ToBizFeedItemCollection(source *ent.FeedItemCollection) *modelyesod.FeedIte
 	}
 	return pModelyesodFeedItemCollection
 }
-func ToBizFeedItemCollectionList(source []*ent.FeedItemCollection) []*modelyesod.FeedItemCollection {
+func ToBizFeedItemCollectionList(source []*model.FeedItemCollection) []*modelyesod.FeedItemCollection {
 	var pModelyesodFeedItemCollectionList []*modelyesod.FeedItemCollection
 	if source != nil {
 		pModelyesodFeedItemCollectionList = make([]*modelyesod.FeedItemCollection, len(source))
@@ -405,7 +343,7 @@ func ToBizFeedItemCollectionList(source []*ent.FeedItemCollection) []*modelyesod
 	}
 	return pModelyesodFeedItemCollectionList
 }
-func ToBizFeedItemList(source []*ent.FeedItem) []*modelfeed.Item {
+func ToBizFeedItemList(source []*model.FeedItem) []*modelfeed.Item {
 	var pModelfeedItemList []*modelfeed.Item
 	if source != nil {
 		pModelfeedItemList = make([]*modelfeed.Item, len(source))
@@ -415,7 +353,7 @@ func ToBizFeedItemList(source []*ent.FeedItem) []*modelfeed.Item {
 	}
 	return pModelfeedItemList
 }
-func ToBizImage(source *ent.Image) *modelchesed.Image {
+func ToBizImage(source *model.Image) *modelchesed.Image {
 	var pModelchesedImage *modelchesed.Image
 	if source != nil {
 		var modelchesedImage modelchesed.Image
@@ -427,7 +365,7 @@ func ToBizImage(source *ent.Image) *modelchesed.Image {
 	}
 	return pModelchesedImage
 }
-func ToBizImageList(source []*ent.Image) []*modelchesed.Image {
+func ToBizImageList(source []*model.Image) []*modelchesed.Image {
 	var pModelchesedImageList []*modelchesed.Image
 	if source != nil {
 		pModelchesedImageList = make([]*modelchesed.Image, len(source))
@@ -437,19 +375,7 @@ func ToBizImageList(source []*ent.Image) []*modelchesed.Image {
 	}
 	return pModelchesedImageList
 }
-func ToBizImageStatus(source image.Status) modelchesed.ImageStatus {
-	var modelchesedImageStatus modelchesed.ImageStatus
-	switch source {
-	case image.StatusScanned:
-		modelchesedImageStatus = modelchesed.ImageStatusScanned
-	case image.StatusUploaded:
-		modelchesedImageStatus = modelchesed.ImageStatusUploaded
-	default:
-		modelchesedImageStatus = modelchesed.ImageStatusUnspecified
-	}
-	return modelchesedImageStatus
-}
-func ToBizNotifyFlow(source *ent.NotifyFlow) *modelnetzach.NotifyFlow {
+func ToBizNotifyFlow(source *model.NotifyFlow) *modelnetzach.NotifyFlow {
 	var pModelnetzachNotifyFlow *modelnetzach.NotifyFlow
 	if source != nil {
 		var modelnetzachNotifyFlow modelnetzach.NotifyFlow
@@ -461,19 +387,7 @@ func ToBizNotifyFlow(source *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 	}
 	return pModelnetzachNotifyFlow
 }
-func ToBizNotifyFlowStatus(source notifyflow.Status) modelnetzach.NotifyFlowStatus {
-	var modelnetzachNotifyFlowStatus modelnetzach.NotifyFlowStatus
-	switch source {
-	case notifyflow.StatusActive:
-		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusActive
-	case notifyflow.StatusSuspend:
-		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusSuspend
-	default:
-		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusUnspecified
-	}
-	return modelnetzachNotifyFlowStatus
-}
-func ToBizNotifyTarget(source *ent.NotifyTarget) *modelnetzach.NotifyTarget {
+func ToBizNotifyTarget(source *model.NotifyTarget) *modelnetzach.NotifyTarget {
 	var pModelnetzachNotifyTarget *modelnetzach.NotifyTarget
 	if source != nil {
 		var modelnetzachNotifyTarget modelnetzach.NotifyTarget
@@ -486,7 +400,7 @@ func ToBizNotifyTarget(source *ent.NotifyTarget) *modelnetzach.NotifyTarget {
 	}
 	return pModelnetzachNotifyTarget
 }
-func ToBizNotifyTargetList(source []*ent.NotifyTarget) []*modelnetzach.NotifyTarget {
+func ToBizNotifyTargetList(source []*model.NotifyTarget) []*modelnetzach.NotifyTarget {
 	var pModelnetzachNotifyTargetList []*modelnetzach.NotifyTarget
 	if source != nil {
 		pModelnetzachNotifyTargetList = make([]*modelnetzach.NotifyTarget, len(source))
@@ -496,24 +410,12 @@ func ToBizNotifyTargetList(source []*ent.NotifyTarget) []*modelnetzach.NotifyTar
 	}
 	return pModelnetzachNotifyTargetList
 }
-func ToBizNotifyTargetStatus(source notifytarget.Status) modelnetzach.NotifyTargetStatus {
-	var modelnetzachNotifyTargetStatus modelnetzach.NotifyTargetStatus
-	switch source {
-	case notifytarget.StatusActive:
-		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusActive
-	case notifytarget.StatusSuspend:
-		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusSuspend
-	default:
-		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusUnspecified
-	}
-	return modelnetzachNotifyTargetStatus
-}
-func ToBizPorter(source *ent.PorterInstance) *modelsupervisor.PorterInstance {
+func ToBizPorter(source *model.PorterInstance) *modelsupervisor.PorterInstance {
 	var pModelsupervisorPorterInstance *modelsupervisor.PorterInstance
 	if source != nil {
 		var modelsupervisorPorterInstance modelsupervisor.PorterInstance
 		modelsupervisorPorterInstance.ID = modelInternalIDToModelInternalID((*source).ID)
-		modelsupervisorPorterInstance.BinarySummary = entPorterInstanceToPModelsupervisorPorterBinarySummary((*source))
+		modelsupervisorPorterInstance.BinarySummary = modelPorterInstanceToPModelsupervisorPorterBinarySummary((*source))
 		modelsupervisorPorterInstance.GlobalName = (*source).GlobalName
 		modelsupervisorPorterInstance.Address = (*source).Address
 		modelsupervisorPorterInstance.Region = (*source).Region
@@ -526,29 +428,7 @@ func ToBizPorter(source *ent.PorterInstance) *modelsupervisor.PorterInstance {
 	}
 	return pModelsupervisorPorterInstance
 }
-func ToBizPorterConnectionStatus(source porterinstance.ConnectionStatus) modelsupervisor.PorterConnectionStatus {
-	var modelsupervisorPorterConnectionStatus modelsupervisor.PorterConnectionStatus
-	switch source {
-	case porterinstance.ConnectionStatusActivationFailed:
-		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusActivationFailed
-	case porterinstance.ConnectionStatusActive:
-		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusActive
-	case porterinstance.ConnectionStatusConnected:
-		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusConnected
-	case porterinstance.ConnectionStatusDisconnected:
-		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
-	case porterinstance.ConnectionStatusDowngraded:
-		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusDowngraded
-	case porterinstance.ConnectionStatusQueueing:
-		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusQueueing
-	case porterinstance.ConnectionStatusUnspecified:
-		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusUnspecified
-	default:
-		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusUnspecified
-	}
-	return modelsupervisorPorterConnectionStatus
-}
-func ToBizPorterContext(source *ent.PorterContext) *modelsupervisor.PorterContext {
+func ToBizPorterContext(source *model.PorterContext) *modelsupervisor.PorterContext {
 	var pModelsupervisorPorterContext *modelsupervisor.PorterContext
 	if source != nil {
 		var modelsupervisorPorterContext modelsupervisor.PorterContext
@@ -565,25 +445,7 @@ func ToBizPorterContext(source *ent.PorterContext) *modelsupervisor.PorterContex
 	}
 	return pModelsupervisorPorterContext
 }
-func ToBizPorterContextHandleStatus(source portercontext.HandleStatus) modelsupervisor.PorterContextHandleStatus {
-	var modelsupervisorPorterContextHandleStatus modelsupervisor.PorterContextHandleStatus
-	switch source {
-	case portercontext.HandleStatusActive:
-		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusActive
-	case portercontext.HandleStatusBlocked:
-		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusBlocked
-	case portercontext.HandleStatusDowngraded:
-		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusDowngraded
-	case portercontext.HandleStatusQueueing:
-		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusQueueing
-	case portercontext.HandleStatusUnspecified:
-		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusUnspecified
-	default:
-		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusUnspecified
-	}
-	return modelsupervisorPorterContextHandleStatus
-}
-func ToBizPorterContextList(source []*ent.PorterContext) []*modelsupervisor.PorterContext {
+func ToBizPorterContextList(source []*model.PorterContext) []*modelsupervisor.PorterContext {
 	var pModelsupervisorPorterContextList []*modelsupervisor.PorterContext
 	if source != nil {
 		pModelsupervisorPorterContextList = make([]*modelsupervisor.PorterContext, len(source))
@@ -593,19 +455,7 @@ func ToBizPorterContextList(source []*ent.PorterContext) []*modelsupervisor.Port
 	}
 	return pModelsupervisorPorterContextList
 }
-func ToBizPorterContextStatus(source portercontext.Status) modelsupervisor.PorterContextStatus {
-	var modelsupervisorPorterContextStatus modelsupervisor.PorterContextStatus
-	switch source {
-	case portercontext.StatusActive:
-		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusActive
-	case portercontext.StatusDisabled:
-		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusDisabled
-	default:
-		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusUnspecified
-	}
-	return modelsupervisorPorterContextStatus
-}
-func ToBizPorterList(source []*ent.PorterInstance) []*modelsupervisor.PorterInstance {
+func ToBizPorterList(source []*model.PorterInstance) []*modelsupervisor.PorterInstance {
 	var pModelsupervisorPorterInstanceList []*modelsupervisor.PorterInstance
 	if source != nil {
 		pModelsupervisorPorterInstanceList = make([]*modelsupervisor.PorterInstance, len(source))
@@ -615,19 +465,7 @@ func ToBizPorterList(source []*ent.PorterInstance) []*modelsupervisor.PorterInst
 	}
 	return pModelsupervisorPorterInstanceList
 }
-func ToBizPorterStatus(source porterinstance.Status) model.UserStatus {
-	var modelUserStatus model.UserStatus
-	switch source {
-	case porterinstance.StatusActive:
-		modelUserStatus = model.UserStatusActive
-	case porterinstance.StatusBlocked:
-		modelUserStatus = model.UserStatusBlocked
-	default:
-		modelUserStatus = model.UserStatusUnspecified
-	}
-	return modelUserStatus
-}
-func ToBizSentinel(source *ent.Sentinel) *modelgebura.Sentinel {
+func ToBizSentinel(source *model.Sentinel) *modelgebura.Sentinel {
 	var pModelgeburaSentinel *modelgebura.Sentinel
 	if source != nil {
 		var modelgeburaSentinel modelgebura.Sentinel
@@ -635,10 +473,10 @@ func ToBizSentinel(source *ent.Sentinel) *modelgebura.Sentinel {
 		modelgeburaSentinel.Name = (*source).Name
 		modelgeburaSentinel.Description = (*source).Description
 		modelgeburaSentinel.URL = (*source).URL
-		if (*source).AlternativeUrls != nil {
-			modelgeburaSentinel.AlternativeUrls = make([]string, len((*source).AlternativeUrls))
-			for i := 0; i < len((*source).AlternativeUrls); i++ {
-				modelgeburaSentinel.AlternativeUrls[i] = (*source).AlternativeUrls[i]
+		if (*source).AlternativeURLs != nil {
+			modelgeburaSentinel.AlternativeUrls = make([]string, len((*source).AlternativeURLs))
+			for i := 0; i < len((*source).AlternativeURLs); i++ {
+				modelgeburaSentinel.AlternativeUrls[i] = (*source).AlternativeURLs[i]
 			}
 		}
 		modelgeburaSentinel.GetTokenPath = (*source).GetTokenPath
@@ -647,7 +485,7 @@ func ToBizSentinel(source *ent.Sentinel) *modelgebura.Sentinel {
 	}
 	return pModelgeburaSentinel
 }
-func ToBizSentinelList(source []*ent.Sentinel) []*modelgebura.Sentinel {
+func ToBizSentinelList(source []*model.Sentinel) []*modelgebura.Sentinel {
 	var pModelgeburaSentinelList []*modelgebura.Sentinel
 	if source != nil {
 		pModelgeburaSentinelList = make([]*modelgebura.Sentinel, len(source))
@@ -657,7 +495,7 @@ func ToBizSentinelList(source []*ent.Sentinel) []*modelgebura.Sentinel {
 	}
 	return pModelgeburaSentinelList
 }
-func ToBizSentinelSession(source *ent.SentinelSession) *modelgebura.SentinelSession {
+func ToBizSentinelSession(source *model.SentinelSession) *modelgebura.SentinelSession {
 	var pModelgeburaSentinelSession *modelgebura.SentinelSession
 	if source != nil {
 		var modelgeburaSentinelSession modelgebura.SentinelSession
@@ -674,7 +512,7 @@ func ToBizSentinelSession(source *ent.SentinelSession) *modelgebura.SentinelSess
 	}
 	return pModelgeburaSentinelSession
 }
-func ToBizSentinelSessionList(source []*ent.SentinelSession) []*modelgebura.SentinelSession {
+func ToBizSentinelSessionList(source []*model.SentinelSession) []*modelgebura.SentinelSession {
 	var pModelgeburaSentinelSessionList []*modelgebura.SentinelSession
 	if source != nil {
 		pModelgeburaSentinelSessionList = make([]*modelgebura.SentinelSession, len(source))
@@ -684,19 +522,7 @@ func ToBizSentinelSessionList(source []*ent.SentinelSession) []*modelgebura.Sent
 	}
 	return pModelgeburaSentinelSessionList
 }
-func ToBizSentinelSessionStatus(source sentinelsession.Status) modelgebura.SentinelSessionStatus {
-	var modelgeburaSentinelSessionStatus modelgebura.SentinelSessionStatus
-	switch source {
-	case sentinelsession.StatusActive:
-		modelgeburaSentinelSessionStatus = modelgebura.SentinelSessionStatusActive
-	case sentinelsession.StatusSuspend:
-		modelgeburaSentinelSessionStatus = modelgebura.SentinelSessionStatusSuspend
-	default:
-		modelgeburaSentinelSessionStatus = modelgebura.SentinelSessionStatusUnspecified
-	}
-	return modelgeburaSentinelSessionStatus
-}
-func ToBizStoreApp(source *ent.StoreApp) *modelgebura.StoreApp {
+func ToBizStoreApp(source *model.StoreApp) *modelgebura.StoreApp {
 	var pModelgeburaStoreApp *modelgebura.StoreApp
 	if source != nil {
 		var modelgeburaStoreApp modelgebura.StoreApp
@@ -707,7 +533,7 @@ func ToBizStoreApp(source *ent.StoreApp) *modelgebura.StoreApp {
 	}
 	return pModelgeburaStoreApp
 }
-func ToBizStoreAppBinary(source *ent.SentinelAppBinary) *modelgebura.StoreAppBinary {
+func ToBizStoreAppBinary(source *model.SentinelAppBinary) *modelgebura.StoreAppBinary {
 	var pModelgeburaStoreAppBinary *modelgebura.StoreAppBinary
 	if source != nil {
 		var modelgeburaStoreAppBinary modelgebura.StoreAppBinary
@@ -723,7 +549,7 @@ func ToBizStoreAppBinary(source *ent.SentinelAppBinary) *modelgebura.StoreAppBin
 	}
 	return pModelgeburaStoreAppBinary
 }
-func ToBizStoreAppBinaryList(source []*ent.SentinelAppBinary) []*modelgebura.StoreAppBinary {
+func ToBizStoreAppBinaryList(source []*model.SentinelAppBinary) []*modelgebura.StoreAppBinary {
 	var pModelgeburaStoreAppBinaryList []*modelgebura.StoreAppBinary
 	if source != nil {
 		pModelgeburaStoreAppBinaryList = make([]*modelgebura.StoreAppBinary, len(source))
@@ -733,7 +559,7 @@ func ToBizStoreAppBinaryList(source []*ent.SentinelAppBinary) []*modelgebura.Sto
 	}
 	return pModelgeburaStoreAppBinaryList
 }
-func ToBizStoreAppList(source []*ent.StoreApp) []*modelgebura.StoreApp {
+func ToBizStoreAppList(source []*model.StoreApp) []*modelgebura.StoreApp {
 	var pModelgeburaStoreAppList []*modelgebura.StoreApp
 	if source != nil {
 		pModelgeburaStoreAppList = make([]*modelgebura.StoreApp, len(source))
@@ -743,7 +569,7 @@ func ToBizStoreAppList(source []*ent.StoreApp) []*modelgebura.StoreApp {
 	}
 	return pModelgeburaStoreAppList
 }
-func ToBizSystemNotification(source *ent.SystemNotification) *modelnetzach.SystemNotification {
+func ToBizSystemNotification(source *model.SystemNotification) *modelnetzach.SystemNotification {
 	var pModelnetzachSystemNotification *modelnetzach.SystemNotification
 	if source != nil {
 		var modelnetzachSystemNotification modelnetzach.SystemNotification
@@ -759,23 +585,7 @@ func ToBizSystemNotification(source *ent.SystemNotification) *modelnetzach.Syste
 	}
 	return pModelnetzachSystemNotification
 }
-func ToBizSystemNotificationLevel(source systemnotification.Level) modelnetzach.SystemNotificationLevel {
-	var modelnetzachSystemNotificationLevel modelnetzach.SystemNotificationLevel
-	switch source {
-	case systemnotification.LevelError:
-		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelError
-	case systemnotification.LevelInfo:
-		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelInfo
-	case systemnotification.LevelOngoing:
-		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelOngoing
-	case systemnotification.LevelWarn:
-		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelWarning
-	default:
-		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelUnspecified
-	}
-	return modelnetzachSystemNotificationLevel
-}
-func ToBizSystemNotificationList(source []*ent.SystemNotification) []*modelnetzach.SystemNotification {
+func ToBizSystemNotificationList(source []*model.SystemNotification) []*modelnetzach.SystemNotification {
 	var pModelnetzachSystemNotificationList []*modelnetzach.SystemNotification
 	if source != nil {
 		pModelnetzachSystemNotificationList = make([]*modelnetzach.SystemNotification, len(source))
@@ -785,80 +595,32 @@ func ToBizSystemNotificationList(source []*ent.SystemNotification) []*modelnetza
 	}
 	return pModelnetzachSystemNotificationList
 }
-func ToBizSystemNotificationStatus(source systemnotification.Status) modelnetzach.SystemNotificationStatus {
-	var modelnetzachSystemNotificationStatus modelnetzach.SystemNotificationStatus
-	switch source {
-	case systemnotification.StatusDismissed:
-		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusDismissed
-	case systemnotification.StatusRead:
-		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusRead
-	case systemnotification.StatusUnread:
-		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnread
-	default:
-		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnspecified
-	}
-	return modelnetzachSystemNotificationStatus
-}
-func ToBizSystemNotificationType(source systemnotification.Type) modelnetzach.SystemNotificationType {
-	var modelnetzachSystemNotificationType modelnetzach.SystemNotificationType
-	switch source {
-	case systemnotification.TypeSystem:
-		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeSystem
-	case systemnotification.TypeUser:
-		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUser
-	default:
-		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUnspecified
-	}
-	return modelnetzachSystemNotificationType
-}
-func ToBizSystemType(source device.SystemType) model.SystemType {
-	var modelSystemType model.SystemType
-	switch source {
-	case device.SystemTypeAndroid:
-		modelSystemType = model.SystemTypeAndroid
-	case device.SystemTypeIos:
-		modelSystemType = model.SystemTypeIOS
-	case device.SystemTypeLinux:
-		modelSystemType = model.SystemTypeLinux
-	case device.SystemTypeMacos:
-		modelSystemType = model.SystemTypeMacOS
-	case device.SystemTypeUnknown:
-		modelSystemType = model.SystemTypeUnspecified
-	case device.SystemTypeWeb:
-		modelSystemType = model.SystemTypeWeb
-	case device.SystemTypeWindows:
-		modelSystemType = model.SystemTypeWindows
-	default:
-		modelSystemType = model.SystemTypeUnspecified
-	}
-	return modelSystemType
-}
-func ToBizUser(source *ent.User) *model.User {
-	var pModelUser *model.User
+func ToBizUser(source *model.User) *model1.User {
+	var pModelUser *model1.User
 	if source != nil {
-		var modelUser model.User
+		var modelUser model1.User
 		modelUser.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelUser.Username = (*source).Username
 		modelUser.Type = ToLibAuthUserType((*source).Type)
-		modelUser.Status = ToBizUserStatus((*source).Status)
+		modelUser.Status = ToBizPorterStatus((*source).Status)
 		pModelUser = &modelUser
 	}
 	return pModelUser
 }
-func ToBizUserList(source []*ent.User) []*model.User {
-	var pModelUserList []*model.User
+func ToBizUserList(source []*model.User) []*model1.User {
+	var pModelUserList []*model1.User
 	if source != nil {
-		pModelUserList = make([]*model.User, len(source))
+		pModelUserList = make([]*model1.User, len(source))
 		for i := 0; i < len(source); i++ {
 			pModelUserList[i] = ToBizUser(source[i])
 		}
 	}
 	return pModelUserList
 }
-func ToBizUserSession(source *ent.Session) *model.Session {
-	var pModelSession *model.Session
+func ToBizUserSession(source *model.Session) *model1.Session {
+	var pModelSession *model1.Session
 	if source != nil {
-		var modelSession model.Session
+		var modelSession model1.Session
 		modelSession.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelSession.UserID = modelInternalIDToModelInternalID((*source).UserID)
 		modelSession.RefreshToken = (*source).RefreshToken
@@ -868,47 +630,30 @@ func ToBizUserSession(source *ent.Session) *model.Session {
 	}
 	return pModelSession
 }
-func ToBizUserSessionList(source []*ent.Session) []*model.Session {
-	var pModelSessionList []*model.Session
+func ToBizUserSessionList(source []*model.Session) []*model1.Session {
+	var pModelSessionList []*model1.Session
 	if source != nil {
-		pModelSessionList = make([]*model.Session, len(source))
+		pModelSessionList = make([]*model1.Session, len(source))
 		for i := 0; i < len(source); i++ {
 			pModelSessionList[i] = ToBizUserSession(source[i])
 		}
 	}
 	return pModelSessionList
 }
-func ToBizUserStatus(source user.Status) model.UserStatus {
-	var modelUserStatus model.UserStatus
-	switch source {
-	case user.StatusActive:
-		modelUserStatus = model.UserStatusActive
-	case user.StatusBlocked:
-		modelUserStatus = model.UserStatusBlocked
-	default:
-		modelUserStatus = model.UserStatusUnspecified
-	}
-	return modelUserStatus
-}
-func ToLibAuthUserType(source user.Type) model.UserType {
-	var modelUserType model.UserType
-	switch source {
-	case user.TypeAdmin:
-		modelUserType = model.UserTypeAdmin
-	case user.TypeNormal:
-		modelUserType = model.UserTypeNormal
-	default:
-		modelUserType = model.UserTypeUnspecified
-	}
-	return modelUserType
-}
-func entAppRunTimeToPModelTimeRange(source ent.AppRunTime) *model.TimeRange {
-	var modelTimeRange model.TimeRange
+func modelAppRunTimeToPModelTimeRange(source model.AppRunTime) *model1.TimeRange {
+	var modelTimeRange model1.TimeRange
 	modelTimeRange.StartTime = TimeToTime(source.StartTime)
 	modelTimeRange.Duration = time.Duration(source.Duration)
 	return &modelTimeRange
 }
-func entPorterInstanceToPModelsupervisorPorterBinarySummary(source ent.PorterInstance) *modelsupervisor.PorterBinarySummary {
+func modelInternalIDToModelInternalID(source model1.InternalID) model1.InternalID {
+	return model1.InternalID(source)
+}
+func modelInternalIDToPModelInternalID(source model1.InternalID) *model1.InternalID {
+	pModelInternalID := modelInternalIDToModelInternalID(source)
+	return &pModelInternalID
+}
+func modelPorterInstanceToPModelsupervisorPorterBinarySummary(source model.PorterInstance) *modelsupervisor.PorterBinarySummary {
 	var modelsupervisorPorterBinarySummary modelsupervisor.PorterBinarySummary
 	modelsupervisorPorterBinarySummary.Name = source.Name
 	modelsupervisorPorterBinarySummary.Version = source.Version
@@ -918,17 +663,10 @@ func entPorterInstanceToPModelsupervisorPorterBinarySummary(source ent.PorterIns
 	modelsupervisorPorterBinarySummary.BuildDate = source.BuildDate
 	return &modelsupervisorPorterBinarySummary
 }
-func modelInternalIDToModelInternalID(source model.InternalID) model.InternalID {
-	return model.InternalID(source)
-}
-func modelInternalIDToPModelInternalID(source model.InternalID) *model.InternalID {
-	pModelInternalID := modelInternalIDToModelInternalID(source)
-	return &pModelInternalID
-}
-func pModelFeatureFlagToPModelFeatureFlag(source *model.FeatureFlag) *model.FeatureFlag {
-	var pModelFeatureFlag *model.FeatureFlag
+func pModelFeatureFlagToPModelFeatureFlag(source *model1.FeatureFlag) *model1.FeatureFlag {
+	var pModelFeatureFlag *model1.FeatureFlag
 	if source != nil {
-		var modelFeatureFlag model.FeatureFlag
+		var modelFeatureFlag model1.FeatureFlag
 		modelFeatureFlag.ID = (*source).ID
 		modelFeatureFlag.Name = (*source).Name
 		modelFeatureFlag.Description = (*source).Description
@@ -944,10 +682,10 @@ func pModelFeatureFlagToPModelFeatureFlag(source *model.FeatureFlag) *model.Feat
 	}
 	return pModelFeatureFlag
 }
-func pModelFeatureRequestToPModelFeatureRequest(source *model.FeatureRequest) *model.FeatureRequest {
-	var pModelFeatureRequest *model.FeatureRequest
+func pModelFeatureRequestToPModelFeatureRequest(source *model1.FeatureRequest) *model1.FeatureRequest {
+	var pModelFeatureRequest *model1.FeatureRequest
 	if source != nil {
-		var modelFeatureRequest model.FeatureRequest
+		var modelFeatureRequest model1.FeatureRequest
 		modelFeatureRequest.ID = (*source).ID
 		modelFeatureRequest.Region = (*source).Region
 		modelFeatureRequest.ConfigJSON = (*source).ConfigJSON
@@ -992,43 +730,43 @@ func pModelsupervisorPorterFeatureSummaryToPModelsupervisorPorterFeatureSummary(
 	if source != nil {
 		var modelsupervisorPorterFeatureSummary modelsupervisor.PorterFeatureSummary
 		if (*source).AccountPlatforms != nil {
-			modelsupervisorPorterFeatureSummary.AccountPlatforms = make([]*model.FeatureFlag, len((*source).AccountPlatforms))
+			modelsupervisorPorterFeatureSummary.AccountPlatforms = make([]*model1.FeatureFlag, len((*source).AccountPlatforms))
 			for i := 0; i < len((*source).AccountPlatforms); i++ {
 				modelsupervisorPorterFeatureSummary.AccountPlatforms[i] = pModelFeatureFlagToPModelFeatureFlag((*source).AccountPlatforms[i])
 			}
 		}
 		if (*source).AppInfoSources != nil {
-			modelsupervisorPorterFeatureSummary.AppInfoSources = make([]*model.FeatureFlag, len((*source).AppInfoSources))
+			modelsupervisorPorterFeatureSummary.AppInfoSources = make([]*model1.FeatureFlag, len((*source).AppInfoSources))
 			for j := 0; j < len((*source).AppInfoSources); j++ {
 				modelsupervisorPorterFeatureSummary.AppInfoSources[j] = pModelFeatureFlagToPModelFeatureFlag((*source).AppInfoSources[j])
 			}
 		}
 		if (*source).FeedSources != nil {
-			modelsupervisorPorterFeatureSummary.FeedSources = make([]*model.FeatureFlag, len((*source).FeedSources))
+			modelsupervisorPorterFeatureSummary.FeedSources = make([]*model1.FeatureFlag, len((*source).FeedSources))
 			for k := 0; k < len((*source).FeedSources); k++ {
 				modelsupervisorPorterFeatureSummary.FeedSources[k] = pModelFeatureFlagToPModelFeatureFlag((*source).FeedSources[k])
 			}
 		}
 		if (*source).NotifyDestinations != nil {
-			modelsupervisorPorterFeatureSummary.NotifyDestinations = make([]*model.FeatureFlag, len((*source).NotifyDestinations))
+			modelsupervisorPorterFeatureSummary.NotifyDestinations = make([]*model1.FeatureFlag, len((*source).NotifyDestinations))
 			for l := 0; l < len((*source).NotifyDestinations); l++ {
 				modelsupervisorPorterFeatureSummary.NotifyDestinations[l] = pModelFeatureFlagToPModelFeatureFlag((*source).NotifyDestinations[l])
 			}
 		}
 		if (*source).FeedItemActions != nil {
-			modelsupervisorPorterFeatureSummary.FeedItemActions = make([]*model.FeatureFlag, len((*source).FeedItemActions))
+			modelsupervisorPorterFeatureSummary.FeedItemActions = make([]*model1.FeatureFlag, len((*source).FeedItemActions))
 			for m := 0; m < len((*source).FeedItemActions); m++ {
 				modelsupervisorPorterFeatureSummary.FeedItemActions[m] = pModelFeatureFlagToPModelFeatureFlag((*source).FeedItemActions[m])
 			}
 		}
 		if (*source).FeedGetters != nil {
-			modelsupervisorPorterFeatureSummary.FeedGetters = make([]*model.FeatureFlag, len((*source).FeedGetters))
+			modelsupervisorPorterFeatureSummary.FeedGetters = make([]*model1.FeatureFlag, len((*source).FeedGetters))
 			for n := 0; n < len((*source).FeedGetters); n++ {
 				modelsupervisorPorterFeatureSummary.FeedGetters[n] = pModelFeatureFlagToPModelFeatureFlag((*source).FeedGetters[n])
 			}
 		}
 		if (*source).FeedSetters != nil {
-			modelsupervisorPorterFeatureSummary.FeedSetters = make([]*model.FeatureFlag, len((*source).FeedSetters))
+			modelsupervisorPorterFeatureSummary.FeedSetters = make([]*model1.FeatureFlag, len((*source).FeedSetters))
 			for o := 0; o < len((*source).FeedSetters); o++ {
 				modelsupervisorPorterFeatureSummary.FeedSetters[o] = pModelFeatureFlagToPModelFeatureFlag((*source).FeedSetters[o])
 			}
@@ -1041,384 +779,49 @@ func timeTimeToPTimeTime(source time.Time) *time.Time {
 	timeTime := TimeToTime(source)
 	return &timeTime
 }
-func ToEntAppInfo(source modelgebura.AppInfo) ent.AppInfo {
-	var entAppInfo ent.AppInfo
-	entAppInfo.ID = modelInternalIDToModelInternalID2(source.ID)
-	entAppInfo.Source = source.Source
-	entAppInfo.SourceAppID = source.SourceAppID
-	entAppInfo.SourceURL = source.SourceURL
-	entAppInfo.Name = source.Name
-	entAppInfo.Type = ToEntAppInfoType(source.Type)
-	entAppInfo.ShortDescription = source.ShortDescription
-	entAppInfo.Description = source.Description
-	entAppInfo.IconImageURL = source.IconImageURL
-	entAppInfo.IconImageID = modelInternalIDToModelInternalID2(source.IconImageID)
-	entAppInfo.BackgroundImageURL = source.BackgroundImageURL
-	entAppInfo.BackgroundImageID = modelInternalIDToModelInternalID2(source.BackgroundImageID)
-	entAppInfo.CoverImageURL = source.CoverImageURL
-	entAppInfo.CoverImageID = modelInternalIDToModelInternalID2(source.CoverImageID)
-	entAppInfo.ReleaseDate = source.ReleaseDate
-	entAppInfo.Developer = source.Developer
-	entAppInfo.Publisher = source.Publisher
+func ToORMAppInfo(source modelgebura.AppInfo) model.AppInfo {
+	var modelAppInfo model.AppInfo
+	modelAppInfo.ID = modelInternalIDToModelInternalID2(source.ID)
+	modelAppInfo.Source = source.Source
+	modelAppInfo.SourceAppID = source.SourceAppID
+	modelAppInfo.SourceURL = source.SourceURL
+	modelAppInfo.Name = source.Name
+	modelAppInfo.Type = ToORMAppInfoTypeManual(source.Type)
+	modelAppInfo.ShortDescription = source.ShortDescription
+	modelAppInfo.Description = source.Description
+	modelAppInfo.IconImageURL = source.IconImageURL
+	modelAppInfo.IconImageID = modelInternalIDToModelInternalID2(source.IconImageID)
+	modelAppInfo.BackgroundImageURL = source.BackgroundImageURL
+	modelAppInfo.BackgroundImageID = modelInternalIDToModelInternalID2(source.BackgroundImageID)
+	modelAppInfo.CoverImageURL = source.CoverImageURL
+	modelAppInfo.CoverImageID = modelInternalIDToModelInternalID2(source.CoverImageID)
+	modelAppInfo.ReleaseDate = source.ReleaseDate
+	modelAppInfo.Developer = source.Developer
+	modelAppInfo.Publisher = source.Publisher
 	if source.Tags != nil {
-		entAppInfo.Tags = make([]string, len(source.Tags))
+		modelAppInfo.Tags = make([]string, len(source.Tags))
 		for i := 0; i < len(source.Tags); i++ {
-			entAppInfo.Tags[i] = source.Tags[i]
+			modelAppInfo.Tags[i] = source.Tags[i]
 		}
 	}
 	if source.AlternativeNames != nil {
-		entAppInfo.AlternativeNames = make([]string, len(source.AlternativeNames))
+		modelAppInfo.AlternativeNames = make([]string, len(source.AlternativeNames))
 		for j := 0; j < len(source.AlternativeNames); j++ {
-			entAppInfo.AlternativeNames[j] = source.AlternativeNames[j]
+			modelAppInfo.AlternativeNames[j] = source.AlternativeNames[j]
 		}
 	}
-	entAppInfo.RawData = source.RawData
-	return entAppInfo
+	modelAppInfo.RawData = source.RawData
+	return modelAppInfo
 }
-func ToEntAppInfoType(source modelgebura.AppType) appinfo.Type {
-	var appinfoType appinfo.Type
-	switch source {
-	case modelgebura.AppTypeGame:
-		appinfoType = appinfo.TypeGame
-	case modelgebura.AppTypeUnspecified: // ignored
-	default: // ignored
-	}
-	return appinfoType
+func ToORMUser(source model1.User) model.User {
+	var modelUser model.User
+	modelUser.ID = modelInternalIDToModelInternalID2(source.ID)
+	modelUser.Username = source.Username
+	modelUser.Password = source.Password
+	modelUser.Status = ToORMPorterInstanceStatus(source.Status)
+	modelUser.Type = ToORMUserType(source.Type)
+	return modelUser
 }
-func ToEntAppType(source modelgebura.AppType) app.Type {
-	var appType app.Type
-	switch source {
-	case modelgebura.AppTypeGame:
-		appType = app.TypeGame
-	case modelgebura.AppTypeUnspecified: // ignored
-	default: // ignored
-	}
-	return appType
-}
-func ToEntFeedConfigLatestPullStatus(source modelyesod.FeedConfigPullStatus) feedconfig.LatestPullStatus {
-	var feedconfigLatestPullStatus feedconfig.LatestPullStatus
-	switch source {
-	case modelyesod.FeedConfigPullStatusFailed:
-		feedconfigLatestPullStatus = feedconfig.LatestPullStatusFailed
-	case modelyesod.FeedConfigPullStatusProcessing:
-		feedconfigLatestPullStatus = feedconfig.LatestPullStatusProcessing
-	case modelyesod.FeedConfigPullStatusSuccess:
-		feedconfigLatestPullStatus = feedconfig.LatestPullStatusSuccess
-	case modelyesod.FeedConfigPullStatusUnspecified: // ignored
-	default: // ignored
-	}
-	return feedconfigLatestPullStatus
-}
-func ToEntFeedConfigStatus(source modelyesod.FeedConfigStatus) feedconfig.Status {
-	var feedconfigStatus feedconfig.Status
-	switch source {
-	case modelyesod.FeedConfigStatusActive:
-		feedconfigStatus = feedconfig.StatusActive
-	case modelyesod.FeedConfigStatusSuspend:
-		feedconfigStatus = feedconfig.StatusSuspend
-	case modelyesod.FeedConfigStatusUnspecified: // ignored
-	default: // ignored
-	}
-	return feedconfigStatus
-}
-func ToEntFeedConfigStatusList(source []modelyesod.FeedConfigStatus) []feedconfig.Status {
-	var feedconfigStatusList []feedconfig.Status
-	if source != nil {
-		feedconfigStatusList = make([]feedconfig.Status, len(source))
-		for i := 0; i < len(source); i++ {
-			feedconfigStatusList[i] = ToEntFeedConfigStatus(source[i])
-		}
-	}
-	return feedconfigStatusList
-}
-func ToEntImageStatus(source modelchesed.ImageStatus) image.Status {
-	var imageStatus image.Status
-	switch source {
-	case modelchesed.ImageStatusScanned:
-		imageStatus = image.StatusScanned
-	case modelchesed.ImageStatusUnspecified: // ignored
-	case modelchesed.ImageStatusUploaded:
-		imageStatus = image.StatusUploaded
-	default: // ignored
-	}
-	return imageStatus
-}
-func ToEntNotifySourceStatus(source modelnetzach.NotifyFlowStatus) notifyflow.Status {
-	var notifyflowStatus notifyflow.Status
-	switch source {
-	case modelnetzach.NotifyFlowStatusActive:
-		notifyflowStatus = notifyflow.StatusActive
-	case modelnetzach.NotifyFlowStatusSuspend:
-		notifyflowStatus = notifyflow.StatusSuspend
-	case modelnetzach.NotifyFlowStatusUnspecified: // ignored
-	default: // ignored
-	}
-	return notifyflowStatus
-}
-func ToEntNotifyTargetStatus(source modelnetzach.NotifyTargetStatus) notifytarget.Status {
-	var notifytargetStatus notifytarget.Status
-	switch source {
-	case modelnetzach.NotifyTargetStatusActive:
-		notifytargetStatus = notifytarget.StatusActive
-	case modelnetzach.NotifyTargetStatusSuspend:
-		notifytargetStatus = notifytarget.StatusSuspend
-	case modelnetzach.NotifyTargetStatusUnspecified: // ignored
-	default: // ignored
-	}
-	return notifytargetStatus
-}
-func ToEntNotifyTargetStatusList(source []modelnetzach.NotifyTargetStatus) []notifytarget.Status {
-	var notifytargetStatusList []notifytarget.Status
-	if source != nil {
-		notifytargetStatusList = make([]notifytarget.Status, len(source))
-		for i := 0; i < len(source); i++ {
-			notifytargetStatusList[i] = ToEntNotifyTargetStatus(source[i])
-		}
-	}
-	return notifytargetStatusList
-}
-func ToEntPorterConnectionStatus(source modelsupervisor.PorterConnectionStatus) porterinstance.ConnectionStatus {
-	var porterinstanceConnectionStatus porterinstance.ConnectionStatus
-	switch source {
-	case modelsupervisor.PorterConnectionStatusActivationFailed:
-		porterinstanceConnectionStatus = porterinstance.ConnectionStatusActivationFailed
-	case modelsupervisor.PorterConnectionStatusActive:
-		porterinstanceConnectionStatus = porterinstance.ConnectionStatusActive
-	case modelsupervisor.PorterConnectionStatusConnected:
-		porterinstanceConnectionStatus = porterinstance.ConnectionStatusConnected
-	case modelsupervisor.PorterConnectionStatusDisconnected:
-		porterinstanceConnectionStatus = porterinstance.ConnectionStatusDisconnected
-	case modelsupervisor.PorterConnectionStatusDowngraded:
-		porterinstanceConnectionStatus = porterinstance.ConnectionStatusDowngraded
-	case modelsupervisor.PorterConnectionStatusQueueing:
-		porterinstanceConnectionStatus = porterinstance.ConnectionStatusQueueing
-	case modelsupervisor.PorterConnectionStatusUnspecified:
-		porterinstanceConnectionStatus = porterinstance.ConnectionStatusUnspecified
-	default: // ignored
-	}
-	return porterinstanceConnectionStatus
-}
-func ToEntPorterConnectionStatusList(source []modelsupervisor.PorterConnectionStatus) []porterinstance.ConnectionStatus {
-	var porterinstanceConnectionStatusList []porterinstance.ConnectionStatus
-	if source != nil {
-		porterinstanceConnectionStatusList = make([]porterinstance.ConnectionStatus, len(source))
-		for i := 0; i < len(source); i++ {
-			porterinstanceConnectionStatusList[i] = ToEntPorterConnectionStatus(source[i])
-		}
-	}
-	return porterinstanceConnectionStatusList
-}
-func ToEntPorterContextHandleStatus(source modelsupervisor.PorterContextHandleStatus) portercontext.HandleStatus {
-	var portercontextHandleStatus portercontext.HandleStatus
-	switch source {
-	case modelsupervisor.PorterContextHandleStatusActive:
-		portercontextHandleStatus = portercontext.HandleStatusActive
-	case modelsupervisor.PorterContextHandleStatusBlocked:
-		portercontextHandleStatus = portercontext.HandleStatusBlocked
-	case modelsupervisor.PorterContextHandleStatusDowngraded:
-		portercontextHandleStatus = portercontext.HandleStatusDowngraded
-	case modelsupervisor.PorterContextHandleStatusQueueing:
-		portercontextHandleStatus = portercontext.HandleStatusQueueing
-	case modelsupervisor.PorterContextHandleStatusUnspecified:
-		portercontextHandleStatus = portercontext.HandleStatusUnspecified
-	default: // ignored
-	}
-	return portercontextHandleStatus
-}
-func ToEntPorterContextHandleStatusList(source []modelsupervisor.PorterContextHandleStatus) []portercontext.HandleStatus {
-	var portercontextHandleStatusList []portercontext.HandleStatus
-	if source != nil {
-		portercontextHandleStatusList = make([]portercontext.HandleStatus, len(source))
-		for i := 0; i < len(source); i++ {
-			portercontextHandleStatusList[i] = ToEntPorterContextHandleStatus(source[i])
-		}
-	}
-	return portercontextHandleStatusList
-}
-func ToEntPorterContextStatus(source modelsupervisor.PorterContextStatus) portercontext.Status {
-	var portercontextStatus portercontext.Status
-	switch source {
-	case modelsupervisor.PorterContextStatusActive:
-		portercontextStatus = portercontext.StatusActive
-	case modelsupervisor.PorterContextStatusDisabled:
-		portercontextStatus = portercontext.StatusDisabled
-	case modelsupervisor.PorterContextStatusUnspecified: // ignored
-	default: // ignored
-	}
-	return portercontextStatus
-}
-func ToEntPorterInstanceStatus(source model.UserStatus) porterinstance.Status {
-	var porterinstanceStatus porterinstance.Status
-	switch source {
-	case model.UserStatusActive:
-		porterinstanceStatus = porterinstance.StatusActive
-	case model.UserStatusBlocked:
-		porterinstanceStatus = porterinstance.StatusBlocked
-	case model.UserStatusUnspecified: // ignored
-	default: // ignored
-	}
-	return porterinstanceStatus
-}
-func ToEntPorterInstanceStatusList(source []model.UserStatus) []porterinstance.Status {
-	var porterinstanceStatusList []porterinstance.Status
-	if source != nil {
-		porterinstanceStatusList = make([]porterinstance.Status, len(source))
-		for i := 0; i < len(source); i++ {
-			porterinstanceStatusList[i] = ToEntPorterInstanceStatus(source[i])
-		}
-	}
-	return porterinstanceStatusList
-}
-func ToEntSentinelSessionStatus(source modelgebura.SentinelSessionStatus) sentinelsession.Status {
-	var sentinelsessionStatus sentinelsession.Status
-	switch source {
-	case modelgebura.SentinelSessionStatusActive:
-		sentinelsessionStatus = sentinelsession.StatusActive
-	case modelgebura.SentinelSessionStatusSuspend:
-		sentinelsessionStatus = sentinelsession.StatusSuspend
-	case modelgebura.SentinelSessionStatusUnspecified: // ignored
-	default: // ignored
-	}
-	return sentinelsessionStatus
-}
-func ToEntSystemNotificationLevel(source modelnetzach.SystemNotificationLevel) systemnotification.Level {
-	var systemnotificationLevel systemnotification.Level
-	switch source {
-	case modelnetzach.SystemNotificationLevelError:
-		systemnotificationLevel = systemnotification.LevelError
-	case modelnetzach.SystemNotificationLevelInfo:
-		systemnotificationLevel = systemnotification.LevelInfo
-	case modelnetzach.SystemNotificationLevelOngoing:
-		systemnotificationLevel = systemnotification.LevelOngoing
-	case modelnetzach.SystemNotificationLevelUnspecified: // ignored
-	case modelnetzach.SystemNotificationLevelWarning:
-		systemnotificationLevel = systemnotification.LevelWarn
-	default: // ignored
-	}
-	return systemnotificationLevel
-}
-func ToEntSystemNotificationLevelList(source []modelnetzach.SystemNotificationLevel) []systemnotification.Level {
-	var systemnotificationLevelList []systemnotification.Level
-	if source != nil {
-		systemnotificationLevelList = make([]systemnotification.Level, len(source))
-		for i := 0; i < len(source); i++ {
-			systemnotificationLevelList[i] = ToEntSystemNotificationLevel(source[i])
-		}
-	}
-	return systemnotificationLevelList
-}
-func ToEntSystemNotificationStatus(source modelnetzach.SystemNotificationStatus) systemnotification.Status {
-	var systemnotificationStatus systemnotification.Status
-	switch source {
-	case modelnetzach.SystemNotificationStatusDismissed:
-		systemnotificationStatus = systemnotification.StatusDismissed
-	case modelnetzach.SystemNotificationStatusRead:
-		systemnotificationStatus = systemnotification.StatusRead
-	case modelnetzach.SystemNotificationStatusUnread:
-		systemnotificationStatus = systemnotification.StatusUnread
-	case modelnetzach.SystemNotificationStatusUnspecified: // ignored
-	default: // ignored
-	}
-	return systemnotificationStatus
-}
-func ToEntSystemNotificationStatusList(source []modelnetzach.SystemNotificationStatus) []systemnotification.Status {
-	var systemnotificationStatusList []systemnotification.Status
-	if source != nil {
-		systemnotificationStatusList = make([]systemnotification.Status, len(source))
-		for i := 0; i < len(source); i++ {
-			systemnotificationStatusList[i] = ToEntSystemNotificationStatus(source[i])
-		}
-	}
-	return systemnotificationStatusList
-}
-func ToEntSystemNotificationType(source modelnetzach.SystemNotificationType) systemnotification.Type {
-	var systemnotificationType systemnotification.Type
-	switch source {
-	case modelnetzach.SystemNotificationTypeSystem:
-		systemnotificationType = systemnotification.TypeSystem
-	case modelnetzach.SystemNotificationTypeUnspecified: // ignored
-	case modelnetzach.SystemNotificationTypeUser:
-		systemnotificationType = systemnotification.TypeUser
-	default: // ignored
-	}
-	return systemnotificationType
-}
-func ToEntSystemNotificationTypeList(source []modelnetzach.SystemNotificationType) []systemnotification.Type {
-	var systemnotificationTypeList []systemnotification.Type
-	if source != nil {
-		systemnotificationTypeList = make([]systemnotification.Type, len(source))
-		for i := 0; i < len(source); i++ {
-			systemnotificationTypeList[i] = ToEntSystemNotificationType(source[i])
-		}
-	}
-	return systemnotificationTypeList
-}
-func ToEntSystemType(source model.SystemType) device.SystemType {
-	var deviceSystemType device.SystemType
-	switch source {
-	case model.SystemTypeAndroid:
-		deviceSystemType = device.SystemTypeAndroid
-	case model.SystemTypeIOS:
-		deviceSystemType = device.SystemTypeIos
-	case model.SystemTypeLinux:
-		deviceSystemType = device.SystemTypeLinux
-	case model.SystemTypeMacOS:
-		deviceSystemType = device.SystemTypeMacos
-	case model.SystemTypeUnspecified: // ignored
-	case model.SystemTypeWeb:
-		deviceSystemType = device.SystemTypeWeb
-	case model.SystemTypeWindows:
-		deviceSystemType = device.SystemTypeWindows
-	default: // ignored
-	}
-	return deviceSystemType
-}
-func ToEntUserStatus(source model.UserStatus) user.Status {
-	var userStatus user.Status
-	switch source {
-	case model.UserStatusActive:
-		userStatus = user.StatusActive
-	case model.UserStatusBlocked:
-		userStatus = user.StatusBlocked
-	case model.UserStatusUnspecified: // ignored
-	default: // ignored
-	}
-	return userStatus
-}
-func ToEntUserStatusList(source []model.UserStatus) []user.Status {
-	var userStatusList []user.Status
-	if source != nil {
-		userStatusList = make([]user.Status, len(source))
-		for i := 0; i < len(source); i++ {
-			userStatusList[i] = ToEntUserStatus(source[i])
-		}
-	}
-	return userStatusList
-}
-func ToEntUserType(source model.UserType) user.Type {
-	var userType user.Type
-	switch source {
-	case model.UserTypeAdmin:
-		userType = user.TypeAdmin
-	case model.UserTypeNormal:
-		userType = user.TypeNormal
-	case model.UserTypePorter: // ignored
-	case model.UserTypeSentinel: // ignored
-	case model.UserTypeUnspecified: // ignored
-	default: // ignored
-	}
-	return userType
-}
-func ToEntUserTypeList(source []model.UserType) []user.Type {
-	var userTypeList []user.Type
-	if source != nil {
-		userTypeList = make([]user.Type, len(source))
-		for i := 0; i < len(source); i++ {
-			userTypeList[i] = ToEntUserType(source[i])
-		}
-	}
-	return userTypeList
-}
-func modelInternalIDToModelInternalID2(source model.InternalID) model.InternalID {
-	return model.InternalID(source)
+func modelInternalIDToModelInternalID2(source model1.InternalID) model1.InternalID {
+	return model1.InternalID(source)
 }

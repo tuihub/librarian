@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/internal/ent/image"
-	"github.com/tuihub/librarian/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/data/orm/query"
+	libmodel "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelchesed"
 )
 
@@ -21,62 +21,62 @@ func NewChesedRepo(data *Data) *ChesedRepo {
 	}
 }
 
-func (c *ChesedRepo) CreateImage(ctx context.Context, userID model.InternalID, image *modelchesed.Image) error {
-	return c.data.db.Image.Create().
-		SetID(image.ID).
-		SetName(image.Name).
-		SetDescription(image.Description).
-		SetStatus(converter.ToEntImageStatus(image.Status)).
-		SetFileID(image.ID).
-		SetOwnerID(userID).
-		Exec(ctx)
+func (c *ChesedRepo) CreateImage(ctx context.Context, userID libmodel.InternalID, image *modelchesed.Image) error {
+	return query.Use(c.data.db).Image.WithContext(ctx).Create(&model.Image{
+		ID:          image.ID,
+		OwnerID:     userID,
+		Name:        image.Name,
+		Description: image.Description,
+		Status:      converter.ToORMImageStatus(image.Status),
+		FileID:      image.ID,
+	})
 }
 
-func (c *ChesedRepo) ListImages(ctx context.Context, userID model.InternalID, paging model.Paging) (
+func (c *ChesedRepo) ListImages(ctx context.Context, userID libmodel.InternalID, paging libmodel.Paging) (
 	[]*modelchesed.Image, int64, error) {
-	q := c.data.db.Image.Query().
-		Where(
-			image.HasOwnerWith(user.IDEQ(userID)),
-		)
-	total, err := q.Count(ctx)
+	q := query.Use(c.data.db).Image
+	u := q.WithContext(ctx).Where(q.OwnerID.Eq(int64(userID)))
+
+	total, err := u.Count()
 	if err != nil {
 		return nil, 0, err
 	}
-	res, err := q.
+	res, err := u.
 		Limit(paging.ToLimit()).
 		Offset(paging.ToOffset()).
-		All(ctx)
+		Find()
 	if err != nil {
 		return nil, 0, err
 	}
-	return converter.ToBizImageList(res), int64(total), nil
+	return converter.ToBizImageList(res), total, nil
 }
 
 func (c *ChesedRepo) ListImageNeedScan(ctx context.Context) ([]*modelchesed.Image, error) {
-	res, err := c.data.db.Image.Query().
-		Where(image.StatusEQ(image.StatusUploaded)).
+	q := query.Use(c.data.db).Image
+	res, err := q.WithContext(ctx).
+		Where(q.Status.Eq(converter.ToORMImageStatus(modelchesed.ImageStatusUploaded))).
 		Limit(10). //nolint:mnd //TODO
-		All(ctx)
+		Find()
 	if err != nil {
 		return nil, err
 	}
 	return converter.ToBizImageList(res), nil
 }
 
-func (c *ChesedRepo) SetImageStatus(ctx context.Context, id model.InternalID, status modelchesed.ImageStatus) error {
-	return c.data.db.Image.UpdateOneID(id).
-		SetStatus(converter.ToEntImageStatus(status)).
-		Exec(ctx)
+func (c *ChesedRepo) SetImageStatus(ctx context.Context, id libmodel.InternalID, status modelchesed.ImageStatus) error {
+	q := query.Use(c.data.db).Image
+	_, err := q.WithContext(ctx).
+		Where(q.ID.Eq(int64(id))).
+		Update(q.Status, converter.ToORMImageStatus(status))
+	return err
 }
 
-func (c *ChesedRepo) GetImage(ctx context.Context, userID model.InternalID, id model.InternalID) (
+func (c *ChesedRepo) GetImage(ctx context.Context, userID libmodel.InternalID, id libmodel.InternalID) (
 	*modelchesed.Image, error) {
-	res, err := c.data.db.Image.Query().
-		Where(
-			image.IDEQ(id),
-			image.HasOwnerWith(user.IDEQ(userID)),
-		).
-		Only(ctx)
+	q := query.Use(c.data.db).Image
+	res, err := q.WithContext(ctx).
+		Where(q.ID.Eq(int64(id)), q.OwnerID.Eq(int64(userID))).
+		First()
 	if err != nil {
 		return nil, err
 	}

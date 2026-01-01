@@ -5,20 +5,14 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/internal/ent"
-	"github.com/tuihub/librarian/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feed"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feedactionset"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feeditem"
-	"github.com/tuihub/librarian/internal/data/internal/ent/feeditemcollection"
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/data/orm/query"
+	libmodel "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 
-	"entgo.io/ent/dialect/sql"
+	"gorm.io/gorm/clause"
 )
 
 type KetherRepo struct {
@@ -32,192 +26,154 @@ func NewKetherRepo(data *Data) *KetherRepo {
 	}
 }
 
-func (k *KetherRepo) UpsertAccount(ctx context.Context, acc model.Account) error {
-	return k.data.db.Account.Create().
-		SetID(acc.ID).
-		SetPlatform(acc.Platform).
-		SetPlatformAccountID(acc.PlatformAccountID).
-		SetName(acc.Name).
-		SetProfileURL(acc.ProfileURL).
-		SetAvatarURL(acc.AvatarURL).
-		OnConflict(
-			sql.ConflictColumns(account.FieldPlatform, account.FieldPlatformAccountID),
-			resolveWithIgnores([]string{
-				account.FieldID,
-				account.FieldPlatform,
-				account.FieldPlatformAccountID,
-			}),
-		).
-		Exec(ctx)
+func (k *KetherRepo) UpsertAccount(ctx context.Context, acc libmodel.Account) error {
+	return query.Use(k.data.db).Account.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "platform"}, {Name: "platform_account_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"name", "profile_url", "avatar_url"}),
+	}).Create(&model.Account{
+		ID:                acc.ID,
+		Platform:          acc.Platform,
+		PlatformAccountID: acc.PlatformAccountID,
+		Name:              acc.Name,
+		ProfileURL:        acc.ProfileURL,
+		AvatarURL:         acc.AvatarURL,
+	})
 }
 
-func (k *KetherRepo) UpsertAppInfo( //nolint:gocognit //TODO
+func (k *KetherRepo) UpsertAppInfo(
 	ctx context.Context, ap *modelgebura.AppInfo, internal *modelgebura.AppInfo,
 ) error {
-	return k.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := tx.AppInfo.Create().
-			SetID(ap.ID).
-			SetSource(ap.Source).
-			SetSourceAppID(ap.SourceAppID)
-		if len(ap.SourceURL) > 0 {
-			q.SetSourceURL(ap.SourceURL)
-		}
-		if len(ap.Name) > 0 {
-			q.SetName(ap.Name)
-		}
-		if ap.Type != modelgebura.AppTypeUnspecified {
-			q.SetType(converter.ToEntAppInfoType(ap.Type))
-		}
-		if len(ap.ShortDescription) > 0 {
-			q.SetShortDescription(ap.ShortDescription)
-		}
-		if len(ap.IconImageURL) > 0 {
-			q.SetIconImageURL(ap.IconImageURL)
-		}
-		if len(ap.BackgroundImageURL) > 0 {
-			q.SetBackgroundImageURL(ap.BackgroundImageURL)
-		}
-		if len(ap.CoverImageURL) > 0 {
-			q.SetCoverImageURL(ap.CoverImageURL)
-		}
-		if len(ap.Description) > 0 {
-			q.SetDescription(ap.Description)
-		}
-		if len(ap.ReleaseDate) > 0 {
-			q.SetReleaseDate(ap.ReleaseDate)
-		}
-		if len(ap.Developer) > 0 {
-			q.SetDeveloper(ap.Developer)
-		}
-		if len(ap.Publisher) > 0 {
-			q.SetPublisher(ap.Publisher)
-		}
-		q.OnConflict(
-			sql.ConflictColumns(appinfo.FieldSource, appinfo.FieldSourceAppID),
-			resolveWithIgnores([]string{
-				appinfo.FieldID,
-				appinfo.FieldSource,
-				appinfo.FieldSourceAppID,
-			}),
-		)
-		count, err := tx.AppInfo.Query().Where(
-			appinfo.SourceEQ(ap.Source),
-			appinfo.SourceAppIDEQ(ap.SourceAppID),
-		).Count(ctx)
+	return k.data.WithTx(ctx, func(tx *query.Query) error {
+		q := tx.AppInfo
+		count, err := q.WithContext(ctx).
+			Where(q.Source.Eq(ap.Source), q.SourceAppID.Eq(ap.SourceAppID)).
+			Count()
 		if err != nil {
 			return err
 		}
+
 		if count == 0 {
-			err = tx.AppInfo.Create().
-				SetID(internal.ID).
-				SetSource(internal.Source).
-				SetSourceAppID(internal.SourceAppID).
-				SetName(internal.Name).
-				SetType(converter.ToEntAppInfoType(internal.Type)).
-				Exec(ctx)
+			// Create with internal
+			err = q.WithContext(ctx).Create(&model.AppInfo{
+				ID:          internal.ID,
+				Source:      internal.Source,
+				SourceAppID: internal.SourceAppID,
+				Name:        internal.Name,
+				Type:        converter.ToORMAppInfoTypeManual(internal.Type),
+			})
 			if err != nil {
 				return err
 			}
 		}
-		return q.Exec(ctx)
+
+		// Upsert ap
+		info := &model.AppInfo{
+			ID:                 ap.ID, // This ID might be ignored if conflict?
+			Source:             ap.Source,
+			SourceAppID:        ap.SourceAppID,
+			SourceURL:          ap.SourceURL,
+			Name:               ap.Name,
+			Type:               converter.ToORMAppInfoTypeManual(ap.Type),
+			ShortDescription:   ap.ShortDescription,
+			IconImageURL:       ap.IconImageURL,
+			BackgroundImageURL: ap.BackgroundImageURL,
+			CoverImageURL:      ap.CoverImageURL,
+			Description:        ap.Description,
+			ReleaseDate:        ap.ReleaseDate,
+			Developer:          ap.Developer,
+			Publisher:          ap.Publisher,
+		}
+
+		return q.WithContext(ctx).Clauses(clause.OnConflict{
+			Columns: []clause.Column{{Name: "source"}, {Name: "source_app_id"}},
+			DoUpdates: clause.AssignmentColumns([]string{
+				"source_url", "name", "type", "short_description",
+				"icon_image_url", "background_image_url", "cover_image_url",
+				"description", "release_date", "developer", "publisher",
+			}),
+		}).Create(info)
 	})
 }
 
 func (k *KetherRepo) UpsertAppInfos(ctx context.Context, al []*modelgebura.AppInfo) error {
-	apps := make([]*ent.AppInfoCreate, len(al))
+	apps := make([]*model.AppInfo, len(al))
 	for i, ap := range al {
-		apps[i] = k.data.db.AppInfo.Create().
-			SetID(ap.ID).
-			SetSource(ap.Source).
-			SetSourceAppID(ap.SourceAppID).
-			SetSourceURL(ap.SourceURL).
-			SetName(ap.Name).
-			SetType(converter.ToEntAppInfoType(ap.Type)).
-			SetShortDescription(ap.ShortDescription).
-			SetIconImageURL(ap.IconImageURL).
-			SetBackgroundImageURL(ap.BackgroundImageURL).
-			SetCoverImageURL(ap.CoverImageURL).
-			SetDescription(ap.Description).
-			SetReleaseDate(ap.ReleaseDate).
-			SetDeveloper(ap.Developer).
-			SetPublisher(ap.Publisher)
+		apps[i] = &model.AppInfo{
+			ID:                 ap.ID,
+			Source:             ap.Source,
+			SourceAppID:        ap.SourceAppID,
+			SourceURL:          ap.SourceURL,
+			Name:               ap.Name,
+			Type:               converter.ToORMAppInfoTypeManual(ap.Type),
+			ShortDescription:   ap.ShortDescription,
+			IconImageURL:       ap.IconImageURL,
+			BackgroundImageURL: ap.BackgroundImageURL,
+			CoverImageURL:      ap.CoverImageURL,
+			Description:        ap.Description,
+			ReleaseDate:        ap.ReleaseDate,
+			Developer:          ap.Developer,
+			Publisher:          ap.Publisher,
+		}
 	}
-	return k.data.db.AppInfo.
-		CreateBulk(apps...).
-		OnConflict(
-			sql.ConflictColumns(appinfo.FieldSource, appinfo.FieldSourceAppID),
-			resolveWithIgnores([]string{
-				appinfo.FieldID,
-			}),
-		).
-		Exec(ctx)
+	return query.Use(k.data.db).AppInfo.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns: []clause.Column{{Name: "source"}, {Name: "source_app_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{
+			"source_url", "name", "type", "short_description",
+			"icon_image_url", "background_image_url", "cover_image_url",
+			"description", "release_date", "developer", "publisher",
+		}),
+	}).Create(apps...)
 }
 
-// func (k *KetherRepo) AccountPurchaseAppInfos(
-//	ctx context.Context, id model.InternalID, ids []model.InternalID,
-// ) error {
-//	return k.data.WithTx(ctx, func(tx *ent.Tx) error {
-//		appIDs, err := tx.App.Query().Where(
-//			app.IDIn(ids...),
-//		).
-//			IDs(ctx)
-//		if err != nil {
-//			return err
-//		}
-//		return k.data.db.Account.
-//			UpdateOneID(id).
-//			AddPurchasedAppIDs(appIDs...).
-//			Exec(ctx)
-//	})
-//}
-
 func (k *KetherRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
-	return k.data.WithTx(ctx, func(tx *ent.Tx) error {
-		conf, err := tx.FeedConfig.Query().
-			Where(feedconfig.IDEQ(f.ID)).
-			Only(ctx)
+	return k.data.WithTx(ctx, func(tx *query.Query) error {
+		_, err := tx.FeedConfig.WithContext(ctx).Where(tx.FeedConfig.ID.Eq(int64(f.ID))).First()
 		if err != nil {
 			return err
 		}
-		err = tx.Feed.Create().
-			SetConfig(conf).
-			SetID(f.ID).
-			SetTitle(f.Title).
-			SetDescription(f.Description).
-			SetLink(f.Link).
-			SetAuthors(f.Authors).
-			SetLanguage(f.Language).
-			SetImage(f.Image).
-			OnConflict(
-				sql.ConflictColumns(feed.FieldID),
-				sql.ResolveWithNewValues(),
-			).
-			Exec(ctx)
-		return err
+
+		return tx.Feed.WithContext(ctx).Clauses(clause.OnConflict{
+			Columns: []clause.Column{{Name: "id"}},
+			DoUpdates: clause.AssignmentColumns([]string{
+				"title", "description", "link", "authors", "language", "image",
+			}),
+		}).Create(&model.Feed{
+			ID:          f.ID,
+			Title:       f.Title,
+			Description: f.Description,
+			Link:        f.Link,
+			Authors:     f.Authors,
+			Language:    f.Language,
+			Image:       f.Image,
+		})
 	})
 }
 
 func (k *KetherRepo) CheckNewFeedItems(
 	ctx context.Context,
 	items []*modelfeed.Item,
-	feedID model.InternalID,
+	feedID libmodel.InternalID,
 ) ([]string, error) {
 	guids := make([]string, 0, len(items))
 	for _, item := range items {
 		guids = append(guids, item.GUID)
 	}
-	existItems, err := k.data.db.FeedItem.Query().Where(
-		feeditem.FeedID(feedID),
-		feeditem.GUIDIn(guids...),
-	).Select(feeditem.FieldGUID).All(ctx)
+
+	q := query.Use(k.data.db).FeedItem
+	existItems, err := q.WithContext(ctx).
+		Where(q.FeedID.Eq(int64(feedID)), q.GUID.In(guids...)).
+		Select(q.GUID).
+		Find()
 	if err != nil {
 		return nil, err
 	}
+
 	existItemMap := make(map[string]bool)
-	res := make([]string, 0, len(items)-len(existItems))
 	for _, item := range existItems {
 		existItemMap[item.GUID] = true
 	}
+
+	res := make([]string, 0, len(items)-len(existItems))
 	for _, item := range items {
 		if _, exist := existItemMap[item.GUID]; !exist {
 			res = append(res, item.GUID)
@@ -229,105 +185,154 @@ func (k *KetherRepo) CheckNewFeedItems(
 func (k *KetherRepo) UpsertFeedItems(
 	ctx context.Context,
 	items []*modelfeed.Item,
-	feedID model.InternalID,
+	feedID libmodel.InternalID,
 ) error {
-	il := make([]*ent.FeedItemCreate, len(items))
+	il := make([]*model.FeedItem, len(items))
 	for i, item := range items {
-		il[i] = k.data.db.FeedItem.Create().
-			SetFeedID(feedID).
-			SetID(item.ID).
-			SetTitle(item.Title).
-			SetDescription(item.Description).
-			SetContent(item.Content).
-			SetLink(item.Link).
-			SetUpdated(item.Updated).
-			SetNillableUpdatedParsed(item.UpdatedParsed).
-			SetPublished(item.Published).
-			SetAuthors(item.Authors).
-			SetGUID(item.GUID).
-			SetImage(item.Image).
-			SetEnclosures(item.Enclosures).
-			SetPublishPlatform(item.PublishPlatform).
-			SetDigestDescription(item.DigestDescription).
-			SetDigestImages(item.DigestImages)
+		t := time.Now()
 		if item.PublishedParsed != nil {
-			il[i].SetPublishedParsed(*item.PublishedParsed)
-		} else {
-			il[i].SetPublishedParsed(time.Now())
+			t = *item.PublishedParsed
+		}
+
+		il[i] = &model.FeedItem{
+			FeedID:            feedID,
+			ID:                item.ID,
+			Title:             item.Title,
+			Description:       item.Description,
+			Content:           item.Content,
+			Link:              item.Link,
+			Updated:           item.Updated,
+			UpdatedParsed:     item.UpdatedParsed,
+			Published:         item.Published,
+			PublishedParsed:   t,
+			Authors:           item.Authors,
+			GUID:              item.GUID,
+			Image:             item.Image,
+			Enclosures:        item.Enclosures,
+			PublishPlatform:   item.PublishPlatform,
+			DigestDescription: item.DigestDescription,
+			DigestImages:      item.DigestImages,
 		}
 	}
-	return k.data.db.FeedItem.CreateBulk(il...).
-		OnConflict(
-			sql.ConflictColumns(feeditem.FieldFeedID, feeditem.FieldGUID),
-			//
-			// Update feed item every time result in large disk writes
-			//
-			// resolveWithIgnores([]string{
-			//	feeditem.FieldID,
-			// }),
-			sql.DoNothing(),
-		).Exec(ctx)
+
+	return query.Use(k.data.db).FeedItem.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "feed_id"}, {Name: "guid"}},
+		DoNothing: true,
+	}).Create(il...)
 }
 
 func (k *KetherRepo) UpdateFeedPullStatus(ctx context.Context, conf *modelyesod.FeedConfig) error {
-	c, err := k.data.db.FeedConfig.Query().Where(feedconfig.IDEQ(conf.ID)).Only(ctx)
+	q := query.Use(k.data.db).FeedConfig
+	// Verify exists
+	c, err := q.WithContext(ctx).Where(q.ID.Eq(int64(conf.ID))).First()
 	if err != nil {
 		return err
 	}
-	return c.Update().
-		SetLatestPullAt(conf.LatestPullTime).
-		SetLatestPullStatus(converter.ToEntFeedConfigLatestPullStatus(conf.LatestPullStatus)).
-		SetLatestPullMessage(conf.LatestPullMessage).
-		SetNextPullBeginAt(conf.LatestPullTime.Add(c.PullInterval)).
-		Exec(ctx)
+
+	_, err = q.WithContext(ctx).Where(q.ID.Eq(int64(conf.ID))).Updates(&model.FeedConfig{
+		LatestPullAt:      conf.LatestPullTime,
+		LatestPullStatus:  converter.ToORMFeedConfigLatestPullStatus(conf.LatestPullStatus),
+		LatestPullMessage: conf.LatestPullMessage,
+		NextPullBeginAt:   conf.LatestPullTime.Add(c.PullInterval),
+	})
+	return err
 }
 
-func (k *KetherRepo) GetFeedItem(ctx context.Context, id model.InternalID) (*modelfeed.Item, error) {
-	item, err := k.data.db.FeedItem.Get(ctx, id)
+func (k *KetherRepo) GetFeedItem(ctx context.Context, id libmodel.InternalID) (*modelfeed.Item, error) {
+	q := query.Use(k.data.db).FeedItem
+	res, err := q.WithContext(ctx).Where(q.ID.Eq(int64(id))).First()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizFeedItem(item), nil
+	return converter.ToBizFeedItem(res), nil
 }
 
-func (k *KetherRepo) GetFeedActions(ctx context.Context, id model.InternalID) ([]*modelyesod.FeedActionSet, error) {
-	actions, err := k.data.db.FeedActionSet.Query().
-		Where(feedactionset.HasFeedConfigWith(feedconfig.IDEQ(id))).
-		All(ctx)
+func (k *KetherRepo) GetFeedActions(ctx context.Context, id libmodel.InternalID) ([]*modelyesod.FeedActionSet, error) {
+	// Join FeedActionSet -> FeedConfigAction -> FeedConfig (ID=id)
+	q := query.Use(k.data.db)
+	fas := q.FeedActionSet
+	fca := q.FeedConfigAction
+
+	res, err := fas.WithContext(ctx).
+		Join(fca, fca.FeedActionSetID.EqCol(fas.ID)).
+		Where(fca.FeedConfigID.Eq(int64(id))).
+		Find()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizFeedActionSetList(actions), nil
+	return converter.ToBizFeedActionSetList(res), nil
 }
 
 func (k *KetherRepo) GetNotifyTargetItems(
 	ctx context.Context,
-	id model.InternalID,
-	paging model.Paging,
-) (*model.FeatureRequest, []*modelfeed.Item, error) {
-	var fr *model.FeatureRequest
+	id libmodel.InternalID,
+	paging libmodel.Paging,
+) (*libmodel.FeatureRequest, []*modelfeed.Item, error) {
+	var fr *libmodel.FeatureRequest
 	var it []*modelfeed.Item
-	err := k.data.WithTx(ctx, func(tx *ent.Tx) error {
-		target, err := tx.NotifyTarget.Get(ctx, id)
+
+	err := k.data.WithTx(ctx, func(tx *query.Query) error {
+		nt, err := tx.NotifyTarget.WithContext(ctx).Where(tx.NotifyTarget.ID.Eq(int64(id))).First()
 		if err != nil {
 			return err
 		}
-		fr = target.Destination
-		ids, err := target.QueryNotifyFlow().IDs(ctx)
+		fr = nt.Destination
+
+		// NotifyTarget -> NotifyFlowTarget -> NotifyFlow
+		// NotifyFlow ID is also FeedItemCollection ID
+		// FeedItemCollection -> FeedItems
+
+		// 1. Get NotifyFlow IDs
+		nft := tx.NotifyFlowTarget
+
+		var fIDs []int64
+		err = nft.WithContext(ctx).
+			Where(nft.NotifyTargetID.Eq(int64(id))).
+			Pluck(nft.NotifyFlowID, &fIDs)
 		if err != nil {
 			return err
 		}
-		items, err := tx.FeedItem.Query().Where(
-			feeditem.HasFeedItemCollectionWith(
-				feeditemcollection.IDIn(ids...),
-			),
-		).Offset(paging.ToOffset()).Limit(paging.ToLimit()).All(ctx)
+
+		if len(fIDs) == 0 {
+			it = []*modelfeed.Item{}
+			return nil
+		}
+
+		// 2. Get FeedItems in these collections (flows)
+		// M2M FeedItem <-> FeedItemCollection
+		// Join table: feed_item_collection_feed_items
+
+		var itemIDs []libmodel.InternalID
+		err = k.data.db.Table("feed_item_collection_feed_items").
+			Where("feed_item_collection_id IN ?", fIDs).
+			Pluck("feed_item_id", &itemIDs).Error
 		if err != nil {
 			return err
 		}
+
+		if len(itemIDs) == 0 {
+			it = []*modelfeed.Item{}
+			return nil
+		}
+
+		castItemIDs := make([]int64, len(itemIDs))
+		for i, v := range itemIDs {
+			castItemIDs[i] = int64(v)
+		}
+
+		items, err := tx.FeedItem.WithContext(ctx).
+			Where(tx.FeedItem.ID.In(castItemIDs...)).
+			Limit(paging.ToLimit()).
+			Offset(paging.ToOffset()).
+			Find()
+		if err != nil {
+			return err
+		}
+
 		it = converter.ToBizFeedItemList(items)
 		return nil
 	})
+
 	if err != nil {
 		return nil, nil, err
 	}
@@ -336,10 +341,20 @@ func (k *KetherRepo) GetNotifyTargetItems(
 
 func (k *KetherRepo) AddFeedItemsToCollection(
 	ctx context.Context,
-	collectionID model.InternalID,
-	itemIDs []model.InternalID,
+	collectionID libmodel.InternalID,
+	itemIDs []libmodel.InternalID,
 ) error {
-	return k.data.db.FeedItemCollection.UpdateOneID(collectionID).
-		AddFeedItemIDs(itemIDs...).
-		Exec(ctx)
+	// GORM Append association
+	if len(itemIDs) == 0 {
+		return nil
+	}
+
+	feedItems := make([]*model.FeedItem, len(itemIDs))
+	for i, id := range itemIDs {
+		feedItems[i] = &model.FeedItem{ID: id}
+	}
+
+	return k.data.db.Model(&model.FeedItemCollection{ID: collectionID}).
+		Association("FeedItems").
+		Append(feedItems)
 }
