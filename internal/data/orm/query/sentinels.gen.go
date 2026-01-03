@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,7 +23,7 @@ func newSentinel(db *gorm.DB, opts ...gen.DOOption) sentinel {
 	_sentinel := sentinel{}
 
 	_sentinel.sentinelDo.UseDB(db, opts...)
-	_sentinel.sentinelDo.UseModel(&model.Sentinel{})
+	_sentinel.sentinelDo.UseModel(&modelgebura.Sentinel{})
 
 	tableName := _sentinel.sentinelDo.TableName()
 	_sentinel.ALL = field.NewAsterisk(tableName)
@@ -31,55 +31,36 @@ func newSentinel(db *gorm.DB, opts ...gen.DOOption) sentinel {
 	_sentinel.Name = field.NewString(tableName, "name")
 	_sentinel.Description = field.NewString(tableName, "description")
 	_sentinel.URL = field.NewString(tableName, "url")
-	_sentinel.AlternativeURLs = field.NewField(tableName, "alternative_urls")
+	_sentinel.AlternativeUrls = field.NewField(tableName, "alternative_urls")
 	_sentinel.GetTokenPath = field.NewString(tableName, "get_token_path")
 	_sentinel.DownloadFileBasePath = field.NewString(tableName, "download_file_base_path")
 	_sentinel.CreatorID = field.NewInt64(tableName, "creator_id")
 	_sentinel.LibraryReportSequence = field.NewInt64(tableName, "library_report_sequence")
 	_sentinel.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_sentinel.CreatedAt = field.NewTime(tableName, "created_at")
-	_sentinel.SentinelSessions = sentinelHasManySentinelSessions{
+	_sentinel.Libraries = sentinelHasManyLibraries{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("SentinelSessions", "model.SentinelSession"),
-		Sentinel: struct {
+		RelationField: field.NewRelation("Libraries", "modelgebura.SentinelLibrary"),
+		AppBinaries: struct {
 			field.RelationField
-			SentinelSessions struct {
+			Files struct {
 				field.RelationField
-			}
-			SentinelLibraries struct {
-				field.RelationField
-				Sentinel struct {
-					field.RelationField
-				}
 			}
 		}{
-			RelationField: field.NewRelation("SentinelSessions.Sentinel", "model.Sentinel"),
-			SentinelSessions: struct {
+			RelationField: field.NewRelation("Libraries.AppBinaries", "modelgebura.SentinelAppBinary"),
+			Files: struct {
 				field.RelationField
 			}{
-				RelationField: field.NewRelation("SentinelSessions.Sentinel.SentinelSessions", "model.SentinelSession"),
-			},
-			SentinelLibraries: struct {
-				field.RelationField
-				Sentinel struct {
-					field.RelationField
-				}
-			}{
-				RelationField: field.NewRelation("SentinelSessions.Sentinel.SentinelLibraries", "model.SentinelLibrary"),
-				Sentinel: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("SentinelSessions.Sentinel.SentinelLibraries.Sentinel", "model.Sentinel"),
-				},
+				RelationField: field.NewRelation("Libraries.AppBinaries.Files", "modelgebura.SentinelAppBinaryFile"),
 			},
 		},
 	}
 
-	_sentinel.SentinelLibraries = sentinelHasManySentinelLibraries{
+	_sentinel.SentinelSessions = sentinelHasManySentinelSessions{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("SentinelLibraries", "model.SentinelLibrary"),
+		RelationField: field.NewRelation("SentinelSessions", "modelgebura.SentinelSession"),
 	}
 
 	_sentinel.fillFieldMap()
@@ -95,16 +76,16 @@ type sentinel struct {
 	Name                  field.String
 	Description           field.String
 	URL                   field.String
-	AlternativeURLs       field.Field
+	AlternativeUrls       field.Field
 	GetTokenPath          field.String
 	DownloadFileBasePath  field.String
 	CreatorID             field.Int64
 	LibraryReportSequence field.Int64
 	UpdatedAt             field.Time
 	CreatedAt             field.Time
-	SentinelSessions      sentinelHasManySentinelSessions
+	Libraries             sentinelHasManyLibraries
 
-	SentinelLibraries sentinelHasManySentinelLibraries
+	SentinelSessions sentinelHasManySentinelSessions
 
 	fieldMap map[string]field.Expr
 }
@@ -125,7 +106,7 @@ func (s *sentinel) updateTableName(table string) *sentinel {
 	s.Name = field.NewString(table, "name")
 	s.Description = field.NewString(table, "description")
 	s.URL = field.NewString(table, "url")
-	s.AlternativeURLs = field.NewField(table, "alternative_urls")
+	s.AlternativeUrls = field.NewField(table, "alternative_urls")
 	s.GetTokenPath = field.NewString(table, "get_token_path")
 	s.DownloadFileBasePath = field.NewString(table, "download_file_base_path")
 	s.CreatorID = field.NewInt64(table, "creator_id")
@@ -161,7 +142,7 @@ func (s *sentinel) fillFieldMap() {
 	s.fieldMap["name"] = s.Name
 	s.fieldMap["description"] = s.Description
 	s.fieldMap["url"] = s.URL
-	s.fieldMap["alternative_urls"] = s.AlternativeURLs
+	s.fieldMap["alternative_urls"] = s.AlternativeUrls
 	s.fieldMap["get_token_path"] = s.GetTokenPath
 	s.fieldMap["download_file_base_path"] = s.DownloadFileBasePath
 	s.fieldMap["creator_id"] = s.CreatorID
@@ -173,37 +154,112 @@ func (s *sentinel) fillFieldMap() {
 
 func (s sentinel) clone(db *gorm.DB) sentinel {
 	s.sentinelDo.ReplaceConnPool(db.Statement.ConnPool)
+	s.Libraries.db = db.Session(&gorm.Session{Initialized: true})
+	s.Libraries.db.Statement.ConnPool = db.Statement.ConnPool
 	s.SentinelSessions.db = db.Session(&gorm.Session{Initialized: true})
 	s.SentinelSessions.db.Statement.ConnPool = db.Statement.ConnPool
-	s.SentinelLibraries.db = db.Session(&gorm.Session{Initialized: true})
-	s.SentinelLibraries.db.Statement.ConnPool = db.Statement.ConnPool
 	return s
 }
 
 func (s sentinel) replaceDB(db *gorm.DB) sentinel {
 	s.sentinelDo.ReplaceDB(db)
+	s.Libraries.db = db.Session(&gorm.Session{})
 	s.SentinelSessions.db = db.Session(&gorm.Session{})
-	s.SentinelLibraries.db = db.Session(&gorm.Session{})
 	return s
+}
+
+type sentinelHasManyLibraries struct {
+	db *gorm.DB
+
+	field.RelationField
+
+	AppBinaries struct {
+		field.RelationField
+		Files struct {
+			field.RelationField
+		}
+	}
+}
+
+func (a sentinelHasManyLibraries) Where(conds ...field.Expr) *sentinelHasManyLibraries {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a sentinelHasManyLibraries) WithContext(ctx context.Context) *sentinelHasManyLibraries {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a sentinelHasManyLibraries) Session(session *gorm.Session) *sentinelHasManyLibraries {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a sentinelHasManyLibraries) Model(m *modelgebura.Sentinel) *sentinelHasManyLibrariesTx {
+	return &sentinelHasManyLibrariesTx{a.db.Model(m).Association(a.Name())}
+}
+
+func (a sentinelHasManyLibraries) Unscoped() *sentinelHasManyLibraries {
+	a.db = a.db.Unscoped()
+	return &a
+}
+
+type sentinelHasManyLibrariesTx struct{ tx *gorm.Association }
+
+func (a sentinelHasManyLibrariesTx) Find() (result []*modelgebura.SentinelLibrary, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a sentinelHasManyLibrariesTx) Append(values ...*modelgebura.SentinelLibrary) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a sentinelHasManyLibrariesTx) Replace(values ...*modelgebura.SentinelLibrary) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a sentinelHasManyLibrariesTx) Delete(values ...*modelgebura.SentinelLibrary) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a sentinelHasManyLibrariesTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a sentinelHasManyLibrariesTx) Count() int64 {
+	return a.tx.Count()
+}
+
+func (a sentinelHasManyLibrariesTx) Unscoped() *sentinelHasManyLibrariesTx {
+	a.tx = a.tx.Unscoped()
+	return &a
 }
 
 type sentinelHasManySentinelSessions struct {
 	db *gorm.DB
 
 	field.RelationField
-
-	Sentinel struct {
-		field.RelationField
-		SentinelSessions struct {
-			field.RelationField
-		}
-		SentinelLibraries struct {
-			field.RelationField
-			Sentinel struct {
-				field.RelationField
-			}
-		}
-	}
 }
 
 func (a sentinelHasManySentinelSessions) Where(conds ...field.Expr) *sentinelHasManySentinelSessions {
@@ -229,7 +285,7 @@ func (a sentinelHasManySentinelSessions) Session(session *gorm.Session) *sentine
 	return &a
 }
 
-func (a sentinelHasManySentinelSessions) Model(m *model.Sentinel) *sentinelHasManySentinelSessionsTx {
+func (a sentinelHasManySentinelSessions) Model(m *modelgebura.Sentinel) *sentinelHasManySentinelSessionsTx {
 	return &sentinelHasManySentinelSessionsTx{a.db.Model(m).Association(a.Name())}
 }
 
@@ -240,11 +296,11 @@ func (a sentinelHasManySentinelSessions) Unscoped() *sentinelHasManySentinelSess
 
 type sentinelHasManySentinelSessionsTx struct{ tx *gorm.Association }
 
-func (a sentinelHasManySentinelSessionsTx) Find() (result []*model.SentinelSession, err error) {
+func (a sentinelHasManySentinelSessionsTx) Find() (result []*modelgebura.SentinelSession, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a sentinelHasManySentinelSessionsTx) Append(values ...*model.SentinelSession) (err error) {
+func (a sentinelHasManySentinelSessionsTx) Append(values ...*modelgebura.SentinelSession) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -252,7 +308,7 @@ func (a sentinelHasManySentinelSessionsTx) Append(values ...*model.SentinelSessi
 	return a.tx.Append(targetValues...)
 }
 
-func (a sentinelHasManySentinelSessionsTx) Replace(values ...*model.SentinelSession) (err error) {
+func (a sentinelHasManySentinelSessionsTx) Replace(values ...*modelgebura.SentinelSession) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -260,7 +316,7 @@ func (a sentinelHasManySentinelSessionsTx) Replace(values ...*model.SentinelSess
 	return a.tx.Replace(targetValues...)
 }
 
-func (a sentinelHasManySentinelSessionsTx) Delete(values ...*model.SentinelSession) (err error) {
+func (a sentinelHasManySentinelSessionsTx) Delete(values ...*modelgebura.SentinelSession) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -277,87 +333,6 @@ func (a sentinelHasManySentinelSessionsTx) Count() int64 {
 }
 
 func (a sentinelHasManySentinelSessionsTx) Unscoped() *sentinelHasManySentinelSessionsTx {
-	a.tx = a.tx.Unscoped()
-	return &a
-}
-
-type sentinelHasManySentinelLibraries struct {
-	db *gorm.DB
-
-	field.RelationField
-}
-
-func (a sentinelHasManySentinelLibraries) Where(conds ...field.Expr) *sentinelHasManySentinelLibraries {
-	if len(conds) == 0 {
-		return &a
-	}
-
-	exprs := make([]clause.Expression, 0, len(conds))
-	for _, cond := range conds {
-		exprs = append(exprs, cond.BeCond().(clause.Expression))
-	}
-	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
-	return &a
-}
-
-func (a sentinelHasManySentinelLibraries) WithContext(ctx context.Context) *sentinelHasManySentinelLibraries {
-	a.db = a.db.WithContext(ctx)
-	return &a
-}
-
-func (a sentinelHasManySentinelLibraries) Session(session *gorm.Session) *sentinelHasManySentinelLibraries {
-	a.db = a.db.Session(session)
-	return &a
-}
-
-func (a sentinelHasManySentinelLibraries) Model(m *model.Sentinel) *sentinelHasManySentinelLibrariesTx {
-	return &sentinelHasManySentinelLibrariesTx{a.db.Model(m).Association(a.Name())}
-}
-
-func (a sentinelHasManySentinelLibraries) Unscoped() *sentinelHasManySentinelLibraries {
-	a.db = a.db.Unscoped()
-	return &a
-}
-
-type sentinelHasManySentinelLibrariesTx struct{ tx *gorm.Association }
-
-func (a sentinelHasManySentinelLibrariesTx) Find() (result []*model.SentinelLibrary, err error) {
-	return result, a.tx.Find(&result)
-}
-
-func (a sentinelHasManySentinelLibrariesTx) Append(values ...*model.SentinelLibrary) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Append(targetValues...)
-}
-
-func (a sentinelHasManySentinelLibrariesTx) Replace(values ...*model.SentinelLibrary) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Replace(targetValues...)
-}
-
-func (a sentinelHasManySentinelLibrariesTx) Delete(values ...*model.SentinelLibrary) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Delete(targetValues...)
-}
-
-func (a sentinelHasManySentinelLibrariesTx) Clear() error {
-	return a.tx.Clear()
-}
-
-func (a sentinelHasManySentinelLibrariesTx) Count() int64 {
-	return a.tx.Count()
-}
-
-func (a sentinelHasManySentinelLibrariesTx) Unscoped() *sentinelHasManySentinelLibrariesTx {
 	a.tx = a.tx.Unscoped()
 	return &a
 }
@@ -393,17 +368,17 @@ type ISentinelDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ISentinelDo
 	Unscoped() ISentinelDo
-	Create(values ...*model.Sentinel) error
-	CreateInBatches(values []*model.Sentinel, batchSize int) error
-	Save(values ...*model.Sentinel) error
-	First() (*model.Sentinel, error)
-	Take() (*model.Sentinel, error)
-	Last() (*model.Sentinel, error)
-	Find() ([]*model.Sentinel, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Sentinel, err error)
-	FindInBatches(result *[]*model.Sentinel, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelgebura.Sentinel) error
+	CreateInBatches(values []*modelgebura.Sentinel, batchSize int) error
+	Save(values ...*modelgebura.Sentinel) error
+	First() (*modelgebura.Sentinel, error)
+	Take() (*modelgebura.Sentinel, error)
+	Last() (*modelgebura.Sentinel, error)
+	Find() ([]*modelgebura.Sentinel, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.Sentinel, err error)
+	FindInBatches(result *[]*modelgebura.Sentinel, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.Sentinel) (info gen.ResultInfo, err error)
+	Delete(...*modelgebura.Sentinel) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -415,9 +390,9 @@ type ISentinelDo interface {
 	Assign(attrs ...field.AssignExpr) ISentinelDo
 	Joins(fields ...field.RelationField) ISentinelDo
 	Preload(fields ...field.RelationField) ISentinelDo
-	FirstOrInit() (*model.Sentinel, error)
-	FirstOrCreate() (*model.Sentinel, error)
-	FindByPage(offset int, limit int) (result []*model.Sentinel, count int64, err error)
+	FirstOrInit() (*modelgebura.Sentinel, error)
+	FirstOrCreate() (*modelgebura.Sentinel, error)
+	FindByPage(offset int, limit int) (result []*modelgebura.Sentinel, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -519,57 +494,57 @@ func (s sentinelDo) Unscoped() ISentinelDo {
 	return s.withDO(s.DO.Unscoped())
 }
 
-func (s sentinelDo) Create(values ...*model.Sentinel) error {
+func (s sentinelDo) Create(values ...*modelgebura.Sentinel) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Create(values)
 }
 
-func (s sentinelDo) CreateInBatches(values []*model.Sentinel, batchSize int) error {
+func (s sentinelDo) CreateInBatches(values []*modelgebura.Sentinel, batchSize int) error {
 	return s.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (s sentinelDo) Save(values ...*model.Sentinel) error {
+func (s sentinelDo) Save(values ...*modelgebura.Sentinel) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Save(values)
 }
 
-func (s sentinelDo) First() (*model.Sentinel, error) {
+func (s sentinelDo) First() (*modelgebura.Sentinel, error) {
 	if result, err := s.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Sentinel), nil
+		return result.(*modelgebura.Sentinel), nil
 	}
 }
 
-func (s sentinelDo) Take() (*model.Sentinel, error) {
+func (s sentinelDo) Take() (*modelgebura.Sentinel, error) {
 	if result, err := s.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Sentinel), nil
+		return result.(*modelgebura.Sentinel), nil
 	}
 }
 
-func (s sentinelDo) Last() (*model.Sentinel, error) {
+func (s sentinelDo) Last() (*modelgebura.Sentinel, error) {
 	if result, err := s.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Sentinel), nil
+		return result.(*modelgebura.Sentinel), nil
 	}
 }
 
-func (s sentinelDo) Find() ([]*model.Sentinel, error) {
+func (s sentinelDo) Find() ([]*modelgebura.Sentinel, error) {
 	result, err := s.DO.Find()
-	return result.([]*model.Sentinel), err
+	return result.([]*modelgebura.Sentinel), err
 }
 
-func (s sentinelDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Sentinel, err error) {
-	buf := make([]*model.Sentinel, 0, batchSize)
+func (s sentinelDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.Sentinel, err error) {
+	buf := make([]*modelgebura.Sentinel, 0, batchSize)
 	err = s.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -577,7 +552,7 @@ func (s sentinelDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) er
 	return results, err
 }
 
-func (s sentinelDo) FindInBatches(result *[]*model.Sentinel, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (s sentinelDo) FindInBatches(result *[]*modelgebura.Sentinel, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return s.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -603,23 +578,23 @@ func (s sentinelDo) Preload(fields ...field.RelationField) ISentinelDo {
 	return &s
 }
 
-func (s sentinelDo) FirstOrInit() (*model.Sentinel, error) {
+func (s sentinelDo) FirstOrInit() (*modelgebura.Sentinel, error) {
 	if result, err := s.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Sentinel), nil
+		return result.(*modelgebura.Sentinel), nil
 	}
 }
 
-func (s sentinelDo) FirstOrCreate() (*model.Sentinel, error) {
+func (s sentinelDo) FirstOrCreate() (*modelgebura.Sentinel, error) {
 	if result, err := s.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Sentinel), nil
+		return result.(*modelgebura.Sentinel), nil
 	}
 }
 
-func (s sentinelDo) FindByPage(offset int, limit int) (result []*model.Sentinel, count int64, err error) {
+func (s sentinelDo) FindByPage(offset int, limit int) (result []*modelgebura.Sentinel, count int64, err error) {
 	result, err = s.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -648,7 +623,7 @@ func (s sentinelDo) Scan(result interface{}) (err error) {
 	return s.DO.Scan(result)
 }
 
-func (s sentinelDo) Delete(models ...*model.Sentinel) (result gen.ResultInfo, err error) {
+func (s sentinelDo) Delete(models ...*modelgebura.Sentinel) (result gen.ResultInfo, err error) {
 	return s.DO.Delete(models)
 }
 

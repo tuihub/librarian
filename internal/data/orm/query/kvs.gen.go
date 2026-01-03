@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"

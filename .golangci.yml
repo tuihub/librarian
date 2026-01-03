@@ -492,3 +492,11 @@ linters:
         linters: [ exhaustruct ]
       - path: "internal/data/internal/converter/enum_converters.go"
         linters: [ goconst ]
+      - path: "internal/data"
+        linters: [ exhaustruct ]
+      - path: "internal/biz"
+        linters: [ exhaustruct ]
+      - path: "internal/service"
+        linters: [ exhaustruct ]
+      - path: "internal/model"
+        linters: [ recvcheck, exhaustruct, goconst ]

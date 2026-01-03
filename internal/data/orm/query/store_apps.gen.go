@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,33 +23,17 @@ func newStoreApp(db *gorm.DB, opts ...gen.DOOption) storeApp {
 	_storeApp := storeApp{}
 
 	_storeApp.storeAppDo.UseDB(db, opts...)
-	_storeApp.storeAppDo.UseModel(&model.StoreApp{})
+	_storeApp.storeAppDo.UseModel(&modelgebura.StoreApp{})
 
 	tableName := _storeApp.storeAppDo.TableName()
 	_storeApp.ALL = field.NewAsterisk(tableName)
 	_storeApp.ID = field.NewInt64(tableName, "id")
+	_storeApp.Source = field.NewString(tableName, "source")
+	_storeApp.SourceAppID = field.NewString(tableName, "source_app_id")
 	_storeApp.Name = field.NewString(tableName, "name")
 	_storeApp.Description = field.NewString(tableName, "description")
-	_storeApp.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_storeApp.CreatedAt = field.NewTime(tableName, "created_at")
-	_storeApp.SentinelAppBinaries = storeAppManyToManySentinelAppBinaries{
-		db: db.Session(&gorm.Session{}),
-
-		RelationField: field.NewRelation("SentinelAppBinaries", "model.SentinelAppBinary"),
-		StoreApps: struct {
-			field.RelationField
-			SentinelAppBinaries struct {
-				field.RelationField
-			}
-		}{
-			RelationField: field.NewRelation("SentinelAppBinaries.StoreApps", "model.StoreApp"),
-			SentinelAppBinaries: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("SentinelAppBinaries.StoreApps.SentinelAppBinaries", "model.SentinelAppBinary"),
-			},
-		},
-	}
+	_storeApp.UpdatedAt = field.NewTime(tableName, "updated_at")
 
 	_storeApp.fillFieldMap()
 
@@ -59,13 +43,14 @@ func newStoreApp(db *gorm.DB, opts ...gen.DOOption) storeApp {
 type storeApp struct {
 	storeAppDo storeAppDo
 
-	ALL                 field.Asterisk
-	ID                  field.Int64
-	Name                field.String
-	Description         field.String
-	UpdatedAt           field.Time
-	CreatedAt           field.Time
-	SentinelAppBinaries storeAppManyToManySentinelAppBinaries
+	ALL         field.Asterisk
+	ID          field.Int64
+	Source      field.String
+	SourceAppID field.String
+	Name        field.String
+	Description field.String
+	CreatedAt   field.Time
+	UpdatedAt   field.Time
 
 	fieldMap map[string]field.Expr
 }
@@ -83,10 +68,12 @@ func (s storeApp) As(alias string) *storeApp {
 func (s *storeApp) updateTableName(table string) *storeApp {
 	s.ALL = field.NewAsterisk(table)
 	s.ID = field.NewInt64(table, "id")
+	s.Source = field.NewString(table, "source")
+	s.SourceAppID = field.NewString(table, "source_app_id")
 	s.Name = field.NewString(table, "name")
 	s.Description = field.NewString(table, "description")
-	s.UpdatedAt = field.NewTime(table, "updated_at")
 	s.CreatedAt = field.NewTime(table, "created_at")
+	s.UpdatedAt = field.NewTime(table, "updated_at")
 
 	s.fillFieldMap()
 
@@ -111,114 +98,24 @@ func (s *storeApp) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (s *storeApp) fillFieldMap() {
-	s.fieldMap = make(map[string]field.Expr, 6)
+	s.fieldMap = make(map[string]field.Expr, 7)
 	s.fieldMap["id"] = s.ID
+	s.fieldMap["source"] = s.Source
+	s.fieldMap["source_app_id"] = s.SourceAppID
 	s.fieldMap["name"] = s.Name
 	s.fieldMap["description"] = s.Description
-	s.fieldMap["updated_at"] = s.UpdatedAt
 	s.fieldMap["created_at"] = s.CreatedAt
-
+	s.fieldMap["updated_at"] = s.UpdatedAt
 }
 
 func (s storeApp) clone(db *gorm.DB) storeApp {
 	s.storeAppDo.ReplaceConnPool(db.Statement.ConnPool)
-	s.SentinelAppBinaries.db = db.Session(&gorm.Session{Initialized: true})
-	s.SentinelAppBinaries.db.Statement.ConnPool = db.Statement.ConnPool
 	return s
 }
 
 func (s storeApp) replaceDB(db *gorm.DB) storeApp {
 	s.storeAppDo.ReplaceDB(db)
-	s.SentinelAppBinaries.db = db.Session(&gorm.Session{})
 	return s
-}
-
-type storeAppManyToManySentinelAppBinaries struct {
-	db *gorm.DB
-
-	field.RelationField
-
-	StoreApps struct {
-		field.RelationField
-		SentinelAppBinaries struct {
-			field.RelationField
-		}
-	}
-}
-
-func (a storeAppManyToManySentinelAppBinaries) Where(conds ...field.Expr) *storeAppManyToManySentinelAppBinaries {
-	if len(conds) == 0 {
-		return &a
-	}
-
-	exprs := make([]clause.Expression, 0, len(conds))
-	for _, cond := range conds {
-		exprs = append(exprs, cond.BeCond().(clause.Expression))
-	}
-	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
-	return &a
-}
-
-func (a storeAppManyToManySentinelAppBinaries) WithContext(ctx context.Context) *storeAppManyToManySentinelAppBinaries {
-	a.db = a.db.WithContext(ctx)
-	return &a
-}
-
-func (a storeAppManyToManySentinelAppBinaries) Session(session *gorm.Session) *storeAppManyToManySentinelAppBinaries {
-	a.db = a.db.Session(session)
-	return &a
-}
-
-func (a storeAppManyToManySentinelAppBinaries) Model(m *model.StoreApp) *storeAppManyToManySentinelAppBinariesTx {
-	return &storeAppManyToManySentinelAppBinariesTx{a.db.Model(m).Association(a.Name())}
-}
-
-func (a storeAppManyToManySentinelAppBinaries) Unscoped() *storeAppManyToManySentinelAppBinaries {
-	a.db = a.db.Unscoped()
-	return &a
-}
-
-type storeAppManyToManySentinelAppBinariesTx struct{ tx *gorm.Association }
-
-func (a storeAppManyToManySentinelAppBinariesTx) Find() (result []*model.SentinelAppBinary, err error) {
-	return result, a.tx.Find(&result)
-}
-
-func (a storeAppManyToManySentinelAppBinariesTx) Append(values ...*model.SentinelAppBinary) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Append(targetValues...)
-}
-
-func (a storeAppManyToManySentinelAppBinariesTx) Replace(values ...*model.SentinelAppBinary) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Replace(targetValues...)
-}
-
-func (a storeAppManyToManySentinelAppBinariesTx) Delete(values ...*model.SentinelAppBinary) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Delete(targetValues...)
-}
-
-func (a storeAppManyToManySentinelAppBinariesTx) Clear() error {
-	return a.tx.Clear()
-}
-
-func (a storeAppManyToManySentinelAppBinariesTx) Count() int64 {
-	return a.tx.Count()
-}
-
-func (a storeAppManyToManySentinelAppBinariesTx) Unscoped() *storeAppManyToManySentinelAppBinariesTx {
-	a.tx = a.tx.Unscoped()
-	return &a
 }
 
 type storeAppDo struct{ gen.DO }
@@ -252,17 +149,17 @@ type IStoreAppDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IStoreAppDo
 	Unscoped() IStoreAppDo
-	Create(values ...*model.StoreApp) error
-	CreateInBatches(values []*model.StoreApp, batchSize int) error
-	Save(values ...*model.StoreApp) error
-	First() (*model.StoreApp, error)
-	Take() (*model.StoreApp, error)
-	Last() (*model.StoreApp, error)
-	Find() ([]*model.StoreApp, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.StoreApp, err error)
-	FindInBatches(result *[]*model.StoreApp, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelgebura.StoreApp) error
+	CreateInBatches(values []*modelgebura.StoreApp, batchSize int) error
+	Save(values ...*modelgebura.StoreApp) error
+	First() (*modelgebura.StoreApp, error)
+	Take() (*modelgebura.StoreApp, error)
+	Last() (*modelgebura.StoreApp, error)
+	Find() ([]*modelgebura.StoreApp, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.StoreApp, err error)
+	FindInBatches(result *[]*modelgebura.StoreApp, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.StoreApp) (info gen.ResultInfo, err error)
+	Delete(...*modelgebura.StoreApp) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -274,9 +171,9 @@ type IStoreAppDo interface {
 	Assign(attrs ...field.AssignExpr) IStoreAppDo
 	Joins(fields ...field.RelationField) IStoreAppDo
 	Preload(fields ...field.RelationField) IStoreAppDo
-	FirstOrInit() (*model.StoreApp, error)
-	FirstOrCreate() (*model.StoreApp, error)
-	FindByPage(offset int, limit int) (result []*model.StoreApp, count int64, err error)
+	FirstOrInit() (*modelgebura.StoreApp, error)
+	FirstOrCreate() (*modelgebura.StoreApp, error)
+	FindByPage(offset int, limit int) (result []*modelgebura.StoreApp, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -378,57 +275,57 @@ func (s storeAppDo) Unscoped() IStoreAppDo {
 	return s.withDO(s.DO.Unscoped())
 }
 
-func (s storeAppDo) Create(values ...*model.StoreApp) error {
+func (s storeAppDo) Create(values ...*modelgebura.StoreApp) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Create(values)
 }
 
-func (s storeAppDo) CreateInBatches(values []*model.StoreApp, batchSize int) error {
+func (s storeAppDo) CreateInBatches(values []*modelgebura.StoreApp, batchSize int) error {
 	return s.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (s storeAppDo) Save(values ...*model.StoreApp) error {
+func (s storeAppDo) Save(values ...*modelgebura.StoreApp) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Save(values)
 }
 
-func (s storeAppDo) First() (*model.StoreApp, error) {
+func (s storeAppDo) First() (*modelgebura.StoreApp, error) {
 	if result, err := s.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreApp), nil
+		return result.(*modelgebura.StoreApp), nil
 	}
 }
 
-func (s storeAppDo) Take() (*model.StoreApp, error) {
+func (s storeAppDo) Take() (*modelgebura.StoreApp, error) {
 	if result, err := s.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreApp), nil
+		return result.(*modelgebura.StoreApp), nil
 	}
 }
 
-func (s storeAppDo) Last() (*model.StoreApp, error) {
+func (s storeAppDo) Last() (*modelgebura.StoreApp, error) {
 	if result, err := s.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreApp), nil
+		return result.(*modelgebura.StoreApp), nil
 	}
 }
 
-func (s storeAppDo) Find() ([]*model.StoreApp, error) {
+func (s storeAppDo) Find() ([]*modelgebura.StoreApp, error) {
 	result, err := s.DO.Find()
-	return result.([]*model.StoreApp), err
+	return result.([]*modelgebura.StoreApp), err
 }
 
-func (s storeAppDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.StoreApp, err error) {
-	buf := make([]*model.StoreApp, 0, batchSize)
+func (s storeAppDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.StoreApp, err error) {
+	buf := make([]*modelgebura.StoreApp, 0, batchSize)
 	err = s.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -436,7 +333,7 @@ func (s storeAppDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) er
 	return results, err
 }
 
-func (s storeAppDo) FindInBatches(result *[]*model.StoreApp, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (s storeAppDo) FindInBatches(result *[]*modelgebura.StoreApp, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return s.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -462,23 +359,23 @@ func (s storeAppDo) Preload(fields ...field.RelationField) IStoreAppDo {
 	return &s
 }
 
-func (s storeAppDo) FirstOrInit() (*model.StoreApp, error) {
+func (s storeAppDo) FirstOrInit() (*modelgebura.StoreApp, error) {
 	if result, err := s.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreApp), nil
+		return result.(*modelgebura.StoreApp), nil
 	}
 }
 
-func (s storeAppDo) FirstOrCreate() (*model.StoreApp, error) {
+func (s storeAppDo) FirstOrCreate() (*modelgebura.StoreApp, error) {
 	if result, err := s.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreApp), nil
+		return result.(*modelgebura.StoreApp), nil
 	}
 }
 
-func (s storeAppDo) FindByPage(offset int, limit int) (result []*model.StoreApp, count int64, err error) {
+func (s storeAppDo) FindByPage(offset int, limit int) (result []*modelgebura.StoreApp, count int64, err error) {
 	result, err = s.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -507,7 +404,7 @@ func (s storeAppDo) Scan(result interface{}) (err error) {
 	return s.DO.Scan(result)
 }
 
-func (s storeAppDo) Delete(models ...*model.StoreApp) (result gen.ResultInfo, err error) {
+func (s storeAppDo) Delete(models ...*modelgebura.StoreApp) (result gen.ResultInfo, err error) {
 	return s.DO.Delete(models)
 }
 

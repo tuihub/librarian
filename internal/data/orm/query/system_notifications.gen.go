@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,19 +23,19 @@ func newSystemNotification(db *gorm.DB, opts ...gen.DOOption) systemNotification
 	_systemNotification := systemNotification{}
 
 	_systemNotification.systemNotificationDo.UseDB(db, opts...)
-	_systemNotification.systemNotificationDo.UseModel(&model.SystemNotification{})
+	_systemNotification.systemNotificationDo.UseModel(&modelnetzach.SystemNotification{})
 
 	tableName := _systemNotification.systemNotificationDo.TableName()
 	_systemNotification.ALL = field.NewAsterisk(tableName)
 	_systemNotification.ID = field.NewInt64(tableName, "id")
 	_systemNotification.UserID = field.NewInt64(tableName, "user_id")
-	_systemNotification.Type = field.NewString(tableName, "type")
-	_systemNotification.Level = field.NewString(tableName, "level")
-	_systemNotification.Status = field.NewString(tableName, "status")
+	_systemNotification.Type = field.NewField(tableName, "type")
+	_systemNotification.Level = field.NewField(tableName, "level")
+	_systemNotification.Status = field.NewField(tableName, "status")
 	_systemNotification.Title = field.NewString(tableName, "title")
 	_systemNotification.Content = field.NewString(tableName, "content")
-	_systemNotification.UpdatedAt = field.NewTime(tableName, "updated_at")
-	_systemNotification.CreatedAt = field.NewTime(tableName, "created_at")
+	_systemNotification.CreateTime = field.NewTime(tableName, "created_at")
+	_systemNotification.UpdateTime = field.NewTime(tableName, "updated_at")
 
 	_systemNotification.fillFieldMap()
 
@@ -45,16 +45,16 @@ func newSystemNotification(db *gorm.DB, opts ...gen.DOOption) systemNotification
 type systemNotification struct {
 	systemNotificationDo systemNotificationDo
 
-	ALL       field.Asterisk
-	ID        field.Int64
-	UserID    field.Int64
-	Type      field.String
-	Level     field.String
-	Status    field.String
-	Title     field.String
-	Content   field.String
-	UpdatedAt field.Time
-	CreatedAt field.Time
+	ALL        field.Asterisk
+	ID         field.Int64
+	UserID     field.Int64
+	Type       field.Field
+	Level      field.Field
+	Status     field.Field
+	Title      field.String
+	Content    field.String
+	CreateTime field.Time
+	UpdateTime field.Time
 
 	fieldMap map[string]field.Expr
 }
@@ -73,13 +73,13 @@ func (s *systemNotification) updateTableName(table string) *systemNotification {
 	s.ALL = field.NewAsterisk(table)
 	s.ID = field.NewInt64(table, "id")
 	s.UserID = field.NewInt64(table, "user_id")
-	s.Type = field.NewString(table, "type")
-	s.Level = field.NewString(table, "level")
-	s.Status = field.NewString(table, "status")
+	s.Type = field.NewField(table, "type")
+	s.Level = field.NewField(table, "level")
+	s.Status = field.NewField(table, "status")
 	s.Title = field.NewString(table, "title")
 	s.Content = field.NewString(table, "content")
-	s.UpdatedAt = field.NewTime(table, "updated_at")
-	s.CreatedAt = field.NewTime(table, "created_at")
+	s.CreateTime = field.NewTime(table, "created_at")
+	s.UpdateTime = field.NewTime(table, "updated_at")
 
 	s.fillFieldMap()
 
@@ -116,8 +116,8 @@ func (s *systemNotification) fillFieldMap() {
 	s.fieldMap["status"] = s.Status
 	s.fieldMap["title"] = s.Title
 	s.fieldMap["content"] = s.Content
-	s.fieldMap["updated_at"] = s.UpdatedAt
-	s.fieldMap["created_at"] = s.CreatedAt
+	s.fieldMap["created_at"] = s.CreateTime
+	s.fieldMap["updated_at"] = s.UpdateTime
 }
 
 func (s systemNotification) clone(db *gorm.DB) systemNotification {
@@ -161,17 +161,17 @@ type ISystemNotificationDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ISystemNotificationDo
 	Unscoped() ISystemNotificationDo
-	Create(values ...*model.SystemNotification) error
-	CreateInBatches(values []*model.SystemNotification, batchSize int) error
-	Save(values ...*model.SystemNotification) error
-	First() (*model.SystemNotification, error)
-	Take() (*model.SystemNotification, error)
-	Last() (*model.SystemNotification, error)
-	Find() ([]*model.SystemNotification, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.SystemNotification, err error)
-	FindInBatches(result *[]*model.SystemNotification, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelnetzach.SystemNotification) error
+	CreateInBatches(values []*modelnetzach.SystemNotification, batchSize int) error
+	Save(values ...*modelnetzach.SystemNotification) error
+	First() (*modelnetzach.SystemNotification, error)
+	Take() (*modelnetzach.SystemNotification, error)
+	Last() (*modelnetzach.SystemNotification, error)
+	Find() ([]*modelnetzach.SystemNotification, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelnetzach.SystemNotification, err error)
+	FindInBatches(result *[]*modelnetzach.SystemNotification, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.SystemNotification) (info gen.ResultInfo, err error)
+	Delete(...*modelnetzach.SystemNotification) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -183,9 +183,9 @@ type ISystemNotificationDo interface {
 	Assign(attrs ...field.AssignExpr) ISystemNotificationDo
 	Joins(fields ...field.RelationField) ISystemNotificationDo
 	Preload(fields ...field.RelationField) ISystemNotificationDo
-	FirstOrInit() (*model.SystemNotification, error)
-	FirstOrCreate() (*model.SystemNotification, error)
-	FindByPage(offset int, limit int) (result []*model.SystemNotification, count int64, err error)
+	FirstOrInit() (*modelnetzach.SystemNotification, error)
+	FirstOrCreate() (*modelnetzach.SystemNotification, error)
+	FindByPage(offset int, limit int) (result []*modelnetzach.SystemNotification, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -287,57 +287,57 @@ func (s systemNotificationDo) Unscoped() ISystemNotificationDo {
 	return s.withDO(s.DO.Unscoped())
 }
 
-func (s systemNotificationDo) Create(values ...*model.SystemNotification) error {
+func (s systemNotificationDo) Create(values ...*modelnetzach.SystemNotification) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Create(values)
 }
 
-func (s systemNotificationDo) CreateInBatches(values []*model.SystemNotification, batchSize int) error {
+func (s systemNotificationDo) CreateInBatches(values []*modelnetzach.SystemNotification, batchSize int) error {
 	return s.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (s systemNotificationDo) Save(values ...*model.SystemNotification) error {
+func (s systemNotificationDo) Save(values ...*modelnetzach.SystemNotification) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Save(values)
 }
 
-func (s systemNotificationDo) First() (*model.SystemNotification, error) {
+func (s systemNotificationDo) First() (*modelnetzach.SystemNotification, error) {
 	if result, err := s.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SystemNotification), nil
+		return result.(*modelnetzach.SystemNotification), nil
 	}
 }
 
-func (s systemNotificationDo) Take() (*model.SystemNotification, error) {
+func (s systemNotificationDo) Take() (*modelnetzach.SystemNotification, error) {
 	if result, err := s.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SystemNotification), nil
+		return result.(*modelnetzach.SystemNotification), nil
 	}
 }
 
-func (s systemNotificationDo) Last() (*model.SystemNotification, error) {
+func (s systemNotificationDo) Last() (*modelnetzach.SystemNotification, error) {
 	if result, err := s.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SystemNotification), nil
+		return result.(*modelnetzach.SystemNotification), nil
 	}
 }
 
-func (s systemNotificationDo) Find() ([]*model.SystemNotification, error) {
+func (s systemNotificationDo) Find() ([]*modelnetzach.SystemNotification, error) {
 	result, err := s.DO.Find()
-	return result.([]*model.SystemNotification), err
+	return result.([]*modelnetzach.SystemNotification), err
 }
 
-func (s systemNotificationDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.SystemNotification, err error) {
-	buf := make([]*model.SystemNotification, 0, batchSize)
+func (s systemNotificationDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelnetzach.SystemNotification, err error) {
+	buf := make([]*modelnetzach.SystemNotification, 0, batchSize)
 	err = s.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -345,7 +345,7 @@ func (s systemNotificationDo) FindInBatch(batchSize int, fc func(tx gen.Dao, bat
 	return results, err
 }
 
-func (s systemNotificationDo) FindInBatches(result *[]*model.SystemNotification, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (s systemNotificationDo) FindInBatches(result *[]*modelnetzach.SystemNotification, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return s.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -371,23 +371,23 @@ func (s systemNotificationDo) Preload(fields ...field.RelationField) ISystemNoti
 	return &s
 }
 
-func (s systemNotificationDo) FirstOrInit() (*model.SystemNotification, error) {
+func (s systemNotificationDo) FirstOrInit() (*modelnetzach.SystemNotification, error) {
 	if result, err := s.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SystemNotification), nil
+		return result.(*modelnetzach.SystemNotification), nil
 	}
 }
 
-func (s systemNotificationDo) FirstOrCreate() (*model.SystemNotification, error) {
+func (s systemNotificationDo) FirstOrCreate() (*modelnetzach.SystemNotification, error) {
 	if result, err := s.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SystemNotification), nil
+		return result.(*modelnetzach.SystemNotification), nil
 	}
 }
 
-func (s systemNotificationDo) FindByPage(offset int, limit int) (result []*model.SystemNotification, count int64, err error) {
+func (s systemNotificationDo) FindByPage(offset int, limit int) (result []*modelnetzach.SystemNotification, count int64, err error) {
 	result, err = s.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -416,7 +416,7 @@ func (s systemNotificationDo) Scan(result interface{}) (err error) {
 	return s.DO.Scan(result)
 }
 
-func (s systemNotificationDo) Delete(models ...*model.SystemNotification) (result gen.ResultInfo, err error) {
+func (s systemNotificationDo) Delete(models ...*modelnetzach.SystemNotification) (result gen.ResultInfo, err error) {
 	return s.DO.Delete(models)
 }
 

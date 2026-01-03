@@ -2,10 +2,9 @@ package data
 
 import (
 	"context"
+	"database/sql/driver"
 	"time"
 
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/orm/model"
 	"github.com/tuihub/librarian/internal/data/orm/query"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	libmodel "github.com/tuihub/librarian/internal/model"
@@ -28,31 +27,20 @@ func NewYesodRepo(data *Data) *YesodRepo {
 
 func (y *YesodRepo) CreateFeedConfig(ctx context.Context, owner libmodel.InternalID, c *modelyesod.FeedConfig) error {
 	return y.data.WithTx(ctx, func(tx *query.Query) error {
-		fc := &model.FeedConfig{
-			ID:                c.ID,
-			UserFeedConfig:    owner,
-			Name:              c.Name,
-			Description:       c.Description,
-			Category:          c.Category,
-			Source:            c.Source,
-			Status:            converter.ToORMFeedConfigStatus(c.Status),
-			PullInterval:      c.PullInterval,
-			LatestPullStatus:  converter.ToORMFeedConfigLatestPullStatus(c.LatestPullStatus),
-			LatestPullMessage: "",
-			HideItems:         c.HideItems,
-			NextPullBeginAt:   time.Now(),
-		}
-		if err := tx.FeedConfig.WithContext(ctx).Create(fc); err != nil {
+		c.UserFeedConfig = owner
+		c.NextPullBeginAt = time.Now()
+		c.LatestPullMessage = ""
+
+		if err := tx.FeedConfig.WithContext(ctx).Create(c); err != nil {
 			return err
 		}
 
 		if len(c.ActionSets) > 0 {
-			actions := make([]*model.FeedConfigAction, len(c.ActionSets))
+			actions := make([]*modelyesod.FeedConfigAction, len(c.ActionSets))
 			for i, actionID := range c.ActionSets {
-				actions[i] = &model.FeedConfigAction{
+				actions[i] = &modelyesod.FeedConfigAction{
 					FeedConfigID:    c.ID,
 					FeedActionSetID: actionID,
-					Index:           int64(i),
 				}
 			}
 			if err := tx.FeedConfigAction.WithContext(ctx).Create(actions...); err != nil {
@@ -63,7 +51,8 @@ func (y *YesodRepo) CreateFeedConfig(ctx context.Context, owner libmodel.Interna
 	})
 }
 
-func (y *YesodRepo) UpdateFeedConfig( //nolint:gocognit // complex logic
+//nolint:gocognit // complexity
+func (y *YesodRepo) UpdateFeedConfig(
 	ctx context.Context,
 	userID libmodel.InternalID,
 	c *modelyesod.FeedConfig,
@@ -86,7 +75,7 @@ func (y *YesodRepo) UpdateFeedConfig( //nolint:gocognit // complex logic
 			updates["source"] = c.Source
 		}
 		if c.Status != modelyesod.FeedConfigStatusUnspecified {
-			updates["status"] = converter.ToORMFeedConfigStatus(c.Status)
+			updates["status"] = c.Status
 		}
 		if c.PullInterval > 0 {
 			updates["pull_interval"] = c.PullInterval
@@ -104,12 +93,11 @@ func (y *YesodRepo) UpdateFeedConfig( //nolint:gocognit // complex logic
 				return err
 			}
 
-			actions := make([]*model.FeedConfigAction, len(c.ActionSets))
+			actions := make([]*modelyesod.FeedConfigAction, len(c.ActionSets))
 			for i, actionID := range c.ActionSets {
-				actions[i] = &model.FeedConfigAction{
+				actions[i] = &modelyesod.FeedConfigAction{
 					FeedConfigID:    c.ID,
 					FeedActionSetID: actionID,
-					Index:           int64(i),
 				}
 			}
 			if len(actions) > 0 {
@@ -138,9 +126,9 @@ func (y *YesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string
 	u := q.WithContext(ctx)
 
 	if len(statuses) > 0 {
-		s := make([]string, len(statuses))
-		for idx, v := range statuses {
-			s[idx] = converter.ToORMFeedConfigStatus(v)
+		s := make([]driver.Valuer, len(statuses))
+		for i, v := range statuses {
+			s[i] = v
 		}
 		u = u.Where(q.Status.In(s...))
 	}
@@ -155,7 +143,7 @@ func (y *YesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizFeedConfigList(res), nil
+	return res, nil
 }
 
 func (y *YesodRepo) ListFeedConfigs(
@@ -177,9 +165,9 @@ func (y *YesodRepo) ListFeedConfigs(
 		u = u.Where(q.ID.In(castIDs...))
 	}
 	if len(statuses) > 0 {
-		s := make([]string, len(statuses))
+		s := make([]driver.Valuer, len(statuses))
 		for i, v := range statuses {
-			s[i] = converter.ToORMFeedConfigStatus(v)
+			s[i] = v
 		}
 		u = u.Where(q.Status.In(s...))
 	}
@@ -206,16 +194,15 @@ func (y *YesodRepo) ListFeedConfigs(
 
 	result := make([]*modelyesod.FeedWithConfig, len(res))
 	for i, config := range res {
-		feedConfig := converter.ToBizFeedConfig(config)
 		actionSets := make([]libmodel.InternalID, len(config.FeedActionSets))
 		for j, action := range config.FeedActionSets {
 			actionSets[j] = action.ID
 		}
-		feedConfig.ActionSets = actionSets
+		config.ActionSets = actionSets
 
 		result[i] = &modelyesod.FeedWithConfig{
-			FeedConfig: feedConfig,
-			Feed:       converter.ToBizFeed(config.Feed),
+			FeedConfig: config,
+			Feed:       config.Feed,
 		}
 	}
 	return result, int(total), nil
@@ -244,7 +231,7 @@ func (y *YesodRepo) ListFeedPlatforms(ctx context.Context, id libmodel.InternalI
 
 	// Using Gen:
 	q := query.Use(y.data.db)
-	fi := q.FeedItem
+	fi := q.Item
 	f := q.Feed
 	fc := q.FeedConfig
 
@@ -269,7 +256,7 @@ func (y *YesodRepo) ListFeedItems(
 	categories []string,
 ) ([]*modelyesod.FeedItemDigest, int, error) {
 	q := query.Use(y.data.db)
-	fi := q.FeedItem
+	fi := q.Item
 	f := q.Feed
 	fc := q.FeedConfig
 
@@ -306,20 +293,26 @@ func (y *YesodRepo) ListFeedItems(
 
 	// Select fields needed for Digest + Preload Feed + FeedConfig (for Name)
 	// GORM Preload usually requires struct scan.
-	res, err := u.
+	var results []struct {
+		modelfeed.Item
+
+		FeedConfigName string `gorm:"column:feed_config_name"`
+	}
+
+	err = u.
 		Preload(fi.Feed).
-		Preload(fi.Feed.Config).
+		Select(fi.ALL, fc.Name.As("feed_config_name")).
 		Order(fi.PublishedParsed.Desc()).
 		Limit(paging.ToLimit()).
 		Offset(paging.ToOffset()).
-		Find()
+		Scan(&results)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	result := make([]*modelyesod.FeedItemDigest, len(res))
-	for i, item := range res {
-		result[i] = converter.ToBizFeedItemDigest(item)
+	result := make([]*modelyesod.FeedItemDigest, len(results))
+	for i, item := range results {
+		result[i] = y.toFeedItemDigest(&item.Item, item.FeedConfigName)
 	}
 	return result, int(total), nil
 }
@@ -336,7 +329,7 @@ func (y *YesodRepo) GroupFeedItems(
 ) (map[libmodel.TimeRange][]*modelyesod.FeedItemDigest, error) {
 	res := make(map[libmodel.TimeRange][]*modelyesod.FeedItemDigest)
 	q := query.Use(y.data.db)
-	fi := q.FeedItem
+	fi := q.Item
 	f := q.Feed
 	fc := q.FeedConfig
 
@@ -373,24 +366,30 @@ func (y *YesodRepo) GroupFeedItems(
 			u = u.Where(fc.Category.In(categories...))
 		}
 
-		items, err := u.
+		var results []struct {
+			modelfeed.Item
+
+			FeedConfigName string `gorm:"column:feed_config_name"`
+		}
+
+		err := u.
 			Where(fi.PublishedParsed.Gte(tr.StartTime), fi.PublishedParsed.Lt(tr.StartTime.Add(tr.Duration))).
 			Preload(fi.Feed).
-			Preload(fi.Feed.Config).
+			Select(fi.ALL, fc.Name.As("feed_config_name")).
 			Order(fi.PublishedParsed.Desc()).
 			Limit(groupSize).
-			Find()
+			Scan(&results)
 		if err != nil {
 			return nil, err
 		}
 
-		if len(items) == 0 {
+		if len(results) == 0 {
 			continue
 		}
 
-		digests := make([]*modelyesod.FeedItemDigest, len(items))
-		for i, item := range items {
-			digests[i] = converter.ToBizFeedItemDigest(item)
+		digests := make([]*modelyesod.FeedItemDigest, len(results))
+		for i, item := range results {
+			digests[i] = y.toFeedItemDigest(&item.Item, item.FeedConfigName)
 		}
 		res[tr] = digests
 	}
@@ -403,7 +402,7 @@ func (y *YesodRepo) GetFeedItems(
 	ids []libmodel.InternalID,
 ) ([]*modelfeed.Item, error) {
 	q := query.Use(y.data.db)
-	fi := q.FeedItem
+	fi := q.Item
 	f := q.Feed
 	fc := q.FeedConfig
 
@@ -422,7 +421,7 @@ func (y *YesodRepo) GetFeedItems(
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizFeedItemList(items), nil
+	return items, nil
 }
 
 func (y *YesodRepo) ReadFeedItem(ctx context.Context, userID libmodel.InternalID, id libmodel.InternalID) error {
@@ -438,7 +437,7 @@ func (y *YesodRepo) ReadFeedItem(ctx context.Context, userID libmodel.InternalID
 
 	// Using Gen:
 	q := query.Use(y.data.db)
-	fi := q.FeedItem
+	fi := q.Item
 	// Subquery for FeedConfig owner
 	// This might be complicated in Gen without subquery support.
 	// Let's verify first (read) then update, or simple update if we trust ID.
@@ -466,7 +465,7 @@ func (y *YesodRepo) ReadFeedItem(ctx context.Context, userID libmodel.InternalID
 
 func (y *YesodRepo) checkFeedItemOwner(ctx context.Context, itemID, userID libmodel.InternalID) (bool, error) {
 	q := query.Use(y.data.db)
-	fi := q.FeedItem
+	fi := q.Item
 	f := q.Feed
 	fc := q.FeedConfig
 
@@ -483,13 +482,8 @@ func (y *YesodRepo) CreateFeedItemCollection(
 	ownerID libmodel.InternalID,
 	collection *modelyesod.FeedItemCollection,
 ) error {
-	return query.Use(y.data.db).FeedItemCollection.WithContext(ctx).Create(&model.FeedItemCollection{
-		ID:          collection.ID,
-		UserID:      ownerID,
-		Name:        collection.Name,
-		Description: collection.Description,
-		Category:    collection.Category,
-	})
+	collection.UserID = ownerID
+	return query.Use(y.data.db).FeedItemCollection.WithContext(ctx).Create(collection)
 }
 
 func (y *YesodRepo) UpdateFeedItemCollection(
@@ -500,7 +494,7 @@ func (y *YesodRepo) UpdateFeedItemCollection(
 	q := query.Use(y.data.db).FeedItemCollection
 	_, err := q.WithContext(ctx).
 		Where(q.ID.Eq(int64(collection.ID)), q.UserID.Eq(int64(ownerID))).
-		Updates(&model.FeedItemCollection{
+		Updates(&modelyesod.FeedItemCollection{
 			Name:        collection.Name,
 			Description: collection.Description,
 			Category:    collection.Category,
@@ -539,7 +533,7 @@ func (y *YesodRepo) ListFeedItemCollections(
 		return nil, 0, err
 	}
 
-	return converter.ToBizFeedItemCollectionList(res), int(total), nil
+	return res, int(total), nil
 }
 
 func (y *YesodRepo) AddFeedItemToCollection(
@@ -564,9 +558,9 @@ func (y *YesodRepo) AddFeedItemToCollection(
 	// The model `FeedItemCollection` has `FeedItems []FeedItem`.
 	// GORM: association.Append
 
-	return y.data.db.Model(&model.FeedItemCollection{ID: collectionID}).
+	return y.data.db.Model(&modelyesod.FeedItemCollection{ID: collectionID}).
 		Association("FeedItems").
-		Append(&model.FeedItem{ID: itemID})
+		Append(&modelfeed.Item{ID: itemID})
 }
 
 func (y *YesodRepo) RemoveFeedItemFromCollection(
@@ -586,11 +580,12 @@ func (y *YesodRepo) RemoveFeedItemFromCollection(
 		return nil
 	}
 
-	return y.data.db.Model(&model.FeedItemCollection{ID: collectionID}).
+	return y.data.db.Model(&modelyesod.FeedItemCollection{ID: collectionID}).
 		Association("FeedItems").
-		Delete(&model.FeedItem{ID: itemID})
+		Delete(&modelfeed.Item{ID: itemID})
 }
 
+//nolint:funlen
 func (y *YesodRepo) ListFeedItemsInCollection(
 	ctx context.Context,
 	ownerID libmodel.InternalID,
@@ -632,7 +627,7 @@ func (y *YesodRepo) ListFeedItemsInCollection(
 	// I'll assume `FeedItem` has `FeedItemCollections` for now.
 
 	q := query.Use(y.data.db)
-	fi := q.FeedItem
+	fi := q.Item
 	fic := q.FeedItemCollection
 	f := q.Feed
 	fc := q.FeedConfig
@@ -716,20 +711,26 @@ func (y *YesodRepo) ListFeedItemsInCollection(
 		return nil, 0, err
 	}
 
-	res, err := u.
+	var results []struct {
+		modelfeed.Item
+
+		FeedConfigName string `gorm:"column:feed_config_name"`
+	}
+
+	err = u.
 		Preload(fi.Feed).
-		Preload(fi.Feed.Config).
+		Select(fi.ALL, fc.Name.As("feed_config_name")).
 		Order(fi.PublishedParsed.Desc()).
 		Limit(paging.ToLimit()).
 		Offset(paging.ToOffset()).
-		Find()
+		Scan(&results)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	result := make([]*modelyesod.FeedItemDigest, len(res))
-	for i, item := range res {
-		result[i] = converter.ToBizFeedItemDigest(item)
+	result := make([]*modelyesod.FeedItemDigest, len(results))
+	for i, item := range results {
+		result[i] = y.toFeedItemDigest(&item.Item, item.FeedConfigName)
 	}
 	return result, int(total), nil
 }
@@ -747,7 +748,7 @@ func (y *YesodRepo) GetFeedOwner(ctx context.Context, id libmodel.InternalID) (*
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizUser(res), nil
+	return res, nil
 }
 
 func (y *YesodRepo) CreateFeedActionSet(
@@ -755,13 +756,8 @@ func (y *YesodRepo) CreateFeedActionSet(
 	id libmodel.InternalID,
 	set *modelyesod.FeedActionSet,
 ) error {
-	return query.Use(y.data.db).FeedActionSet.WithContext(ctx).Create(&model.FeedActionSet{
-		ID:          set.ID,
-		UserID:      id,
-		Name:        set.Name,
-		Description: set.Description,
-		Actions:     set.Actions,
-	})
+	set.UserID = id
+	return query.Use(y.data.db).FeedActionSet.WithContext(ctx).Create(set)
 }
 
 func (y *YesodRepo) UpdateFeedActionSet(
@@ -772,7 +768,7 @@ func (y *YesodRepo) UpdateFeedActionSet(
 	q := query.Use(y.data.db).FeedActionSet
 	_, err := q.WithContext(ctx).
 		Where(q.ID.Eq(int64(set.ID)), q.UserID.Eq(int64(id))).
-		Updates(&model.FeedActionSet{
+		Updates(&modelyesod.FeedActionSet{
 			Name:        set.Name,
 			Description: set.Description,
 			Actions:     set.Actions,
@@ -798,5 +794,43 @@ func (y *YesodRepo) ListFeedActionSets(
 		return nil, 0, err
 	}
 
-	return converter.ToBizFeedActionSetList(res), int(total), nil
+	return res, int(total), nil
+}
+
+func (y *YesodRepo) toFeedItemDigest(item *modelfeed.Item, feedConfigName string) *modelyesod.FeedItemDigest {
+	digest := &modelyesod.FeedItemDigest{
+		FeedID:              item.FeedID,
+		ItemID:              item.ID,
+		PublishedParsedTime: *item.PublishedParsed,
+		Title:               item.Title,
+		ShortDescription:    item.DigestDescription,
+		PublishPlatform:     item.PublishPlatform,
+		ReadCount:           item.ReadCount,
+		FeedConfigName:      feedConfigName,
+	}
+
+	if item.Feed != nil {
+		if item.Feed.Image != nil {
+			digest.FeedAvatarURL = item.Feed.Image.URL
+		}
+	}
+
+	// Authors
+	if len(item.Authors) > 0 {
+		digest.Authors = item.Authors[0].Name // Simple simplification
+	}
+
+	// Image URLs
+	if len(item.DigestImages) > 0 {
+		digest.ImageUrls = make([]string, len(item.DigestImages))
+		for i, img := range item.DigestImages {
+			digest.ImageUrls[i] = img.URL
+		}
+	}
+
+	if item.Image != nil {
+		digest.AvatarURL = item.Image.URL
+	}
+
+	return digest
 }

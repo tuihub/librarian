@@ -192,7 +192,7 @@ func (t *Tiphereth) RegisterUser(
 	if captchaReq == nil {
 		captchaID := captcha.New()
 		captchaImg := bytes.NewBuffer(nil)
-		err := captcha.WriteImage(captchaImg, captchaID, 200, 100) //nolint:mnd // hard code
+		err := captcha.WriteImage(captchaImg, captchaID, 200, 100) //nolint:mnd //nolint:mnd // hard code
 		if err != nil {
 			return nil, "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}

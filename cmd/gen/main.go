@@ -9,7 +9,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelchesed"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
+	"github.com/tuihub/librarian/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/internal/model/modelyesod"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -21,38 +27,48 @@ import (
 var models = []interface{}{ //nolint:gochecknoglobals // required by gen
 	&model.User{},
 	&model.Account{},
-	&model.App{},
-	&model.AppCategory{},
-	&model.AppAppCategory{},
-	&model.Device{},
-	&model.Feed{},
-	&model.FeedConfig{},
-	&model.FeedItem{},
-	&model.FeedActionSet{},
-	&model.FeedConfigAction{},
-	&model.FeedItemCollection{},
-	&model.NotifySource{},
-	&model.NotifyTarget{},
-	&model.NotifyFlow{},
-	&model.NotifyFlowSource{},
-	&model.NotifyFlowTarget{},
 	&model.Session{},
-	&model.File{},
-	&model.Image{},
+	&model.Device{},
 	&model.Tag{},
-	&model.PorterContext{},
-	&model.PorterInstance{},
 	&model.KV{},
-	&model.SystemNotification{},
-	&model.Sentinel{},
-	&model.SentinelAppBinary{},
-	&model.SentinelAppBinaryFile{},
-	&model.SentinelLibrary{},
-	&model.SentinelSession{},
-	&model.StoreApp{},
-	&model.StoreAppBinary{},
-	&model.AppRunTime{},
-	&model.AppInfo{},
+
+	&modelgebura.App{},
+	&modelgebura.AppCategory{},
+	&modelgebura.AppAppCategory{},
+	&modelgebura.AppInfo{},
+	&modelgebura.AppRunTime{},
+	&modelgebura.Sentinel{},
+	&modelgebura.SentinelAppBinary{},
+	&modelgebura.SentinelAppBinaryFile{},
+	&modelgebura.SentinelLibrary{},
+	&modelgebura.SentinelSession{},
+	&modelgebura.StoreApp{},
+	&modelgebura.StoreAppBinary{},
+
+	&modelfeed.Feed{},
+	&modelfeed.Item{},
+
+	&modelyesod.FeedConfig{},
+	&modelyesod.FeedActionSet{},
+	&modelyesod.FeedConfigAction{},
+	&modelyesod.FeedItemCollection{},
+	// &modelyesod.FeedItemCollectionFeedItem{}, // Assuming this is needed if we want to query the join table directly, but GORM usually handles many2many. If we added it to struct, include it.
+	// I added FeedItemCollectionFeedItem in modelyesod.go?
+	// Yes: type FeedItemCollectionFeedItem struct
+	&modelyesod.FeedItemCollectionFeedItem{},
+
+	&modelnetzach.NotifyFlow{},
+	&modelnetzach.NotifyFlowSource{},
+	&modelnetzach.NotifyFlowTarget{},
+	&modelnetzach.NotifySource{},
+	&modelnetzach.NotifyTarget{},
+	&modelnetzach.SystemNotification{},
+
+	&modelsupervisor.PorterInstance{},
+	&modelsupervisor.PorterContext{},
+
+	&modelchesed.Image{},
+	&modelchesed.File{},
 }
 
 func main() {
@@ -122,40 +138,6 @@ func generateSchema(driverName string, dsn string, outputPath string) {
 		log.Printf("failed to open db for %s: %v", driverName, err)
 		return
 	}
-
-	// For SQLite, we might not need DryRun if we use memory DB, but DryRun is safer to just capture SQL.
-	// However, AutoMigrate in DryRun might not generate everything if it thinks table exists?
-	// No, DryRun with fresh connection (memory) should work.
-	// But for Postgres, we can't connect to real DB. DryRun with dummy DSN allows "connecting" without pinging?
-	// Postgres driver usually tries to ping on Open.
-	// Wait, gorm.Open calls `dialector.Initialize`. Postgres dialector might try to connect.
-	// If it fails, we can't proceed.
-	// But we can use `gorm.Open` with `DryRun: true`?
-	// If Postgres driver fails to connect, we are stuck.
-	// Let's check if we can skip connection.
-
-	// Actually, for generating SQL, we can use `Migrator().CreateTable()`?
-	// But that also requires connection for type mapping?
-	// Yes.
-
-	// If we can't connect to Postgres, we can't verify types fully (e.g. server version).
-	// But usually GORM Postgres driver works if we don't ping?
-	// `postgres.Open` usually connects.
-
-	// Alternative: Use SQLite for both but replace types? No, that's bad.
-
-	// Let's try to run it. If it fails, I might need a mock dialector or assume a local postgres is available (which is not guaranteed).
-	// Or maybe use a specific "DryRun" compatible configuration?
-	// GORM docs say: "Generate SQL without executing".
-	// But `gorm.Open` initializes the connection pool.
-
-	// If I cannot generate Postgres schema without a running DB, I might just generate SQLite schema for now, or assume the user will handle it.
-	// But the user asked for "for multi-driver then put in different folders".
-
-	// Let's try. If Postgres fails, I will log a warning.
-
-	// For SQLite, it works with file::memory.
-	// For Postgres, let's see.
 
 	if err = db.AutoMigrate(models...); err != nil {
 		log.Printf("failed to auto migrate %s: %v", driverName, err)

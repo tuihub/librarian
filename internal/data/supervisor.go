@@ -5,8 +5,6 @@ import (
 	"sync"
 
 	"github.com/tuihub/librarian/internal/client"
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/orm/model"
 	"github.com/tuihub/librarian/internal/data/orm/query"
 	libmodel "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
@@ -170,33 +168,15 @@ func (s *SupervisorRepo) UpsertPorter(
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorter(res), nil
+	return res, nil
 }
 
 func (s *SupervisorRepo) UpsertPorters(ctx context.Context, il []*modelsupervisor.PorterInstance) error {
-	instances := make([]*model.PorterInstance, len(il))
-	for i, instance := range il {
+	for _, instance := range il {
 		if instance.BinarySummary == nil {
 			instance.BinarySummary = new(modelsupervisor.PorterBinarySummary)
 		}
-
-		instances[i] = &model.PorterInstance{
-			ID:                      instance.ID,
-			Name:                    instance.BinarySummary.Name,
-			Version:                 instance.BinarySummary.Version,
-			Description:             instance.BinarySummary.Description,
-			SourceCodeAddress:       instance.BinarySummary.SourceCodeAddress,
-			BuildVersion:            instance.BinarySummary.BuildVersion,
-			BuildDate:               instance.BinarySummary.BuildDate,
-			GlobalName:              instance.GlobalName,
-			Region:                  instance.Region,
-			Address:                 instance.Address,
-			Status:                  converter.ToORMPorterInstanceStatus(instance.Status),
-			FeatureSummary:          instance.FeatureSummary,
-			ContextJSONSchema:       instance.ContextJSONSchema,
-			ConnectionStatus:        converter.ToORMPorterConnectionStatus(instance.ConnectionStatus),
-			ConnectionStatusMessage: instance.ConnectionStatusMessage,
-		}
+		// BeforeSave hook will handle mapping BinarySummary to fields
 	}
 
 	return query.Use(s.data.db).PorterInstance.WithContext(ctx).Clauses(clause.OnConflict{
@@ -207,7 +187,7 @@ func (s *SupervisorRepo) UpsertPorters(ctx context.Context, il []*modelsuperviso
 			"feature_summary", "context_json_schema", "connection_status",
 			"connection_status_message",
 		}),
-	}).Create(instances...)
+	}).Create(il...)
 }
 
 func (s *SupervisorRepo) FetchPorterByAddress(
@@ -219,7 +199,7 @@ func (s *SupervisorRepo) FetchPorterByAddress(
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorter(p), nil
+	return p, nil
 }
 
 func (s *SupervisorRepo) UpdatePorterContext(
@@ -229,8 +209,8 @@ func (s *SupervisorRepo) UpdatePorterContext(
 	q := query.Use(s.data.db).PorterContext
 	_, err := q.WithContext(ctx).
 		Where(q.ID.Eq(int64(pc.ID))).
-		Updates(&model.PorterContext{
-			HandleStatus:        converter.ToORMPorterContextHandleStatus(pc.HandleStatus),
+		Updates(&modelsupervisor.PorterContext{
+			HandleStatus:        pc.HandleStatus,
 			HandleStatusMessage: pc.HandleStatusMessage,
 		})
 	if err != nil {
@@ -241,5 +221,5 @@ func (s *SupervisorRepo) UpdatePorterContext(
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorterContext(res), nil
+	return res, nil
 }

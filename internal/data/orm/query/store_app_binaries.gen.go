@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,14 +23,21 @@ func newStoreAppBinary(db *gorm.DB, opts ...gen.DOOption) storeAppBinary {
 	_storeAppBinary := storeAppBinary{}
 
 	_storeAppBinary.storeAppBinaryDo.UseDB(db, opts...)
-	_storeAppBinary.storeAppBinaryDo.UseModel(&model.StoreAppBinary{})
+	_storeAppBinary.storeAppBinaryDo.UseModel(&modelgebura.StoreAppBinary{})
 
 	tableName := _storeAppBinary.storeAppBinaryDo.TableName()
 	_storeAppBinary.ALL = field.NewAsterisk(tableName)
-	_storeAppBinary.StoreAppID = field.NewInt64(tableName, "store_app_id")
-	_storeAppBinary.SentinelAppBinaryUnionID = field.NewInt64(tableName, "sentinel_app_binary_union_id")
-	_storeAppBinary.UpdatedAt = field.NewTime(tableName, "updated_at")
+	_storeAppBinary.ID = field.NewInt64(tableName, "id")
+	_storeAppBinary.AppID = field.NewInt64(tableName, "app_id")
+	_storeAppBinary.UnionID = field.NewString(tableName, "union_id")
+	_storeAppBinary.SizeBytes = field.NewInt64(tableName, "size_bytes")
+	_storeAppBinary.NeedToken = field.NewBool(tableName, "need_token")
+	_storeAppBinary.Name = field.NewString(tableName, "name")
+	_storeAppBinary.Version = field.NewString(tableName, "version")
+	_storeAppBinary.Developer = field.NewString(tableName, "developer")
+	_storeAppBinary.Publisher = field.NewString(tableName, "publisher")
 	_storeAppBinary.CreatedAt = field.NewTime(tableName, "created_at")
+	_storeAppBinary.UpdatedAt = field.NewTime(tableName, "updated_at")
 
 	_storeAppBinary.fillFieldMap()
 
@@ -40,11 +47,18 @@ func newStoreAppBinary(db *gorm.DB, opts ...gen.DOOption) storeAppBinary {
 type storeAppBinary struct {
 	storeAppBinaryDo storeAppBinaryDo
 
-	ALL                      field.Asterisk
-	StoreAppID               field.Int64
-	SentinelAppBinaryUnionID field.Int64
-	UpdatedAt                field.Time
-	CreatedAt                field.Time
+	ALL       field.Asterisk
+	ID        field.Int64
+	AppID     field.Int64
+	UnionID   field.String
+	SizeBytes field.Int64
+	NeedToken field.Bool
+	Name      field.String
+	Version   field.String
+	Developer field.String
+	Publisher field.String
+	CreatedAt field.Time
+	UpdatedAt field.Time
 
 	fieldMap map[string]field.Expr
 }
@@ -61,10 +75,17 @@ func (s storeAppBinary) As(alias string) *storeAppBinary {
 
 func (s *storeAppBinary) updateTableName(table string) *storeAppBinary {
 	s.ALL = field.NewAsterisk(table)
-	s.StoreAppID = field.NewInt64(table, "store_app_id")
-	s.SentinelAppBinaryUnionID = field.NewInt64(table, "sentinel_app_binary_union_id")
-	s.UpdatedAt = field.NewTime(table, "updated_at")
+	s.ID = field.NewInt64(table, "id")
+	s.AppID = field.NewInt64(table, "app_id")
+	s.UnionID = field.NewString(table, "union_id")
+	s.SizeBytes = field.NewInt64(table, "size_bytes")
+	s.NeedToken = field.NewBool(table, "need_token")
+	s.Name = field.NewString(table, "name")
+	s.Version = field.NewString(table, "version")
+	s.Developer = field.NewString(table, "developer")
+	s.Publisher = field.NewString(table, "publisher")
 	s.CreatedAt = field.NewTime(table, "created_at")
+	s.UpdatedAt = field.NewTime(table, "updated_at")
 
 	s.fillFieldMap()
 
@@ -93,11 +114,18 @@ func (s *storeAppBinary) GetFieldByName(fieldName string) (field.OrderExpr, bool
 }
 
 func (s *storeAppBinary) fillFieldMap() {
-	s.fieldMap = make(map[string]field.Expr, 4)
-	s.fieldMap["store_app_id"] = s.StoreAppID
-	s.fieldMap["sentinel_app_binary_union_id"] = s.SentinelAppBinaryUnionID
-	s.fieldMap["updated_at"] = s.UpdatedAt
+	s.fieldMap = make(map[string]field.Expr, 11)
+	s.fieldMap["id"] = s.ID
+	s.fieldMap["app_id"] = s.AppID
+	s.fieldMap["union_id"] = s.UnionID
+	s.fieldMap["size_bytes"] = s.SizeBytes
+	s.fieldMap["need_token"] = s.NeedToken
+	s.fieldMap["name"] = s.Name
+	s.fieldMap["version"] = s.Version
+	s.fieldMap["developer"] = s.Developer
+	s.fieldMap["publisher"] = s.Publisher
 	s.fieldMap["created_at"] = s.CreatedAt
+	s.fieldMap["updated_at"] = s.UpdatedAt
 }
 
 func (s storeAppBinary) clone(db *gorm.DB) storeAppBinary {
@@ -141,17 +169,17 @@ type IStoreAppBinaryDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IStoreAppBinaryDo
 	Unscoped() IStoreAppBinaryDo
-	Create(values ...*model.StoreAppBinary) error
-	CreateInBatches(values []*model.StoreAppBinary, batchSize int) error
-	Save(values ...*model.StoreAppBinary) error
-	First() (*model.StoreAppBinary, error)
-	Take() (*model.StoreAppBinary, error)
-	Last() (*model.StoreAppBinary, error)
-	Find() ([]*model.StoreAppBinary, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.StoreAppBinary, err error)
-	FindInBatches(result *[]*model.StoreAppBinary, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelgebura.StoreAppBinary) error
+	CreateInBatches(values []*modelgebura.StoreAppBinary, batchSize int) error
+	Save(values ...*modelgebura.StoreAppBinary) error
+	First() (*modelgebura.StoreAppBinary, error)
+	Take() (*modelgebura.StoreAppBinary, error)
+	Last() (*modelgebura.StoreAppBinary, error)
+	Find() ([]*modelgebura.StoreAppBinary, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.StoreAppBinary, err error)
+	FindInBatches(result *[]*modelgebura.StoreAppBinary, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.StoreAppBinary) (info gen.ResultInfo, err error)
+	Delete(...*modelgebura.StoreAppBinary) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -163,9 +191,9 @@ type IStoreAppBinaryDo interface {
 	Assign(attrs ...field.AssignExpr) IStoreAppBinaryDo
 	Joins(fields ...field.RelationField) IStoreAppBinaryDo
 	Preload(fields ...field.RelationField) IStoreAppBinaryDo
-	FirstOrInit() (*model.StoreAppBinary, error)
-	FirstOrCreate() (*model.StoreAppBinary, error)
-	FindByPage(offset int, limit int) (result []*model.StoreAppBinary, count int64, err error)
+	FirstOrInit() (*modelgebura.StoreAppBinary, error)
+	FirstOrCreate() (*modelgebura.StoreAppBinary, error)
+	FindByPage(offset int, limit int) (result []*modelgebura.StoreAppBinary, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -267,57 +295,57 @@ func (s storeAppBinaryDo) Unscoped() IStoreAppBinaryDo {
 	return s.withDO(s.DO.Unscoped())
 }
 
-func (s storeAppBinaryDo) Create(values ...*model.StoreAppBinary) error {
+func (s storeAppBinaryDo) Create(values ...*modelgebura.StoreAppBinary) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Create(values)
 }
 
-func (s storeAppBinaryDo) CreateInBatches(values []*model.StoreAppBinary, batchSize int) error {
+func (s storeAppBinaryDo) CreateInBatches(values []*modelgebura.StoreAppBinary, batchSize int) error {
 	return s.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (s storeAppBinaryDo) Save(values ...*model.StoreAppBinary) error {
+func (s storeAppBinaryDo) Save(values ...*modelgebura.StoreAppBinary) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Save(values)
 }
 
-func (s storeAppBinaryDo) First() (*model.StoreAppBinary, error) {
+func (s storeAppBinaryDo) First() (*modelgebura.StoreAppBinary, error) {
 	if result, err := s.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreAppBinary), nil
+		return result.(*modelgebura.StoreAppBinary), nil
 	}
 }
 
-func (s storeAppBinaryDo) Take() (*model.StoreAppBinary, error) {
+func (s storeAppBinaryDo) Take() (*modelgebura.StoreAppBinary, error) {
 	if result, err := s.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreAppBinary), nil
+		return result.(*modelgebura.StoreAppBinary), nil
 	}
 }
 
-func (s storeAppBinaryDo) Last() (*model.StoreAppBinary, error) {
+func (s storeAppBinaryDo) Last() (*modelgebura.StoreAppBinary, error) {
 	if result, err := s.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreAppBinary), nil
+		return result.(*modelgebura.StoreAppBinary), nil
 	}
 }
 
-func (s storeAppBinaryDo) Find() ([]*model.StoreAppBinary, error) {
+func (s storeAppBinaryDo) Find() ([]*modelgebura.StoreAppBinary, error) {
 	result, err := s.DO.Find()
-	return result.([]*model.StoreAppBinary), err
+	return result.([]*modelgebura.StoreAppBinary), err
 }
 
-func (s storeAppBinaryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.StoreAppBinary, err error) {
-	buf := make([]*model.StoreAppBinary, 0, batchSize)
+func (s storeAppBinaryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.StoreAppBinary, err error) {
+	buf := make([]*modelgebura.StoreAppBinary, 0, batchSize)
 	err = s.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -325,7 +353,7 @@ func (s storeAppBinaryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch i
 	return results, err
 }
 
-func (s storeAppBinaryDo) FindInBatches(result *[]*model.StoreAppBinary, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (s storeAppBinaryDo) FindInBatches(result *[]*modelgebura.StoreAppBinary, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return s.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -351,23 +379,23 @@ func (s storeAppBinaryDo) Preload(fields ...field.RelationField) IStoreAppBinary
 	return &s
 }
 
-func (s storeAppBinaryDo) FirstOrInit() (*model.StoreAppBinary, error) {
+func (s storeAppBinaryDo) FirstOrInit() (*modelgebura.StoreAppBinary, error) {
 	if result, err := s.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreAppBinary), nil
+		return result.(*modelgebura.StoreAppBinary), nil
 	}
 }
 
-func (s storeAppBinaryDo) FirstOrCreate() (*model.StoreAppBinary, error) {
+func (s storeAppBinaryDo) FirstOrCreate() (*modelgebura.StoreAppBinary, error) {
 	if result, err := s.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.StoreAppBinary), nil
+		return result.(*modelgebura.StoreAppBinary), nil
 	}
 }
 
-func (s storeAppBinaryDo) FindByPage(offset int, limit int) (result []*model.StoreAppBinary, count int64, err error) {
+func (s storeAppBinaryDo) FindByPage(offset int, limit int) (result []*modelgebura.StoreAppBinary, count int64, err error) {
 	result, err = s.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -396,7 +424,7 @@ func (s storeAppBinaryDo) Scan(result interface{}) (err error) {
 	return s.DO.Scan(result)
 }
 
-func (s storeAppBinaryDo) Delete(models ...*model.StoreAppBinary) (result gen.ResultInfo, err error) {
+func (s storeAppBinaryDo) Delete(models ...*modelgebura.StoreAppBinary) (result gen.ResultInfo, err error) {
 	return s.DO.Delete(models)
 }
 

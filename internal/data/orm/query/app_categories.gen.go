@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,7 +23,7 @@ func newAppCategory(db *gorm.DB, opts ...gen.DOOption) appCategory {
 	_appCategory := appCategory{}
 
 	_appCategory.appCategoryDo.UseDB(db, opts...)
-	_appCategory.appCategoryDo.UseModel(&model.AppCategory{})
+	_appCategory.appCategoryDo.UseModel(&modelgebura.AppCategory{})
 
 	tableName := _appCategory.appCategoryDo.TableName()
 	_appCategory.ALL = field.NewAsterisk(tableName)
@@ -32,36 +32,30 @@ func newAppCategory(db *gorm.DB, opts ...gen.DOOption) appCategory {
 	_appCategory.VersionNumber = field.NewUint64(tableName, "version_number")
 	_appCategory.VersionDate = field.NewTime(tableName, "version_date")
 	_appCategory.Name = field.NewString(tableName, "name")
-	_appCategory.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_appCategory.CreatedAt = field.NewTime(tableName, "created_at")
+	_appCategory.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_appCategory.AppAppCategories = appCategoryHasManyAppAppCategories{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("AppAppCategories", "model.AppAppCategory"),
+		RelationField: field.NewRelation("AppAppCategories", "modelgebura.AppAppCategory"),
 	}
 
 	_appCategory.Apps = appCategoryManyToManyApps{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("Apps", "model.App"),
+		RelationField: field.NewRelation("Apps", "modelgebura.App"),
 		User: struct {
 			field.RelationField
-			Creator struct {
-				field.RelationField
-			}
 			Sessions struct {
 				field.RelationField
-				User struct {
-					field.RelationField
-				}
 				Device struct {
 					field.RelationField
 					Sessions struct {
 						field.RelationField
 					}
-					App struct {
-						field.RelationField
-					}
+				}
+				User struct {
+					field.RelationField
 				}
 			}
 			Account struct {
@@ -70,160 +64,24 @@ func newAppCategory(db *gorm.DB, opts ...gen.DOOption) appCategory {
 					field.RelationField
 				}
 			}
-			App struct {
-				field.RelationField
-			}
-			FeedConfig struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				Feed struct {
-					field.RelationField
-					Config struct {
-						field.RelationField
-					}
-					Item struct {
-						field.RelationField
-						Feed struct {
-							field.RelationField
-						}
-						FeedItemCollections struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							NotifySource struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								FeedConfig struct {
-									field.RelationField
-								}
-								FeedItemCollection struct {
-									field.RelationField
-								}
-								NotifyFlows struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlowTargets struct {
-										field.RelationField
-									}
-									NotifyFlowSources struct {
-										field.RelationField
-									}
-									NotifyTargets struct {
-										field.RelationField
-										Owner struct {
-											field.RelationField
-										}
-										NotifyFlows struct {
-											field.RelationField
-										}
-									}
-									NotifySources struct {
-										field.RelationField
-									}
-								}
-							}
-							FeedItems struct {
-								field.RelationField
-							}
-						}
-					}
-				}
-				NotifySource struct {
-					field.RelationField
-				}
-				FeedActionSets struct {
-					field.RelationField
-					Owner struct {
-						field.RelationField
-					}
-					FeedConfigs struct {
-						field.RelationField
-					}
-				}
-			}
-			NotifySource struct {
-				field.RelationField
-			}
-			NotifyTarget struct {
-				field.RelationField
-			}
-			NotifyFlow struct {
-				field.RelationField
-			}
-			Image struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				File struct {
-					field.RelationField
-					Owner struct {
-						field.RelationField
-					}
-					Image struct {
-						field.RelationField
-					}
-				}
-			}
-			File struct {
-				field.RelationField
-			}
-			Tag struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-			}
-			PorterContext struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-			}
-			CreatedUser struct {
-				field.RelationField
-			}
 		}{
 			RelationField: field.NewRelation("Apps.User", "model.User"),
-			Creator: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Apps.User.Creator", "model.User"),
-			},
 			Sessions: struct {
 				field.RelationField
-				User struct {
-					field.RelationField
-				}
 				Device struct {
 					field.RelationField
 					Sessions struct {
 						field.RelationField
 					}
-					App struct {
-						field.RelationField
-					}
+				}
+				User struct {
+					field.RelationField
 				}
 			}{
 				RelationField: field.NewRelation("Apps.User.Sessions", "model.Session"),
-				User: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Apps.User.Sessions.User", "model.User"),
-				},
 				Device: struct {
 					field.RelationField
 					Sessions struct {
-						field.RelationField
-					}
-					App struct {
 						field.RelationField
 					}
 				}{
@@ -233,11 +91,11 @@ func newAppCategory(db *gorm.DB, opts ...gen.DOOption) appCategory {
 					}{
 						RelationField: field.NewRelation("Apps.User.Sessions.Device.Sessions", "model.Session"),
 					},
-					App: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("Apps.User.Sessions.Device.App", "model.App"),
-					},
+				},
+				User: struct {
+					field.RelationField
+				}{
+					RelationField: field.NewRelation("Apps.User.Sessions.User", "model.User"),
 				},
 			},
 			Account: struct {
@@ -253,530 +111,11 @@ func newAppCategory(db *gorm.DB, opts ...gen.DOOption) appCategory {
 					RelationField: field.NewRelation("Apps.User.Account.BoundUser", "model.User"),
 				},
 			},
-			App: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Apps.User.App", "model.App"),
-			},
-			FeedConfig: struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				Feed struct {
-					field.RelationField
-					Config struct {
-						field.RelationField
-					}
-					Item struct {
-						field.RelationField
-						Feed struct {
-							field.RelationField
-						}
-						FeedItemCollections struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							NotifySource struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								FeedConfig struct {
-									field.RelationField
-								}
-								FeedItemCollection struct {
-									field.RelationField
-								}
-								NotifyFlows struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlowTargets struct {
-										field.RelationField
-									}
-									NotifyFlowSources struct {
-										field.RelationField
-									}
-									NotifyTargets struct {
-										field.RelationField
-										Owner struct {
-											field.RelationField
-										}
-										NotifyFlows struct {
-											field.RelationField
-										}
-									}
-									NotifySources struct {
-										field.RelationField
-									}
-								}
-							}
-							FeedItems struct {
-								field.RelationField
-							}
-						}
-					}
-				}
-				NotifySource struct {
-					field.RelationField
-				}
-				FeedActionSets struct {
-					field.RelationField
-					Owner struct {
-						field.RelationField
-					}
-					FeedConfigs struct {
-						field.RelationField
-					}
-				}
-			}{
-				RelationField: field.NewRelation("Apps.User.FeedConfig", "model.FeedConfig"),
-				Owner: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Apps.User.FeedConfig.Owner", "model.User"),
-				},
-				Feed: struct {
-					field.RelationField
-					Config struct {
-						field.RelationField
-					}
-					Item struct {
-						field.RelationField
-						Feed struct {
-							field.RelationField
-						}
-						FeedItemCollections struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							NotifySource struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								FeedConfig struct {
-									field.RelationField
-								}
-								FeedItemCollection struct {
-									field.RelationField
-								}
-								NotifyFlows struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlowTargets struct {
-										field.RelationField
-									}
-									NotifyFlowSources struct {
-										field.RelationField
-									}
-									NotifyTargets struct {
-										field.RelationField
-										Owner struct {
-											field.RelationField
-										}
-										NotifyFlows struct {
-											field.RelationField
-										}
-									}
-									NotifySources struct {
-										field.RelationField
-									}
-								}
-							}
-							FeedItems struct {
-								field.RelationField
-							}
-						}
-					}
-				}{
-					RelationField: field.NewRelation("Apps.User.FeedConfig.Feed", "model.Feed"),
-					Config: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Config", "model.FeedConfig"),
-					},
-					Item: struct {
-						field.RelationField
-						Feed struct {
-							field.RelationField
-						}
-						FeedItemCollections struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							NotifySource struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								FeedConfig struct {
-									field.RelationField
-								}
-								FeedItemCollection struct {
-									field.RelationField
-								}
-								NotifyFlows struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlowTargets struct {
-										field.RelationField
-									}
-									NotifyFlowSources struct {
-										field.RelationField
-									}
-									NotifyTargets struct {
-										field.RelationField
-										Owner struct {
-											field.RelationField
-										}
-										NotifyFlows struct {
-											field.RelationField
-										}
-									}
-									NotifySources struct {
-										field.RelationField
-									}
-								}
-							}
-							FeedItems struct {
-								field.RelationField
-							}
-						}
-					}{
-						RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item", "model.FeedItem"),
-						Feed: struct {
-							field.RelationField
-						}{
-							RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.Feed", "model.Feed"),
-						},
-						FeedItemCollections: struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							NotifySource struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								FeedConfig struct {
-									field.RelationField
-								}
-								FeedItemCollection struct {
-									field.RelationField
-								}
-								NotifyFlows struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlowTargets struct {
-										field.RelationField
-									}
-									NotifyFlowSources struct {
-										field.RelationField
-									}
-									NotifyTargets struct {
-										field.RelationField
-										Owner struct {
-											field.RelationField
-										}
-										NotifyFlows struct {
-											field.RelationField
-										}
-									}
-									NotifySources struct {
-										field.RelationField
-									}
-								}
-							}
-							FeedItems struct {
-								field.RelationField
-							}
-						}{
-							RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections", "model.FeedItemCollection"),
-							Owner: struct {
-								field.RelationField
-							}{
-								RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.Owner", "model.User"),
-							},
-							NotifySource: struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								FeedConfig struct {
-									field.RelationField
-								}
-								FeedItemCollection struct {
-									field.RelationField
-								}
-								NotifyFlows struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlowTargets struct {
-										field.RelationField
-									}
-									NotifyFlowSources struct {
-										field.RelationField
-									}
-									NotifyTargets struct {
-										field.RelationField
-										Owner struct {
-											field.RelationField
-										}
-										NotifyFlows struct {
-											field.RelationField
-										}
-									}
-									NotifySources struct {
-										field.RelationField
-									}
-								}
-							}{
-								RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource", "model.NotifySource"),
-								Owner: struct {
-									field.RelationField
-								}{
-									RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.Owner", "model.User"),
-								},
-								FeedConfig: struct {
-									field.RelationField
-								}{
-									RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.FeedConfig", "model.FeedConfig"),
-								},
-								FeedItemCollection: struct {
-									field.RelationField
-								}{
-									RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.FeedItemCollection", "model.FeedItemCollection"),
-								},
-								NotifyFlows: struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlowTargets struct {
-										field.RelationField
-									}
-									NotifyFlowSources struct {
-										field.RelationField
-									}
-									NotifyTargets struct {
-										field.RelationField
-										Owner struct {
-											field.RelationField
-										}
-										NotifyFlows struct {
-											field.RelationField
-										}
-									}
-									NotifySources struct {
-										field.RelationField
-									}
-								}{
-									RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows", "model.NotifyFlow"),
-									Owner: struct {
-										field.RelationField
-									}{
-										RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.Owner", "model.User"),
-									},
-									NotifyFlowTargets: struct {
-										field.RelationField
-									}{
-										RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyFlowTargets", "model.NotifyFlowTarget"),
-									},
-									NotifyFlowSources: struct {
-										field.RelationField
-									}{
-										RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyFlowSources", "model.NotifyFlowSource"),
-									},
-									NotifyTargets: struct {
-										field.RelationField
-										Owner struct {
-											field.RelationField
-										}
-										NotifyFlows struct {
-											field.RelationField
-										}
-									}{
-										RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyTargets", "model.NotifyTarget"),
-										Owner: struct {
-											field.RelationField
-										}{
-											RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyTargets.Owner", "model.User"),
-										},
-										NotifyFlows: struct {
-											field.RelationField
-										}{
-											RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyTargets.NotifyFlows", "model.NotifyFlow"),
-										},
-									},
-									NotifySources: struct {
-										field.RelationField
-									}{
-										RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifySources", "model.NotifySource"),
-									},
-								},
-							},
-							FeedItems: struct {
-								field.RelationField
-							}{
-								RelationField: field.NewRelation("Apps.User.FeedConfig.Feed.Item.FeedItemCollections.FeedItems", "model.FeedItem"),
-							},
-						},
-					},
-				},
-				NotifySource: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Apps.User.FeedConfig.NotifySource", "model.NotifySource"),
-				},
-				FeedActionSets: struct {
-					field.RelationField
-					Owner struct {
-						field.RelationField
-					}
-					FeedConfigs struct {
-						field.RelationField
-					}
-				}{
-					RelationField: field.NewRelation("Apps.User.FeedConfig.FeedActionSets", "model.FeedActionSet"),
-					Owner: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("Apps.User.FeedConfig.FeedActionSets.Owner", "model.User"),
-					},
-					FeedConfigs: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("Apps.User.FeedConfig.FeedActionSets.FeedConfigs", "model.FeedConfig"),
-					},
-				},
-			},
-			NotifySource: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Apps.User.NotifySource", "model.NotifySource"),
-			},
-			NotifyTarget: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Apps.User.NotifyTarget", "model.NotifyTarget"),
-			},
-			NotifyFlow: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Apps.User.NotifyFlow", "model.NotifyFlow"),
-			},
-			Image: struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				File struct {
-					field.RelationField
-					Owner struct {
-						field.RelationField
-					}
-					Image struct {
-						field.RelationField
-					}
-				}
-			}{
-				RelationField: field.NewRelation("Apps.User.Image", "model.Image"),
-				Owner: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Apps.User.Image.Owner", "model.User"),
-				},
-				File: struct {
-					field.RelationField
-					Owner struct {
-						field.RelationField
-					}
-					Image struct {
-						field.RelationField
-					}
-				}{
-					RelationField: field.NewRelation("Apps.User.Image.File", "model.File"),
-					Owner: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("Apps.User.Image.File.Owner", "model.User"),
-					},
-					Image: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("Apps.User.Image.File.Image", "model.Image"),
-					},
-				},
-			},
-			File: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Apps.User.File", "model.File"),
-			},
-			Tag: struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-			}{
-				RelationField: field.NewRelation("Apps.User.Tag", "model.Tag"),
-				Owner: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Apps.User.Tag.Owner", "model.User"),
-				},
-			},
-			PorterContext: struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-			}{
-				RelationField: field.NewRelation("Apps.User.PorterContext", "model.PorterContext"),
-				Owner: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Apps.User.PorterContext.Owner", "model.User"),
-				},
-			},
-			CreatedUser: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Apps.User.CreatedUser", "model.User"),
-			},
-		},
-		Device: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("Apps.Device", "model.Device"),
 		},
 		AppRunTime: struct {
 			field.RelationField
-			App struct {
-				field.RelationField
-			}
 		}{
-			RelationField: field.NewRelation("Apps.AppRunTime", "model.AppRunTime"),
-			App: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Apps.AppRunTime.App", "model.App"),
-			},
+			RelationField: field.NewRelation("Apps.AppRunTime", "modelgebura.AppRunTime"),
 		},
 		AppCategories: struct {
 			field.RelationField
@@ -787,16 +126,16 @@ func newAppCategory(db *gorm.DB, opts ...gen.DOOption) appCategory {
 				field.RelationField
 			}
 		}{
-			RelationField: field.NewRelation("Apps.AppCategories", "model.AppCategory"),
+			RelationField: field.NewRelation("Apps.AppCategories", "modelgebura.AppCategory"),
 			AppAppCategories: struct {
 				field.RelationField
 			}{
-				RelationField: field.NewRelation("Apps.AppCategories.AppAppCategories", "model.AppAppCategory"),
+				RelationField: field.NewRelation("Apps.AppCategories.AppAppCategories", "modelgebura.AppAppCategory"),
 			},
 			Apps: struct {
 				field.RelationField
 			}{
-				RelationField: field.NewRelation("Apps.AppCategories.Apps", "model.App"),
+				RelationField: field.NewRelation("Apps.AppCategories.Apps", "modelgebura.App"),
 			},
 		},
 	}
@@ -815,8 +154,8 @@ type appCategory struct {
 	VersionNumber    field.Uint64
 	VersionDate      field.Time
 	Name             field.String
-	UpdatedAt        field.Time
 	CreatedAt        field.Time
+	UpdatedAt        field.Time
 	AppAppCategories appCategoryHasManyAppAppCategories
 
 	Apps appCategoryManyToManyApps
@@ -841,8 +180,8 @@ func (a *appCategory) updateTableName(table string) *appCategory {
 	a.VersionNumber = field.NewUint64(table, "version_number")
 	a.VersionDate = field.NewTime(table, "version_date")
 	a.Name = field.NewString(table, "name")
-	a.UpdatedAt = field.NewTime(table, "updated_at")
 	a.CreatedAt = field.NewTime(table, "created_at")
+	a.UpdatedAt = field.NewTime(table, "updated_at")
 
 	a.fillFieldMap()
 
@@ -875,8 +214,8 @@ func (a *appCategory) fillFieldMap() {
 	a.fieldMap["version_number"] = a.VersionNumber
 	a.fieldMap["version_date"] = a.VersionDate
 	a.fieldMap["name"] = a.Name
-	a.fieldMap["updated_at"] = a.UpdatedAt
 	a.fieldMap["created_at"] = a.CreatedAt
+	a.fieldMap["updated_at"] = a.UpdatedAt
 
 }
 
@@ -925,7 +264,7 @@ func (a appCategoryHasManyAppAppCategories) Session(session *gorm.Session) *appC
 	return &a
 }
 
-func (a appCategoryHasManyAppAppCategories) Model(m *model.AppCategory) *appCategoryHasManyAppAppCategoriesTx {
+func (a appCategoryHasManyAppAppCategories) Model(m *modelgebura.AppCategory) *appCategoryHasManyAppAppCategoriesTx {
 	return &appCategoryHasManyAppAppCategoriesTx{a.db.Model(m).Association(a.Name())}
 }
 
@@ -936,11 +275,11 @@ func (a appCategoryHasManyAppAppCategories) Unscoped() *appCategoryHasManyAppApp
 
 type appCategoryHasManyAppAppCategoriesTx struct{ tx *gorm.Association }
 
-func (a appCategoryHasManyAppAppCategoriesTx) Find() (result []*model.AppAppCategory, err error) {
+func (a appCategoryHasManyAppAppCategoriesTx) Find() (result []*modelgebura.AppAppCategory, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a appCategoryHasManyAppAppCategoriesTx) Append(values ...*model.AppAppCategory) (err error) {
+func (a appCategoryHasManyAppAppCategoriesTx) Append(values ...*modelgebura.AppAppCategory) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -948,7 +287,7 @@ func (a appCategoryHasManyAppAppCategoriesTx) Append(values ...*model.AppAppCate
 	return a.tx.Append(targetValues...)
 }
 
-func (a appCategoryHasManyAppAppCategoriesTx) Replace(values ...*model.AppAppCategory) (err error) {
+func (a appCategoryHasManyAppAppCategoriesTx) Replace(values ...*modelgebura.AppAppCategory) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -956,7 +295,7 @@ func (a appCategoryHasManyAppAppCategoriesTx) Replace(values ...*model.AppAppCat
 	return a.tx.Replace(targetValues...)
 }
 
-func (a appCategoryHasManyAppAppCategoriesTx) Delete(values ...*model.AppAppCategory) (err error) {
+func (a appCategoryHasManyAppAppCategoriesTx) Delete(values ...*modelgebura.AppAppCategory) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -984,22 +323,16 @@ type appCategoryManyToManyApps struct {
 
 	User struct {
 		field.RelationField
-		Creator struct {
-			field.RelationField
-		}
 		Sessions struct {
 			field.RelationField
-			User struct {
-				field.RelationField
-			}
 			Device struct {
 				field.RelationField
 				Sessions struct {
 					field.RelationField
 				}
-				App struct {
-					field.RelationField
-				}
+			}
+			User struct {
+				field.RelationField
 			}
 		}
 		Account struct {
@@ -1008,135 +341,9 @@ type appCategoryManyToManyApps struct {
 				field.RelationField
 			}
 		}
-		App struct {
-			field.RelationField
-		}
-		FeedConfig struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-			Feed struct {
-				field.RelationField
-				Config struct {
-					field.RelationField
-				}
-				Item struct {
-					field.RelationField
-					Feed struct {
-						field.RelationField
-					}
-					FeedItemCollections struct {
-						field.RelationField
-						Owner struct {
-							field.RelationField
-						}
-						NotifySource struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							FeedConfig struct {
-								field.RelationField
-							}
-							FeedItemCollection struct {
-								field.RelationField
-							}
-							NotifyFlows struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								NotifyFlowTargets struct {
-									field.RelationField
-								}
-								NotifyFlowSources struct {
-									field.RelationField
-								}
-								NotifyTargets struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlows struct {
-										field.RelationField
-									}
-								}
-								NotifySources struct {
-									field.RelationField
-								}
-							}
-						}
-						FeedItems struct {
-							field.RelationField
-						}
-					}
-				}
-			}
-			NotifySource struct {
-				field.RelationField
-			}
-			FeedActionSets struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				FeedConfigs struct {
-					field.RelationField
-				}
-			}
-		}
-		NotifySource struct {
-			field.RelationField
-		}
-		NotifyTarget struct {
-			field.RelationField
-		}
-		NotifyFlow struct {
-			field.RelationField
-		}
-		Image struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-			File struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				Image struct {
-					field.RelationField
-				}
-			}
-		}
-		File struct {
-			field.RelationField
-		}
-		Tag struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-		}
-		PorterContext struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-		}
-		CreatedUser struct {
-			field.RelationField
-		}
-	}
-	Device struct {
-		field.RelationField
 	}
 	AppRunTime struct {
 		field.RelationField
-		App struct {
-			field.RelationField
-		}
 	}
 	AppCategories struct {
 		field.RelationField
@@ -1172,7 +379,7 @@ func (a appCategoryManyToManyApps) Session(session *gorm.Session) *appCategoryMa
 	return &a
 }
 
-func (a appCategoryManyToManyApps) Model(m *model.AppCategory) *appCategoryManyToManyAppsTx {
+func (a appCategoryManyToManyApps) Model(m *modelgebura.AppCategory) *appCategoryManyToManyAppsTx {
 	return &appCategoryManyToManyAppsTx{a.db.Model(m).Association(a.Name())}
 }
 
@@ -1183,11 +390,11 @@ func (a appCategoryManyToManyApps) Unscoped() *appCategoryManyToManyApps {
 
 type appCategoryManyToManyAppsTx struct{ tx *gorm.Association }
 
-func (a appCategoryManyToManyAppsTx) Find() (result []*model.App, err error) {
+func (a appCategoryManyToManyAppsTx) Find() (result []*modelgebura.App, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a appCategoryManyToManyAppsTx) Append(values ...*model.App) (err error) {
+func (a appCategoryManyToManyAppsTx) Append(values ...*modelgebura.App) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -1195,7 +402,7 @@ func (a appCategoryManyToManyAppsTx) Append(values ...*model.App) (err error) {
 	return a.tx.Append(targetValues...)
 }
 
-func (a appCategoryManyToManyAppsTx) Replace(values ...*model.App) (err error) {
+func (a appCategoryManyToManyAppsTx) Replace(values ...*modelgebura.App) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -1203,7 +410,7 @@ func (a appCategoryManyToManyAppsTx) Replace(values ...*model.App) (err error) {
 	return a.tx.Replace(targetValues...)
 }
 
-func (a appCategoryManyToManyAppsTx) Delete(values ...*model.App) (err error) {
+func (a appCategoryManyToManyAppsTx) Delete(values ...*modelgebura.App) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -1255,17 +462,17 @@ type IAppCategoryDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IAppCategoryDo
 	Unscoped() IAppCategoryDo
-	Create(values ...*model.AppCategory) error
-	CreateInBatches(values []*model.AppCategory, batchSize int) error
-	Save(values ...*model.AppCategory) error
-	First() (*model.AppCategory, error)
-	Take() (*model.AppCategory, error)
-	Last() (*model.AppCategory, error)
-	Find() ([]*model.AppCategory, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.AppCategory, err error)
-	FindInBatches(result *[]*model.AppCategory, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelgebura.AppCategory) error
+	CreateInBatches(values []*modelgebura.AppCategory, batchSize int) error
+	Save(values ...*modelgebura.AppCategory) error
+	First() (*modelgebura.AppCategory, error)
+	Take() (*modelgebura.AppCategory, error)
+	Last() (*modelgebura.AppCategory, error)
+	Find() ([]*modelgebura.AppCategory, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.AppCategory, err error)
+	FindInBatches(result *[]*modelgebura.AppCategory, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.AppCategory) (info gen.ResultInfo, err error)
+	Delete(...*modelgebura.AppCategory) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -1277,9 +484,9 @@ type IAppCategoryDo interface {
 	Assign(attrs ...field.AssignExpr) IAppCategoryDo
 	Joins(fields ...field.RelationField) IAppCategoryDo
 	Preload(fields ...field.RelationField) IAppCategoryDo
-	FirstOrInit() (*model.AppCategory, error)
-	FirstOrCreate() (*model.AppCategory, error)
-	FindByPage(offset int, limit int) (result []*model.AppCategory, count int64, err error)
+	FirstOrInit() (*modelgebura.AppCategory, error)
+	FirstOrCreate() (*modelgebura.AppCategory, error)
+	FindByPage(offset int, limit int) (result []*modelgebura.AppCategory, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -1381,57 +588,57 @@ func (a appCategoryDo) Unscoped() IAppCategoryDo {
 	return a.withDO(a.DO.Unscoped())
 }
 
-func (a appCategoryDo) Create(values ...*model.AppCategory) error {
+func (a appCategoryDo) Create(values ...*modelgebura.AppCategory) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Create(values)
 }
 
-func (a appCategoryDo) CreateInBatches(values []*model.AppCategory, batchSize int) error {
+func (a appCategoryDo) CreateInBatches(values []*modelgebura.AppCategory, batchSize int) error {
 	return a.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (a appCategoryDo) Save(values ...*model.AppCategory) error {
+func (a appCategoryDo) Save(values ...*modelgebura.AppCategory) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Save(values)
 }
 
-func (a appCategoryDo) First() (*model.AppCategory, error) {
+func (a appCategoryDo) First() (*modelgebura.AppCategory, error) {
 	if result, err := a.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppCategory), nil
+		return result.(*modelgebura.AppCategory), nil
 	}
 }
 
-func (a appCategoryDo) Take() (*model.AppCategory, error) {
+func (a appCategoryDo) Take() (*modelgebura.AppCategory, error) {
 	if result, err := a.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppCategory), nil
+		return result.(*modelgebura.AppCategory), nil
 	}
 }
 
-func (a appCategoryDo) Last() (*model.AppCategory, error) {
+func (a appCategoryDo) Last() (*modelgebura.AppCategory, error) {
 	if result, err := a.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppCategory), nil
+		return result.(*modelgebura.AppCategory), nil
 	}
 }
 
-func (a appCategoryDo) Find() ([]*model.AppCategory, error) {
+func (a appCategoryDo) Find() ([]*modelgebura.AppCategory, error) {
 	result, err := a.DO.Find()
-	return result.([]*model.AppCategory), err
+	return result.([]*modelgebura.AppCategory), err
 }
 
-func (a appCategoryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.AppCategory, err error) {
-	buf := make([]*model.AppCategory, 0, batchSize)
+func (a appCategoryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.AppCategory, err error) {
+	buf := make([]*modelgebura.AppCategory, 0, batchSize)
 	err = a.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -1439,7 +646,7 @@ func (a appCategoryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int)
 	return results, err
 }
 
-func (a appCategoryDo) FindInBatches(result *[]*model.AppCategory, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (a appCategoryDo) FindInBatches(result *[]*modelgebura.AppCategory, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return a.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -1465,23 +672,23 @@ func (a appCategoryDo) Preload(fields ...field.RelationField) IAppCategoryDo {
 	return &a
 }
 
-func (a appCategoryDo) FirstOrInit() (*model.AppCategory, error) {
+func (a appCategoryDo) FirstOrInit() (*modelgebura.AppCategory, error) {
 	if result, err := a.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppCategory), nil
+		return result.(*modelgebura.AppCategory), nil
 	}
 }
 
-func (a appCategoryDo) FirstOrCreate() (*model.AppCategory, error) {
+func (a appCategoryDo) FirstOrCreate() (*modelgebura.AppCategory, error) {
 	if result, err := a.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppCategory), nil
+		return result.(*modelgebura.AppCategory), nil
 	}
 }
 
-func (a appCategoryDo) FindByPage(offset int, limit int) (result []*model.AppCategory, count int64, err error) {
+func (a appCategoryDo) FindByPage(offset int, limit int) (result []*modelgebura.AppCategory, count int64, err error) {
 	result, err = a.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -1510,7 +717,7 @@ func (a appCategoryDo) Scan(result interface{}) (err error) {
 	return a.DO.Scan(result)
 }
 
-func (a appCategoryDo) Delete(models ...*model.AppCategory) (result gen.ResultInfo, err error) {
+func (a appCategoryDo) Delete(models ...*modelgebura.AppCategory) (result gen.ResultInfo, err error) {
 	return a.DO.Delete(models)
 }
 

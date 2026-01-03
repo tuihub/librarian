@@ -2,13 +2,13 @@ package data
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/orm/model"
 	"github.com/tuihub/librarian/internal/data/orm/query"
 	libmodel "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/internal/model/modelyesod"
 
 	"gorm.io/gorm/clause"
 )
@@ -29,14 +29,8 @@ func (n *NetzachRepo) CreateNotifyTarget(
 	t *modelnetzach.NotifyTarget,
 ) error {
 	q := query.Use(n.data.db).NotifyTarget
-	return q.WithContext(ctx).Create(&model.NotifyTarget{
-		ID:          t.ID,
-		OwnerID:     id,
-		Name:        t.Name,
-		Description: t.Description,
-		Destination: t.Destination,
-		Status:      converter.ToORMNotifyTargetStatus(t.Status),
-	})
+	t.OwnerID = id
+	return q.WithContext(ctx).Create(t)
 }
 
 func (n *NetzachRepo) UpdateNotifyTarget(
@@ -61,7 +55,7 @@ func (n *NetzachRepo) UpdateNotifyTarget(
 		updates["destination"] = t.Destination
 	}
 	if t.Status != modelnetzach.NotifyTargetStatusUnspecified {
-		updates["status"] = converter.ToORMNotifyTargetStatus(t.Status)
+		updates["status"] = t.Status
 	}
 
 	if len(updates) == 0 {
@@ -90,9 +84,9 @@ func (n *NetzachRepo) ListNotifyTargets(
 		u = u.Where(q.ID.In(castIDs...))
 	}
 	if len(statuses) > 0 {
-		s := make([]string, len(statuses))
+		s := make([]driver.Valuer, len(statuses))
 		for i, v := range statuses {
-			s[i] = converter.ToORMNotifyTargetStatus(v)
+			s[i] = v
 		}
 		u = u.Where(q.Status.In(s...))
 	}
@@ -107,7 +101,7 @@ func (n *NetzachRepo) ListNotifyTargets(
 		return nil, 0, err
 	}
 
-	return converter.ToBizNotifyTargetList(res), total, nil
+	return res, total, nil
 }
 
 func (n *NetzachRepo) GetNotifyTarget(ctx context.Context, id libmodel.InternalID) (*modelnetzach.NotifyTarget, error) {
@@ -116,7 +110,7 @@ func (n *NetzachRepo) GetNotifyTarget(ctx context.Context, id libmodel.InternalI
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizNotifyTarget(res), nil
+	return res, nil
 }
 
 func (n *NetzachRepo) CreateNotifyFlow(
@@ -125,51 +119,16 @@ func (n *NetzachRepo) CreateNotifyFlow(
 	f *modelnetzach.NotifyFlow,
 ) error {
 	return n.data.WithTx(ctx, func(tx *query.Query) error {
-		// Create Flow
-		if err := tx.NotifyFlow.WithContext(ctx).Create(&model.NotifyFlow{
-			ID:          f.ID,
-			OwnerID:     userID,
-			Name:        f.Name,
-			Description: f.Description,
-			Status:      converter.ToORMNotifySourceStatus(f.Status),
-		}); err != nil {
+		// Create Flow (includes Sources and Targets via GORM associations if set)
+		f.OwnerID = userID
+		if err := tx.NotifyFlow.WithContext(ctx).Create(f); err != nil {
 			return err
 		}
 
-		// Create Sources
-		if len(f.Sources) > 0 {
-			flowSources := make([]*model.NotifyFlowSource, len(f.Sources))
-			for i, source := range f.Sources {
-				flowSources[i] = &model.NotifyFlowSource{
-					NotifyFlowID:          f.ID,
-					NotifySourceID:        source.SourceID,
-					FilterExcludeKeywords: source.Filter.ExcludeKeywords,
-					FilterIncludeKeywords: source.Filter.IncludeKeywords,
-				}
-			}
-			if err := tx.NotifyFlowSource.WithContext(ctx).Create(flowSources...); err != nil {
-				return err
-			}
-		}
-
-		// Create Targets
-		if len(f.Targets) > 0 {
-			flowTargets := make([]*model.NotifyFlowTarget, len(f.Targets))
-			for i, target := range f.Targets {
-				flowTargets[i] = &model.NotifyFlowTarget{
-					NotifyFlowID:          f.ID,
-					NotifyTargetID:        target.TargetID,
-					FilterExcludeKeywords: target.Filter.ExcludeKeywords,
-					FilterIncludeKeywords: target.Filter.IncludeKeywords,
-				}
-			}
-			if err := tx.NotifyFlowTarget.WithContext(ctx).Create(flowTargets...); err != nil {
-				return err
-			}
-		}
-
 		// Create FeedItemCollection
-		if err := tx.FeedItemCollection.WithContext(ctx).Create(&model.FeedItemCollection{
+		// NotifyFlow ID is same as FeedItemCollection ID?
+		// Yes, logic implies it.
+		if err := tx.FeedItemCollection.WithContext(ctx).Create(&modelyesod.FeedItemCollection{
 			ID:          f.ID,
 			UserID:      userID,
 			Name:        f.Name,
@@ -183,7 +142,8 @@ func (n *NetzachRepo) CreateNotifyFlow(
 	})
 }
 
-func (n *NetzachRepo) UpdateNotifyFlow( //nolint:gocognit // complex logic
+//nolint:gocognit // complex logic
+func (n *NetzachRepo) UpdateNotifyFlow(
 	ctx context.Context,
 	userID libmodel.InternalID,
 	f *modelnetzach.NotifyFlow,
@@ -200,7 +160,7 @@ func (n *NetzachRepo) UpdateNotifyFlow( //nolint:gocognit // complex logic
 			updates["description"] = f.Description
 		}
 		if f.Status != modelnetzach.NotifyFlowStatusUnspecified {
-			updates["status"] = converter.ToORMNotifySourceStatus(f.Status)
+			updates["status"] = f.Status
 		}
 
 		if len(updates) > 0 {
@@ -214,18 +174,11 @@ func (n *NetzachRepo) UpdateNotifyFlow( //nolint:gocognit // complex logic
 			if _, err := qs.WithContext(ctx).Where(qs.NotifyFlowID.Eq(int64(f.ID))).Delete(); err != nil {
 				return err
 			}
-
-			flowSources := make([]*model.NotifyFlowSource, len(f.Sources))
-			for i, source := range f.Sources {
-				flowSources[i] = &model.NotifyFlowSource{
-					NotifyFlowID:          f.ID,
-					NotifySourceID:        source.SourceID,
-					FilterExcludeKeywords: source.Filter.ExcludeKeywords,
-					FilterIncludeKeywords: source.Filter.IncludeKeywords,
+			if len(f.Sources) > 0 {
+				for _, s := range f.Sources {
+					s.NotifyFlowID = f.ID // Ensure ID is set
 				}
-			}
-			if len(flowSources) > 0 {
-				if err := qs.WithContext(ctx).Create(flowSources...); err != nil {
+				if err := qs.WithContext(ctx).Create(f.Sources...); err != nil {
 					return err
 				}
 			}
@@ -236,18 +189,11 @@ func (n *NetzachRepo) UpdateNotifyFlow( //nolint:gocognit // complex logic
 			if _, err := qt.WithContext(ctx).Where(qt.NotifyFlowID.Eq(int64(f.ID))).Delete(); err != nil {
 				return err
 			}
-
-			flowTargets := make([]*model.NotifyFlowTarget, len(f.Targets))
-			for i, target := range f.Targets {
-				flowTargets[i] = &model.NotifyFlowTarget{
-					NotifyFlowID:          f.ID,
-					NotifyTargetID:        target.TargetID,
-					FilterExcludeKeywords: target.Filter.ExcludeKeywords,
-					FilterIncludeKeywords: target.Filter.IncludeKeywords,
+			if len(f.Targets) > 0 {
+				for _, t := range f.Targets {
+					t.NotifyFlowID = f.ID
 				}
-			}
-			if len(flowTargets) > 0 {
-				if err := qt.WithContext(ctx).Create(flowTargets...); err != nil {
+				if err := qt.WithContext(ctx).Create(f.Targets...); err != nil {
 					return err
 				}
 			}
@@ -278,8 +224,8 @@ func (n *NetzachRepo) ListNotifyFlows(
 		return nil, 0, err
 	}
 
-	res, err := u.Preload(q.NotifySources).
-		Preload(q.NotifyTargets).
+	res, err := u.Preload(q.Sources).
+		Preload(q.Targets).
 		Limit(paging.ToLimit()).
 		Offset(paging.ToOffset()).
 		Find()
@@ -287,69 +233,20 @@ func (n *NetzachRepo) ListNotifyFlows(
 		return nil, 0, err
 	}
 
-	bizFlows := make([]*modelnetzach.NotifyFlow, len(res))
-	for i, flow := range res {
-		bizFlows[i] = &modelnetzach.NotifyFlow{
-			ID:          flow.ID,
-			Name:        flow.Name,
-			Description: flow.Description,
-			Status:      converter.ToBizNotifyFlowStatus(flow.Status),
-			Sources:     nil,
-			Targets:     nil,
-		}
-		n.fillFlowDetails(ctx, bizFlows[i])
-	}
-
-	return bizFlows, total, nil
-}
-
-func (n *NetzachRepo) fillFlowDetails(ctx context.Context, f *modelnetzach.NotifyFlow) {
-	// Fetch sources
-	q := query.Use(n.data.db)
-	qs := q.NotifyFlowSource
-	sources, _ := qs.WithContext(ctx).Where(qs.NotifyFlowID.Eq(int64(f.ID))).Find()
-	f.Sources = make([]*modelnetzach.NotifyFlowSource, len(sources))
-	for i, s := range sources {
-		f.Sources[i] = &modelnetzach.NotifyFlowSource{
-			SourceID: s.NotifySourceID,
-			Filter: &modelnetzach.NotifyFilter{
-				ExcludeKeywords: s.FilterExcludeKeywords,
-				IncludeKeywords: s.FilterIncludeKeywords,
-			},
-		}
-	}
-
-	qt := q.NotifyFlowTarget
-	targets, _ := qt.WithContext(ctx).Where(qt.NotifyFlowID.Eq(int64(f.ID))).Find()
-	f.Targets = make([]*modelnetzach.NotifyFlowTarget, len(targets))
-	for i, t := range targets {
-		f.Targets[i] = &modelnetzach.NotifyFlowTarget{
-			TargetID: t.NotifyTargetID,
-			Filter: &modelnetzach.NotifyFilter{
-				ExcludeKeywords: t.FilterExcludeKeywords,
-				IncludeKeywords: t.FilterIncludeKeywords,
-			},
-		}
-	}
+	return res, total, nil
 }
 
 func (n *NetzachRepo) GetNotifyFlow(ctx context.Context, id libmodel.InternalID) (*modelnetzach.NotifyFlow, error) {
 	q := query.Use(n.data.db).NotifyFlow
-	res, err := q.WithContext(ctx).Where(q.ID.Eq(int64(id))).First()
+	res, err := q.WithContext(ctx).
+		Where(q.ID.Eq(int64(id))).
+		Preload(q.Sources).
+		Preload(q.Targets).
+		First()
 	if err != nil {
 		return nil, err
 	}
-
-	flow := &modelnetzach.NotifyFlow{
-		ID:          res.ID,
-		Name:        res.Name,
-		Description: res.Description,
-		Status:      converter.ToBizNotifyFlowStatus(res.Status),
-		Sources:     nil,
-		Targets:     nil,
-	}
-	n.fillFlowDetails(ctx, flow)
-	return flow, nil
+	return res, nil
 }
 
 func (n *NetzachRepo) GetNotifyFlowIDsWithFeed(
@@ -383,22 +280,14 @@ func (n *NetzachRepo) UpsertSystemNotification(
 		notification.Content = fmt.Sprintf("%s\n%s", old.Content, notification.Content)
 	}
 
-	sysNotif := &model.SystemNotification{
-		ID:      notification.ID,
-		Type:    converter.ToORMSystemNotificationType(notification.Type),
-		Level:   converter.ToORMSystemNotificationLevel(notification.Level),
-		Status:  converter.ToORMSystemNotificationStatus(notification.Status),
-		Title:   notification.Title,
-		Content: notification.Content,
-	}
 	if notification.Type == modelnetzach.SystemNotificationTypeUser {
-		sysNotif.UserID = userID
+		notification.UserID = userID
 	}
 
 	return q.WithContext(ctx).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "id"}},
 		DoUpdates: clause.AssignmentColumns([]string{"type", "level", "status", "title", "content", "updated_at"}),
-	}).Create(sysNotif)
+	}).Create(notification)
 }
 
 func (n *NetzachRepo) ListSystemNotifications(
@@ -410,29 +299,29 @@ func (n *NetzachRepo) ListSystemNotifications(
 	statuses []modelnetzach.SystemNotificationStatus,
 ) ([]*modelnetzach.SystemNotification, int64, error) {
 	q := query.Use(n.data.db).SystemNotification
-	u := q.WithContext(ctx).Order(q.UpdatedAt.Desc())
+	u := q.WithContext(ctx).Order(q.UpdateTime.Desc())
 
 	if userID != nil {
 		u = u.Where(q.UserID.Eq(int64(*userID)))
 	}
 	if len(types) > 0 {
-		s := make([]string, len(types))
+		t := make([]driver.Valuer, len(types))
 		for i, v := range types {
-			s[i] = converter.ToORMSystemNotificationType(v)
+			t[i] = v
 		}
-		u = u.Where(q.Type.In(s...))
+		u = u.Where(q.Type.In(t...))
 	}
 	if len(levels) > 0 {
-		s := make([]string, len(levels))
+		l := make([]driver.Valuer, len(levels))
 		for i, v := range levels {
-			s[i] = converter.ToORMSystemNotificationLevel(v)
+			l[i] = v
 		}
-		u = u.Where(q.Level.In(s...))
+		u = u.Where(q.Level.In(l...))
 	}
 	if len(statuses) > 0 {
-		s := make([]string, len(statuses))
+		s := make([]driver.Valuer, len(statuses))
 		for i, v := range statuses {
-			s[i] = converter.ToORMSystemNotificationStatus(v)
+			s[i] = v
 		}
 		u = u.Where(q.Status.In(s...))
 	}
@@ -447,5 +336,5 @@ func (n *NetzachRepo) ListSystemNotifications(
 		return nil, 0, err
 	}
 
-	return converter.ToBizSystemNotificationList(res), total, nil
+	return res, total, nil
 }

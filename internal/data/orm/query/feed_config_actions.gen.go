@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelyesod"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,15 +23,12 @@ func newFeedConfigAction(db *gorm.DB, opts ...gen.DOOption) feedConfigAction {
 	_feedConfigAction := feedConfigAction{}
 
 	_feedConfigAction.feedConfigActionDo.UseDB(db, opts...)
-	_feedConfigAction.feedConfigActionDo.UseModel(&model.FeedConfigAction{})
+	_feedConfigAction.feedConfigActionDo.UseModel(&modelyesod.FeedConfigAction{})
 
 	tableName := _feedConfigAction.feedConfigActionDo.TableName()
 	_feedConfigAction.ALL = field.NewAsterisk(tableName)
 	_feedConfigAction.FeedConfigID = field.NewInt64(tableName, "feed_config_id")
 	_feedConfigAction.FeedActionSetID = field.NewInt64(tableName, "feed_action_set_id")
-	_feedConfigAction.Index = field.NewInt64(tableName, "index")
-	_feedConfigAction.UpdatedAt = field.NewTime(tableName, "updated_at")
-	_feedConfigAction.CreatedAt = field.NewTime(tableName, "created_at")
 
 	_feedConfigAction.fillFieldMap()
 
@@ -44,9 +41,6 @@ type feedConfigAction struct {
 	ALL             field.Asterisk
 	FeedConfigID    field.Int64
 	FeedActionSetID field.Int64
-	Index           field.Int64
-	UpdatedAt       field.Time
-	CreatedAt       field.Time
 
 	fieldMap map[string]field.Expr
 }
@@ -65,9 +59,6 @@ func (f *feedConfigAction) updateTableName(table string) *feedConfigAction {
 	f.ALL = field.NewAsterisk(table)
 	f.FeedConfigID = field.NewInt64(table, "feed_config_id")
 	f.FeedActionSetID = field.NewInt64(table, "feed_action_set_id")
-	f.Index = field.NewInt64(table, "index")
-	f.UpdatedAt = field.NewTime(table, "updated_at")
-	f.CreatedAt = field.NewTime(table, "created_at")
 
 	f.fillFieldMap()
 
@@ -96,12 +87,9 @@ func (f *feedConfigAction) GetFieldByName(fieldName string) (field.OrderExpr, bo
 }
 
 func (f *feedConfigAction) fillFieldMap() {
-	f.fieldMap = make(map[string]field.Expr, 5)
+	f.fieldMap = make(map[string]field.Expr, 2)
 	f.fieldMap["feed_config_id"] = f.FeedConfigID
 	f.fieldMap["feed_action_set_id"] = f.FeedActionSetID
-	f.fieldMap["index"] = f.Index
-	f.fieldMap["updated_at"] = f.UpdatedAt
-	f.fieldMap["created_at"] = f.CreatedAt
 }
 
 func (f feedConfigAction) clone(db *gorm.DB) feedConfigAction {
@@ -145,17 +133,17 @@ type IFeedConfigActionDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IFeedConfigActionDo
 	Unscoped() IFeedConfigActionDo
-	Create(values ...*model.FeedConfigAction) error
-	CreateInBatches(values []*model.FeedConfigAction, batchSize int) error
-	Save(values ...*model.FeedConfigAction) error
-	First() (*model.FeedConfigAction, error)
-	Take() (*model.FeedConfigAction, error)
-	Last() (*model.FeedConfigAction, error)
-	Find() ([]*model.FeedConfigAction, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.FeedConfigAction, err error)
-	FindInBatches(result *[]*model.FeedConfigAction, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelyesod.FeedConfigAction) error
+	CreateInBatches(values []*modelyesod.FeedConfigAction, batchSize int) error
+	Save(values ...*modelyesod.FeedConfigAction) error
+	First() (*modelyesod.FeedConfigAction, error)
+	Take() (*modelyesod.FeedConfigAction, error)
+	Last() (*modelyesod.FeedConfigAction, error)
+	Find() ([]*modelyesod.FeedConfigAction, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelyesod.FeedConfigAction, err error)
+	FindInBatches(result *[]*modelyesod.FeedConfigAction, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.FeedConfigAction) (info gen.ResultInfo, err error)
+	Delete(...*modelyesod.FeedConfigAction) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -167,9 +155,9 @@ type IFeedConfigActionDo interface {
 	Assign(attrs ...field.AssignExpr) IFeedConfigActionDo
 	Joins(fields ...field.RelationField) IFeedConfigActionDo
 	Preload(fields ...field.RelationField) IFeedConfigActionDo
-	FirstOrInit() (*model.FeedConfigAction, error)
-	FirstOrCreate() (*model.FeedConfigAction, error)
-	FindByPage(offset int, limit int) (result []*model.FeedConfigAction, count int64, err error)
+	FirstOrInit() (*modelyesod.FeedConfigAction, error)
+	FirstOrCreate() (*modelyesod.FeedConfigAction, error)
+	FindByPage(offset int, limit int) (result []*modelyesod.FeedConfigAction, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -271,57 +259,57 @@ func (f feedConfigActionDo) Unscoped() IFeedConfigActionDo {
 	return f.withDO(f.DO.Unscoped())
 }
 
-func (f feedConfigActionDo) Create(values ...*model.FeedConfigAction) error {
+func (f feedConfigActionDo) Create(values ...*modelyesod.FeedConfigAction) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return f.DO.Create(values)
 }
 
-func (f feedConfigActionDo) CreateInBatches(values []*model.FeedConfigAction, batchSize int) error {
+func (f feedConfigActionDo) CreateInBatches(values []*modelyesod.FeedConfigAction, batchSize int) error {
 	return f.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (f feedConfigActionDo) Save(values ...*model.FeedConfigAction) error {
+func (f feedConfigActionDo) Save(values ...*modelyesod.FeedConfigAction) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return f.DO.Save(values)
 }
 
-func (f feedConfigActionDo) First() (*model.FeedConfigAction, error) {
+func (f feedConfigActionDo) First() (*modelyesod.FeedConfigAction, error) {
 	if result, err := f.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.FeedConfigAction), nil
+		return result.(*modelyesod.FeedConfigAction), nil
 	}
 }
 
-func (f feedConfigActionDo) Take() (*model.FeedConfigAction, error) {
+func (f feedConfigActionDo) Take() (*modelyesod.FeedConfigAction, error) {
 	if result, err := f.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.FeedConfigAction), nil
+		return result.(*modelyesod.FeedConfigAction), nil
 	}
 }
 
-func (f feedConfigActionDo) Last() (*model.FeedConfigAction, error) {
+func (f feedConfigActionDo) Last() (*modelyesod.FeedConfigAction, error) {
 	if result, err := f.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.FeedConfigAction), nil
+		return result.(*modelyesod.FeedConfigAction), nil
 	}
 }
 
-func (f feedConfigActionDo) Find() ([]*model.FeedConfigAction, error) {
+func (f feedConfigActionDo) Find() ([]*modelyesod.FeedConfigAction, error) {
 	result, err := f.DO.Find()
-	return result.([]*model.FeedConfigAction), err
+	return result.([]*modelyesod.FeedConfigAction), err
 }
 
-func (f feedConfigActionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.FeedConfigAction, err error) {
-	buf := make([]*model.FeedConfigAction, 0, batchSize)
+func (f feedConfigActionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelyesod.FeedConfigAction, err error) {
+	buf := make([]*modelyesod.FeedConfigAction, 0, batchSize)
 	err = f.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -329,7 +317,7 @@ func (f feedConfigActionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch
 	return results, err
 }
 
-func (f feedConfigActionDo) FindInBatches(result *[]*model.FeedConfigAction, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (f feedConfigActionDo) FindInBatches(result *[]*modelyesod.FeedConfigAction, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return f.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -355,23 +343,23 @@ func (f feedConfigActionDo) Preload(fields ...field.RelationField) IFeedConfigAc
 	return &f
 }
 
-func (f feedConfigActionDo) FirstOrInit() (*model.FeedConfigAction, error) {
+func (f feedConfigActionDo) FirstOrInit() (*modelyesod.FeedConfigAction, error) {
 	if result, err := f.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.FeedConfigAction), nil
+		return result.(*modelyesod.FeedConfigAction), nil
 	}
 }
 
-func (f feedConfigActionDo) FirstOrCreate() (*model.FeedConfigAction, error) {
+func (f feedConfigActionDo) FirstOrCreate() (*modelyesod.FeedConfigAction, error) {
 	if result, err := f.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.FeedConfigAction), nil
+		return result.(*modelyesod.FeedConfigAction), nil
 	}
 }
 
-func (f feedConfigActionDo) FindByPage(offset int, limit int) (result []*model.FeedConfigAction, count int64, err error) {
+func (f feedConfigActionDo) FindByPage(offset int, limit int) (result []*modelyesod.FeedConfigAction, count int64, err error) {
 	result, err = f.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -400,7 +388,7 @@ func (f feedConfigActionDo) Scan(result interface{}) (err error) {
 	return f.DO.Scan(result)
 }
 
-func (f feedConfigActionDo) Delete(models ...*model.FeedConfigAction) (result gen.ResultInfo, err error) {
+func (f feedConfigActionDo) Delete(models ...*modelyesod.FeedConfigAction) (result gen.ResultInfo, err error) {
 	return f.DO.Delete(models)
 }
 

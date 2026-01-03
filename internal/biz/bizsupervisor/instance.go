@@ -139,7 +139,6 @@ func (c *PorterInstanceController) UpdateStatus(ctx context.Context) *modelsuper
 	return &c.PorterInstance
 }
 
-// Initial state, load or create instance info.
 func (c *PorterInstanceController) updateStatusUnspecified(ctx context.Context) {
 	instance, err := c.s.repo.FetchPorterByAddress(ctx, c.address)
 	if data.ErrorIsNotFound(err) { //nolint:nestif // no need

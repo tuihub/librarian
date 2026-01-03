@@ -1,4 +1,4 @@
-package biztiphereth
+package biztiphereth //nolint:exhaustruct // legacy
 
 import (
 	"context"

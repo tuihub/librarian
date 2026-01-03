@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,7 +23,7 @@ func newAppInfo(db *gorm.DB, opts ...gen.DOOption) appInfo {
 	_appInfo := appInfo{}
 
 	_appInfo.appInfoDo.UseDB(db, opts...)
-	_appInfo.appInfoDo.UseModel(&model.AppInfo{})
+	_appInfo.appInfoDo.UseModel(&modelgebura.AppInfo{})
 
 	tableName := _appInfo.appInfoDo.TableName()
 	_appInfo.ALL = field.NewAsterisk(tableName)
@@ -32,7 +32,7 @@ func newAppInfo(db *gorm.DB, opts ...gen.DOOption) appInfo {
 	_appInfo.SourceAppID = field.NewString(tableName, "source_app_id")
 	_appInfo.SourceURL = field.NewString(tableName, "source_url")
 	_appInfo.Name = field.NewString(tableName, "name")
-	_appInfo.Type = field.NewString(tableName, "type")
+	_appInfo.Type = field.NewField(tableName, "type")
 	_appInfo.ShortDescription = field.NewString(tableName, "short_description")
 	_appInfo.Description = field.NewString(tableName, "description")
 	_appInfo.IconImageURL = field.NewString(tableName, "icon_image_url")
@@ -64,7 +64,7 @@ type appInfo struct {
 	SourceAppID        field.String
 	SourceURL          field.String
 	Name               field.String
-	Type               field.String
+	Type               field.Field
 	ShortDescription   field.String
 	Description        field.String
 	IconImageURL       field.String
@@ -102,7 +102,7 @@ func (a *appInfo) updateTableName(table string) *appInfo {
 	a.SourceAppID = field.NewString(table, "source_app_id")
 	a.SourceURL = field.NewString(table, "source_url")
 	a.Name = field.NewString(table, "name")
-	a.Type = field.NewString(table, "type")
+	a.Type = field.NewField(table, "type")
 	a.ShortDescription = field.NewString(table, "short_description")
 	a.Description = field.NewString(table, "description")
 	a.IconImageURL = field.NewString(table, "icon_image_url")
@@ -209,17 +209,17 @@ type IAppInfoDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IAppInfoDo
 	Unscoped() IAppInfoDo
-	Create(values ...*model.AppInfo) error
-	CreateInBatches(values []*model.AppInfo, batchSize int) error
-	Save(values ...*model.AppInfo) error
-	First() (*model.AppInfo, error)
-	Take() (*model.AppInfo, error)
-	Last() (*model.AppInfo, error)
-	Find() ([]*model.AppInfo, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.AppInfo, err error)
-	FindInBatches(result *[]*model.AppInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelgebura.AppInfo) error
+	CreateInBatches(values []*modelgebura.AppInfo, batchSize int) error
+	Save(values ...*modelgebura.AppInfo) error
+	First() (*modelgebura.AppInfo, error)
+	Take() (*modelgebura.AppInfo, error)
+	Last() (*modelgebura.AppInfo, error)
+	Find() ([]*modelgebura.AppInfo, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.AppInfo, err error)
+	FindInBatches(result *[]*modelgebura.AppInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.AppInfo) (info gen.ResultInfo, err error)
+	Delete(...*modelgebura.AppInfo) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -231,9 +231,9 @@ type IAppInfoDo interface {
 	Assign(attrs ...field.AssignExpr) IAppInfoDo
 	Joins(fields ...field.RelationField) IAppInfoDo
 	Preload(fields ...field.RelationField) IAppInfoDo
-	FirstOrInit() (*model.AppInfo, error)
-	FirstOrCreate() (*model.AppInfo, error)
-	FindByPage(offset int, limit int) (result []*model.AppInfo, count int64, err error)
+	FirstOrInit() (*modelgebura.AppInfo, error)
+	FirstOrCreate() (*modelgebura.AppInfo, error)
+	FindByPage(offset int, limit int) (result []*modelgebura.AppInfo, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -335,57 +335,57 @@ func (a appInfoDo) Unscoped() IAppInfoDo {
 	return a.withDO(a.DO.Unscoped())
 }
 
-func (a appInfoDo) Create(values ...*model.AppInfo) error {
+func (a appInfoDo) Create(values ...*modelgebura.AppInfo) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Create(values)
 }
 
-func (a appInfoDo) CreateInBatches(values []*model.AppInfo, batchSize int) error {
+func (a appInfoDo) CreateInBatches(values []*modelgebura.AppInfo, batchSize int) error {
 	return a.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (a appInfoDo) Save(values ...*model.AppInfo) error {
+func (a appInfoDo) Save(values ...*modelgebura.AppInfo) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Save(values)
 }
 
-func (a appInfoDo) First() (*model.AppInfo, error) {
+func (a appInfoDo) First() (*modelgebura.AppInfo, error) {
 	if result, err := a.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppInfo), nil
+		return result.(*modelgebura.AppInfo), nil
 	}
 }
 
-func (a appInfoDo) Take() (*model.AppInfo, error) {
+func (a appInfoDo) Take() (*modelgebura.AppInfo, error) {
 	if result, err := a.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppInfo), nil
+		return result.(*modelgebura.AppInfo), nil
 	}
 }
 
-func (a appInfoDo) Last() (*model.AppInfo, error) {
+func (a appInfoDo) Last() (*modelgebura.AppInfo, error) {
 	if result, err := a.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppInfo), nil
+		return result.(*modelgebura.AppInfo), nil
 	}
 }
 
-func (a appInfoDo) Find() ([]*model.AppInfo, error) {
+func (a appInfoDo) Find() ([]*modelgebura.AppInfo, error) {
 	result, err := a.DO.Find()
-	return result.([]*model.AppInfo), err
+	return result.([]*modelgebura.AppInfo), err
 }
 
-func (a appInfoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.AppInfo, err error) {
-	buf := make([]*model.AppInfo, 0, batchSize)
+func (a appInfoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.AppInfo, err error) {
+	buf := make([]*modelgebura.AppInfo, 0, batchSize)
 	err = a.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -393,7 +393,7 @@ func (a appInfoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) err
 	return results, err
 }
 
-func (a appInfoDo) FindInBatches(result *[]*model.AppInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (a appInfoDo) FindInBatches(result *[]*modelgebura.AppInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return a.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -419,23 +419,23 @@ func (a appInfoDo) Preload(fields ...field.RelationField) IAppInfoDo {
 	return &a
 }
 
-func (a appInfoDo) FirstOrInit() (*model.AppInfo, error) {
+func (a appInfoDo) FirstOrInit() (*modelgebura.AppInfo, error) {
 	if result, err := a.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppInfo), nil
+		return result.(*modelgebura.AppInfo), nil
 	}
 }
 
-func (a appInfoDo) FirstOrCreate() (*model.AppInfo, error) {
+func (a appInfoDo) FirstOrCreate() (*modelgebura.AppInfo, error) {
 	if result, err := a.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppInfo), nil
+		return result.(*modelgebura.AppInfo), nil
 	}
 }
 
-func (a appInfoDo) FindByPage(offset int, limit int) (result []*model.AppInfo, count int64, err error) {
+func (a appInfoDo) FindByPage(offset int, limit int) (result []*modelgebura.AppInfo, count int64, err error) {
 	result, err = a.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -464,7 +464,7 @@ func (a appInfoDo) Scan(result interface{}) (err error) {
 	return a.DO.Scan(result)
 }
 
-func (a appInfoDo) Delete(models ...*model.AppInfo) (result gen.ResultInfo, err error) {
+func (a appInfoDo) Delete(models ...*modelgebura.AppInfo) (result gen.ResultInfo, err error) {
 	return a.DO.Delete(models)
 }
 

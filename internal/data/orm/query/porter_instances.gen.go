@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,27 +23,27 @@ func newPorterInstance(db *gorm.DB, opts ...gen.DOOption) porterInstance {
 	_porterInstance := porterInstance{}
 
 	_porterInstance.porterInstanceDo.UseDB(db, opts...)
-	_porterInstance.porterInstanceDo.UseModel(&model.PorterInstance{})
+	_porterInstance.porterInstanceDo.UseModel(&modelsupervisor.PorterInstance{})
 
 	tableName := _porterInstance.porterInstanceDo.TableName()
 	_porterInstance.ALL = field.NewAsterisk(tableName)
 	_porterInstance.ID = field.NewInt64(tableName, "id")
+	_porterInstance.GlobalName = field.NewString(tableName, "global_name")
+	_porterInstance.Address = field.NewString(tableName, "address")
+	_porterInstance.Region = field.NewString(tableName, "region")
+	_porterInstance.FeatureSummary = field.NewField(tableName, "feature_summary")
+	_porterInstance.Status = field.NewField(tableName, "status")
+	_porterInstance.ContextJSONSchema = field.NewString(tableName, "context_json_schema")
+	_porterInstance.ConnectionStatus = field.NewField(tableName, "connection_status")
+	_porterInstance.ConnectionStatusMessage = field.NewString(tableName, "connection_status_message")
+	_porterInstance.UpdatedAt = field.NewTime(tableName, "updated_at")
+	_porterInstance.CreatedAt = field.NewTime(tableName, "created_at")
 	_porterInstance.Name = field.NewString(tableName, "name")
 	_porterInstance.Version = field.NewString(tableName, "version")
 	_porterInstance.Description = field.NewString(tableName, "description")
 	_porterInstance.SourceCodeAddress = field.NewString(tableName, "source_code_address")
 	_porterInstance.BuildVersion = field.NewString(tableName, "build_version")
 	_porterInstance.BuildDate = field.NewString(tableName, "build_date")
-	_porterInstance.GlobalName = field.NewString(tableName, "global_name")
-	_porterInstance.Address = field.NewString(tableName, "address")
-	_porterInstance.Region = field.NewString(tableName, "region")
-	_porterInstance.FeatureSummary = field.NewField(tableName, "feature_summary")
-	_porterInstance.ContextJSONSchema = field.NewString(tableName, "context_json_schema")
-	_porterInstance.Status = field.NewString(tableName, "status")
-	_porterInstance.ConnectionStatus = field.NewString(tableName, "connection_status")
-	_porterInstance.ConnectionStatusMessage = field.NewString(tableName, "connection_status_message")
-	_porterInstance.UpdatedAt = field.NewTime(tableName, "updated_at")
-	_porterInstance.CreatedAt = field.NewTime(tableName, "created_at")
 
 	_porterInstance.fillFieldMap()
 
@@ -55,22 +55,22 @@ type porterInstance struct {
 
 	ALL                     field.Asterisk
 	ID                      field.Int64
+	GlobalName              field.String
+	Address                 field.String
+	Region                  field.String
+	FeatureSummary          field.Field
+	Status                  field.Field
+	ContextJSONSchema       field.String
+	ConnectionStatus        field.Field
+	ConnectionStatusMessage field.String
+	UpdatedAt               field.Time
+	CreatedAt               field.Time
 	Name                    field.String
 	Version                 field.String
 	Description             field.String
 	SourceCodeAddress       field.String
 	BuildVersion            field.String
 	BuildDate               field.String
-	GlobalName              field.String
-	Address                 field.String
-	Region                  field.String
-	FeatureSummary          field.Field
-	ContextJSONSchema       field.String
-	Status                  field.String
-	ConnectionStatus        field.String
-	ConnectionStatusMessage field.String
-	UpdatedAt               field.Time
-	CreatedAt               field.Time
 
 	fieldMap map[string]field.Expr
 }
@@ -88,22 +88,22 @@ func (p porterInstance) As(alias string) *porterInstance {
 func (p *porterInstance) updateTableName(table string) *porterInstance {
 	p.ALL = field.NewAsterisk(table)
 	p.ID = field.NewInt64(table, "id")
+	p.GlobalName = field.NewString(table, "global_name")
+	p.Address = field.NewString(table, "address")
+	p.Region = field.NewString(table, "region")
+	p.FeatureSummary = field.NewField(table, "feature_summary")
+	p.Status = field.NewField(table, "status")
+	p.ContextJSONSchema = field.NewString(table, "context_json_schema")
+	p.ConnectionStatus = field.NewField(table, "connection_status")
+	p.ConnectionStatusMessage = field.NewString(table, "connection_status_message")
+	p.UpdatedAt = field.NewTime(table, "updated_at")
+	p.CreatedAt = field.NewTime(table, "created_at")
 	p.Name = field.NewString(table, "name")
 	p.Version = field.NewString(table, "version")
 	p.Description = field.NewString(table, "description")
 	p.SourceCodeAddress = field.NewString(table, "source_code_address")
 	p.BuildVersion = field.NewString(table, "build_version")
 	p.BuildDate = field.NewString(table, "build_date")
-	p.GlobalName = field.NewString(table, "global_name")
-	p.Address = field.NewString(table, "address")
-	p.Region = field.NewString(table, "region")
-	p.FeatureSummary = field.NewField(table, "feature_summary")
-	p.ContextJSONSchema = field.NewString(table, "context_json_schema")
-	p.Status = field.NewString(table, "status")
-	p.ConnectionStatus = field.NewString(table, "connection_status")
-	p.ConnectionStatusMessage = field.NewString(table, "connection_status_message")
-	p.UpdatedAt = field.NewTime(table, "updated_at")
-	p.CreatedAt = field.NewTime(table, "created_at")
 
 	p.fillFieldMap()
 
@@ -134,22 +134,22 @@ func (p *porterInstance) GetFieldByName(fieldName string) (field.OrderExpr, bool
 func (p *porterInstance) fillFieldMap() {
 	p.fieldMap = make(map[string]field.Expr, 17)
 	p.fieldMap["id"] = p.ID
+	p.fieldMap["global_name"] = p.GlobalName
+	p.fieldMap["address"] = p.Address
+	p.fieldMap["region"] = p.Region
+	p.fieldMap["feature_summary"] = p.FeatureSummary
+	p.fieldMap["status"] = p.Status
+	p.fieldMap["context_json_schema"] = p.ContextJSONSchema
+	p.fieldMap["connection_status"] = p.ConnectionStatus
+	p.fieldMap["connection_status_message"] = p.ConnectionStatusMessage
+	p.fieldMap["updated_at"] = p.UpdatedAt
+	p.fieldMap["created_at"] = p.CreatedAt
 	p.fieldMap["name"] = p.Name
 	p.fieldMap["version"] = p.Version
 	p.fieldMap["description"] = p.Description
 	p.fieldMap["source_code_address"] = p.SourceCodeAddress
 	p.fieldMap["build_version"] = p.BuildVersion
 	p.fieldMap["build_date"] = p.BuildDate
-	p.fieldMap["global_name"] = p.GlobalName
-	p.fieldMap["address"] = p.Address
-	p.fieldMap["region"] = p.Region
-	p.fieldMap["feature_summary"] = p.FeatureSummary
-	p.fieldMap["context_json_schema"] = p.ContextJSONSchema
-	p.fieldMap["status"] = p.Status
-	p.fieldMap["connection_status"] = p.ConnectionStatus
-	p.fieldMap["connection_status_message"] = p.ConnectionStatusMessage
-	p.fieldMap["updated_at"] = p.UpdatedAt
-	p.fieldMap["created_at"] = p.CreatedAt
 }
 
 func (p porterInstance) clone(db *gorm.DB) porterInstance {
@@ -193,17 +193,17 @@ type IPorterInstanceDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IPorterInstanceDo
 	Unscoped() IPorterInstanceDo
-	Create(values ...*model.PorterInstance) error
-	CreateInBatches(values []*model.PorterInstance, batchSize int) error
-	Save(values ...*model.PorterInstance) error
-	First() (*model.PorterInstance, error)
-	Take() (*model.PorterInstance, error)
-	Last() (*model.PorterInstance, error)
-	Find() ([]*model.PorterInstance, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.PorterInstance, err error)
-	FindInBatches(result *[]*model.PorterInstance, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelsupervisor.PorterInstance) error
+	CreateInBatches(values []*modelsupervisor.PorterInstance, batchSize int) error
+	Save(values ...*modelsupervisor.PorterInstance) error
+	First() (*modelsupervisor.PorterInstance, error)
+	Take() (*modelsupervisor.PorterInstance, error)
+	Last() (*modelsupervisor.PorterInstance, error)
+	Find() ([]*modelsupervisor.PorterInstance, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelsupervisor.PorterInstance, err error)
+	FindInBatches(result *[]*modelsupervisor.PorterInstance, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.PorterInstance) (info gen.ResultInfo, err error)
+	Delete(...*modelsupervisor.PorterInstance) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -215,9 +215,9 @@ type IPorterInstanceDo interface {
 	Assign(attrs ...field.AssignExpr) IPorterInstanceDo
 	Joins(fields ...field.RelationField) IPorterInstanceDo
 	Preload(fields ...field.RelationField) IPorterInstanceDo
-	FirstOrInit() (*model.PorterInstance, error)
-	FirstOrCreate() (*model.PorterInstance, error)
-	FindByPage(offset int, limit int) (result []*model.PorterInstance, count int64, err error)
+	FirstOrInit() (*modelsupervisor.PorterInstance, error)
+	FirstOrCreate() (*modelsupervisor.PorterInstance, error)
+	FindByPage(offset int, limit int) (result []*modelsupervisor.PorterInstance, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -319,57 +319,57 @@ func (p porterInstanceDo) Unscoped() IPorterInstanceDo {
 	return p.withDO(p.DO.Unscoped())
 }
 
-func (p porterInstanceDo) Create(values ...*model.PorterInstance) error {
+func (p porterInstanceDo) Create(values ...*modelsupervisor.PorterInstance) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return p.DO.Create(values)
 }
 
-func (p porterInstanceDo) CreateInBatches(values []*model.PorterInstance, batchSize int) error {
+func (p porterInstanceDo) CreateInBatches(values []*modelsupervisor.PorterInstance, batchSize int) error {
 	return p.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (p porterInstanceDo) Save(values ...*model.PorterInstance) error {
+func (p porterInstanceDo) Save(values ...*modelsupervisor.PorterInstance) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return p.DO.Save(values)
 }
 
-func (p porterInstanceDo) First() (*model.PorterInstance, error) {
+func (p porterInstanceDo) First() (*modelsupervisor.PorterInstance, error) {
 	if result, err := p.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.PorterInstance), nil
+		return result.(*modelsupervisor.PorterInstance), nil
 	}
 }
 
-func (p porterInstanceDo) Take() (*model.PorterInstance, error) {
+func (p porterInstanceDo) Take() (*modelsupervisor.PorterInstance, error) {
 	if result, err := p.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.PorterInstance), nil
+		return result.(*modelsupervisor.PorterInstance), nil
 	}
 }
 
-func (p porterInstanceDo) Last() (*model.PorterInstance, error) {
+func (p porterInstanceDo) Last() (*modelsupervisor.PorterInstance, error) {
 	if result, err := p.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.PorterInstance), nil
+		return result.(*modelsupervisor.PorterInstance), nil
 	}
 }
 
-func (p porterInstanceDo) Find() ([]*model.PorterInstance, error) {
+func (p porterInstanceDo) Find() ([]*modelsupervisor.PorterInstance, error) {
 	result, err := p.DO.Find()
-	return result.([]*model.PorterInstance), err
+	return result.([]*modelsupervisor.PorterInstance), err
 }
 
-func (p porterInstanceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.PorterInstance, err error) {
-	buf := make([]*model.PorterInstance, 0, batchSize)
+func (p porterInstanceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelsupervisor.PorterInstance, err error) {
+	buf := make([]*modelsupervisor.PorterInstance, 0, batchSize)
 	err = p.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -377,7 +377,7 @@ func (p porterInstanceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch i
 	return results, err
 }
 
-func (p porterInstanceDo) FindInBatches(result *[]*model.PorterInstance, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (p porterInstanceDo) FindInBatches(result *[]*modelsupervisor.PorterInstance, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return p.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -403,23 +403,23 @@ func (p porterInstanceDo) Preload(fields ...field.RelationField) IPorterInstance
 	return &p
 }
 
-func (p porterInstanceDo) FirstOrInit() (*model.PorterInstance, error) {
+func (p porterInstanceDo) FirstOrInit() (*modelsupervisor.PorterInstance, error) {
 	if result, err := p.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.PorterInstance), nil
+		return result.(*modelsupervisor.PorterInstance), nil
 	}
 }
 
-func (p porterInstanceDo) FirstOrCreate() (*model.PorterInstance, error) {
+func (p porterInstanceDo) FirstOrCreate() (*modelsupervisor.PorterInstance, error) {
 	if result, err := p.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.PorterInstance), nil
+		return result.(*modelsupervisor.PorterInstance), nil
 	}
 }
 
-func (p porterInstanceDo) FindByPage(offset int, limit int) (result []*model.PorterInstance, count int64, err error) {
+func (p porterInstanceDo) FindByPage(offset int, limit int) (result []*modelsupervisor.PorterInstance, count int64, err error) {
 	result, err = p.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -448,7 +448,7 @@ func (p porterInstanceDo) Scan(result interface{}) (err error) {
 	return p.DO.Scan(result)
 }
 
-func (p porterInstanceDo) Delete(models ...*model.PorterInstance) (result gen.ResultInfo, err error) {
+func (p porterInstanceDo) Delete(models ...*modelsupervisor.PorterInstance) (result gen.ResultInfo, err error) {
 	return p.DO.Delete(models)
 }
 

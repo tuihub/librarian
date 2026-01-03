@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,52 +23,21 @@ func newSentinelSession(db *gorm.DB, opts ...gen.DOOption) sentinelSession {
 	_sentinelSession := sentinelSession{}
 
 	_sentinelSession.sentinelSessionDo.UseDB(db, opts...)
-	_sentinelSession.sentinelSessionDo.UseModel(&model.SentinelSession{})
+	_sentinelSession.sentinelSessionDo.UseModel(&modelgebura.SentinelSession{})
 
 	tableName := _sentinelSession.sentinelSessionDo.TableName()
 	_sentinelSession.ALL = field.NewAsterisk(tableName)
 	_sentinelSession.ID = field.NewInt64(tableName, "id")
 	_sentinelSession.SentinelID = field.NewInt64(tableName, "sentinel_id")
 	_sentinelSession.RefreshToken = field.NewString(tableName, "refresh_token")
-	_sentinelSession.ExpireAt = field.NewTime(tableName, "expire_at")
-	_sentinelSession.Status = field.NewString(tableName, "status")
+	_sentinelSession.Status = field.NewField(tableName, "status")
 	_sentinelSession.CreatorID = field.NewInt64(tableName, "creator_id")
+	_sentinelSession.ExpireAt = field.NewTime(tableName, "expire_at")
 	_sentinelSession.LastUsedAt = field.NewTime(tableName, "last_used_at")
 	_sentinelSession.LastRefreshedAt = field.NewTime(tableName, "last_refreshed_at")
 	_sentinelSession.RefreshCount = field.NewInt64(tableName, "refresh_count")
-	_sentinelSession.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_sentinelSession.CreatedAt = field.NewTime(tableName, "created_at")
-	_sentinelSession.Sentinel = sentinelSessionBelongsToSentinel{
-		db: db.Session(&gorm.Session{}),
-
-		RelationField: field.NewRelation("Sentinel", "model.Sentinel"),
-		SentinelSessions: struct {
-			field.RelationField
-			Sentinel struct {
-				field.RelationField
-			}
-		}{
-			RelationField: field.NewRelation("Sentinel.SentinelSessions", "model.SentinelSession"),
-			Sentinel: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Sentinel.SentinelSessions.Sentinel", "model.Sentinel"),
-			},
-		},
-		SentinelLibraries: struct {
-			field.RelationField
-			Sentinel struct {
-				field.RelationField
-			}
-		}{
-			RelationField: field.NewRelation("Sentinel.SentinelLibraries", "model.SentinelLibrary"),
-			Sentinel: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Sentinel.SentinelLibraries.Sentinel", "model.Sentinel"),
-			},
-		},
-	}
+	_sentinelSession.UpdatedAt = field.NewTime(tableName, "updated_at")
 
 	_sentinelSession.fillFieldMap()
 
@@ -82,15 +51,14 @@ type sentinelSession struct {
 	ID              field.Int64
 	SentinelID      field.Int64
 	RefreshToken    field.String
-	ExpireAt        field.Time
-	Status          field.String
+	Status          field.Field
 	CreatorID       field.Int64
+	ExpireAt        field.Time
 	LastUsedAt      field.Time
 	LastRefreshedAt field.Time
 	RefreshCount    field.Int64
-	UpdatedAt       field.Time
 	CreatedAt       field.Time
-	Sentinel        sentinelSessionBelongsToSentinel
+	UpdatedAt       field.Time
 
 	fieldMap map[string]field.Expr
 }
@@ -110,14 +78,14 @@ func (s *sentinelSession) updateTableName(table string) *sentinelSession {
 	s.ID = field.NewInt64(table, "id")
 	s.SentinelID = field.NewInt64(table, "sentinel_id")
 	s.RefreshToken = field.NewString(table, "refresh_token")
-	s.ExpireAt = field.NewTime(table, "expire_at")
-	s.Status = field.NewString(table, "status")
+	s.Status = field.NewField(table, "status")
 	s.CreatorID = field.NewInt64(table, "creator_id")
+	s.ExpireAt = field.NewTime(table, "expire_at")
 	s.LastUsedAt = field.NewTime(table, "last_used_at")
 	s.LastRefreshedAt = field.NewTime(table, "last_refreshed_at")
 	s.RefreshCount = field.NewInt64(table, "refresh_count")
-	s.UpdatedAt = field.NewTime(table, "updated_at")
 	s.CreatedAt = field.NewTime(table, "created_at")
+	s.UpdatedAt = field.NewTime(table, "updated_at")
 
 	s.fillFieldMap()
 
@@ -146,126 +114,28 @@ func (s *sentinelSession) GetFieldByName(fieldName string) (field.OrderExpr, boo
 }
 
 func (s *sentinelSession) fillFieldMap() {
-	s.fieldMap = make(map[string]field.Expr, 12)
+	s.fieldMap = make(map[string]field.Expr, 11)
 	s.fieldMap["id"] = s.ID
 	s.fieldMap["sentinel_id"] = s.SentinelID
 	s.fieldMap["refresh_token"] = s.RefreshToken
-	s.fieldMap["expire_at"] = s.ExpireAt
 	s.fieldMap["status"] = s.Status
 	s.fieldMap["creator_id"] = s.CreatorID
+	s.fieldMap["expire_at"] = s.ExpireAt
 	s.fieldMap["last_used_at"] = s.LastUsedAt
 	s.fieldMap["last_refreshed_at"] = s.LastRefreshedAt
 	s.fieldMap["refresh_count"] = s.RefreshCount
-	s.fieldMap["updated_at"] = s.UpdatedAt
 	s.fieldMap["created_at"] = s.CreatedAt
-
+	s.fieldMap["updated_at"] = s.UpdatedAt
 }
 
 func (s sentinelSession) clone(db *gorm.DB) sentinelSession {
 	s.sentinelSessionDo.ReplaceConnPool(db.Statement.ConnPool)
-	s.Sentinel.db = db.Session(&gorm.Session{Initialized: true})
-	s.Sentinel.db.Statement.ConnPool = db.Statement.ConnPool
 	return s
 }
 
 func (s sentinelSession) replaceDB(db *gorm.DB) sentinelSession {
 	s.sentinelSessionDo.ReplaceDB(db)
-	s.Sentinel.db = db.Session(&gorm.Session{})
 	return s
-}
-
-type sentinelSessionBelongsToSentinel struct {
-	db *gorm.DB
-
-	field.RelationField
-
-	SentinelSessions struct {
-		field.RelationField
-		Sentinel struct {
-			field.RelationField
-		}
-	}
-	SentinelLibraries struct {
-		field.RelationField
-		Sentinel struct {
-			field.RelationField
-		}
-	}
-}
-
-func (a sentinelSessionBelongsToSentinel) Where(conds ...field.Expr) *sentinelSessionBelongsToSentinel {
-	if len(conds) == 0 {
-		return &a
-	}
-
-	exprs := make([]clause.Expression, 0, len(conds))
-	for _, cond := range conds {
-		exprs = append(exprs, cond.BeCond().(clause.Expression))
-	}
-	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
-	return &a
-}
-
-func (a sentinelSessionBelongsToSentinel) WithContext(ctx context.Context) *sentinelSessionBelongsToSentinel {
-	a.db = a.db.WithContext(ctx)
-	return &a
-}
-
-func (a sentinelSessionBelongsToSentinel) Session(session *gorm.Session) *sentinelSessionBelongsToSentinel {
-	a.db = a.db.Session(session)
-	return &a
-}
-
-func (a sentinelSessionBelongsToSentinel) Model(m *model.SentinelSession) *sentinelSessionBelongsToSentinelTx {
-	return &sentinelSessionBelongsToSentinelTx{a.db.Model(m).Association(a.Name())}
-}
-
-func (a sentinelSessionBelongsToSentinel) Unscoped() *sentinelSessionBelongsToSentinel {
-	a.db = a.db.Unscoped()
-	return &a
-}
-
-type sentinelSessionBelongsToSentinelTx struct{ tx *gorm.Association }
-
-func (a sentinelSessionBelongsToSentinelTx) Find() (result *model.Sentinel, err error) {
-	return result, a.tx.Find(&result)
-}
-
-func (a sentinelSessionBelongsToSentinelTx) Append(values ...*model.Sentinel) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Append(targetValues...)
-}
-
-func (a sentinelSessionBelongsToSentinelTx) Replace(values ...*model.Sentinel) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Replace(targetValues...)
-}
-
-func (a sentinelSessionBelongsToSentinelTx) Delete(values ...*model.Sentinel) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Delete(targetValues...)
-}
-
-func (a sentinelSessionBelongsToSentinelTx) Clear() error {
-	return a.tx.Clear()
-}
-
-func (a sentinelSessionBelongsToSentinelTx) Count() int64 {
-	return a.tx.Count()
-}
-
-func (a sentinelSessionBelongsToSentinelTx) Unscoped() *sentinelSessionBelongsToSentinelTx {
-	a.tx = a.tx.Unscoped()
-	return &a
 }
 
 type sentinelSessionDo struct{ gen.DO }
@@ -299,17 +169,17 @@ type ISentinelSessionDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ISentinelSessionDo
 	Unscoped() ISentinelSessionDo
-	Create(values ...*model.SentinelSession) error
-	CreateInBatches(values []*model.SentinelSession, batchSize int) error
-	Save(values ...*model.SentinelSession) error
-	First() (*model.SentinelSession, error)
-	Take() (*model.SentinelSession, error)
-	Last() (*model.SentinelSession, error)
-	Find() ([]*model.SentinelSession, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.SentinelSession, err error)
-	FindInBatches(result *[]*model.SentinelSession, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelgebura.SentinelSession) error
+	CreateInBatches(values []*modelgebura.SentinelSession, batchSize int) error
+	Save(values ...*modelgebura.SentinelSession) error
+	First() (*modelgebura.SentinelSession, error)
+	Take() (*modelgebura.SentinelSession, error)
+	Last() (*modelgebura.SentinelSession, error)
+	Find() ([]*modelgebura.SentinelSession, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.SentinelSession, err error)
+	FindInBatches(result *[]*modelgebura.SentinelSession, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.SentinelSession) (info gen.ResultInfo, err error)
+	Delete(...*modelgebura.SentinelSession) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -321,9 +191,9 @@ type ISentinelSessionDo interface {
 	Assign(attrs ...field.AssignExpr) ISentinelSessionDo
 	Joins(fields ...field.RelationField) ISentinelSessionDo
 	Preload(fields ...field.RelationField) ISentinelSessionDo
-	FirstOrInit() (*model.SentinelSession, error)
-	FirstOrCreate() (*model.SentinelSession, error)
-	FindByPage(offset int, limit int) (result []*model.SentinelSession, count int64, err error)
+	FirstOrInit() (*modelgebura.SentinelSession, error)
+	FirstOrCreate() (*modelgebura.SentinelSession, error)
+	FindByPage(offset int, limit int) (result []*modelgebura.SentinelSession, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -425,57 +295,57 @@ func (s sentinelSessionDo) Unscoped() ISentinelSessionDo {
 	return s.withDO(s.DO.Unscoped())
 }
 
-func (s sentinelSessionDo) Create(values ...*model.SentinelSession) error {
+func (s sentinelSessionDo) Create(values ...*modelgebura.SentinelSession) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Create(values)
 }
 
-func (s sentinelSessionDo) CreateInBatches(values []*model.SentinelSession, batchSize int) error {
+func (s sentinelSessionDo) CreateInBatches(values []*modelgebura.SentinelSession, batchSize int) error {
 	return s.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (s sentinelSessionDo) Save(values ...*model.SentinelSession) error {
+func (s sentinelSessionDo) Save(values ...*modelgebura.SentinelSession) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Save(values)
 }
 
-func (s sentinelSessionDo) First() (*model.SentinelSession, error) {
+func (s sentinelSessionDo) First() (*modelgebura.SentinelSession, error) {
 	if result, err := s.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelSession), nil
+		return result.(*modelgebura.SentinelSession), nil
 	}
 }
 
-func (s sentinelSessionDo) Take() (*model.SentinelSession, error) {
+func (s sentinelSessionDo) Take() (*modelgebura.SentinelSession, error) {
 	if result, err := s.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelSession), nil
+		return result.(*modelgebura.SentinelSession), nil
 	}
 }
 
-func (s sentinelSessionDo) Last() (*model.SentinelSession, error) {
+func (s sentinelSessionDo) Last() (*modelgebura.SentinelSession, error) {
 	if result, err := s.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelSession), nil
+		return result.(*modelgebura.SentinelSession), nil
 	}
 }
 
-func (s sentinelSessionDo) Find() ([]*model.SentinelSession, error) {
+func (s sentinelSessionDo) Find() ([]*modelgebura.SentinelSession, error) {
 	result, err := s.DO.Find()
-	return result.([]*model.SentinelSession), err
+	return result.([]*modelgebura.SentinelSession), err
 }
 
-func (s sentinelSessionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.SentinelSession, err error) {
-	buf := make([]*model.SentinelSession, 0, batchSize)
+func (s sentinelSessionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.SentinelSession, err error) {
+	buf := make([]*modelgebura.SentinelSession, 0, batchSize)
 	err = s.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -483,7 +353,7 @@ func (s sentinelSessionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch 
 	return results, err
 }
 
-func (s sentinelSessionDo) FindInBatches(result *[]*model.SentinelSession, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (s sentinelSessionDo) FindInBatches(result *[]*modelgebura.SentinelSession, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return s.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -509,23 +379,23 @@ func (s sentinelSessionDo) Preload(fields ...field.RelationField) ISentinelSessi
 	return &s
 }
 
-func (s sentinelSessionDo) FirstOrInit() (*model.SentinelSession, error) {
+func (s sentinelSessionDo) FirstOrInit() (*modelgebura.SentinelSession, error) {
 	if result, err := s.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelSession), nil
+		return result.(*modelgebura.SentinelSession), nil
 	}
 }
 
-func (s sentinelSessionDo) FirstOrCreate() (*model.SentinelSession, error) {
+func (s sentinelSessionDo) FirstOrCreate() (*modelgebura.SentinelSession, error) {
 	if result, err := s.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelSession), nil
+		return result.(*modelgebura.SentinelSession), nil
 	}
 }
 
-func (s sentinelSessionDo) FindByPage(offset int, limit int) (result []*model.SentinelSession, count int64, err error) {
+func (s sentinelSessionDo) FindByPage(offset int, limit int) (result []*modelgebura.SentinelSession, count int64, err error) {
 	result, err = s.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -554,7 +424,7 @@ func (s sentinelSessionDo) Scan(result interface{}) (err error) {
 	return s.DO.Scan(result)
 }
 
-func (s sentinelSessionDo) Delete(models ...*model.SentinelSession) (result gen.ResultInfo, err error) {
+func (s sentinelSessionDo) Delete(models ...*modelgebura.SentinelSession) (result gen.ResultInfo, err error) {
 	return s.DO.Delete(models)
 }
 

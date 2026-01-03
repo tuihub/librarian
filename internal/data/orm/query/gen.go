@@ -16,41 +16,42 @@ import (
 )
 
 var (
-	Q                     = new(Query)
-	Account               *account
-	App                   *app
-	AppAppCategory        *appAppCategory
-	AppCategory           *appCategory
-	AppInfo               *appInfo
-	AppRunTime            *appRunTime
-	Device                *device
-	Feed                  *feed
-	FeedActionSet         *feedActionSet
-	FeedConfig            *feedConfig
-	FeedConfigAction      *feedConfigAction
-	FeedItem              *feedItem
-	FeedItemCollection    *feedItemCollection
-	File                  *file
-	Image                 *image
-	KV                    *kV
-	NotifyFlow            *notifyFlow
-	NotifyFlowSource      *notifyFlowSource
-	NotifyFlowTarget      *notifyFlowTarget
-	NotifySource          *notifySource
-	NotifyTarget          *notifyTarget
-	PorterContext         *porterContext
-	PorterInstance        *porterInstance
-	Sentinel              *sentinel
-	SentinelAppBinary     *sentinelAppBinary
-	SentinelAppBinaryFile *sentinelAppBinaryFile
-	SentinelLibrary       *sentinelLibrary
-	SentinelSession       *sentinelSession
-	Session               *session
-	StoreApp              *storeApp
-	StoreAppBinary        *storeAppBinary
-	SystemNotification    *systemNotification
-	Tag                   *tag
-	User                  *user
+	Q                          = new(Query)
+	Account                    *account
+	App                        *app
+	AppAppCategory             *appAppCategory
+	AppCategory                *appCategory
+	AppInfo                    *appInfo
+	AppRunTime                 *appRunTime
+	Device                     *device
+	Feed                       *feed
+	FeedActionSet              *feedActionSet
+	FeedConfig                 *feedConfig
+	FeedConfigAction           *feedConfigAction
+	FeedItemCollection         *feedItemCollection
+	FeedItemCollectionFeedItem *feedItemCollectionFeedItem
+	File                       *file
+	Image                      *image
+	Item                       *item
+	KV                         *kV
+	NotifyFlow                 *notifyFlow
+	NotifyFlowSource           *notifyFlowSource
+	NotifyFlowTarget           *notifyFlowTarget
+	NotifySource               *notifySource
+	NotifyTarget               *notifyTarget
+	PorterContext              *porterContext
+	PorterInstance             *porterInstance
+	Sentinel                   *sentinel
+	SentinelAppBinary          *sentinelAppBinary
+	SentinelAppBinaryFile      *sentinelAppBinaryFile
+	SentinelLibrary            *sentinelLibrary
+	SentinelSession            *sentinelSession
+	Session                    *session
+	StoreApp                   *storeApp
+	StoreAppBinary             *storeAppBinary
+	SystemNotification         *systemNotification
+	Tag                        *tag
+	User                       *user
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
@@ -66,10 +67,11 @@ func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	FeedActionSet = &Q.FeedActionSet
 	FeedConfig = &Q.FeedConfig
 	FeedConfigAction = &Q.FeedConfigAction
-	FeedItem = &Q.FeedItem
 	FeedItemCollection = &Q.FeedItemCollection
+	FeedItemCollectionFeedItem = &Q.FeedItemCollectionFeedItem
 	File = &Q.File
 	Image = &Q.Image
+	Item = &Q.Item
 	KV = &Q.KV
 	NotifyFlow = &Q.NotifyFlow
 	NotifyFlowSource = &Q.NotifyFlowSource
@@ -93,122 +95,125 @@ func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:                    db,
-		Account:               newAccount(db, opts...),
-		App:                   newApp(db, opts...),
-		AppAppCategory:        newAppAppCategory(db, opts...),
-		AppCategory:           newAppCategory(db, opts...),
-		AppInfo:               newAppInfo(db, opts...),
-		AppRunTime:            newAppRunTime(db, opts...),
-		Device:                newDevice(db, opts...),
-		Feed:                  newFeed(db, opts...),
-		FeedActionSet:         newFeedActionSet(db, opts...),
-		FeedConfig:            newFeedConfig(db, opts...),
-		FeedConfigAction:      newFeedConfigAction(db, opts...),
-		FeedItem:              newFeedItem(db, opts...),
-		FeedItemCollection:    newFeedItemCollection(db, opts...),
-		File:                  newFile(db, opts...),
-		Image:                 newImage(db, opts...),
-		KV:                    newKV(db, opts...),
-		NotifyFlow:            newNotifyFlow(db, opts...),
-		NotifyFlowSource:      newNotifyFlowSource(db, opts...),
-		NotifyFlowTarget:      newNotifyFlowTarget(db, opts...),
-		NotifySource:          newNotifySource(db, opts...),
-		NotifyTarget:          newNotifyTarget(db, opts...),
-		PorterContext:         newPorterContext(db, opts...),
-		PorterInstance:        newPorterInstance(db, opts...),
-		Sentinel:              newSentinel(db, opts...),
-		SentinelAppBinary:     newSentinelAppBinary(db, opts...),
-		SentinelAppBinaryFile: newSentinelAppBinaryFile(db, opts...),
-		SentinelLibrary:       newSentinelLibrary(db, opts...),
-		SentinelSession:       newSentinelSession(db, opts...),
-		Session:               newSession(db, opts...),
-		StoreApp:              newStoreApp(db, opts...),
-		StoreAppBinary:        newStoreAppBinary(db, opts...),
-		SystemNotification:    newSystemNotification(db, opts...),
-		Tag:                   newTag(db, opts...),
-		User:                  newUser(db, opts...),
+		db:                         db,
+		Account:                    newAccount(db, opts...),
+		App:                        newApp(db, opts...),
+		AppAppCategory:             newAppAppCategory(db, opts...),
+		AppCategory:                newAppCategory(db, opts...),
+		AppInfo:                    newAppInfo(db, opts...),
+		AppRunTime:                 newAppRunTime(db, opts...),
+		Device:                     newDevice(db, opts...),
+		Feed:                       newFeed(db, opts...),
+		FeedActionSet:              newFeedActionSet(db, opts...),
+		FeedConfig:                 newFeedConfig(db, opts...),
+		FeedConfigAction:           newFeedConfigAction(db, opts...),
+		FeedItemCollection:         newFeedItemCollection(db, opts...),
+		FeedItemCollectionFeedItem: newFeedItemCollectionFeedItem(db, opts...),
+		File:                       newFile(db, opts...),
+		Image:                      newImage(db, opts...),
+		Item:                       newItem(db, opts...),
+		KV:                         newKV(db, opts...),
+		NotifyFlow:                 newNotifyFlow(db, opts...),
+		NotifyFlowSource:           newNotifyFlowSource(db, opts...),
+		NotifyFlowTarget:           newNotifyFlowTarget(db, opts...),
+		NotifySource:               newNotifySource(db, opts...),
+		NotifyTarget:               newNotifyTarget(db, opts...),
+		PorterContext:              newPorterContext(db, opts...),
+		PorterInstance:             newPorterInstance(db, opts...),
+		Sentinel:                   newSentinel(db, opts...),
+		SentinelAppBinary:          newSentinelAppBinary(db, opts...),
+		SentinelAppBinaryFile:      newSentinelAppBinaryFile(db, opts...),
+		SentinelLibrary:            newSentinelLibrary(db, opts...),
+		SentinelSession:            newSentinelSession(db, opts...),
+		Session:                    newSession(db, opts...),
+		StoreApp:                   newStoreApp(db, opts...),
+		StoreAppBinary:             newStoreAppBinary(db, opts...),
+		SystemNotification:         newSystemNotification(db, opts...),
+		Tag:                        newTag(db, opts...),
+		User:                       newUser(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	Account               account
-	App                   app
-	AppAppCategory        appAppCategory
-	AppCategory           appCategory
-	AppInfo               appInfo
-	AppRunTime            appRunTime
-	Device                device
-	Feed                  feed
-	FeedActionSet         feedActionSet
-	FeedConfig            feedConfig
-	FeedConfigAction      feedConfigAction
-	FeedItem              feedItem
-	FeedItemCollection    feedItemCollection
-	File                  file
-	Image                 image
-	KV                    kV
-	NotifyFlow            notifyFlow
-	NotifyFlowSource      notifyFlowSource
-	NotifyFlowTarget      notifyFlowTarget
-	NotifySource          notifySource
-	NotifyTarget          notifyTarget
-	PorterContext         porterContext
-	PorterInstance        porterInstance
-	Sentinel              sentinel
-	SentinelAppBinary     sentinelAppBinary
-	SentinelAppBinaryFile sentinelAppBinaryFile
-	SentinelLibrary       sentinelLibrary
-	SentinelSession       sentinelSession
-	Session               session
-	StoreApp              storeApp
-	StoreAppBinary        storeAppBinary
-	SystemNotification    systemNotification
-	Tag                   tag
-	User                  user
+	Account                    account
+	App                        app
+	AppAppCategory             appAppCategory
+	AppCategory                appCategory
+	AppInfo                    appInfo
+	AppRunTime                 appRunTime
+	Device                     device
+	Feed                       feed
+	FeedActionSet              feedActionSet
+	FeedConfig                 feedConfig
+	FeedConfigAction           feedConfigAction
+	FeedItemCollection         feedItemCollection
+	FeedItemCollectionFeedItem feedItemCollectionFeedItem
+	File                       file
+	Image                      image
+	Item                       item
+	KV                         kV
+	NotifyFlow                 notifyFlow
+	NotifyFlowSource           notifyFlowSource
+	NotifyFlowTarget           notifyFlowTarget
+	NotifySource               notifySource
+	NotifyTarget               notifyTarget
+	PorterContext              porterContext
+	PorterInstance             porterInstance
+	Sentinel                   sentinel
+	SentinelAppBinary          sentinelAppBinary
+	SentinelAppBinaryFile      sentinelAppBinaryFile
+	SentinelLibrary            sentinelLibrary
+	SentinelSession            sentinelSession
+	Session                    session
+	StoreApp                   storeApp
+	StoreAppBinary             storeAppBinary
+	SystemNotification         systemNotification
+	Tag                        tag
+	User                       user
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:                    db,
-		Account:               q.Account.clone(db),
-		App:                   q.App.clone(db),
-		AppAppCategory:        q.AppAppCategory.clone(db),
-		AppCategory:           q.AppCategory.clone(db),
-		AppInfo:               q.AppInfo.clone(db),
-		AppRunTime:            q.AppRunTime.clone(db),
-		Device:                q.Device.clone(db),
-		Feed:                  q.Feed.clone(db),
-		FeedActionSet:         q.FeedActionSet.clone(db),
-		FeedConfig:            q.FeedConfig.clone(db),
-		FeedConfigAction:      q.FeedConfigAction.clone(db),
-		FeedItem:              q.FeedItem.clone(db),
-		FeedItemCollection:    q.FeedItemCollection.clone(db),
-		File:                  q.File.clone(db),
-		Image:                 q.Image.clone(db),
-		KV:                    q.KV.clone(db),
-		NotifyFlow:            q.NotifyFlow.clone(db),
-		NotifyFlowSource:      q.NotifyFlowSource.clone(db),
-		NotifyFlowTarget:      q.NotifyFlowTarget.clone(db),
-		NotifySource:          q.NotifySource.clone(db),
-		NotifyTarget:          q.NotifyTarget.clone(db),
-		PorterContext:         q.PorterContext.clone(db),
-		PorterInstance:        q.PorterInstance.clone(db),
-		Sentinel:              q.Sentinel.clone(db),
-		SentinelAppBinary:     q.SentinelAppBinary.clone(db),
-		SentinelAppBinaryFile: q.SentinelAppBinaryFile.clone(db),
-		SentinelLibrary:       q.SentinelLibrary.clone(db),
-		SentinelSession:       q.SentinelSession.clone(db),
-		Session:               q.Session.clone(db),
-		StoreApp:              q.StoreApp.clone(db),
-		StoreAppBinary:        q.StoreAppBinary.clone(db),
-		SystemNotification:    q.SystemNotification.clone(db),
-		Tag:                   q.Tag.clone(db),
-		User:                  q.User.clone(db),
+		db:                         db,
+		Account:                    q.Account.clone(db),
+		App:                        q.App.clone(db),
+		AppAppCategory:             q.AppAppCategory.clone(db),
+		AppCategory:                q.AppCategory.clone(db),
+		AppInfo:                    q.AppInfo.clone(db),
+		AppRunTime:                 q.AppRunTime.clone(db),
+		Device:                     q.Device.clone(db),
+		Feed:                       q.Feed.clone(db),
+		FeedActionSet:              q.FeedActionSet.clone(db),
+		FeedConfig:                 q.FeedConfig.clone(db),
+		FeedConfigAction:           q.FeedConfigAction.clone(db),
+		FeedItemCollection:         q.FeedItemCollection.clone(db),
+		FeedItemCollectionFeedItem: q.FeedItemCollectionFeedItem.clone(db),
+		File:                       q.File.clone(db),
+		Image:                      q.Image.clone(db),
+		Item:                       q.Item.clone(db),
+		KV:                         q.KV.clone(db),
+		NotifyFlow:                 q.NotifyFlow.clone(db),
+		NotifyFlowSource:           q.NotifyFlowSource.clone(db),
+		NotifyFlowTarget:           q.NotifyFlowTarget.clone(db),
+		NotifySource:               q.NotifySource.clone(db),
+		NotifyTarget:               q.NotifyTarget.clone(db),
+		PorterContext:              q.PorterContext.clone(db),
+		PorterInstance:             q.PorterInstance.clone(db),
+		Sentinel:                   q.Sentinel.clone(db),
+		SentinelAppBinary:          q.SentinelAppBinary.clone(db),
+		SentinelAppBinaryFile:      q.SentinelAppBinaryFile.clone(db),
+		SentinelLibrary:            q.SentinelLibrary.clone(db),
+		SentinelSession:            q.SentinelSession.clone(db),
+		Session:                    q.Session.clone(db),
+		StoreApp:                   q.StoreApp.clone(db),
+		StoreAppBinary:             q.StoreAppBinary.clone(db),
+		SystemNotification:         q.SystemNotification.clone(db),
+		Tag:                        q.Tag.clone(db),
+		User:                       q.User.clone(db),
 	}
 }
 
@@ -222,117 +227,120 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:                    db,
-		Account:               q.Account.replaceDB(db),
-		App:                   q.App.replaceDB(db),
-		AppAppCategory:        q.AppAppCategory.replaceDB(db),
-		AppCategory:           q.AppCategory.replaceDB(db),
-		AppInfo:               q.AppInfo.replaceDB(db),
-		AppRunTime:            q.AppRunTime.replaceDB(db),
-		Device:                q.Device.replaceDB(db),
-		Feed:                  q.Feed.replaceDB(db),
-		FeedActionSet:         q.FeedActionSet.replaceDB(db),
-		FeedConfig:            q.FeedConfig.replaceDB(db),
-		FeedConfigAction:      q.FeedConfigAction.replaceDB(db),
-		FeedItem:              q.FeedItem.replaceDB(db),
-		FeedItemCollection:    q.FeedItemCollection.replaceDB(db),
-		File:                  q.File.replaceDB(db),
-		Image:                 q.Image.replaceDB(db),
-		KV:                    q.KV.replaceDB(db),
-		NotifyFlow:            q.NotifyFlow.replaceDB(db),
-		NotifyFlowSource:      q.NotifyFlowSource.replaceDB(db),
-		NotifyFlowTarget:      q.NotifyFlowTarget.replaceDB(db),
-		NotifySource:          q.NotifySource.replaceDB(db),
-		NotifyTarget:          q.NotifyTarget.replaceDB(db),
-		PorterContext:         q.PorterContext.replaceDB(db),
-		PorterInstance:        q.PorterInstance.replaceDB(db),
-		Sentinel:              q.Sentinel.replaceDB(db),
-		SentinelAppBinary:     q.SentinelAppBinary.replaceDB(db),
-		SentinelAppBinaryFile: q.SentinelAppBinaryFile.replaceDB(db),
-		SentinelLibrary:       q.SentinelLibrary.replaceDB(db),
-		SentinelSession:       q.SentinelSession.replaceDB(db),
-		Session:               q.Session.replaceDB(db),
-		StoreApp:              q.StoreApp.replaceDB(db),
-		StoreAppBinary:        q.StoreAppBinary.replaceDB(db),
-		SystemNotification:    q.SystemNotification.replaceDB(db),
-		Tag:                   q.Tag.replaceDB(db),
-		User:                  q.User.replaceDB(db),
+		db:                         db,
+		Account:                    q.Account.replaceDB(db),
+		App:                        q.App.replaceDB(db),
+		AppAppCategory:             q.AppAppCategory.replaceDB(db),
+		AppCategory:                q.AppCategory.replaceDB(db),
+		AppInfo:                    q.AppInfo.replaceDB(db),
+		AppRunTime:                 q.AppRunTime.replaceDB(db),
+		Device:                     q.Device.replaceDB(db),
+		Feed:                       q.Feed.replaceDB(db),
+		FeedActionSet:              q.FeedActionSet.replaceDB(db),
+		FeedConfig:                 q.FeedConfig.replaceDB(db),
+		FeedConfigAction:           q.FeedConfigAction.replaceDB(db),
+		FeedItemCollection:         q.FeedItemCollection.replaceDB(db),
+		FeedItemCollectionFeedItem: q.FeedItemCollectionFeedItem.replaceDB(db),
+		File:                       q.File.replaceDB(db),
+		Image:                      q.Image.replaceDB(db),
+		Item:                       q.Item.replaceDB(db),
+		KV:                         q.KV.replaceDB(db),
+		NotifyFlow:                 q.NotifyFlow.replaceDB(db),
+		NotifyFlowSource:           q.NotifyFlowSource.replaceDB(db),
+		NotifyFlowTarget:           q.NotifyFlowTarget.replaceDB(db),
+		NotifySource:               q.NotifySource.replaceDB(db),
+		NotifyTarget:               q.NotifyTarget.replaceDB(db),
+		PorterContext:              q.PorterContext.replaceDB(db),
+		PorterInstance:             q.PorterInstance.replaceDB(db),
+		Sentinel:                   q.Sentinel.replaceDB(db),
+		SentinelAppBinary:          q.SentinelAppBinary.replaceDB(db),
+		SentinelAppBinaryFile:      q.SentinelAppBinaryFile.replaceDB(db),
+		SentinelLibrary:            q.SentinelLibrary.replaceDB(db),
+		SentinelSession:            q.SentinelSession.replaceDB(db),
+		Session:                    q.Session.replaceDB(db),
+		StoreApp:                   q.StoreApp.replaceDB(db),
+		StoreAppBinary:             q.StoreAppBinary.replaceDB(db),
+		SystemNotification:         q.SystemNotification.replaceDB(db),
+		Tag:                        q.Tag.replaceDB(db),
+		User:                       q.User.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	Account               IAccountDo
-	App                   IAppDo
-	AppAppCategory        IAppAppCategoryDo
-	AppCategory           IAppCategoryDo
-	AppInfo               IAppInfoDo
-	AppRunTime            IAppRunTimeDo
-	Device                IDeviceDo
-	Feed                  IFeedDo
-	FeedActionSet         IFeedActionSetDo
-	FeedConfig            IFeedConfigDo
-	FeedConfigAction      IFeedConfigActionDo
-	FeedItem              IFeedItemDo
-	FeedItemCollection    IFeedItemCollectionDo
-	File                  IFileDo
-	Image                 IImageDo
-	KV                    IKVDo
-	NotifyFlow            INotifyFlowDo
-	NotifyFlowSource      INotifyFlowSourceDo
-	NotifyFlowTarget      INotifyFlowTargetDo
-	NotifySource          INotifySourceDo
-	NotifyTarget          INotifyTargetDo
-	PorterContext         IPorterContextDo
-	PorterInstance        IPorterInstanceDo
-	Sentinel              ISentinelDo
-	SentinelAppBinary     ISentinelAppBinaryDo
-	SentinelAppBinaryFile ISentinelAppBinaryFileDo
-	SentinelLibrary       ISentinelLibraryDo
-	SentinelSession       ISentinelSessionDo
-	Session               ISessionDo
-	StoreApp              IStoreAppDo
-	StoreAppBinary        IStoreAppBinaryDo
-	SystemNotification    ISystemNotificationDo
-	Tag                   ITagDo
-	User                  IUserDo
+	Account                    IAccountDo
+	App                        IAppDo
+	AppAppCategory             IAppAppCategoryDo
+	AppCategory                IAppCategoryDo
+	AppInfo                    IAppInfoDo
+	AppRunTime                 IAppRunTimeDo
+	Device                     IDeviceDo
+	Feed                       IFeedDo
+	FeedActionSet              IFeedActionSetDo
+	FeedConfig                 IFeedConfigDo
+	FeedConfigAction           IFeedConfigActionDo
+	FeedItemCollection         IFeedItemCollectionDo
+	FeedItemCollectionFeedItem IFeedItemCollectionFeedItemDo
+	File                       IFileDo
+	Image                      IImageDo
+	Item                       IItemDo
+	KV                         IKVDo
+	NotifyFlow                 INotifyFlowDo
+	NotifyFlowSource           INotifyFlowSourceDo
+	NotifyFlowTarget           INotifyFlowTargetDo
+	NotifySource               INotifySourceDo
+	NotifyTarget               INotifyTargetDo
+	PorterContext              IPorterContextDo
+	PorterInstance             IPorterInstanceDo
+	Sentinel                   ISentinelDo
+	SentinelAppBinary          ISentinelAppBinaryDo
+	SentinelAppBinaryFile      ISentinelAppBinaryFileDo
+	SentinelLibrary            ISentinelLibraryDo
+	SentinelSession            ISentinelSessionDo
+	Session                    ISessionDo
+	StoreApp                   IStoreAppDo
+	StoreAppBinary             IStoreAppBinaryDo
+	SystemNotification         ISystemNotificationDo
+	Tag                        ITagDo
+	User                       IUserDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		Account:               q.Account.WithContext(ctx),
-		App:                   q.App.WithContext(ctx),
-		AppAppCategory:        q.AppAppCategory.WithContext(ctx),
-		AppCategory:           q.AppCategory.WithContext(ctx),
-		AppInfo:               q.AppInfo.WithContext(ctx),
-		AppRunTime:            q.AppRunTime.WithContext(ctx),
-		Device:                q.Device.WithContext(ctx),
-		Feed:                  q.Feed.WithContext(ctx),
-		FeedActionSet:         q.FeedActionSet.WithContext(ctx),
-		FeedConfig:            q.FeedConfig.WithContext(ctx),
-		FeedConfigAction:      q.FeedConfigAction.WithContext(ctx),
-		FeedItem:              q.FeedItem.WithContext(ctx),
-		FeedItemCollection:    q.FeedItemCollection.WithContext(ctx),
-		File:                  q.File.WithContext(ctx),
-		Image:                 q.Image.WithContext(ctx),
-		KV:                    q.KV.WithContext(ctx),
-		NotifyFlow:            q.NotifyFlow.WithContext(ctx),
-		NotifyFlowSource:      q.NotifyFlowSource.WithContext(ctx),
-		NotifyFlowTarget:      q.NotifyFlowTarget.WithContext(ctx),
-		NotifySource:          q.NotifySource.WithContext(ctx),
-		NotifyTarget:          q.NotifyTarget.WithContext(ctx),
-		PorterContext:         q.PorterContext.WithContext(ctx),
-		PorterInstance:        q.PorterInstance.WithContext(ctx),
-		Sentinel:              q.Sentinel.WithContext(ctx),
-		SentinelAppBinary:     q.SentinelAppBinary.WithContext(ctx),
-		SentinelAppBinaryFile: q.SentinelAppBinaryFile.WithContext(ctx),
-		SentinelLibrary:       q.SentinelLibrary.WithContext(ctx),
-		SentinelSession:       q.SentinelSession.WithContext(ctx),
-		Session:               q.Session.WithContext(ctx),
-		StoreApp:              q.StoreApp.WithContext(ctx),
-		StoreAppBinary:        q.StoreAppBinary.WithContext(ctx),
-		SystemNotification:    q.SystemNotification.WithContext(ctx),
-		Tag:                   q.Tag.WithContext(ctx),
-		User:                  q.User.WithContext(ctx),
+		Account:                    q.Account.WithContext(ctx),
+		App:                        q.App.WithContext(ctx),
+		AppAppCategory:             q.AppAppCategory.WithContext(ctx),
+		AppCategory:                q.AppCategory.WithContext(ctx),
+		AppInfo:                    q.AppInfo.WithContext(ctx),
+		AppRunTime:                 q.AppRunTime.WithContext(ctx),
+		Device:                     q.Device.WithContext(ctx),
+		Feed:                       q.Feed.WithContext(ctx),
+		FeedActionSet:              q.FeedActionSet.WithContext(ctx),
+		FeedConfig:                 q.FeedConfig.WithContext(ctx),
+		FeedConfigAction:           q.FeedConfigAction.WithContext(ctx),
+		FeedItemCollection:         q.FeedItemCollection.WithContext(ctx),
+		FeedItemCollectionFeedItem: q.FeedItemCollectionFeedItem.WithContext(ctx),
+		File:                       q.File.WithContext(ctx),
+		Image:                      q.Image.WithContext(ctx),
+		Item:                       q.Item.WithContext(ctx),
+		KV:                         q.KV.WithContext(ctx),
+		NotifyFlow:                 q.NotifyFlow.WithContext(ctx),
+		NotifyFlowSource:           q.NotifyFlowSource.WithContext(ctx),
+		NotifyFlowTarget:           q.NotifyFlowTarget.WithContext(ctx),
+		NotifySource:               q.NotifySource.WithContext(ctx),
+		NotifyTarget:               q.NotifyTarget.WithContext(ctx),
+		PorterContext:              q.PorterContext.WithContext(ctx),
+		PorterInstance:             q.PorterInstance.WithContext(ctx),
+		Sentinel:                   q.Sentinel.WithContext(ctx),
+		SentinelAppBinary:          q.SentinelAppBinary.WithContext(ctx),
+		SentinelAppBinaryFile:      q.SentinelAppBinaryFile.WithContext(ctx),
+		SentinelLibrary:            q.SentinelLibrary.WithContext(ctx),
+		SentinelSession:            q.SentinelSession.WithContext(ctx),
+		Session:                    q.Session.WithContext(ctx),
+		StoreApp:                   q.StoreApp.WithContext(ctx),
+		StoreAppBinary:             q.StoreAppBinary.WithContext(ctx),
+		SystemNotification:         q.SystemNotification.WithContext(ctx),
+		Tag:                        q.Tag.WithContext(ctx),
+		User:                       q.User.WithContext(ctx),
 	}
 }
 

@@ -8,7 +8,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,7 +24,7 @@ func newNotifySource(db *gorm.DB, opts ...gen.DOOption) notifySource {
 	_notifySource := notifySource{}
 
 	_notifySource.notifySourceDo.UseDB(db, opts...)
-	_notifySource.notifySourceDo.UseModel(&model.NotifySource{})
+	_notifySource.notifySourceDo.UseModel(&modelnetzach.NotifySource{})
 
 	tableName := _notifySource.notifySourceDo.TableName()
 	_notifySource.ALL = field.NewAsterisk(tableName)
@@ -37,81 +38,23 @@ func newNotifySource(db *gorm.DB, opts ...gen.DOOption) notifySource {
 		db: db.Session(&gorm.Session{}),
 
 		RelationField: field.NewRelation("Owner", "model.User"),
-		Creator: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("Owner.Creator", "model.User"),
-		},
 		Sessions: struct {
 			field.RelationField
-			User struct {
-				field.RelationField
-			}
 			Device struct {
 				field.RelationField
 				Sessions struct {
 					field.RelationField
 				}
-				App struct {
-					field.RelationField
-					User struct {
-						field.RelationField
-					}
-					Device struct {
-						field.RelationField
-					}
-					AppRunTime struct {
-						field.RelationField
-						App struct {
-							field.RelationField
-						}
-					}
-					AppCategories struct {
-						field.RelationField
-						AppAppCategories struct {
-							field.RelationField
-						}
-						Apps struct {
-							field.RelationField
-						}
-					}
-				}
+			}
+			User struct {
+				field.RelationField
 			}
 		}{
 			RelationField: field.NewRelation("Owner.Sessions", "model.Session"),
-			User: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Owner.Sessions.User", "model.User"),
-			},
 			Device: struct {
 				field.RelationField
 				Sessions struct {
 					field.RelationField
-				}
-				App struct {
-					field.RelationField
-					User struct {
-						field.RelationField
-					}
-					Device struct {
-						field.RelationField
-					}
-					AppRunTime struct {
-						field.RelationField
-						App struct {
-							field.RelationField
-						}
-					}
-					AppCategories struct {
-						field.RelationField
-						AppAppCategories struct {
-							field.RelationField
-						}
-						Apps struct {
-							field.RelationField
-						}
-					}
 				}
 			}{
 				RelationField: field.NewRelation("Owner.Sessions.Device", "model.Device"),
@@ -120,76 +63,11 @@ func newNotifySource(db *gorm.DB, opts ...gen.DOOption) notifySource {
 				}{
 					RelationField: field.NewRelation("Owner.Sessions.Device.Sessions", "model.Session"),
 				},
-				App: struct {
-					field.RelationField
-					User struct {
-						field.RelationField
-					}
-					Device struct {
-						field.RelationField
-					}
-					AppRunTime struct {
-						field.RelationField
-						App struct {
-							field.RelationField
-						}
-					}
-					AppCategories struct {
-						field.RelationField
-						AppAppCategories struct {
-							field.RelationField
-						}
-						Apps struct {
-							field.RelationField
-						}
-					}
-				}{
-					RelationField: field.NewRelation("Owner.Sessions.Device.App", "model.App"),
-					User: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("Owner.Sessions.Device.App.User", "model.User"),
-					},
-					Device: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("Owner.Sessions.Device.App.Device", "model.Device"),
-					},
-					AppRunTime: struct {
-						field.RelationField
-						App struct {
-							field.RelationField
-						}
-					}{
-						RelationField: field.NewRelation("Owner.Sessions.Device.App.AppRunTime", "model.AppRunTime"),
-						App: struct {
-							field.RelationField
-						}{
-							RelationField: field.NewRelation("Owner.Sessions.Device.App.AppRunTime.App", "model.App"),
-						},
-					},
-					AppCategories: struct {
-						field.RelationField
-						AppAppCategories struct {
-							field.RelationField
-						}
-						Apps struct {
-							field.RelationField
-						}
-					}{
-						RelationField: field.NewRelation("Owner.Sessions.Device.App.AppCategories", "model.AppCategory"),
-						AppAppCategories: struct {
-							field.RelationField
-						}{
-							RelationField: field.NewRelation("Owner.Sessions.Device.App.AppCategories.AppAppCategories", "model.AppAppCategory"),
-						},
-						Apps: struct {
-							field.RelationField
-						}{
-							RelationField: field.NewRelation("Owner.Sessions.Device.App.AppCategories.Apps", "model.App"),
-						},
-					},
-				},
+			},
+			User: struct {
+				field.RelationField
+			}{
+				RelationField: field.NewRelation("Owner.Sessions.User", "model.User"),
 			},
 		},
 		Account: struct {
@@ -205,530 +83,6 @@ func newNotifySource(db *gorm.DB, opts ...gen.DOOption) notifySource {
 				RelationField: field.NewRelation("Owner.Account.BoundUser", "model.User"),
 			},
 		},
-		App: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("Owner.App", "model.App"),
-		},
-		FeedConfig: struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-			Feed struct {
-				field.RelationField
-				Config struct {
-					field.RelationField
-				}
-				Item struct {
-					field.RelationField
-					Feed struct {
-						field.RelationField
-					}
-					FeedItemCollections struct {
-						field.RelationField
-						Owner struct {
-							field.RelationField
-						}
-						NotifySource struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							FeedConfig struct {
-								field.RelationField
-							}
-							FeedItemCollection struct {
-								field.RelationField
-							}
-							NotifyFlows struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								NotifyFlowTargets struct {
-									field.RelationField
-								}
-								NotifyFlowSources struct {
-									field.RelationField
-								}
-								NotifyTargets struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlows struct {
-										field.RelationField
-									}
-								}
-								NotifySources struct {
-									field.RelationField
-								}
-							}
-						}
-						FeedItems struct {
-							field.RelationField
-						}
-					}
-				}
-			}
-			NotifySource struct {
-				field.RelationField
-			}
-			FeedActionSets struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				FeedConfigs struct {
-					field.RelationField
-				}
-			}
-		}{
-			RelationField: field.NewRelation("Owner.FeedConfig", "model.FeedConfig"),
-			Owner: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Owner.FeedConfig.Owner", "model.User"),
-			},
-			Feed: struct {
-				field.RelationField
-				Config struct {
-					field.RelationField
-				}
-				Item struct {
-					field.RelationField
-					Feed struct {
-						field.RelationField
-					}
-					FeedItemCollections struct {
-						field.RelationField
-						Owner struct {
-							field.RelationField
-						}
-						NotifySource struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							FeedConfig struct {
-								field.RelationField
-							}
-							FeedItemCollection struct {
-								field.RelationField
-							}
-							NotifyFlows struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								NotifyFlowTargets struct {
-									field.RelationField
-								}
-								NotifyFlowSources struct {
-									field.RelationField
-								}
-								NotifyTargets struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlows struct {
-										field.RelationField
-									}
-								}
-								NotifySources struct {
-									field.RelationField
-								}
-							}
-						}
-						FeedItems struct {
-							field.RelationField
-						}
-					}
-				}
-			}{
-				RelationField: field.NewRelation("Owner.FeedConfig.Feed", "model.Feed"),
-				Config: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Owner.FeedConfig.Feed.Config", "model.FeedConfig"),
-				},
-				Item: struct {
-					field.RelationField
-					Feed struct {
-						field.RelationField
-					}
-					FeedItemCollections struct {
-						field.RelationField
-						Owner struct {
-							field.RelationField
-						}
-						NotifySource struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							FeedConfig struct {
-								field.RelationField
-							}
-							FeedItemCollection struct {
-								field.RelationField
-							}
-							NotifyFlows struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								NotifyFlowTargets struct {
-									field.RelationField
-								}
-								NotifyFlowSources struct {
-									field.RelationField
-								}
-								NotifyTargets struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlows struct {
-										field.RelationField
-									}
-								}
-								NotifySources struct {
-									field.RelationField
-								}
-							}
-						}
-						FeedItems struct {
-							field.RelationField
-						}
-					}
-				}{
-					RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item", "model.FeedItem"),
-					Feed: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.Feed", "model.Feed"),
-					},
-					FeedItemCollections: struct {
-						field.RelationField
-						Owner struct {
-							field.RelationField
-						}
-						NotifySource struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							FeedConfig struct {
-								field.RelationField
-							}
-							FeedItemCollection struct {
-								field.RelationField
-							}
-							NotifyFlows struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								NotifyFlowTargets struct {
-									field.RelationField
-								}
-								NotifyFlowSources struct {
-									field.RelationField
-								}
-								NotifyTargets struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlows struct {
-										field.RelationField
-									}
-								}
-								NotifySources struct {
-									field.RelationField
-								}
-							}
-						}
-						FeedItems struct {
-							field.RelationField
-						}
-					}{
-						RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections", "model.FeedItemCollection"),
-						Owner: struct {
-							field.RelationField
-						}{
-							RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.Owner", "model.User"),
-						},
-						NotifySource: struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							FeedConfig struct {
-								field.RelationField
-							}
-							FeedItemCollection struct {
-								field.RelationField
-							}
-							NotifyFlows struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								NotifyFlowTargets struct {
-									field.RelationField
-								}
-								NotifyFlowSources struct {
-									field.RelationField
-								}
-								NotifyTargets struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlows struct {
-										field.RelationField
-									}
-								}
-								NotifySources struct {
-									field.RelationField
-								}
-							}
-						}{
-							RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource", "model.NotifySource"),
-							Owner: struct {
-								field.RelationField
-							}{
-								RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.Owner", "model.User"),
-							},
-							FeedConfig: struct {
-								field.RelationField
-							}{
-								RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.FeedConfig", "model.FeedConfig"),
-							},
-							FeedItemCollection: struct {
-								field.RelationField
-							}{
-								RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.FeedItemCollection", "model.FeedItemCollection"),
-							},
-							NotifyFlows: struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								NotifyFlowTargets struct {
-									field.RelationField
-								}
-								NotifyFlowSources struct {
-									field.RelationField
-								}
-								NotifyTargets struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlows struct {
-										field.RelationField
-									}
-								}
-								NotifySources struct {
-									field.RelationField
-								}
-							}{
-								RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows", "model.NotifyFlow"),
-								Owner: struct {
-									field.RelationField
-								}{
-									RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.Owner", "model.User"),
-								},
-								NotifyFlowTargets: struct {
-									field.RelationField
-								}{
-									RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyFlowTargets", "model.NotifyFlowTarget"),
-								},
-								NotifyFlowSources: struct {
-									field.RelationField
-								}{
-									RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyFlowSources", "model.NotifyFlowSource"),
-								},
-								NotifyTargets: struct {
-									field.RelationField
-									Owner struct {
-										field.RelationField
-									}
-									NotifyFlows struct {
-										field.RelationField
-									}
-								}{
-									RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyTargets", "model.NotifyTarget"),
-									Owner: struct {
-										field.RelationField
-									}{
-										RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyTargets.Owner", "model.User"),
-									},
-									NotifyFlows: struct {
-										field.RelationField
-									}{
-										RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifyTargets.NotifyFlows", "model.NotifyFlow"),
-									},
-								},
-								NotifySources: struct {
-									field.RelationField
-								}{
-									RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.NotifySource.NotifyFlows.NotifySources", "model.NotifySource"),
-								},
-							},
-						},
-						FeedItems: struct {
-							field.RelationField
-						}{
-							RelationField: field.NewRelation("Owner.FeedConfig.Feed.Item.FeedItemCollections.FeedItems", "model.FeedItem"),
-						},
-					},
-				},
-			},
-			NotifySource: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Owner.FeedConfig.NotifySource", "model.NotifySource"),
-			},
-			FeedActionSets: struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				FeedConfigs struct {
-					field.RelationField
-				}
-			}{
-				RelationField: field.NewRelation("Owner.FeedConfig.FeedActionSets", "model.FeedActionSet"),
-				Owner: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Owner.FeedConfig.FeedActionSets.Owner", "model.User"),
-				},
-				FeedConfigs: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Owner.FeedConfig.FeedActionSets.FeedConfigs", "model.FeedConfig"),
-				},
-			},
-		},
-		NotifySource: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("Owner.NotifySource", "model.NotifySource"),
-		},
-		NotifyTarget: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("Owner.NotifyTarget", "model.NotifyTarget"),
-		},
-		NotifyFlow: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("Owner.NotifyFlow", "model.NotifyFlow"),
-		},
-		Image: struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-			File struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				Image struct {
-					field.RelationField
-				}
-			}
-		}{
-			RelationField: field.NewRelation("Owner.Image", "model.Image"),
-			Owner: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Owner.Image.Owner", "model.User"),
-			},
-			File: struct {
-				field.RelationField
-				Owner struct {
-					field.RelationField
-				}
-				Image struct {
-					field.RelationField
-				}
-			}{
-				RelationField: field.NewRelation("Owner.Image.File", "model.File"),
-				Owner: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Owner.Image.File.Owner", "model.User"),
-				},
-				Image: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("Owner.Image.File.Image", "model.Image"),
-				},
-			},
-		},
-		File: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("Owner.File", "model.File"),
-		},
-		Tag: struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-		}{
-			RelationField: field.NewRelation("Owner.Tag", "model.Tag"),
-			Owner: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Owner.Tag.Owner", "model.User"),
-			},
-		},
-		PorterContext: struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-		}{
-			RelationField: field.NewRelation("Owner.PorterContext", "model.PorterContext"),
-			Owner: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Owner.PorterContext.Owner", "model.User"),
-			},
-		},
-		CreatedUser: struct {
-			field.RelationField
-		}{
-			RelationField: field.NewRelation("Owner.CreatedUser", "model.User"),
-		},
-	}
-
-	_notifySource.FeedConfig = notifySourceBelongsToFeedConfig{
-		db: db.Session(&gorm.Session{}),
-
-		RelationField: field.NewRelation("FeedConfig", "model.FeedConfig"),
-	}
-
-	_notifySource.FeedItemCollection = notifySourceBelongsToFeedItemCollection{
-		db: db.Session(&gorm.Session{}),
-
-		RelationField: field.NewRelation("FeedItemCollection", "model.FeedItemCollection"),
-	}
-
-	_notifySource.NotifyFlows = notifySourceManyToManyNotifyFlows{
-		db: db.Session(&gorm.Session{}),
-
-		RelationField: field.NewRelation("NotifyFlows", "model.NotifyFlow"),
 	}
 
 	_notifySource.fillFieldMap()
@@ -747,12 +101,6 @@ type notifySource struct {
 	UpdatedAt            field.Time
 	CreatedAt            field.Time
 	Owner                notifySourceBelongsToOwner
-
-	FeedConfig notifySourceBelongsToFeedConfig
-
-	FeedItemCollection notifySourceBelongsToFeedItemCollection
-
-	NotifyFlows notifySourceManyToManyNotifyFlows
 
 	fieldMap map[string]field.Expr
 }
@@ -803,7 +151,7 @@ func (n *notifySource) GetFieldByName(fieldName string) (field.OrderExpr, bool) 
 }
 
 func (n *notifySource) fillFieldMap() {
-	n.fieldMap = make(map[string]field.Expr, 10)
+	n.fieldMap = make(map[string]field.Expr, 7)
 	n.fieldMap["id"] = n.ID
 	n.fieldMap["user_notify_source"] = n.OwnerID
 	n.fieldMap["feed_config_id"] = n.FeedConfigID
@@ -817,21 +165,12 @@ func (n notifySource) clone(db *gorm.DB) notifySource {
 	n.notifySourceDo.ReplaceConnPool(db.Statement.ConnPool)
 	n.Owner.db = db.Session(&gorm.Session{Initialized: true})
 	n.Owner.db.Statement.ConnPool = db.Statement.ConnPool
-	n.FeedConfig.db = db.Session(&gorm.Session{Initialized: true})
-	n.FeedConfig.db.Statement.ConnPool = db.Statement.ConnPool
-	n.FeedItemCollection.db = db.Session(&gorm.Session{Initialized: true})
-	n.FeedItemCollection.db.Statement.ConnPool = db.Statement.ConnPool
-	n.NotifyFlows.db = db.Session(&gorm.Session{Initialized: true})
-	n.NotifyFlows.db.Statement.ConnPool = db.Statement.ConnPool
 	return n
 }
 
 func (n notifySource) replaceDB(db *gorm.DB) notifySource {
 	n.notifySourceDo.ReplaceDB(db)
 	n.Owner.db = db.Session(&gorm.Session{})
-	n.FeedConfig.db = db.Session(&gorm.Session{})
-	n.FeedItemCollection.db = db.Session(&gorm.Session{})
-	n.NotifyFlows.db = db.Session(&gorm.Session{})
 	return n
 }
 
@@ -840,43 +179,16 @@ type notifySourceBelongsToOwner struct {
 
 	field.RelationField
 
-	Creator struct {
-		field.RelationField
-	}
 	Sessions struct {
 		field.RelationField
-		User struct {
-			field.RelationField
-		}
 		Device struct {
 			field.RelationField
 			Sessions struct {
 				field.RelationField
 			}
-			App struct {
-				field.RelationField
-				User struct {
-					field.RelationField
-				}
-				Device struct {
-					field.RelationField
-				}
-				AppRunTime struct {
-					field.RelationField
-					App struct {
-						field.RelationField
-					}
-				}
-				AppCategories struct {
-					field.RelationField
-					AppAppCategories struct {
-						field.RelationField
-					}
-					Apps struct {
-						field.RelationField
-					}
-				}
-			}
+		}
+		User struct {
+			field.RelationField
 		}
 	}
 	Account struct {
@@ -884,126 +196,6 @@ type notifySourceBelongsToOwner struct {
 		BoundUser struct {
 			field.RelationField
 		}
-	}
-	App struct {
-		field.RelationField
-	}
-	FeedConfig struct {
-		field.RelationField
-		Owner struct {
-			field.RelationField
-		}
-		Feed struct {
-			field.RelationField
-			Config struct {
-				field.RelationField
-			}
-			Item struct {
-				field.RelationField
-				Feed struct {
-					field.RelationField
-				}
-				FeedItemCollections struct {
-					field.RelationField
-					Owner struct {
-						field.RelationField
-					}
-					NotifySource struct {
-						field.RelationField
-						Owner struct {
-							field.RelationField
-						}
-						FeedConfig struct {
-							field.RelationField
-						}
-						FeedItemCollection struct {
-							field.RelationField
-						}
-						NotifyFlows struct {
-							field.RelationField
-							Owner struct {
-								field.RelationField
-							}
-							NotifyFlowTargets struct {
-								field.RelationField
-							}
-							NotifyFlowSources struct {
-								field.RelationField
-							}
-							NotifyTargets struct {
-								field.RelationField
-								Owner struct {
-									field.RelationField
-								}
-								NotifyFlows struct {
-									field.RelationField
-								}
-							}
-							NotifySources struct {
-								field.RelationField
-							}
-						}
-					}
-					FeedItems struct {
-						field.RelationField
-					}
-				}
-			}
-		}
-		NotifySource struct {
-			field.RelationField
-		}
-		FeedActionSets struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-			FeedConfigs struct {
-				field.RelationField
-			}
-		}
-	}
-	NotifySource struct {
-		field.RelationField
-	}
-	NotifyTarget struct {
-		field.RelationField
-	}
-	NotifyFlow struct {
-		field.RelationField
-	}
-	Image struct {
-		field.RelationField
-		Owner struct {
-			field.RelationField
-		}
-		File struct {
-			field.RelationField
-			Owner struct {
-				field.RelationField
-			}
-			Image struct {
-				field.RelationField
-			}
-		}
-	}
-	File struct {
-		field.RelationField
-	}
-	Tag struct {
-		field.RelationField
-		Owner struct {
-			field.RelationField
-		}
-	}
-	PorterContext struct {
-		field.RelationField
-		Owner struct {
-			field.RelationField
-		}
-	}
-	CreatedUser struct {
-		field.RelationField
 	}
 }
 
@@ -1030,7 +222,7 @@ func (a notifySourceBelongsToOwner) Session(session *gorm.Session) *notifySource
 	return &a
 }
 
-func (a notifySourceBelongsToOwner) Model(m *model.NotifySource) *notifySourceBelongsToOwnerTx {
+func (a notifySourceBelongsToOwner) Model(m *modelnetzach.NotifySource) *notifySourceBelongsToOwnerTx {
 	return &notifySourceBelongsToOwnerTx{a.db.Model(m).Association(a.Name())}
 }
 
@@ -1082,249 +274,6 @@ func (a notifySourceBelongsToOwnerTx) Unscoped() *notifySourceBelongsToOwnerTx {
 	return &a
 }
 
-type notifySourceBelongsToFeedConfig struct {
-	db *gorm.DB
-
-	field.RelationField
-}
-
-func (a notifySourceBelongsToFeedConfig) Where(conds ...field.Expr) *notifySourceBelongsToFeedConfig {
-	if len(conds) == 0 {
-		return &a
-	}
-
-	exprs := make([]clause.Expression, 0, len(conds))
-	for _, cond := range conds {
-		exprs = append(exprs, cond.BeCond().(clause.Expression))
-	}
-	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
-	return &a
-}
-
-func (a notifySourceBelongsToFeedConfig) WithContext(ctx context.Context) *notifySourceBelongsToFeedConfig {
-	a.db = a.db.WithContext(ctx)
-	return &a
-}
-
-func (a notifySourceBelongsToFeedConfig) Session(session *gorm.Session) *notifySourceBelongsToFeedConfig {
-	a.db = a.db.Session(session)
-	return &a
-}
-
-func (a notifySourceBelongsToFeedConfig) Model(m *model.NotifySource) *notifySourceBelongsToFeedConfigTx {
-	return &notifySourceBelongsToFeedConfigTx{a.db.Model(m).Association(a.Name())}
-}
-
-func (a notifySourceBelongsToFeedConfig) Unscoped() *notifySourceBelongsToFeedConfig {
-	a.db = a.db.Unscoped()
-	return &a
-}
-
-type notifySourceBelongsToFeedConfigTx struct{ tx *gorm.Association }
-
-func (a notifySourceBelongsToFeedConfigTx) Find() (result *model.FeedConfig, err error) {
-	return result, a.tx.Find(&result)
-}
-
-func (a notifySourceBelongsToFeedConfigTx) Append(values ...*model.FeedConfig) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Append(targetValues...)
-}
-
-func (a notifySourceBelongsToFeedConfigTx) Replace(values ...*model.FeedConfig) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Replace(targetValues...)
-}
-
-func (a notifySourceBelongsToFeedConfigTx) Delete(values ...*model.FeedConfig) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Delete(targetValues...)
-}
-
-func (a notifySourceBelongsToFeedConfigTx) Clear() error {
-	return a.tx.Clear()
-}
-
-func (a notifySourceBelongsToFeedConfigTx) Count() int64 {
-	return a.tx.Count()
-}
-
-func (a notifySourceBelongsToFeedConfigTx) Unscoped() *notifySourceBelongsToFeedConfigTx {
-	a.tx = a.tx.Unscoped()
-	return &a
-}
-
-type notifySourceBelongsToFeedItemCollection struct {
-	db *gorm.DB
-
-	field.RelationField
-}
-
-func (a notifySourceBelongsToFeedItemCollection) Where(conds ...field.Expr) *notifySourceBelongsToFeedItemCollection {
-	if len(conds) == 0 {
-		return &a
-	}
-
-	exprs := make([]clause.Expression, 0, len(conds))
-	for _, cond := range conds {
-		exprs = append(exprs, cond.BeCond().(clause.Expression))
-	}
-	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
-	return &a
-}
-
-func (a notifySourceBelongsToFeedItemCollection) WithContext(ctx context.Context) *notifySourceBelongsToFeedItemCollection {
-	a.db = a.db.WithContext(ctx)
-	return &a
-}
-
-func (a notifySourceBelongsToFeedItemCollection) Session(session *gorm.Session) *notifySourceBelongsToFeedItemCollection {
-	a.db = a.db.Session(session)
-	return &a
-}
-
-func (a notifySourceBelongsToFeedItemCollection) Model(m *model.NotifySource) *notifySourceBelongsToFeedItemCollectionTx {
-	return &notifySourceBelongsToFeedItemCollectionTx{a.db.Model(m).Association(a.Name())}
-}
-
-func (a notifySourceBelongsToFeedItemCollection) Unscoped() *notifySourceBelongsToFeedItemCollection {
-	a.db = a.db.Unscoped()
-	return &a
-}
-
-type notifySourceBelongsToFeedItemCollectionTx struct{ tx *gorm.Association }
-
-func (a notifySourceBelongsToFeedItemCollectionTx) Find() (result *model.FeedItemCollection, err error) {
-	return result, a.tx.Find(&result)
-}
-
-func (a notifySourceBelongsToFeedItemCollectionTx) Append(values ...*model.FeedItemCollection) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Append(targetValues...)
-}
-
-func (a notifySourceBelongsToFeedItemCollectionTx) Replace(values ...*model.FeedItemCollection) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Replace(targetValues...)
-}
-
-func (a notifySourceBelongsToFeedItemCollectionTx) Delete(values ...*model.FeedItemCollection) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Delete(targetValues...)
-}
-
-func (a notifySourceBelongsToFeedItemCollectionTx) Clear() error {
-	return a.tx.Clear()
-}
-
-func (a notifySourceBelongsToFeedItemCollectionTx) Count() int64 {
-	return a.tx.Count()
-}
-
-func (a notifySourceBelongsToFeedItemCollectionTx) Unscoped() *notifySourceBelongsToFeedItemCollectionTx {
-	a.tx = a.tx.Unscoped()
-	return &a
-}
-
-type notifySourceManyToManyNotifyFlows struct {
-	db *gorm.DB
-
-	field.RelationField
-}
-
-func (a notifySourceManyToManyNotifyFlows) Where(conds ...field.Expr) *notifySourceManyToManyNotifyFlows {
-	if len(conds) == 0 {
-		return &a
-	}
-
-	exprs := make([]clause.Expression, 0, len(conds))
-	for _, cond := range conds {
-		exprs = append(exprs, cond.BeCond().(clause.Expression))
-	}
-	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
-	return &a
-}
-
-func (a notifySourceManyToManyNotifyFlows) WithContext(ctx context.Context) *notifySourceManyToManyNotifyFlows {
-	a.db = a.db.WithContext(ctx)
-	return &a
-}
-
-func (a notifySourceManyToManyNotifyFlows) Session(session *gorm.Session) *notifySourceManyToManyNotifyFlows {
-	a.db = a.db.Session(session)
-	return &a
-}
-
-func (a notifySourceManyToManyNotifyFlows) Model(m *model.NotifySource) *notifySourceManyToManyNotifyFlowsTx {
-	return &notifySourceManyToManyNotifyFlowsTx{a.db.Model(m).Association(a.Name())}
-}
-
-func (a notifySourceManyToManyNotifyFlows) Unscoped() *notifySourceManyToManyNotifyFlows {
-	a.db = a.db.Unscoped()
-	return &a
-}
-
-type notifySourceManyToManyNotifyFlowsTx struct{ tx *gorm.Association }
-
-func (a notifySourceManyToManyNotifyFlowsTx) Find() (result []*model.NotifyFlow, err error) {
-	return result, a.tx.Find(&result)
-}
-
-func (a notifySourceManyToManyNotifyFlowsTx) Append(values ...*model.NotifyFlow) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Append(targetValues...)
-}
-
-func (a notifySourceManyToManyNotifyFlowsTx) Replace(values ...*model.NotifyFlow) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Replace(targetValues...)
-}
-
-func (a notifySourceManyToManyNotifyFlowsTx) Delete(values ...*model.NotifyFlow) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Delete(targetValues...)
-}
-
-func (a notifySourceManyToManyNotifyFlowsTx) Clear() error {
-	return a.tx.Clear()
-}
-
-func (a notifySourceManyToManyNotifyFlowsTx) Count() int64 {
-	return a.tx.Count()
-}
-
-func (a notifySourceManyToManyNotifyFlowsTx) Unscoped() *notifySourceManyToManyNotifyFlowsTx {
-	a.tx = a.tx.Unscoped()
-	return &a
-}
-
 type notifySourceDo struct{ gen.DO }
 
 type INotifySourceDo interface {
@@ -1356,17 +305,17 @@ type INotifySourceDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) INotifySourceDo
 	Unscoped() INotifySourceDo
-	Create(values ...*model.NotifySource) error
-	CreateInBatches(values []*model.NotifySource, batchSize int) error
-	Save(values ...*model.NotifySource) error
-	First() (*model.NotifySource, error)
-	Take() (*model.NotifySource, error)
-	Last() (*model.NotifySource, error)
-	Find() ([]*model.NotifySource, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.NotifySource, err error)
-	FindInBatches(result *[]*model.NotifySource, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelnetzach.NotifySource) error
+	CreateInBatches(values []*modelnetzach.NotifySource, batchSize int) error
+	Save(values ...*modelnetzach.NotifySource) error
+	First() (*modelnetzach.NotifySource, error)
+	Take() (*modelnetzach.NotifySource, error)
+	Last() (*modelnetzach.NotifySource, error)
+	Find() ([]*modelnetzach.NotifySource, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelnetzach.NotifySource, err error)
+	FindInBatches(result *[]*modelnetzach.NotifySource, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.NotifySource) (info gen.ResultInfo, err error)
+	Delete(...*modelnetzach.NotifySource) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -1378,9 +327,9 @@ type INotifySourceDo interface {
 	Assign(attrs ...field.AssignExpr) INotifySourceDo
 	Joins(fields ...field.RelationField) INotifySourceDo
 	Preload(fields ...field.RelationField) INotifySourceDo
-	FirstOrInit() (*model.NotifySource, error)
-	FirstOrCreate() (*model.NotifySource, error)
-	FindByPage(offset int, limit int) (result []*model.NotifySource, count int64, err error)
+	FirstOrInit() (*modelnetzach.NotifySource, error)
+	FirstOrCreate() (*modelnetzach.NotifySource, error)
+	FindByPage(offset int, limit int) (result []*modelnetzach.NotifySource, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -1482,57 +431,57 @@ func (n notifySourceDo) Unscoped() INotifySourceDo {
 	return n.withDO(n.DO.Unscoped())
 }
 
-func (n notifySourceDo) Create(values ...*model.NotifySource) error {
+func (n notifySourceDo) Create(values ...*modelnetzach.NotifySource) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return n.DO.Create(values)
 }
 
-func (n notifySourceDo) CreateInBatches(values []*model.NotifySource, batchSize int) error {
+func (n notifySourceDo) CreateInBatches(values []*modelnetzach.NotifySource, batchSize int) error {
 	return n.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (n notifySourceDo) Save(values ...*model.NotifySource) error {
+func (n notifySourceDo) Save(values ...*modelnetzach.NotifySource) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return n.DO.Save(values)
 }
 
-func (n notifySourceDo) First() (*model.NotifySource, error) {
+func (n notifySourceDo) First() (*modelnetzach.NotifySource, error) {
 	if result, err := n.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifySource), nil
+		return result.(*modelnetzach.NotifySource), nil
 	}
 }
 
-func (n notifySourceDo) Take() (*model.NotifySource, error) {
+func (n notifySourceDo) Take() (*modelnetzach.NotifySource, error) {
 	if result, err := n.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifySource), nil
+		return result.(*modelnetzach.NotifySource), nil
 	}
 }
 
-func (n notifySourceDo) Last() (*model.NotifySource, error) {
+func (n notifySourceDo) Last() (*modelnetzach.NotifySource, error) {
 	if result, err := n.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifySource), nil
+		return result.(*modelnetzach.NotifySource), nil
 	}
 }
 
-func (n notifySourceDo) Find() ([]*model.NotifySource, error) {
+func (n notifySourceDo) Find() ([]*modelnetzach.NotifySource, error) {
 	result, err := n.DO.Find()
-	return result.([]*model.NotifySource), err
+	return result.([]*modelnetzach.NotifySource), err
 }
 
-func (n notifySourceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.NotifySource, err error) {
-	buf := make([]*model.NotifySource, 0, batchSize)
+func (n notifySourceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelnetzach.NotifySource, err error) {
+	buf := make([]*modelnetzach.NotifySource, 0, batchSize)
 	err = n.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -1540,7 +489,7 @@ func (n notifySourceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int
 	return results, err
 }
 
-func (n notifySourceDo) FindInBatches(result *[]*model.NotifySource, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (n notifySourceDo) FindInBatches(result *[]*modelnetzach.NotifySource, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return n.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -1566,23 +515,23 @@ func (n notifySourceDo) Preload(fields ...field.RelationField) INotifySourceDo {
 	return &n
 }
 
-func (n notifySourceDo) FirstOrInit() (*model.NotifySource, error) {
+func (n notifySourceDo) FirstOrInit() (*modelnetzach.NotifySource, error) {
 	if result, err := n.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifySource), nil
+		return result.(*modelnetzach.NotifySource), nil
 	}
 }
 
-func (n notifySourceDo) FirstOrCreate() (*model.NotifySource, error) {
+func (n notifySourceDo) FirstOrCreate() (*modelnetzach.NotifySource, error) {
 	if result, err := n.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifySource), nil
+		return result.(*modelnetzach.NotifySource), nil
 	}
 }
 
-func (n notifySourceDo) FindByPage(offset int, limit int) (result []*model.NotifySource, count int64, err error) {
+func (n notifySourceDo) FindByPage(offset int, limit int) (result []*modelnetzach.NotifySource, count int64, err error) {
 	result, err = n.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -1611,7 +560,7 @@ func (n notifySourceDo) Scan(result interface{}) (err error) {
 	return n.DO.Scan(result)
 }
 
-func (n notifySourceDo) Delete(models ...*model.NotifySource) (result gen.ResultInfo, err error) {
+func (n notifySourceDo) Delete(models ...*modelnetzach.NotifySource) (result gen.ResultInfo, err error) {
 	return n.DO.Delete(models)
 }
 

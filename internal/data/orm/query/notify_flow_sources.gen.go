@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,7 +23,7 @@ func newNotifyFlowSource(db *gorm.DB, opts ...gen.DOOption) notifyFlowSource {
 	_notifyFlowSource := notifyFlowSource{}
 
 	_notifyFlowSource.notifyFlowSourceDo.UseDB(db, opts...)
-	_notifyFlowSource.notifyFlowSourceDo.UseModel(&model.NotifyFlowSource{})
+	_notifyFlowSource.notifyFlowSourceDo.UseModel(&modelnetzach.NotifyFlowSource{})
 
 	tableName := _notifyFlowSource.notifyFlowSourceDo.TableName()
 	_notifyFlowSource.ALL = field.NewAsterisk(tableName)
@@ -149,17 +149,17 @@ type INotifyFlowSourceDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) INotifyFlowSourceDo
 	Unscoped() INotifyFlowSourceDo
-	Create(values ...*model.NotifyFlowSource) error
-	CreateInBatches(values []*model.NotifyFlowSource, batchSize int) error
-	Save(values ...*model.NotifyFlowSource) error
-	First() (*model.NotifyFlowSource, error)
-	Take() (*model.NotifyFlowSource, error)
-	Last() (*model.NotifyFlowSource, error)
-	Find() ([]*model.NotifyFlowSource, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.NotifyFlowSource, err error)
-	FindInBatches(result *[]*model.NotifyFlowSource, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelnetzach.NotifyFlowSource) error
+	CreateInBatches(values []*modelnetzach.NotifyFlowSource, batchSize int) error
+	Save(values ...*modelnetzach.NotifyFlowSource) error
+	First() (*modelnetzach.NotifyFlowSource, error)
+	Take() (*modelnetzach.NotifyFlowSource, error)
+	Last() (*modelnetzach.NotifyFlowSource, error)
+	Find() ([]*modelnetzach.NotifyFlowSource, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelnetzach.NotifyFlowSource, err error)
+	FindInBatches(result *[]*modelnetzach.NotifyFlowSource, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.NotifyFlowSource) (info gen.ResultInfo, err error)
+	Delete(...*modelnetzach.NotifyFlowSource) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -171,9 +171,9 @@ type INotifyFlowSourceDo interface {
 	Assign(attrs ...field.AssignExpr) INotifyFlowSourceDo
 	Joins(fields ...field.RelationField) INotifyFlowSourceDo
 	Preload(fields ...field.RelationField) INotifyFlowSourceDo
-	FirstOrInit() (*model.NotifyFlowSource, error)
-	FirstOrCreate() (*model.NotifyFlowSource, error)
-	FindByPage(offset int, limit int) (result []*model.NotifyFlowSource, count int64, err error)
+	FirstOrInit() (*modelnetzach.NotifyFlowSource, error)
+	FirstOrCreate() (*modelnetzach.NotifyFlowSource, error)
+	FindByPage(offset int, limit int) (result []*modelnetzach.NotifyFlowSource, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -275,57 +275,57 @@ func (n notifyFlowSourceDo) Unscoped() INotifyFlowSourceDo {
 	return n.withDO(n.DO.Unscoped())
 }
 
-func (n notifyFlowSourceDo) Create(values ...*model.NotifyFlowSource) error {
+func (n notifyFlowSourceDo) Create(values ...*modelnetzach.NotifyFlowSource) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return n.DO.Create(values)
 }
 
-func (n notifyFlowSourceDo) CreateInBatches(values []*model.NotifyFlowSource, batchSize int) error {
+func (n notifyFlowSourceDo) CreateInBatches(values []*modelnetzach.NotifyFlowSource, batchSize int) error {
 	return n.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (n notifyFlowSourceDo) Save(values ...*model.NotifyFlowSource) error {
+func (n notifyFlowSourceDo) Save(values ...*modelnetzach.NotifyFlowSource) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return n.DO.Save(values)
 }
 
-func (n notifyFlowSourceDo) First() (*model.NotifyFlowSource, error) {
+func (n notifyFlowSourceDo) First() (*modelnetzach.NotifyFlowSource, error) {
 	if result, err := n.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifyFlowSource), nil
+		return result.(*modelnetzach.NotifyFlowSource), nil
 	}
 }
 
-func (n notifyFlowSourceDo) Take() (*model.NotifyFlowSource, error) {
+func (n notifyFlowSourceDo) Take() (*modelnetzach.NotifyFlowSource, error) {
 	if result, err := n.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifyFlowSource), nil
+		return result.(*modelnetzach.NotifyFlowSource), nil
 	}
 }
 
-func (n notifyFlowSourceDo) Last() (*model.NotifyFlowSource, error) {
+func (n notifyFlowSourceDo) Last() (*modelnetzach.NotifyFlowSource, error) {
 	if result, err := n.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifyFlowSource), nil
+		return result.(*modelnetzach.NotifyFlowSource), nil
 	}
 }
 
-func (n notifyFlowSourceDo) Find() ([]*model.NotifyFlowSource, error) {
+func (n notifyFlowSourceDo) Find() ([]*modelnetzach.NotifyFlowSource, error) {
 	result, err := n.DO.Find()
-	return result.([]*model.NotifyFlowSource), err
+	return result.([]*modelnetzach.NotifyFlowSource), err
 }
 
-func (n notifyFlowSourceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.NotifyFlowSource, err error) {
-	buf := make([]*model.NotifyFlowSource, 0, batchSize)
+func (n notifyFlowSourceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelnetzach.NotifyFlowSource, err error) {
+	buf := make([]*modelnetzach.NotifyFlowSource, 0, batchSize)
 	err = n.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -333,7 +333,7 @@ func (n notifyFlowSourceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch
 	return results, err
 }
 
-func (n notifyFlowSourceDo) FindInBatches(result *[]*model.NotifyFlowSource, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (n notifyFlowSourceDo) FindInBatches(result *[]*modelnetzach.NotifyFlowSource, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return n.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -359,23 +359,23 @@ func (n notifyFlowSourceDo) Preload(fields ...field.RelationField) INotifyFlowSo
 	return &n
 }
 
-func (n notifyFlowSourceDo) FirstOrInit() (*model.NotifyFlowSource, error) {
+func (n notifyFlowSourceDo) FirstOrInit() (*modelnetzach.NotifyFlowSource, error) {
 	if result, err := n.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifyFlowSource), nil
+		return result.(*modelnetzach.NotifyFlowSource), nil
 	}
 }
 
-func (n notifyFlowSourceDo) FirstOrCreate() (*model.NotifyFlowSource, error) {
+func (n notifyFlowSourceDo) FirstOrCreate() (*modelnetzach.NotifyFlowSource, error) {
 	if result, err := n.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.NotifyFlowSource), nil
+		return result.(*modelnetzach.NotifyFlowSource), nil
 	}
 }
 
-func (n notifyFlowSourceDo) FindByPage(offset int, limit int) (result []*model.NotifyFlowSource, count int64, err error) {
+func (n notifyFlowSourceDo) FindByPage(offset int, limit int) (result []*modelnetzach.NotifyFlowSource, count int64, err error) {
 	result, err = n.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -404,7 +404,7 @@ func (n notifyFlowSourceDo) Scan(result interface{}) (err error) {
 	return n.DO.Scan(result)
 }
 
-func (n notifyFlowSourceDo) Delete(models ...*model.NotifyFlowSource) (result gen.ResultInfo, err error) {
+func (n notifyFlowSourceDo) Delete(models ...*modelnetzach.NotifyFlowSource) (result gen.ResultInfo, err error) {
 	return n.DO.Delete(models)
 }
 

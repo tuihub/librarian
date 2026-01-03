@@ -97,7 +97,7 @@ func NewAngelaWeb(
 		for i := 1; i < len(strArgs); i += 2 {
 			data[strArgs[i]] = strArgs[i+1]
 		}
-		localize, err := fiberi18n.Localize(c, &i18n.LocalizeConfig{ //nolint:exhaustruct // no need
+		localize, err := fiberi18n.Localize(c, &i18n.LocalizeConfig{
 			MessageID:    key,
 			TemplateData: data,
 		})
@@ -131,7 +131,7 @@ func NewAngelaWeb(
 
 	fiberlog.SetOutput(io.Discard)
 
-	app := fiber.New(fiber.Config{ //nolint:exhaustruct // no need
+	app := fiber.New(fiber.Config{
 		Views:                 viewsEngine,
 		ViewsLayout:           "layout/default",
 		DisableStartupMessage: true,

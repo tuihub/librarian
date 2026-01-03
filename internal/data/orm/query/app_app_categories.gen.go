@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,12 +23,12 @@ func newAppAppCategory(db *gorm.DB, opts ...gen.DOOption) appAppCategory {
 	_appAppCategory := appAppCategory{}
 
 	_appAppCategory.appAppCategoryDo.UseDB(db, opts...)
-	_appAppCategory.appAppCategoryDo.UseModel(&model.AppAppCategory{})
+	_appAppCategory.appAppCategoryDo.UseModel(&modelgebura.AppAppCategory{})
 
 	tableName := _appAppCategory.appAppCategoryDo.TableName()
 	_appAppCategory.ALL = field.NewAsterisk(tableName)
-	_appAppCategory.AppCategoryID = field.NewInt64(tableName, "app_category_id")
 	_appAppCategory.AppID = field.NewInt64(tableName, "app_id")
+	_appAppCategory.AppCategoryID = field.NewInt64(tableName, "app_category_id")
 
 	_appAppCategory.fillFieldMap()
 
@@ -39,8 +39,8 @@ type appAppCategory struct {
 	appAppCategoryDo appAppCategoryDo
 
 	ALL           field.Asterisk
-	AppCategoryID field.Int64
 	AppID         field.Int64
+	AppCategoryID field.Int64
 
 	fieldMap map[string]field.Expr
 }
@@ -57,8 +57,8 @@ func (a appAppCategory) As(alias string) *appAppCategory {
 
 func (a *appAppCategory) updateTableName(table string) *appAppCategory {
 	a.ALL = field.NewAsterisk(table)
-	a.AppCategoryID = field.NewInt64(table, "app_category_id")
 	a.AppID = field.NewInt64(table, "app_id")
+	a.AppCategoryID = field.NewInt64(table, "app_category_id")
 
 	a.fillFieldMap()
 
@@ -88,8 +88,8 @@ func (a *appAppCategory) GetFieldByName(fieldName string) (field.OrderExpr, bool
 
 func (a *appAppCategory) fillFieldMap() {
 	a.fieldMap = make(map[string]field.Expr, 2)
-	a.fieldMap["app_category_id"] = a.AppCategoryID
 	a.fieldMap["app_id"] = a.AppID
+	a.fieldMap["app_category_id"] = a.AppCategoryID
 }
 
 func (a appAppCategory) clone(db *gorm.DB) appAppCategory {
@@ -133,17 +133,17 @@ type IAppAppCategoryDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IAppAppCategoryDo
 	Unscoped() IAppAppCategoryDo
-	Create(values ...*model.AppAppCategory) error
-	CreateInBatches(values []*model.AppAppCategory, batchSize int) error
-	Save(values ...*model.AppAppCategory) error
-	First() (*model.AppAppCategory, error)
-	Take() (*model.AppAppCategory, error)
-	Last() (*model.AppAppCategory, error)
-	Find() ([]*model.AppAppCategory, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.AppAppCategory, err error)
-	FindInBatches(result *[]*model.AppAppCategory, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelgebura.AppAppCategory) error
+	CreateInBatches(values []*modelgebura.AppAppCategory, batchSize int) error
+	Save(values ...*modelgebura.AppAppCategory) error
+	First() (*modelgebura.AppAppCategory, error)
+	Take() (*modelgebura.AppAppCategory, error)
+	Last() (*modelgebura.AppAppCategory, error)
+	Find() ([]*modelgebura.AppAppCategory, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.AppAppCategory, err error)
+	FindInBatches(result *[]*modelgebura.AppAppCategory, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.AppAppCategory) (info gen.ResultInfo, err error)
+	Delete(...*modelgebura.AppAppCategory) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -155,9 +155,9 @@ type IAppAppCategoryDo interface {
 	Assign(attrs ...field.AssignExpr) IAppAppCategoryDo
 	Joins(fields ...field.RelationField) IAppAppCategoryDo
 	Preload(fields ...field.RelationField) IAppAppCategoryDo
-	FirstOrInit() (*model.AppAppCategory, error)
-	FirstOrCreate() (*model.AppAppCategory, error)
-	FindByPage(offset int, limit int) (result []*model.AppAppCategory, count int64, err error)
+	FirstOrInit() (*modelgebura.AppAppCategory, error)
+	FirstOrCreate() (*modelgebura.AppAppCategory, error)
+	FindByPage(offset int, limit int) (result []*modelgebura.AppAppCategory, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -259,57 +259,57 @@ func (a appAppCategoryDo) Unscoped() IAppAppCategoryDo {
 	return a.withDO(a.DO.Unscoped())
 }
 
-func (a appAppCategoryDo) Create(values ...*model.AppAppCategory) error {
+func (a appAppCategoryDo) Create(values ...*modelgebura.AppAppCategory) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Create(values)
 }
 
-func (a appAppCategoryDo) CreateInBatches(values []*model.AppAppCategory, batchSize int) error {
+func (a appAppCategoryDo) CreateInBatches(values []*modelgebura.AppAppCategory, batchSize int) error {
 	return a.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (a appAppCategoryDo) Save(values ...*model.AppAppCategory) error {
+func (a appAppCategoryDo) Save(values ...*modelgebura.AppAppCategory) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Save(values)
 }
 
-func (a appAppCategoryDo) First() (*model.AppAppCategory, error) {
+func (a appAppCategoryDo) First() (*modelgebura.AppAppCategory, error) {
 	if result, err := a.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppAppCategory), nil
+		return result.(*modelgebura.AppAppCategory), nil
 	}
 }
 
-func (a appAppCategoryDo) Take() (*model.AppAppCategory, error) {
+func (a appAppCategoryDo) Take() (*modelgebura.AppAppCategory, error) {
 	if result, err := a.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppAppCategory), nil
+		return result.(*modelgebura.AppAppCategory), nil
 	}
 }
 
-func (a appAppCategoryDo) Last() (*model.AppAppCategory, error) {
+func (a appAppCategoryDo) Last() (*modelgebura.AppAppCategory, error) {
 	if result, err := a.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppAppCategory), nil
+		return result.(*modelgebura.AppAppCategory), nil
 	}
 }
 
-func (a appAppCategoryDo) Find() ([]*model.AppAppCategory, error) {
+func (a appAppCategoryDo) Find() ([]*modelgebura.AppAppCategory, error) {
 	result, err := a.DO.Find()
-	return result.([]*model.AppAppCategory), err
+	return result.([]*modelgebura.AppAppCategory), err
 }
 
-func (a appAppCategoryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.AppAppCategory, err error) {
-	buf := make([]*model.AppAppCategory, 0, batchSize)
+func (a appAppCategoryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.AppAppCategory, err error) {
+	buf := make([]*modelgebura.AppAppCategory, 0, batchSize)
 	err = a.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -317,7 +317,7 @@ func (a appAppCategoryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch i
 	return results, err
 }
 
-func (a appAppCategoryDo) FindInBatches(result *[]*model.AppAppCategory, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (a appAppCategoryDo) FindInBatches(result *[]*modelgebura.AppAppCategory, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return a.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -343,23 +343,23 @@ func (a appAppCategoryDo) Preload(fields ...field.RelationField) IAppAppCategory
 	return &a
 }
 
-func (a appAppCategoryDo) FirstOrInit() (*model.AppAppCategory, error) {
+func (a appAppCategoryDo) FirstOrInit() (*modelgebura.AppAppCategory, error) {
 	if result, err := a.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppAppCategory), nil
+		return result.(*modelgebura.AppAppCategory), nil
 	}
 }
 
-func (a appAppCategoryDo) FirstOrCreate() (*model.AppAppCategory, error) {
+func (a appAppCategoryDo) FirstOrCreate() (*modelgebura.AppAppCategory, error) {
 	if result, err := a.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.AppAppCategory), nil
+		return result.(*modelgebura.AppAppCategory), nil
 	}
 }
 
-func (a appAppCategoryDo) FindByPage(offset int, limit int) (result []*model.AppAppCategory, count int64, err error) {
+func (a appAppCategoryDo) FindByPage(offset int, limit int) (result []*modelgebura.AppAppCategory, count int64, err error) {
 	result, err = a.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -388,7 +388,7 @@ func (a appAppCategoryDo) Scan(result interface{}) (err error) {
 	return a.DO.Scan(result)
 }
 
-func (a appAppCategoryDo) Delete(models ...*model.AppAppCategory) (result gen.ResultInfo, err error) {
+func (a appAppCategoryDo) Delete(models ...*modelgebura.AppAppCategory) (result gen.ResultInfo, err error) {
 	return a.DO.Delete(models)
 }
 

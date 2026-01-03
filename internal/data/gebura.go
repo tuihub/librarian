@@ -2,16 +2,13 @@ package data
 
 import (
 	"context"
-	"errors"
+	"database/sql/driver"
 	"time"
 
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/orm/model"
 	"github.com/tuihub/librarian/internal/data/orm/query"
 	libmodel "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 
-	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -28,28 +25,7 @@ func NewGeburaRepo(data *Data) *GeburaRepo {
 }
 
 func (g *GeburaRepo) CreateAppInfo(ctx context.Context, a *modelgebura.AppInfo) error {
-	return query.Use(g.data.db).AppInfo.WithContext(ctx).Create(&model.AppInfo{
-		ID:                 a.ID,
-		Source:             a.Source,
-		SourceAppID:        a.SourceAppID,
-		SourceURL:          a.SourceURL,
-		Name:               a.Name,
-		Type:               converter.ToORMAppInfoTypeManual(a.Type),
-		ShortDescription:   a.ShortDescription,
-		Description:        a.Description,
-		IconImageURL:       a.IconImageURL,
-		IconImageID:        a.IconImageID,
-		BackgroundImageURL: a.BackgroundImageURL,
-		BackgroundImageID:  a.BackgroundImageID,
-		CoverImageURL:      a.CoverImageURL,
-		CoverImageID:       a.CoverImageID,
-		ReleaseDate:        a.ReleaseDate,
-		Developer:          a.Developer,
-		Publisher:          a.Publisher,
-		Tags:               a.Tags,
-		AlternativeNames:   a.AlternativeNames,
-		RawData:            a.RawData,
-	})
+	return query.Use(g.data.db).AppInfo.WithContext(ctx).Create(a)
 }
 
 func (g *GeburaRepo) CreateAppInfoOrGet(ctx context.Context, a *modelgebura.AppInfo) (*modelgebura.AppInfo, error) {
@@ -64,7 +40,7 @@ func (g *GeburaRepo) CreateAppInfoOrGet(ctx context.Context, a *modelgebura.AppI
 		q.SourceAppID.Eq(a.SourceAppID),
 	).First()
 	if err2 == nil {
-		return converter.ToBizAppInfo(ai), nil
+		return ai, nil
 	}
 	return nil, err
 }
@@ -77,25 +53,7 @@ func (g *GeburaRepo) UpdateAppInfo(ctx context.Context, a *modelgebura.AppInfo) 
 			q.Source.Eq(a.Source),
 			q.SourceAppID.Eq(a.SourceAppID),
 		).
-		Updates(&model.AppInfo{
-			SourceURL:          a.SourceURL,
-			Name:               a.Name,
-			Type:               converter.ToORMAppInfoTypeManual(a.Type),
-			ShortDescription:   a.ShortDescription,
-			Description:        a.Description,
-			IconImageURL:       a.IconImageURL,
-			IconImageID:        a.IconImageID,
-			BackgroundImageURL: a.BackgroundImageURL,
-			BackgroundImageID:  a.BackgroundImageID,
-			CoverImageURL:      a.CoverImageURL,
-			CoverImageID:       a.CoverImageID,
-			ReleaseDate:        a.ReleaseDate,
-			Developer:          a.Developer,
-			Publisher:          a.Publisher,
-			Tags:               a.Tags,
-			AlternativeNames:   a.AlternativeNames,
-			RawData:            a.RawData,
-		})
+		Updates(a)
 	return err
 }
 
@@ -113,11 +71,11 @@ func (g *GeburaRepo) ListAppInfos(
 		queryBuilder = queryBuilder.Where(q.Source.In(sources...))
 	}
 	if len(types) > 0 {
-		typeFilter := make([]string, len(types))
-		for i, appType := range types {
-			typeFilter[i] = converter.ToORMAppInfoTypeManual(appType)
+		t := make([]driver.Valuer, len(types))
+		for i, v := range types {
+			t[i] = v
 		}
-		queryBuilder = queryBuilder.Where(q.Type.In(typeFilter...))
+		queryBuilder = queryBuilder.Where(q.Type.In(t...))
 	}
 	if len(ids) > 0 {
 		castIDs := make([]int64, len(ids))
@@ -140,7 +98,7 @@ func (g *GeburaRepo) ListAppInfos(
 		return nil, 0, err
 	}
 
-	return converter.ToBizAppInfoList(al), int(total), nil
+	return al, int(total), nil
 }
 
 func (g *GeburaRepo) GetAppInfo(ctx context.Context, id modelgebura.AppInfoID) (*modelgebura.AppInfo, error) {
@@ -154,42 +112,13 @@ func (g *GeburaRepo) GetAppInfo(ctx context.Context, id modelgebura.AppInfoID) (
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizAppInfo(res), nil
+	return res, nil
 }
 
 func (g *GeburaRepo) CreateApp(ctx context.Context, userID libmodel.InternalID, a *modelgebura.App) error {
 	q := query.Use(g.data.db).App
-	app := &model.App{
-		ID:                 a.ID,
-		UserID:             userID,
-		VersionNumber:      a.VersionNumber,
-		VersionDate:        a.VersionDate,
-		CreatorDeviceID:    a.CreatorDeviceID,
-		AppSources:         a.AppSources,
-		Public:             a.Public,
-		Name:               a.Name,
-		Type:               converter.ToORMAppInfoTypeManual(a.Type),
-		ShortDescription:   a.ShortDescription,
-		Description:        a.Description,
-		IconImageURL:       a.IconImageURL,
-		IconImageID:        a.IconImageID,
-		BackgroundImageURL: a.BackgroundImageURL,
-		BackgroundImageID:  a.BackgroundImageID,
-		CoverImageURL:      a.CoverImageURL,
-		CoverImageID:       a.CoverImageID,
-		ReleaseDate:        a.ReleaseDate,
-		Developer:          a.Developer,
-		Publisher:          a.Publisher,
-		Tags:               a.Tags,
-		AlternativeNames:   a.AlternativeNames,
-	}
-	if a.BoundStoreAppID != nil {
-		app.BoundStoreAppID = *a.BoundStoreAppID
-	}
-	if a.StopStoreManage != nil {
-		app.StopStoreManage = *a.StopStoreManage
-	}
-	return q.WithContext(ctx).Create(app)
+	a.UserID = userID
+	return q.WithContext(ctx).Create(a)
 }
 
 func (g *GeburaRepo) UpdateApp(ctx context.Context, ownerID libmodel.InternalID, a *modelgebura.App) error {
@@ -200,37 +129,14 @@ func (g *GeburaRepo) UpdateApp(ctx context.Context, ownerID libmodel.InternalID,
 			return err
 		}
 
-		updates := &model.App{
-			VersionNumber:      old.VersionNumber + 1,
-			VersionDate:        a.VersionDate,
-			AppSources:         a.AppSources,
-			Public:             a.Public,
-			Name:               a.Name,
-			Type:               converter.ToORMAppInfoTypeManual(a.Type),
-			ShortDescription:   a.ShortDescription,
-			Description:        a.Description,
-			IconImageURL:       a.IconImageURL,
-			IconImageID:        a.IconImageID,
-			BackgroundImageURL: a.BackgroundImageURL,
-			BackgroundImageID:  a.BackgroundImageID,
-			CoverImageURL:      a.CoverImageURL,
-			CoverImageID:       a.CoverImageID,
-			ReleaseDate:        a.ReleaseDate,
-			Developer:          a.Developer,
-			Publisher:          a.Publisher,
-			Tags:               a.Tags,
-			AlternativeNames:   a.AlternativeNames,
-		}
-		if a.StopStoreManage != nil {
-			updates.StopStoreManage = *a.StopStoreManage
-		}
+		a.VersionNumber = old.VersionNumber + 1
 
 		_, err = q.WithContext(ctx).
 			Where(
 				q.ID.Eq(int64(a.ID)),
 				q.UserID.Eq(int64(ownerID)),
 			).
-			Updates(updates)
+			Updates(a)
 		return err
 	})
 }
@@ -241,7 +147,7 @@ func (g *GeburaRepo) GetApp(ctx context.Context, id libmodel.InternalID) (*model
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizApp(a), nil
+	return a, nil
 }
 
 func (g *GeburaRepo) ListApps(
@@ -286,7 +192,7 @@ func (g *GeburaRepo) ListApps(
 		return nil, 0, err
 	}
 
-	return converter.ToBizAppList(ap), int(total), nil
+	return ap, int(total), nil
 }
 
 func (g *GeburaRepo) BatchCreateAppRunTime(
@@ -294,17 +200,10 @@ func (g *GeburaRepo) BatchCreateAppRunTime(
 	userID libmodel.InternalID,
 	runTimes []*modelgebura.AppRunTime,
 ) error {
-	rt := make([]*model.AppRunTime, 0, len(runTimes))
 	for _, runTime := range runTimes {
-		rt = append(rt, &model.AppRunTime{
-			ID:        runTime.ID,
-			UserID:    userID,
-			AppID:     runTime.AppID,
-			StartTime: runTime.RunTime.StartTime,
-			Duration:  runTime.RunTime.Duration,
-		})
+		runTime.UserID = userID
 	}
-	return query.Use(g.data.db).AppRunTime.WithContext(ctx).Create(rt...)
+	return query.Use(g.data.db).AppRunTime.WithContext(ctx).Create(runTimes...)
 }
 
 func (g *GeburaRepo) SumAppRunTime(
@@ -334,15 +233,12 @@ func (g *GeburaRepo) SumAppRunTime(
 
 	queryBuilder = queryBuilder.Where(
 		q.StartTime.Gte(timeRange.StartTime),
-		q.StartTime.Lte(timeRange.StartTime.Add(timeRange.Duration)),
+		q.StartTime.Lt(timeRange.StartTime.Add(timeRange.Duration)),
 	)
 
 	var sum int64
 	err := queryBuilder.Select(q.Duration.Sum()).Scan(&sum)
-	if err != nil {
-		return time.Duration(0), err
-	}
-	return time.Duration(sum), nil
+	return time.Duration(sum), err
 }
 
 func (g *GeburaRepo) ListAppRunTimes(
@@ -370,12 +266,11 @@ func (g *GeburaRepo) ListAppRunTimes(
 		}
 		queryBuilder = queryBuilder.Where(q.DeviceID.In(castDeviceIDs...))
 	}
-	if timeRange != nil {
-		queryBuilder = queryBuilder.Where(
-			q.StartTime.Gte(timeRange.StartTime),
-			q.StartTime.Lte(timeRange.StartTime.Add(timeRange.Duration)),
-		)
-	}
+
+	queryBuilder = queryBuilder.Where(
+		q.StartTime.Gte(timeRange.StartTime),
+		q.StartTime.Lt(timeRange.StartTime.Add(timeRange.Duration)),
+	)
 
 	total, err := queryBuilder.Count()
 	if err != nil {
@@ -390,12 +285,14 @@ func (g *GeburaRepo) ListAppRunTimes(
 		return nil, 0, err
 	}
 
-	return converter.ToBizAppRunTimeList(res), int(total), nil
+	return res, int(total), nil
 }
 
 func (g *GeburaRepo) DeleteAppRunTime(ctx context.Context, userID libmodel.InternalID, id libmodel.InternalID) error {
 	q := query.Use(g.data.db).AppRunTime
-	_, err := q.WithContext(ctx).Where(q.ID.Eq(int64(id))).Delete()
+	_, err := q.WithContext(ctx).
+		Where(q.ID.Eq(int64(id)), q.UserID.Eq(int64(userID))).
+		Delete()
 	return err
 }
 
@@ -404,23 +301,8 @@ func (g *GeburaRepo) CreateAppCategory(
 	userID libmodel.InternalID,
 	ac *modelgebura.AppCategory,
 ) error {
-	cat := &model.AppCategory{
-		ID:            ac.ID,
-		UserID:        userID,
-		VersionNumber: ac.VersionNumber,
-		VersionDate:   ac.VersionDate,
-		Name:          ac.Name,
-	}
-	joinEntries := make([]model.AppAppCategory, len(ac.AppIDs))
-	for i, appID := range ac.AppIDs {
-		joinEntries[i] = model.AppAppCategory{
-			AppCategoryID: ac.ID,
-			AppID:         appID,
-		}
-	}
-	cat.AppAppCategories = joinEntries
-
-	return query.Use(g.data.db).AppCategory.WithContext(ctx).Create(cat)
+	ac.UserID = userID
+	return query.Use(g.data.db).AppCategory.WithContext(ctx).Create(ac)
 }
 
 func (g *GeburaRepo) ListAppCategories(
@@ -428,72 +310,19 @@ func (g *GeburaRepo) ListAppCategories(
 	userID libmodel.InternalID,
 ) ([]*modelgebura.AppCategory, error) {
 	q := query.Use(g.data.db).AppCategory
-	acs, err := q.WithContext(ctx).
-		Preload(q.AppAppCategories).
-		Where(q.UserID.Eq(int64(userID))).
-		Find()
-	if err != nil {
-		return nil, err
-	}
-
-	res := make([]*modelgebura.AppCategory, len(acs))
-	for i := range acs {
-		res[i] = converter.ToBizAppCategoryExtend(acs[i])
-	}
-	return res, nil
+	return q.WithContext(ctx).Where(q.UserID.Eq(int64(userID))).Find()
 }
 
 func (g *GeburaRepo) UpdateAppCategory(
 	ctx context.Context,
 	userID libmodel.InternalID,
-	ac *modelgebura.AppCategory) error {
-	return g.data.WithTx(ctx, func(tx *query.Query) error {
-		q := tx.AppCategory
-		old, err := q.WithContext(ctx).
-			Where(
-				q.ID.Eq(int64(ac.ID)),
-				q.UserID.Eq(int64(userID)),
-			).
-			First()
-		if err != nil {
-			return err
-		}
-
-		// Update fields
-		_, err = q.WithContext(ctx).
-			Where(q.ID.Eq(int64(ac.ID))).
-			Updates(&model.AppCategory{
-				Name:          ac.Name,
-				VersionNumber: old.VersionNumber + 1,
-				VersionDate:   time.Now(),
-			})
-		if err != nil {
-			return err
-		}
-
-		// Update Associations
-		qa := tx.AppAppCategory
-		_, err = qa.WithContext(ctx).Where(qa.AppCategoryID.Eq(int64(ac.ID))).Delete()
-		if err != nil {
-			return err
-		}
-
-		// Insert new
-		if len(ac.AppIDs) > 0 {
-			newEntries := make([]*model.AppAppCategory, len(ac.AppIDs))
-			for i, appID := range ac.AppIDs {
-				newEntries[i] = &model.AppAppCategory{
-					AppCategoryID: ac.ID,
-					AppID:         appID,
-				}
-			}
-			err = qa.WithContext(ctx).Create(newEntries...)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	})
+	ac *modelgebura.AppCategory,
+) error {
+	q := query.Use(g.data.db).AppCategory
+	_, err := q.WithContext(ctx).
+		Where(q.ID.Eq(int64(ac.ID)), q.UserID.Eq(int64(userID))).
+		Updates(ac)
+	return err
 }
 
 func (g *GeburaRepo) DeleteAppCategory(
@@ -501,122 +330,84 @@ func (g *GeburaRepo) DeleteAppCategory(
 	userID libmodel.InternalID,
 	id libmodel.InternalID,
 ) error {
-	return g.data.WithTx(ctx, func(tx *query.Query) error {
-		q := tx.AppCategory
-		qa := tx.AppAppCategory
-
-		count, err := q.WithContext(ctx).Where(q.ID.Eq(int64(id)), q.UserID.Eq(int64(userID))).Count()
-		if err != nil {
-			return err
-		}
-		if count == 0 {
-			return nil
-		}
-
-		_, err = qa.WithContext(ctx).Where(qa.AppCategoryID.Eq(int64(id))).Delete()
-		if err != nil {
-			return err
-		}
-
-		_, err = q.WithContext(ctx).Where(q.ID.Eq(int64(id))).Delete()
-		return err
-	})
+	q := query.Use(g.data.db).AppCategory
+	_, err := q.WithContext(ctx).
+		Where(q.ID.Eq(int64(id)), q.UserID.Eq(int64(userID))).
+		Delete()
+	return err
 }
 
-func (g *GeburaRepo) CreateSentinel(ctx context.Context, userID libmodel.InternalID, s *modelgebura.Sentinel) error {
-	return query.Use(g.data.db).Sentinel.WithContext(ctx).Create(&model.Sentinel{
-		ID:          s.ID,
-		CreatorID:   userID,
-		Name:        s.Name,
-		Description: s.Description,
-	})
+func (g *GeburaRepo) CreateSentinel(
+	ctx context.Context,
+	userID libmodel.InternalID,
+	s *modelgebura.Sentinel,
+) error {
+	s.CreatorID = userID
+	return query.Use(g.data.db).Sentinel.WithContext(ctx).Create(s)
 }
 
-func (g *GeburaRepo) GetSentinel(ctx context.Context, id libmodel.InternalID) (*modelgebura.Sentinel, error) {
-	s, err := query.Use(g.data.db).Sentinel.WithContext(ctx).Where(query.Sentinel.ID.Eq(int64(id))).First()
-	if err != nil {
-		return nil, err
-	}
-	return converter.ToBizSentinel(s), nil
-}
-
-func (g *GeburaRepo) ListSentinels(ctx context.Context, page *libmodel.Paging) ([]*modelgebura.Sentinel, int, error) {
+func (g *GeburaRepo) GetSentinel(
+	ctx context.Context,
+	id libmodel.InternalID,
+) (*modelgebura.Sentinel, error) {
 	q := query.Use(g.data.db).Sentinel
-	sentinels, err := q.WithContext(ctx).
-		Limit(page.ToLimit()).
-		Offset(page.ToOffset()).
+	return q.WithContext(ctx).Where(q.ID.Eq(int64(id))).First()
+}
+
+func (g *GeburaRepo) ListSentinels(
+	ctx context.Context,
+	paging *libmodel.Paging,
+) ([]*modelgebura.Sentinel, int, error) {
+	q := query.Use(g.data.db).Sentinel
+	queryBuilder := q.WithContext(ctx)
+	total, err := queryBuilder.Count()
+	if err != nil {
+		return nil, 0, err
+	}
+	res, err := queryBuilder.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
 		Find()
 	if err != nil {
 		return nil, 0, err
 	}
-	total, err := q.WithContext(ctx).Count()
-	if err != nil {
-		return nil, 0, err
-	}
-	return converter.ToBizSentinelList(sentinels), int(total), nil
+	return res, int(total), nil
 }
 
 func (g *GeburaRepo) UpdateSentinel(ctx context.Context, s *modelgebura.Sentinel) error {
 	q := query.Use(g.data.db).Sentinel
 	_, err := q.WithContext(ctx).
 		Where(q.ID.Eq(int64(s.ID))).
-		Updates(&model.Sentinel{
-			Name:        s.Name,
-			Description: s.Description,
-		})
+		Updates(s)
 	return err
 }
 
-func (g *GeburaRepo) CreateSentinelSession(ctx context.Context, ss *modelgebura.SentinelSession) error {
-	return query.Use(g.data.db).SentinelSession.WithContext(ctx).Create(&model.SentinelSession{
-		ID:           ss.ID,
-		SentinelID:   ss.SentinelID,
-		RefreshToken: ss.RefreshToken,
-		Status:       converter.ToORMSentinelSessionStatus(ss.Status),
-		CreatorID:    ss.CreatorID,
-		ExpireAt:     ss.ExpireAt,
-	})
-}
-
-func (g *GeburaRepo) GetSentinelSession(
+func (g *GeburaRepo) CreateSentinelSession(
 	ctx context.Context,
-	sentinelID libmodel.InternalID,
-	refreshToken string,
-) (*modelgebura.SentinelSession, error) {
-	q := query.Use(g.data.db).SentinelSession
-	s, err := q.WithContext(ctx).
-		Where(
-			q.SentinelID.Eq(int64(sentinelID)),
-			q.RefreshToken.Eq(refreshToken),
-		).
-		First()
-	if err != nil {
-		return nil, err
-	}
-	return converter.ToBizSentinelSession(s), nil
+	session *modelgebura.SentinelSession,
+) error {
+	return query.Use(g.data.db).SentinelSession.WithContext(ctx).Create(session)
 }
 
 func (g *GeburaRepo) ListSentinelSessions(
 	ctx context.Context,
-	page *libmodel.Paging,
+	paging *libmodel.Paging,
 	sentinelID libmodel.InternalID,
 ) ([]*modelgebura.SentinelSession, int, error) {
 	q := query.Use(g.data.db).SentinelSession
-	sessions, err := q.WithContext(ctx).
-		Where(q.SentinelID.Eq(int64(sentinelID))).
-		Limit(page.ToLimit()).
-		Offset(page.ToOffset()).
+	queryBuilder := q.WithContext(ctx).Where(q.SentinelID.Eq(int64(sentinelID)))
+	total, err := queryBuilder.Count()
+	if err != nil {
+		return nil, 0, err
+	}
+	res, err := queryBuilder.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
 		Find()
 	if err != nil {
 		return nil, 0, err
 	}
-	total, err := q.WithContext(ctx).
-		Where(q.SentinelID.Eq(int64(sentinelID))).
-		Count()
-	if err != nil {
-		return nil, 0, err
-	}
-	return converter.ToBizSentinelSessionList(sessions), int(total), nil
+	return res, int(total), nil
 }
 
 func (g *GeburaRepo) UpdateSentinelSessionStatus(
@@ -627,8 +418,30 @@ func (g *GeburaRepo) UpdateSentinelSessionStatus(
 	q := query.Use(g.data.db).SentinelSession
 	_, err := q.WithContext(ctx).
 		Where(q.ID.Eq(int64(id))).
-		Update(q.Status, converter.ToORMSentinelSessionStatus(status))
+		Update(q.Status, status)
 	return err
+}
+
+func (g *GeburaRepo) DeleteSentinelSession(ctx context.Context, id libmodel.InternalID) error {
+	q := query.Use(g.data.db).SentinelSession
+	_, err := q.WithContext(ctx).
+		Where(q.ID.Eq(int64(id))).
+		Delete()
+	return err
+}
+
+func (g *GeburaRepo) GetSentinelSession(
+	ctx context.Context,
+	userID libmodel.InternalID,
+	refreshToken string,
+) (*modelgebura.SentinelSession, error) {
+	q := query.Use(g.data.db).SentinelSession
+	return q.WithContext(ctx).
+		Where(
+			q.SentinelID.Eq(int64(userID)),
+			q.RefreshToken.Eq(refreshToken),
+		).
+		First()
 }
 
 func (g *GeburaRepo) UpdateSentinelSessionToken(
@@ -644,8 +457,8 @@ func (g *GeburaRepo) UpdateSentinelSessionToken(
 		Updates(map[string]interface{}{
 			"refresh_token":     refreshToken,
 			"expire_at":         expireAt,
-			"last_refreshed_at": refreshedAt,
-			"refresh_count":     gorm.Expr("refresh_count + ?", 1),
+			"last_refreshed_at": &refreshedAt,
+			"refresh_count":     gorm.Expr("refresh_count + 1"),
 		})
 	return err
 }
@@ -653,181 +466,25 @@ func (g *GeburaRepo) UpdateSentinelSessionToken(
 func (g *GeburaRepo) UpdateSentinelSessionLastUsed(
 	ctx context.Context,
 	id libmodel.InternalID,
-	usedAt time.Time,
+	lastUsedAt time.Time,
 ) error {
 	q := query.Use(g.data.db).SentinelSession
 	_, err := q.WithContext(ctx).
 		Where(q.ID.Eq(int64(id))).
-		Update(q.LastUsedAt, usedAt)
+		Update(q.LastUsedAt, lastUsedAt)
 	return err
 }
 
-func (g *GeburaRepo) DeleteSentinelSession(ctx context.Context, id libmodel.InternalID) error {
-	q := query.Use(g.data.db).SentinelSession
-	_, err := q.WithContext(ctx).Where(q.ID.Eq(int64(id))).Delete()
-	return err
-}
-
-func (g *GeburaRepo) UpdateSentinelInfo(
-	ctx context.Context,
-	s *modelgebura.Sentinel,
-) error {
+func (g *GeburaRepo) UpdateSentinelInfo(ctx context.Context, s *modelgebura.Sentinel) error {
 	return g.data.WithTx(ctx, func(tx *query.Query) error {
-		// update sentinel info
-		_, err := tx.Sentinel.WithContext(ctx).
-			Where(tx.Sentinel.ID.Eq(int64(s.ID))).
-			Updates(map[string]interface{}{
-				"url":                     s.URL,
-				"alternative_urls":        s.AlternativeUrls,
-				"get_token_path":          s.GetTokenPath,
-				"download_file_base_path": s.DownloadFileBasePath,
-				"library_report_sequence": gorm.Expr("library_report_sequence + ?", 1),
-			})
-		if err != nil {
+		if _, err := tx.Sentinel.WithContext(ctx).Where(tx.Sentinel.ID.Eq(int64(s.ID))).Updates(s); err != nil {
 			return err
 		}
-
-		// upsert libraries
-		sInfo, err := tx.Sentinel.WithContext(ctx).Where(tx.Sentinel.ID.Eq(int64(s.ID))).First()
-		if err != nil {
+		if _, err := tx.SentinelLibrary.WithContext(ctx).Where(tx.SentinelLibrary.SentinelID.Eq(int64(s.ID))).Delete(); err != nil {
 			return err
 		}
-
-		newLibs := make([]*model.SentinelLibrary, 0, len(s.Libraries))
-		for _, lib := range s.Libraries {
-			newLibs = append(newLibs, &model.SentinelLibrary{
-				ID:                    lib.ID,
-				SentinelID:            sInfo.ID,
-				ReportedID:            lib.ReportedID,
-				DownloadBasePath:      lib.DownloadBasePath,
-				LibraryReportSequence: sInfo.LibraryReportSequence,
-			})
-		}
-
-		return tx.SentinelLibrary.WithContext(ctx).Clauses(clause.OnConflict{
-			Columns: []clause.Column{{Name: "sentinel_id"}, {Name: "reported_id"}},
-			DoUpdates: clause.AssignmentColumns([]string{
-				"download_base_path", "library_report_sequence",
-			}),
-		}).Create(newLibs...)
-	})
-}
-
-func (g *GeburaRepo) UpsertAppBinaries( //nolint:gocognit,funlen // complex logic
-	ctx context.Context,
-	sentinelID libmodel.InternalID,
-	abs []*modelgebura.SentinelAppBinary,
-	snapshot *time.Time,
-	commit bool,
-) error {
-	return g.data.WithTx(ctx, func(tx *query.Query) error {
-		sInfo, err := tx.Sentinel.WithContext(ctx).
-			Where(tx.Sentinel.ID.Eq(int64(sentinelID))).
-			Preload(tx.Sentinel.SentinelLibraries).
-			First()
-		if err != nil {
-			return err
-		}
-
-		libraryMap := make(map[int64]*model.SentinelLibrary)
-		for _, lib := range sInfo.SentinelLibraries {
-			libraryMap[lib.ReportedID] = &lib
-		}
-		for _, ab := range abs {
-			if _, ok := libraryMap[ab.SentinelLibraryID]; !ok {
-				return errors.New("library not found")
-			}
-		}
-
-		// upsert binaries
-		newAbs := make([]*model.SentinelAppBinary, 0, len(abs))
-		for _, ab := range abs {
-			newAbs = append(newAbs, &model.SentinelAppBinary{
-				ID:                        ab.ID,
-				UnionID:                   ab.UnionID,
-				SentinelID:                sentinelID,
-				SentinelLibraryReportedID: ab.SentinelLibraryID,
-				LibrarySnapshot: lo.FromPtrOr(
-					snapshot,
-					lo.FromPtr(libraryMap[ab.SentinelLibraryID].ActiveSnapshot),
-				),
-				GeneratedID: ab.GeneratedID,
-				SizeBytes:   ab.SizeBytes,
-				NeedToken:   ab.NeedToken,
-				Name:        ab.Name,
-				Version:     ab.Version,
-				Developer:   ab.Developer,
-				Publisher:   ab.Publisher,
-			})
-		}
-
-		err = tx.SentinelAppBinary.WithContext(ctx).Clauses(clause.OnConflict{
-			Columns: []clause.Column{
-				{Name: "sentinel_id"},
-				{Name: "sentinel_library_reported_id"},
-				{Name: "library_snapshot"},
-				{Name: "generated_id"},
-			},
-			DoUpdates: clause.AssignmentColumns([]string{
-				"union_id", "size_bytes", "need_token", "name", "version", "developer", "publisher",
-			}),
-		}).Create(newAbs...)
-		if err != nil {
-			return err
-		}
-
-		// upsert binary files
-		abfCount := lo.Sum(lo.Map(abs, func(ab *modelgebura.SentinelAppBinary, _ int) int {
-			return len(ab.Files)
-		}))
-		newAbfs := make([]*model.SentinelAppBinaryFile, 0, abfCount)
-		for _, ab := range abs {
-			for _, f := range ab.Files {
-				newAbfs = append(newAbfs, &model.SentinelAppBinaryFile{
-					ID:                        f.ID,
-					SentinelID:                sentinelID,
-					SentinelLibraryReportedID: ab.SentinelLibraryID,
-					LibrarySnapshot: lo.FromPtrOr(
-						snapshot,
-						lo.FromPtr(libraryMap[ab.SentinelLibraryID].ActiveSnapshot),
-					),
-					SentinelAppBinaryGeneratedID: ab.GeneratedID,
-					Name:                         f.Name,
-					SizeBytes:                    f.SizeBytes,
-					Sha256:                       f.Sha256,
-					ServerFilePath:               f.ServerFilePath,
-					ChunksInfo:                   f.ChunksInfo,
-				})
-			}
-		}
-
-		err = tx.SentinelAppBinaryFile.WithContext(ctx).Clauses(clause.OnConflict{
-			Columns: []clause.Column{
-				{Name: "sentinel_id"},
-				{Name: "sentinel_library_reported_id"},
-				{Name: "library_snapshot"},
-				{Name: "sentinel_app_binary_generated_id"},
-				{Name: "server_file_path"},
-			},
-			DoUpdates: clause.AssignmentColumns([]string{
-				"name", "size_bytes", "sha256", "chunks_info",
-			}),
-		}).Create(newAbfs...)
-		if err != nil {
-			return err
-		}
-
-		if snapshot != nil && commit {
-			ids := make([]int64, 0, len(libraryMap))
-			for _, lib := range libraryMap {
-				ids = append(ids, int64(lib.ID))
-			}
-			_, err = tx.SentinelLibrary.WithContext(ctx).
-				Where(tx.SentinelLibrary.ID.In(ids...)).
-				Updates(&model.SentinelLibrary{
-					ActiveSnapshot: snapshot,
-				})
-			if err != nil {
+		if len(s.Libraries) > 0 {
+			if err := tx.SentinelLibrary.WithContext(ctx).Create(s.Libraries...); err != nil {
 				return err
 			}
 		}
@@ -835,59 +492,110 @@ func (g *GeburaRepo) UpsertAppBinaries( //nolint:gocognit,funlen // complex logi
 	})
 }
 
-func (g *GeburaRepo) GetStoreApp(ctx context.Context, id libmodel.InternalID) (*modelgebura.StoreApp, error) {
-	a, err := query.Use(g.data.db).StoreApp.WithContext(ctx).Where(query.StoreApp.ID.Eq(int64(id))).First()
-	if err != nil {
-		return nil, err
-	}
-	return converter.ToBizStoreApp(a), nil
+func (g *GeburaRepo) UpsertAppBinaries(
+	ctx context.Context,
+	sentinelID libmodel.InternalID,
+	abs []*modelgebura.SentinelAppBinary,
+	snapshot *time.Time,
+	commit bool,
+) error {
+	return g.data.WithTx(ctx, func(tx *query.Query) error {
+		if len(abs) > 0 {
+			err := tx.SentinelAppBinary.WithContext(ctx).
+				Clauses(clause.OnConflict{
+					Columns:   []clause.Column{{Name: "union_id"}},
+					UpdateAll: true,
+				}).
+				Create(abs...)
+			if err != nil {
+				return err
+			}
+		}
+
+		if snapshot != nil {
+			libraries, err := tx.SentinelLibrary.WithContext(ctx).
+				Where(tx.SentinelLibrary.SentinelID.Eq(int64(sentinelID))).
+				Find()
+			if err != nil {
+				return err
+			}
+			libIDs := make([]int64, len(libraries))
+			for i, l := range libraries {
+				libIDs[i] = int64(l.ID)
+			}
+
+			if len(libIDs) > 0 {
+				_, err = tx.SentinelAppBinary.WithContext(ctx).
+					Where(
+						tx.SentinelAppBinary.SentinelLibraryID.In(libIDs...),
+						tx.SentinelAppBinary.UpdatedAt.Lt(*snapshot),
+					).
+					Delete()
+				if err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
 }
 
-func (g *GeburaRepo) ListStoreApps(ctx context.Context, page *libmodel.Paging) ([]*modelgebura.StoreApp, int, error) {
+func (g *GeburaRepo) GetStoreApp(
+	ctx context.Context,
+	id libmodel.InternalID,
+) (*modelgebura.StoreApp, error) {
 	q := query.Use(g.data.db).StoreApp
-	total, err := q.WithContext(ctx).Count()
+	return q.WithContext(ctx).Where(q.ID.Eq(int64(id))).First()
+}
+
+func (g *GeburaRepo) ListStoreApps(
+	ctx context.Context,
+	paging *libmodel.Paging,
+) ([]*modelgebura.StoreApp, int, error) {
+	q := query.Use(g.data.db).StoreApp
+	queryBuilder := q.WithContext(ctx)
+	total, err := queryBuilder.Count()
 	if err != nil {
 		return nil, 0, err
 	}
-	storeApps, err := q.WithContext(ctx).
-		Limit(page.ToLimit()).
-		Offset(page.ToOffset()).
+	res, err := queryBuilder.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
 		Find()
 	if err != nil {
 		return nil, 0, err
 	}
-	return converter.ToBizStoreAppList(storeApps), int(total), nil
+	return res, int(total), nil
 }
 
 func (g *GeburaRepo) ListStoreAppBinaries(
 	ctx context.Context,
-	page *libmodel.Paging,
+	paging *libmodel.Paging,
 	appIDs []libmodel.InternalID,
 ) ([]*modelgebura.StoreAppBinary, int, error) {
-	sab := query.Use(g.data.db).SentinelAppBinary
-	var storeAppBinaries []*model.SentinelAppBinary
-
-	db := sab.WithContext(ctx).UnderlyingDB()
-
-	// Join with SentinelLibrary to check active snapshot
-	db = db.Joins(
-		"JOIN sentinel_libraries ON sentinel_app_binaries.sentinel_library_reported_id = sentinel_libraries.reported_id AND sentinel_app_binaries.library_snapshot = sentinel_libraries.active_snapshot",
-	)
-
+	q := query.Use(g.data.db).StoreAppBinary
+	queryBuilder := q.WithContext(ctx)
 	if len(appIDs) > 0 {
-		db = db.Joins("StoreApps").Where("store_apps.id IN ?", appIDs)
+		castAppIDs := make([]int64, len(appIDs))
+		for i, v := range appIDs {
+			castAppIDs[i] = int64(v)
+		}
+		// Assuming standard In check works for ID
+		// Note: StoreAppBinary.AppID might be nullable pointer in struct.
+		// If Gen handles it correctly, q.AppID.In(...) should accept int64s.
+		// If not, we might need manual handling, but let's try standard way.
+		queryBuilder = queryBuilder.Where(q.AppID.In(castAppIDs...))
 	}
-
-	var total int64
-	err := db.Count(&total).Error
+	total, err := queryBuilder.Count()
 	if err != nil {
 		return nil, 0, err
 	}
-
-	err = db.Offset(page.ToOffset()).Limit(page.ToLimit()).Find(&storeAppBinaries).Error
+	res, err := queryBuilder.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
+		Find()
 	if err != nil {
 		return nil, 0, err
 	}
-
-	return converter.ToBizStoreAppBinaryList(storeAppBinaries), int(total), nil
+	return res, int(total), nil
 }

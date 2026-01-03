@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,7 +23,7 @@ func newSentinelLibrary(db *gorm.DB, opts ...gen.DOOption) sentinelLibrary {
 	_sentinelLibrary := sentinelLibrary{}
 
 	_sentinelLibrary.sentinelLibraryDo.UseDB(db, opts...)
-	_sentinelLibrary.sentinelLibraryDo.UseModel(&model.SentinelLibrary{})
+	_sentinelLibrary.sentinelLibraryDo.UseModel(&modelgebura.SentinelLibrary{})
 
 	tableName := _sentinelLibrary.sentinelLibraryDo.TableName()
 	_sentinelLibrary.ALL = field.NewAsterisk(tableName)
@@ -31,39 +31,16 @@ func newSentinelLibrary(db *gorm.DB, opts ...gen.DOOption) sentinelLibrary {
 	_sentinelLibrary.SentinelID = field.NewInt64(tableName, "sentinel_id")
 	_sentinelLibrary.ReportedID = field.NewInt64(tableName, "reported_id")
 	_sentinelLibrary.DownloadBasePath = field.NewString(tableName, "download_base_path")
-	_sentinelLibrary.ActiveSnapshot = field.NewTime(tableName, "active_snapshot")
-	_sentinelLibrary.LibraryReportSequence = field.NewInt64(tableName, "library_report_sequence")
-	_sentinelLibrary.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_sentinelLibrary.CreatedAt = field.NewTime(tableName, "created_at")
-	_sentinelLibrary.Sentinel = sentinelLibraryBelongsToSentinel{
+	_sentinelLibrary.UpdatedAt = field.NewTime(tableName, "updated_at")
+	_sentinelLibrary.AppBinaries = sentinelLibraryHasManyAppBinaries{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("Sentinel", "model.Sentinel"),
-		SentinelSessions: struct {
+		RelationField: field.NewRelation("AppBinaries", "modelgebura.SentinelAppBinary"),
+		Files: struct {
 			field.RelationField
-			Sentinel struct {
-				field.RelationField
-			}
 		}{
-			RelationField: field.NewRelation("Sentinel.SentinelSessions", "model.SentinelSession"),
-			Sentinel: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Sentinel.SentinelSessions.Sentinel", "model.Sentinel"),
-			},
-		},
-		SentinelLibraries: struct {
-			field.RelationField
-			Sentinel struct {
-				field.RelationField
-			}
-		}{
-			RelationField: field.NewRelation("Sentinel.SentinelLibraries", "model.SentinelLibrary"),
-			Sentinel: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("Sentinel.SentinelLibraries.Sentinel", "model.Sentinel"),
-			},
+			RelationField: field.NewRelation("AppBinaries.Files", "modelgebura.SentinelAppBinaryFile"),
 		},
 	}
 
@@ -75,16 +52,14 @@ func newSentinelLibrary(db *gorm.DB, opts ...gen.DOOption) sentinelLibrary {
 type sentinelLibrary struct {
 	sentinelLibraryDo sentinelLibraryDo
 
-	ALL                   field.Asterisk
-	ID                    field.Int64
-	SentinelID            field.Int64
-	ReportedID            field.Int64
-	DownloadBasePath      field.String
-	ActiveSnapshot        field.Time
-	LibraryReportSequence field.Int64
-	UpdatedAt             field.Time
-	CreatedAt             field.Time
-	Sentinel              sentinelLibraryBelongsToSentinel
+	ALL              field.Asterisk
+	ID               field.Int64
+	SentinelID       field.Int64
+	ReportedID       field.Int64
+	DownloadBasePath field.String
+	CreatedAt        field.Time
+	UpdatedAt        field.Time
+	AppBinaries      sentinelLibraryHasManyAppBinaries
 
 	fieldMap map[string]field.Expr
 }
@@ -105,10 +80,8 @@ func (s *sentinelLibrary) updateTableName(table string) *sentinelLibrary {
 	s.SentinelID = field.NewInt64(table, "sentinel_id")
 	s.ReportedID = field.NewInt64(table, "reported_id")
 	s.DownloadBasePath = field.NewString(table, "download_base_path")
-	s.ActiveSnapshot = field.NewTime(table, "active_snapshot")
-	s.LibraryReportSequence = field.NewInt64(table, "library_report_sequence")
-	s.UpdatedAt = field.NewTime(table, "updated_at")
 	s.CreatedAt = field.NewTime(table, "created_at")
+	s.UpdatedAt = field.NewTime(table, "updated_at")
 
 	s.fillFieldMap()
 
@@ -137,51 +110,40 @@ func (s *sentinelLibrary) GetFieldByName(fieldName string) (field.OrderExpr, boo
 }
 
 func (s *sentinelLibrary) fillFieldMap() {
-	s.fieldMap = make(map[string]field.Expr, 9)
+	s.fieldMap = make(map[string]field.Expr, 7)
 	s.fieldMap["id"] = s.ID
 	s.fieldMap["sentinel_id"] = s.SentinelID
 	s.fieldMap["reported_id"] = s.ReportedID
 	s.fieldMap["download_base_path"] = s.DownloadBasePath
-	s.fieldMap["active_snapshot"] = s.ActiveSnapshot
-	s.fieldMap["library_report_sequence"] = s.LibraryReportSequence
-	s.fieldMap["updated_at"] = s.UpdatedAt
 	s.fieldMap["created_at"] = s.CreatedAt
+	s.fieldMap["updated_at"] = s.UpdatedAt
 
 }
 
 func (s sentinelLibrary) clone(db *gorm.DB) sentinelLibrary {
 	s.sentinelLibraryDo.ReplaceConnPool(db.Statement.ConnPool)
-	s.Sentinel.db = db.Session(&gorm.Session{Initialized: true})
-	s.Sentinel.db.Statement.ConnPool = db.Statement.ConnPool
+	s.AppBinaries.db = db.Session(&gorm.Session{Initialized: true})
+	s.AppBinaries.db.Statement.ConnPool = db.Statement.ConnPool
 	return s
 }
 
 func (s sentinelLibrary) replaceDB(db *gorm.DB) sentinelLibrary {
 	s.sentinelLibraryDo.ReplaceDB(db)
-	s.Sentinel.db = db.Session(&gorm.Session{})
+	s.AppBinaries.db = db.Session(&gorm.Session{})
 	return s
 }
 
-type sentinelLibraryBelongsToSentinel struct {
+type sentinelLibraryHasManyAppBinaries struct {
 	db *gorm.DB
 
 	field.RelationField
 
-	SentinelSessions struct {
+	Files struct {
 		field.RelationField
-		Sentinel struct {
-			field.RelationField
-		}
-	}
-	SentinelLibraries struct {
-		field.RelationField
-		Sentinel struct {
-			field.RelationField
-		}
 	}
 }
 
-func (a sentinelLibraryBelongsToSentinel) Where(conds ...field.Expr) *sentinelLibraryBelongsToSentinel {
+func (a sentinelLibraryHasManyAppBinaries) Where(conds ...field.Expr) *sentinelLibraryHasManyAppBinaries {
 	if len(conds) == 0 {
 		return &a
 	}
@@ -194,32 +156,32 @@ func (a sentinelLibraryBelongsToSentinel) Where(conds ...field.Expr) *sentinelLi
 	return &a
 }
 
-func (a sentinelLibraryBelongsToSentinel) WithContext(ctx context.Context) *sentinelLibraryBelongsToSentinel {
+func (a sentinelLibraryHasManyAppBinaries) WithContext(ctx context.Context) *sentinelLibraryHasManyAppBinaries {
 	a.db = a.db.WithContext(ctx)
 	return &a
 }
 
-func (a sentinelLibraryBelongsToSentinel) Session(session *gorm.Session) *sentinelLibraryBelongsToSentinel {
+func (a sentinelLibraryHasManyAppBinaries) Session(session *gorm.Session) *sentinelLibraryHasManyAppBinaries {
 	a.db = a.db.Session(session)
 	return &a
 }
 
-func (a sentinelLibraryBelongsToSentinel) Model(m *model.SentinelLibrary) *sentinelLibraryBelongsToSentinelTx {
-	return &sentinelLibraryBelongsToSentinelTx{a.db.Model(m).Association(a.Name())}
+func (a sentinelLibraryHasManyAppBinaries) Model(m *modelgebura.SentinelLibrary) *sentinelLibraryHasManyAppBinariesTx {
+	return &sentinelLibraryHasManyAppBinariesTx{a.db.Model(m).Association(a.Name())}
 }
 
-func (a sentinelLibraryBelongsToSentinel) Unscoped() *sentinelLibraryBelongsToSentinel {
+func (a sentinelLibraryHasManyAppBinaries) Unscoped() *sentinelLibraryHasManyAppBinaries {
 	a.db = a.db.Unscoped()
 	return &a
 }
 
-type sentinelLibraryBelongsToSentinelTx struct{ tx *gorm.Association }
+type sentinelLibraryHasManyAppBinariesTx struct{ tx *gorm.Association }
 
-func (a sentinelLibraryBelongsToSentinelTx) Find() (result *model.Sentinel, err error) {
+func (a sentinelLibraryHasManyAppBinariesTx) Find() (result []*modelgebura.SentinelAppBinary, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a sentinelLibraryBelongsToSentinelTx) Append(values ...*model.Sentinel) (err error) {
+func (a sentinelLibraryHasManyAppBinariesTx) Append(values ...*modelgebura.SentinelAppBinary) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -227,7 +189,7 @@ func (a sentinelLibraryBelongsToSentinelTx) Append(values ...*model.Sentinel) (e
 	return a.tx.Append(targetValues...)
 }
 
-func (a sentinelLibraryBelongsToSentinelTx) Replace(values ...*model.Sentinel) (err error) {
+func (a sentinelLibraryHasManyAppBinariesTx) Replace(values ...*modelgebura.SentinelAppBinary) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -235,7 +197,7 @@ func (a sentinelLibraryBelongsToSentinelTx) Replace(values ...*model.Sentinel) (
 	return a.tx.Replace(targetValues...)
 }
 
-func (a sentinelLibraryBelongsToSentinelTx) Delete(values ...*model.Sentinel) (err error) {
+func (a sentinelLibraryHasManyAppBinariesTx) Delete(values ...*modelgebura.SentinelAppBinary) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -243,15 +205,15 @@ func (a sentinelLibraryBelongsToSentinelTx) Delete(values ...*model.Sentinel) (e
 	return a.tx.Delete(targetValues...)
 }
 
-func (a sentinelLibraryBelongsToSentinelTx) Clear() error {
+func (a sentinelLibraryHasManyAppBinariesTx) Clear() error {
 	return a.tx.Clear()
 }
 
-func (a sentinelLibraryBelongsToSentinelTx) Count() int64 {
+func (a sentinelLibraryHasManyAppBinariesTx) Count() int64 {
 	return a.tx.Count()
 }
 
-func (a sentinelLibraryBelongsToSentinelTx) Unscoped() *sentinelLibraryBelongsToSentinelTx {
+func (a sentinelLibraryHasManyAppBinariesTx) Unscoped() *sentinelLibraryHasManyAppBinariesTx {
 	a.tx = a.tx.Unscoped()
 	return &a
 }
@@ -287,17 +249,17 @@ type ISentinelLibraryDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ISentinelLibraryDo
 	Unscoped() ISentinelLibraryDo
-	Create(values ...*model.SentinelLibrary) error
-	CreateInBatches(values []*model.SentinelLibrary, batchSize int) error
-	Save(values ...*model.SentinelLibrary) error
-	First() (*model.SentinelLibrary, error)
-	Take() (*model.SentinelLibrary, error)
-	Last() (*model.SentinelLibrary, error)
-	Find() ([]*model.SentinelLibrary, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.SentinelLibrary, err error)
-	FindInBatches(result *[]*model.SentinelLibrary, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelgebura.SentinelLibrary) error
+	CreateInBatches(values []*modelgebura.SentinelLibrary, batchSize int) error
+	Save(values ...*modelgebura.SentinelLibrary) error
+	First() (*modelgebura.SentinelLibrary, error)
+	Take() (*modelgebura.SentinelLibrary, error)
+	Last() (*modelgebura.SentinelLibrary, error)
+	Find() ([]*modelgebura.SentinelLibrary, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.SentinelLibrary, err error)
+	FindInBatches(result *[]*modelgebura.SentinelLibrary, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.SentinelLibrary) (info gen.ResultInfo, err error)
+	Delete(...*modelgebura.SentinelLibrary) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -309,9 +271,9 @@ type ISentinelLibraryDo interface {
 	Assign(attrs ...field.AssignExpr) ISentinelLibraryDo
 	Joins(fields ...field.RelationField) ISentinelLibraryDo
 	Preload(fields ...field.RelationField) ISentinelLibraryDo
-	FirstOrInit() (*model.SentinelLibrary, error)
-	FirstOrCreate() (*model.SentinelLibrary, error)
-	FindByPage(offset int, limit int) (result []*model.SentinelLibrary, count int64, err error)
+	FirstOrInit() (*modelgebura.SentinelLibrary, error)
+	FirstOrCreate() (*modelgebura.SentinelLibrary, error)
+	FindByPage(offset int, limit int) (result []*modelgebura.SentinelLibrary, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -413,57 +375,57 @@ func (s sentinelLibraryDo) Unscoped() ISentinelLibraryDo {
 	return s.withDO(s.DO.Unscoped())
 }
 
-func (s sentinelLibraryDo) Create(values ...*model.SentinelLibrary) error {
+func (s sentinelLibraryDo) Create(values ...*modelgebura.SentinelLibrary) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Create(values)
 }
 
-func (s sentinelLibraryDo) CreateInBatches(values []*model.SentinelLibrary, batchSize int) error {
+func (s sentinelLibraryDo) CreateInBatches(values []*modelgebura.SentinelLibrary, batchSize int) error {
 	return s.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (s sentinelLibraryDo) Save(values ...*model.SentinelLibrary) error {
+func (s sentinelLibraryDo) Save(values ...*modelgebura.SentinelLibrary) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Save(values)
 }
 
-func (s sentinelLibraryDo) First() (*model.SentinelLibrary, error) {
+func (s sentinelLibraryDo) First() (*modelgebura.SentinelLibrary, error) {
 	if result, err := s.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelLibrary), nil
+		return result.(*modelgebura.SentinelLibrary), nil
 	}
 }
 
-func (s sentinelLibraryDo) Take() (*model.SentinelLibrary, error) {
+func (s sentinelLibraryDo) Take() (*modelgebura.SentinelLibrary, error) {
 	if result, err := s.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelLibrary), nil
+		return result.(*modelgebura.SentinelLibrary), nil
 	}
 }
 
-func (s sentinelLibraryDo) Last() (*model.SentinelLibrary, error) {
+func (s sentinelLibraryDo) Last() (*modelgebura.SentinelLibrary, error) {
 	if result, err := s.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelLibrary), nil
+		return result.(*modelgebura.SentinelLibrary), nil
 	}
 }
 
-func (s sentinelLibraryDo) Find() ([]*model.SentinelLibrary, error) {
+func (s sentinelLibraryDo) Find() ([]*modelgebura.SentinelLibrary, error) {
 	result, err := s.DO.Find()
-	return result.([]*model.SentinelLibrary), err
+	return result.([]*modelgebura.SentinelLibrary), err
 }
 
-func (s sentinelLibraryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.SentinelLibrary, err error) {
-	buf := make([]*model.SentinelLibrary, 0, batchSize)
+func (s sentinelLibraryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.SentinelLibrary, err error) {
+	buf := make([]*modelgebura.SentinelLibrary, 0, batchSize)
 	err = s.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -471,7 +433,7 @@ func (s sentinelLibraryDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch 
 	return results, err
 }
 
-func (s sentinelLibraryDo) FindInBatches(result *[]*model.SentinelLibrary, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (s sentinelLibraryDo) FindInBatches(result *[]*modelgebura.SentinelLibrary, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return s.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -497,23 +459,23 @@ func (s sentinelLibraryDo) Preload(fields ...field.RelationField) ISentinelLibra
 	return &s
 }
 
-func (s sentinelLibraryDo) FirstOrInit() (*model.SentinelLibrary, error) {
+func (s sentinelLibraryDo) FirstOrInit() (*modelgebura.SentinelLibrary, error) {
 	if result, err := s.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelLibrary), nil
+		return result.(*modelgebura.SentinelLibrary), nil
 	}
 }
 
-func (s sentinelLibraryDo) FirstOrCreate() (*model.SentinelLibrary, error) {
+func (s sentinelLibraryDo) FirstOrCreate() (*modelgebura.SentinelLibrary, error) {
 	if result, err := s.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelLibrary), nil
+		return result.(*modelgebura.SentinelLibrary), nil
 	}
 }
 
-func (s sentinelLibraryDo) FindByPage(offset int, limit int) (result []*model.SentinelLibrary, count int64, err error) {
+func (s sentinelLibraryDo) FindByPage(offset int, limit int) (result []*modelgebura.SentinelLibrary, count int64, err error) {
 	result, err = s.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -542,7 +504,7 @@ func (s sentinelLibraryDo) Scan(result interface{}) (err error) {
 	return s.DO.Scan(result)
 }
 
-func (s sentinelLibraryDo) Delete(models ...*model.SentinelLibrary) (result gen.ResultInfo, err error) {
+func (s sentinelLibraryDo) Delete(models ...*modelgebura.SentinelLibrary) (result gen.ResultInfo, err error) {
 	return s.DO.Delete(models)
 }
 

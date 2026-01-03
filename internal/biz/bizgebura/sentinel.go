@@ -1,4 +1,4 @@
-package bizgebura
+package bizgebura //nolint:exhaustruct // legacy
 
 import (
 	"context"

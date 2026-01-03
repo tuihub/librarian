@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/tuihub/librarian/internal/data/orm/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
@@ -23,22 +23,19 @@ func newSentinelAppBinaryFile(db *gorm.DB, opts ...gen.DOOption) sentinelAppBina
 	_sentinelAppBinaryFile := sentinelAppBinaryFile{}
 
 	_sentinelAppBinaryFile.sentinelAppBinaryFileDo.UseDB(db, opts...)
-	_sentinelAppBinaryFile.sentinelAppBinaryFileDo.UseModel(&model.SentinelAppBinaryFile{})
+	_sentinelAppBinaryFile.sentinelAppBinaryFileDo.UseModel(&modelgebura.SentinelAppBinaryFile{})
 
 	tableName := _sentinelAppBinaryFile.sentinelAppBinaryFileDo.TableName()
 	_sentinelAppBinaryFile.ALL = field.NewAsterisk(tableName)
 	_sentinelAppBinaryFile.ID = field.NewInt64(tableName, "id")
-	_sentinelAppBinaryFile.SentinelID = field.NewInt64(tableName, "sentinel_id")
-	_sentinelAppBinaryFile.SentinelLibraryReportedID = field.NewInt64(tableName, "sentinel_library_reported_id")
-	_sentinelAppBinaryFile.LibrarySnapshot = field.NewTime(tableName, "library_snapshot")
-	_sentinelAppBinaryFile.SentinelAppBinaryGeneratedID = field.NewString(tableName, "sentinel_app_binary_generated_id")
+	_sentinelAppBinaryFile.SentinelAppBinaryID = field.NewInt64(tableName, "sentinel_app_binary_id")
 	_sentinelAppBinaryFile.Name = field.NewString(tableName, "name")
 	_sentinelAppBinaryFile.SizeBytes = field.NewInt64(tableName, "size_bytes")
 	_sentinelAppBinaryFile.Sha256 = field.NewBytes(tableName, "sha256")
 	_sentinelAppBinaryFile.ServerFilePath = field.NewString(tableName, "server_file_path")
 	_sentinelAppBinaryFile.ChunksInfo = field.NewString(tableName, "chunks_info")
-	_sentinelAppBinaryFile.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_sentinelAppBinaryFile.CreatedAt = field.NewTime(tableName, "created_at")
+	_sentinelAppBinaryFile.UpdatedAt = field.NewTime(tableName, "updated_at")
 
 	_sentinelAppBinaryFile.fillFieldMap()
 
@@ -48,19 +45,16 @@ func newSentinelAppBinaryFile(db *gorm.DB, opts ...gen.DOOption) sentinelAppBina
 type sentinelAppBinaryFile struct {
 	sentinelAppBinaryFileDo sentinelAppBinaryFileDo
 
-	ALL                          field.Asterisk
-	ID                           field.Int64
-	SentinelID                   field.Int64
-	SentinelLibraryReportedID    field.Int64
-	LibrarySnapshot              field.Time
-	SentinelAppBinaryGeneratedID field.String
-	Name                         field.String
-	SizeBytes                    field.Int64
-	Sha256                       field.Bytes
-	ServerFilePath               field.String
-	ChunksInfo                   field.String
-	UpdatedAt                    field.Time
-	CreatedAt                    field.Time
+	ALL                 field.Asterisk
+	ID                  field.Int64
+	SentinelAppBinaryID field.Int64
+	Name                field.String
+	SizeBytes           field.Int64
+	Sha256              field.Bytes
+	ServerFilePath      field.String
+	ChunksInfo          field.String
+	CreatedAt           field.Time
+	UpdatedAt           field.Time
 
 	fieldMap map[string]field.Expr
 }
@@ -78,17 +72,14 @@ func (s sentinelAppBinaryFile) As(alias string) *sentinelAppBinaryFile {
 func (s *sentinelAppBinaryFile) updateTableName(table string) *sentinelAppBinaryFile {
 	s.ALL = field.NewAsterisk(table)
 	s.ID = field.NewInt64(table, "id")
-	s.SentinelID = field.NewInt64(table, "sentinel_id")
-	s.SentinelLibraryReportedID = field.NewInt64(table, "sentinel_library_reported_id")
-	s.LibrarySnapshot = field.NewTime(table, "library_snapshot")
-	s.SentinelAppBinaryGeneratedID = field.NewString(table, "sentinel_app_binary_generated_id")
+	s.SentinelAppBinaryID = field.NewInt64(table, "sentinel_app_binary_id")
 	s.Name = field.NewString(table, "name")
 	s.SizeBytes = field.NewInt64(table, "size_bytes")
 	s.Sha256 = field.NewBytes(table, "sha256")
 	s.ServerFilePath = field.NewString(table, "server_file_path")
 	s.ChunksInfo = field.NewString(table, "chunks_info")
-	s.UpdatedAt = field.NewTime(table, "updated_at")
 	s.CreatedAt = field.NewTime(table, "created_at")
+	s.UpdatedAt = field.NewTime(table, "updated_at")
 
 	s.fillFieldMap()
 
@@ -117,19 +108,16 @@ func (s *sentinelAppBinaryFile) GetFieldByName(fieldName string) (field.OrderExp
 }
 
 func (s *sentinelAppBinaryFile) fillFieldMap() {
-	s.fieldMap = make(map[string]field.Expr, 12)
+	s.fieldMap = make(map[string]field.Expr, 9)
 	s.fieldMap["id"] = s.ID
-	s.fieldMap["sentinel_id"] = s.SentinelID
-	s.fieldMap["sentinel_library_reported_id"] = s.SentinelLibraryReportedID
-	s.fieldMap["library_snapshot"] = s.LibrarySnapshot
-	s.fieldMap["sentinel_app_binary_generated_id"] = s.SentinelAppBinaryGeneratedID
+	s.fieldMap["sentinel_app_binary_id"] = s.SentinelAppBinaryID
 	s.fieldMap["name"] = s.Name
 	s.fieldMap["size_bytes"] = s.SizeBytes
 	s.fieldMap["sha256"] = s.Sha256
 	s.fieldMap["server_file_path"] = s.ServerFilePath
 	s.fieldMap["chunks_info"] = s.ChunksInfo
-	s.fieldMap["updated_at"] = s.UpdatedAt
 	s.fieldMap["created_at"] = s.CreatedAt
+	s.fieldMap["updated_at"] = s.UpdatedAt
 }
 
 func (s sentinelAppBinaryFile) clone(db *gorm.DB) sentinelAppBinaryFile {
@@ -173,17 +161,17 @@ type ISentinelAppBinaryFileDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ISentinelAppBinaryFileDo
 	Unscoped() ISentinelAppBinaryFileDo
-	Create(values ...*model.SentinelAppBinaryFile) error
-	CreateInBatches(values []*model.SentinelAppBinaryFile, batchSize int) error
-	Save(values ...*model.SentinelAppBinaryFile) error
-	First() (*model.SentinelAppBinaryFile, error)
-	Take() (*model.SentinelAppBinaryFile, error)
-	Last() (*model.SentinelAppBinaryFile, error)
-	Find() ([]*model.SentinelAppBinaryFile, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.SentinelAppBinaryFile, err error)
-	FindInBatches(result *[]*model.SentinelAppBinaryFile, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*modelgebura.SentinelAppBinaryFile) error
+	CreateInBatches(values []*modelgebura.SentinelAppBinaryFile, batchSize int) error
+	Save(values ...*modelgebura.SentinelAppBinaryFile) error
+	First() (*modelgebura.SentinelAppBinaryFile, error)
+	Take() (*modelgebura.SentinelAppBinaryFile, error)
+	Last() (*modelgebura.SentinelAppBinaryFile, error)
+	Find() ([]*modelgebura.SentinelAppBinaryFile, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.SentinelAppBinaryFile, err error)
+	FindInBatches(result *[]*modelgebura.SentinelAppBinaryFile, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.SentinelAppBinaryFile) (info gen.ResultInfo, err error)
+	Delete(...*modelgebura.SentinelAppBinaryFile) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -195,9 +183,9 @@ type ISentinelAppBinaryFileDo interface {
 	Assign(attrs ...field.AssignExpr) ISentinelAppBinaryFileDo
 	Joins(fields ...field.RelationField) ISentinelAppBinaryFileDo
 	Preload(fields ...field.RelationField) ISentinelAppBinaryFileDo
-	FirstOrInit() (*model.SentinelAppBinaryFile, error)
-	FirstOrCreate() (*model.SentinelAppBinaryFile, error)
-	FindByPage(offset int, limit int) (result []*model.SentinelAppBinaryFile, count int64, err error)
+	FirstOrInit() (*modelgebura.SentinelAppBinaryFile, error)
+	FirstOrCreate() (*modelgebura.SentinelAppBinaryFile, error)
+	FindByPage(offset int, limit int) (result []*modelgebura.SentinelAppBinaryFile, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Rows() (*sql.Rows, error)
 	Row() *sql.Row
@@ -299,57 +287,57 @@ func (s sentinelAppBinaryFileDo) Unscoped() ISentinelAppBinaryFileDo {
 	return s.withDO(s.DO.Unscoped())
 }
 
-func (s sentinelAppBinaryFileDo) Create(values ...*model.SentinelAppBinaryFile) error {
+func (s sentinelAppBinaryFileDo) Create(values ...*modelgebura.SentinelAppBinaryFile) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Create(values)
 }
 
-func (s sentinelAppBinaryFileDo) CreateInBatches(values []*model.SentinelAppBinaryFile, batchSize int) error {
+func (s sentinelAppBinaryFileDo) CreateInBatches(values []*modelgebura.SentinelAppBinaryFile, batchSize int) error {
 	return s.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (s sentinelAppBinaryFileDo) Save(values ...*model.SentinelAppBinaryFile) error {
+func (s sentinelAppBinaryFileDo) Save(values ...*modelgebura.SentinelAppBinaryFile) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return s.DO.Save(values)
 }
 
-func (s sentinelAppBinaryFileDo) First() (*model.SentinelAppBinaryFile, error) {
+func (s sentinelAppBinaryFileDo) First() (*modelgebura.SentinelAppBinaryFile, error) {
 	if result, err := s.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelAppBinaryFile), nil
+		return result.(*modelgebura.SentinelAppBinaryFile), nil
 	}
 }
 
-func (s sentinelAppBinaryFileDo) Take() (*model.SentinelAppBinaryFile, error) {
+func (s sentinelAppBinaryFileDo) Take() (*modelgebura.SentinelAppBinaryFile, error) {
 	if result, err := s.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelAppBinaryFile), nil
+		return result.(*modelgebura.SentinelAppBinaryFile), nil
 	}
 }
 
-func (s sentinelAppBinaryFileDo) Last() (*model.SentinelAppBinaryFile, error) {
+func (s sentinelAppBinaryFileDo) Last() (*modelgebura.SentinelAppBinaryFile, error) {
 	if result, err := s.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelAppBinaryFile), nil
+		return result.(*modelgebura.SentinelAppBinaryFile), nil
 	}
 }
 
-func (s sentinelAppBinaryFileDo) Find() ([]*model.SentinelAppBinaryFile, error) {
+func (s sentinelAppBinaryFileDo) Find() ([]*modelgebura.SentinelAppBinaryFile, error) {
 	result, err := s.DO.Find()
-	return result.([]*model.SentinelAppBinaryFile), err
+	return result.([]*modelgebura.SentinelAppBinaryFile), err
 }
 
-func (s sentinelAppBinaryFileDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.SentinelAppBinaryFile, err error) {
-	buf := make([]*model.SentinelAppBinaryFile, 0, batchSize)
+func (s sentinelAppBinaryFileDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*modelgebura.SentinelAppBinaryFile, err error) {
+	buf := make([]*modelgebura.SentinelAppBinaryFile, 0, batchSize)
 	err = s.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -357,7 +345,7 @@ func (s sentinelAppBinaryFileDo) FindInBatch(batchSize int, fc func(tx gen.Dao, 
 	return results, err
 }
 
-func (s sentinelAppBinaryFileDo) FindInBatches(result *[]*model.SentinelAppBinaryFile, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (s sentinelAppBinaryFileDo) FindInBatches(result *[]*modelgebura.SentinelAppBinaryFile, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return s.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -383,23 +371,23 @@ func (s sentinelAppBinaryFileDo) Preload(fields ...field.RelationField) ISentine
 	return &s
 }
 
-func (s sentinelAppBinaryFileDo) FirstOrInit() (*model.SentinelAppBinaryFile, error) {
+func (s sentinelAppBinaryFileDo) FirstOrInit() (*modelgebura.SentinelAppBinaryFile, error) {
 	if result, err := s.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelAppBinaryFile), nil
+		return result.(*modelgebura.SentinelAppBinaryFile), nil
 	}
 }
 
-func (s sentinelAppBinaryFileDo) FirstOrCreate() (*model.SentinelAppBinaryFile, error) {
+func (s sentinelAppBinaryFileDo) FirstOrCreate() (*modelgebura.SentinelAppBinaryFile, error) {
 	if result, err := s.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.SentinelAppBinaryFile), nil
+		return result.(*modelgebura.SentinelAppBinaryFile), nil
 	}
 }
 
-func (s sentinelAppBinaryFileDo) FindByPage(offset int, limit int) (result []*model.SentinelAppBinaryFile, count int64, err error) {
+func (s sentinelAppBinaryFileDo) FindByPage(offset int, limit int) (result []*modelgebura.SentinelAppBinaryFile, count int64, err error) {
 	result, err = s.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -428,7 +416,7 @@ func (s sentinelAppBinaryFileDo) Scan(result interface{}) (err error) {
 	return s.DO.Scan(result)
 }
 
-func (s sentinelAppBinaryFileDo) Delete(models ...*model.SentinelAppBinaryFile) (result gen.ResultInfo, err error) {
+func (s sentinelAppBinaryFileDo) Delete(models ...*modelgebura.SentinelAppBinaryFile) (result gen.ResultInfo, err error) {
 	return s.DO.Delete(models)
 }
 
