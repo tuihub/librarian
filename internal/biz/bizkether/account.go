@@ -1,4 +1,4 @@
-package bizkether //nolint:exhaustruct // legacy
+package bizkether
 
 import (
 	"context"
