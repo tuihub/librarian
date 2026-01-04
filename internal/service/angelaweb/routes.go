@@ -7,7 +7,7 @@ import (
 )
 
 func (a *AngelaWeb) setupRoutes() {
-	a.app.Use("/static", filesystem.New(filesystem.Config{ //nolint: exhaustruct // no need
+	a.app.Use("/static", filesystem.New(filesystem.Config{
 		Root:       http.FS(embedDirStatic),
 		PathPrefix: "static",
 		Browse:     true,

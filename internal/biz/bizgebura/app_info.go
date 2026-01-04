@@ -28,7 +28,7 @@ func (g *Gebura) ListAppInfos(
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return infos, total, nil
+	return infos, int64(total), nil
 }
 
 func (g *Gebura) SyncAppInfos(

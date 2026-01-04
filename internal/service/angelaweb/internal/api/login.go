@@ -20,7 +20,7 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": err.Message})
 	}
 
-	c.Cookie(&fiber.Cookie{ //nolint:exhaustruct // no need
+	c.Cookie(&fiber.Cookie{
 		Name:     "access_token",
 		Value:    string(accessToken),
 		Expires:  time.Now().Add(libtime.Day),

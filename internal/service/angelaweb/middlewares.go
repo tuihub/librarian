@@ -24,7 +24,7 @@ import (
 func (a *AngelaWeb) setupMiddlewares(settings *libapp.Settings) {
 	a.app.Use(loggerMiddleware())
 
-	a.app.Use(limiter.New(limiter.Config{ //nolint:exhaustruct // no need
+	a.app.Use(limiter.New(limiter.Config{
 		Next: func(c *fiber.Ctx) bool {
 			return c.IP() == "127.0.0.1"
 		},
@@ -32,7 +32,7 @@ func (a *AngelaWeb) setupMiddlewares(settings *libapp.Settings) {
 		Expiration: 1 * time.Minute,
 	}))
 
-	a.app.Use(fiberi18n.New(&fiberi18n.Config{ //nolint:exhaustruct // no need
+	a.app.Use(fiberi18n.New(&fiberi18n.Config{
 		RootPath:         "locales",
 		FormatBundleFile: "toml",
 		UnmarshalFunc:    toml.Unmarshal,
@@ -79,7 +79,7 @@ func tokenMiddleware(auth *libauth.Auth, builder *page.Builder) fiber.Handler {
 				log.Log(log.LevelWarn, "msg", "Failed to refresh access token", "error", err.Error())
 			} else {
 				// Set the new token in cookie
-				c.Cookie(&fiber.Cookie{ //nolint:exhaustruct // no need
+				c.Cookie(&fiber.Cookie{
 					Name:     "access_token",
 					Value:    newAccessToken,
 					Expires:  time.Now().Add(libtime.Day),

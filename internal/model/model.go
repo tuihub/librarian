@@ -74,3 +74,15 @@ type FeatureRequest struct {
 	ConfigJSON string     `json:"config_json"`
 	ContextID  InternalID `json:"context_id"`
 }
+
+type KV struct {
+	Bucket    string `gorm:"primaryKey"`
+	Key       string `gorm:"primaryKey"`
+	Value     string
+	UpdatedAt time.Time
+	CreatedAt time.Time
+}
+
+func (KV) TableName() string {
+	return "kvs"
+}

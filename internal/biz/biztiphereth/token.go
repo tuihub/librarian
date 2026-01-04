@@ -90,7 +90,8 @@ func (t *Tiphereth) GetToken(
 	return model.AccessToken(accessToken), model.RefreshToken(refreshToken), nil
 }
 
-func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
+//nolint:gocognit // complexity
+func (t *Tiphereth) RefreshToken(
 	ctx context.Context,
 	deviceID *model.InternalID,
 ) (model.AccessToken, model.RefreshToken, *errors.Error) {
