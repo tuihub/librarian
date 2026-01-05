@@ -10,7 +10,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/data/internal/migration"
-	"github.com/tuihub/librarian/internal/data/orm/query"
+	"github.com/tuihub/librarian/internal/data/internal/query"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/logger"
 

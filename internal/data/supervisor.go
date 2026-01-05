@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/tuihub/librarian/internal/client"
-	"github.com/tuihub/librarian/internal/data/orm/query"
+	"github.com/tuihub/librarian/internal/data/internal/query"
 	libmodel "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 
