@@ -2,7 +2,7 @@ package server
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"net"
 	stdhttp "net/http"
 	"strconv"
@@ -69,7 +69,7 @@ func NewConnectServer(
 	srv := http.NewServer(
 		http.Address(net.JoinHostPort(c.Main.Host, strconv.Itoa(int(c.Main.Port)))),
 		http.Filter(func(h stdhttp.Handler) stdhttp.Handler {
-			return h2c.NewHandler(h, &http2.Server{})
+			return h2c.NewHandler(h, &http2.Server{}) //nolint:exhaustruct // no need
 		}),
 		http.Timeout(ReadHeaderTimeout),
 	)
@@ -83,7 +83,7 @@ func NewConnectServer(
 func (s *ConnectServer) Start(ctx context.Context) error {
 	err := s.srv.Start(ctx)
 	if err == nil && ctx.Err() == nil {
-		return fmt.Errorf("ConnectServer stopped unexpectedly")
+		return errors.New("ConnectServer stopped unexpectedly")
 	}
 	return err
 }
