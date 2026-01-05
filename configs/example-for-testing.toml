@@ -1,21 +1,25 @@
-[server.grpc]
-addr = "0.0.0.0:10000"
-timeout = "60s"
+deploy_mode = "temporary"
 
-[server.grpc_web]
-addr = "0.0.0.0:10001"
-timeout = "60s"
+[server.main]
+host = "0.0.0.0"
+port = 10000
+
+[server.main_web]
+host = "0.0.0.0"
+port = 10001
 
 [database]
 driver = "memory"
 
-[s3]
+[storage]
 driver = "file"
+host = "127.0.0.1"
+port = 10002
 
 [auth]
 password_salt = "test"
-jwt_issuer = "test"
-jwt_secret = "test"
+token_issuer = "test"
+token_secret = "test"
 
 [mq]
 driver = "memory"

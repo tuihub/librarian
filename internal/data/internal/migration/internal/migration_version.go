@@ -6,7 +6,9 @@ import (
 	"gorm.io/gorm"
 )
 
-type latestVersion v1.V1
+type latestVersion struct {
+	v1.V1
+}
 
 func LatestVersion() int64 {
 	v := latestVersion{}

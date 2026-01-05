@@ -46,10 +46,10 @@ func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
 	var dialector gorm.Dialector
 	switch c.Driver {
 	case conf.DatabaseDriverMemory:
-		dialector = sqlite.Open("file::memory:?cache=shared")
+		dialector = sqlite.Open("file::memory:?cache=shared&_busy_timeout=30000")
 	case conf.DatabaseDriverSqlite:
 		dialector = sqlite.Open(fmt.Sprintf(
-			"file:%s?cache=shared&_journal=WAL&_busy_timeout=30000",
+			"file:%s?_journal=WAL&_busy_timeout=30000",
 			path.Join(app.DataPath, "librarian.db"),
 		))
 	case conf.DatabaseDriverPostgres:
