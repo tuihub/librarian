@@ -57,7 +57,7 @@ test:
 		sleep 20 ; \
 		cd bin && ./client ; \
 		EXIT_CODE=$$? ; \
-		./goc profile -o ./coverage-goc.out ; \
+		./goc profile -o ../../coverage-goc.out ; \
 		echo "Stopping librarian server (PID: $$LIB_PID)..." ; \
 		kill $$LIB_PID || true ; \
 		echo "Stopping goc server (PID: $$GOC_PID)..." ; \
