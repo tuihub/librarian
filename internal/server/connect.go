@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net"
 	stdhttp "net/http"
 	"strconv"
@@ -30,7 +31,7 @@ const (
 )
 
 type ConnectServer struct {
-	*http.Server
+	srv *http.Server
 }
 
 func NewConnectServer(
@@ -46,7 +47,6 @@ func NewConnectServer(
 		"librarian.sephirah.v1.LibrarianSephirahService",
 		"librarian.porter.v1.LibrarianSephirahPorterService",
 		"librarian.sentinel.v1.LibrarianSentinelService",
-		"",
 	)
 	mux.Handle(grpchealth.NewHandler(checker))
 	reflector := grpcreflect.NewStaticReflector(
@@ -76,8 +76,20 @@ func NewConnectServer(
 	srv.HandlePrefix("/", wrapMiddleware(mux, middlewares))
 
 	return &ConnectServer{
-		Server: srv,
+		srv: srv,
 	}, nil
+}
+
+func (s *ConnectServer) Start(ctx context.Context) error {
+	err := s.srv.Start(ctx)
+	if err == nil && ctx.Err() == nil {
+		return fmt.Errorf("ConnectServer stopped unexpectedly")
+	}
+	return err
+}
+
+func (s *ConnectServer) Stop(ctx context.Context) error {
+	return s.srv.Stop(ctx)
 }
 
 func wrapMiddleware(h stdhttp.Handler, ms []middleware.Middleware) stdhttp.Handler {

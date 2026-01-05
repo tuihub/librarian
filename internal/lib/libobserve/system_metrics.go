@@ -255,7 +255,7 @@ func (c *SystemMetricsCollector) Collect(ctx context.Context) {
 }
 
 func (c *SystemMetricsCollector) Start(ctx context.Context) error {
-	c.Collect(ctx)
+	go c.Collect(ctx)
 
 	ticker := time.NewTicker(defaultSystemMetricsInterval)
 	defer ticker.Stop()
