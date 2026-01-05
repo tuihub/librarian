@@ -32,14 +32,14 @@ func GetModels() []interface{} {
 		&modelgebura.StoreApp{},
 		&modelgebura.StoreAppBinary{},
 
-		&modelfeed.Feed{},
-		&modelfeed.Item{},
-
 		&modelyesod.FeedConfig{},
 		&modelyesod.FeedActionSet{},
 		&modelyesod.FeedConfigAction{},
 		&modelyesod.FeedItemCollection{},
 		&modelyesod.FeedItemCollectionFeedItem{},
+
+		&modelfeed.Feed{},
+		&modelfeed.Item{},
 
 		&modelnetzach.NotifyFlow{},
 		&modelnetzach.NotifyFlowSource{},
