@@ -23,7 +23,8 @@ jobs:
         # run: make init-test && make test-unit
         run: make init-test && make test-all
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           # files: ./coverage-unit.out
           files: ./coverage-unit.out,./coverage-goc.out
+          token: ${{ secrets.CODECOV_TOKEN }}
