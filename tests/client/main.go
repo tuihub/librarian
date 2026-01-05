@@ -35,9 +35,9 @@ func main() {
 	log.Info("[Client] Test gebura begin")
 	c.TestGebura(ctx)
 	log.Info("[Client] Test gebura finish")
-	//log.Info("[Client] Test yesod begin")
-	//c.TestYesod(ctx)
-	//log.Info("[Client] Test yesod finish")
+	// log.Info("[Client] Test yesod begin")
+	// c.TestYesod(ctx)
+	// log.Info("[Client] Test yesod finish")
 
 	log.Info("[Client] All test finished")
 }
