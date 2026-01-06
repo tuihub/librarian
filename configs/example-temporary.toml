@@ -1,0 +1,9 @@
+deploy_mode = "temporary"
+
+[server.main]
+host = "0.0.0.0"
+port = 10000
+
+[server.main_web]
+host = "0.0.0.0"
+port = 10001

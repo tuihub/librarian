@@ -1,4 +1,5 @@
 VERSION := $(shell git describe --tags --always)
+TEST_CONFIG_FILE ?= example-temporary.toml
 GOHOSTOS := $(shell go env GOHOSTOS)
 GOHOSTARCH := $(shell go env GOHOSTARCH)
 
@@ -52,7 +53,7 @@ test:
 		cd bin && ./goc server > /dev/null 2>&1 & GOC_PID=$$! ; \
 		echo "Started goc server (PID: $$GOC_PID)" ; \
 		sleep 2 ; \
-		cd bin && CREATE_ADMIN_USER=admin CREATE_ADMIN_PASS=admin ./librarian serve -c ../../configs/example-for-testing.toml -d data > /dev/null 2>&1 & LIB_PID=$$! ; \
+		cd bin && CREATE_ADMIN_USER=admin CREATE_ADMIN_PASS=admin ./librarian serve -c ../../configs/$(TEST_CONFIG_FILE) -d data > /dev/null 2>&1 & LIB_PID=$$! ; \
 		echo "Started librarian server (PID: $$LIB_PID)" ; \
 		sleep 20 ; \
 		cd bin && ./client ; \

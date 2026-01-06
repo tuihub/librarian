@@ -1,4 +1,4 @@
-deploy_mode = "temporary"
+deploy_mode = "minimize"
 
 [server.main]
 host = "0.0.0.0"
@@ -9,7 +9,12 @@ host = "0.0.0.0"
 port = 10001
 
 [database]
-driver = "memory"
+driver = "postgres"
+host = "localhost"
+port = 5432
+db_name = "librarian"
+username = "librarian"
+password = "password"
 
 [storage]
 driver = "file"
@@ -20,14 +25,3 @@ port = 10002
 password_salt = "test"
 token_issuer = "test"
 token_secret = "test"
-
-[mq]
-driver = "memory"
-
-[cache]
-driver = "memory"
-
-[searcher.data.bleve]
-enable = ""
-
-[miner.data]
