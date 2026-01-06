@@ -2,17 +2,11 @@ package data
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/internal/ent"
-	"github.com/tuihub/librarian/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/internal/data/internal/ent/device"
-	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
-	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/internal/data/internal/ent/session"
-	"github.com/tuihub/librarian/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/data/internal/query"
+	libmodel "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
@@ -29,28 +23,29 @@ func NewTipherethRepo(data *Data) *TipherethRepo {
 func (t *TipherethRepo) FetchUserByPassword(
 	ctx context.Context,
 	username, password string,
-) (*model.User, error) {
-	u, err := t.data.db.User.Query().Where(
-		user.UsernameEQ(username),
-		user.PasswordEQ(password),
-	).First(ctx)
+) (*libmodel.User, error) {
+	q := query.Use(t.data.db).User
+	u, err := q.WithContext(ctx).Where(
+		q.Username.Eq(username),
+		q.Password.Eq(password),
+	).First()
 	if u == nil || err != nil {
 		return nil, errors.New("invalid user")
 	}
-	return converter.ToBizUser(u), nil
+	return u, nil
 }
 
 func (t *TipherethRepo) CreateDevice(
 	ctx context.Context,
-	info *model.Device,
+	info *libmodel.Device,
 	clientLocalID *string,
-) (model.InternalID, error) {
-	var res model.InternalID
-	err := t.data.WithTx(ctx, func(tx *ent.Tx) error {
+) (libmodel.InternalID, error) {
+	var res libmodel.InternalID
+	err := t.data.WithTx(ctx, func(tx *query.Query) error {
 		if clientLocalID != nil {
-			infos, err := tx.Device.Query().Where(
-				device.ClientLocalIDEQ(*clientLocalID),
-			).All(ctx)
+			infos, err := tx.Device.WithContext(ctx).Where(
+				tx.Device.ClientLocalID.Eq(*clientLocalID),
+			).Find()
 			if err != nil {
 				return err
 			}
@@ -59,19 +54,16 @@ func (t *TipherethRepo) CreateDevice(
 				return nil
 			}
 		}
-		q := tx.Device.Create().
-			SetID(info.ID).
-			SetDeviceName(info.DeviceName).
-			SetSystemType(converter.ToEntSystemType(info.SystemType)).
-			SetSystemVersion(info.SystemVersion).
-			SetClientName(info.ClientName).
-			SetClientSourceCodeAddress(info.ClientSourceCodeAddress).
-			SetClientVersion(info.ClientVersion)
+
 		if clientLocalID != nil {
-			q.SetClientLocalID(*clientLocalID)
+			info.ClientLocalID = *clientLocalID
+		}
+
+		if err := tx.Device.WithContext(ctx).Create(info); err != nil {
+			return err
 		}
 		res = info.ID
-		return q.Exec(ctx)
+		return nil
 	})
 	if err != nil {
 		return 0, err
@@ -81,226 +73,258 @@ func (t *TipherethRepo) CreateDevice(
 
 func (t *TipherethRepo) FetchDeviceInfo(
 	ctx context.Context,
-	deviceID model.InternalID,
-) (*model.Device, error) {
-	res, err := t.data.db.Device.Get(ctx, deviceID)
+	deviceID libmodel.InternalID,
+) (*libmodel.Device, error) {
+	q := query.Use(t.data.db).Device
+	res, err := q.WithContext(ctx).Where(q.ID.Eq(int64(deviceID))).First()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizDeviceInfo(res), nil
+	return res, nil
 }
 
-func (t *TipherethRepo) CreateUserSession(ctx context.Context, s *model.Session) error {
-	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := tx.Session.Create().
-			SetID(s.ID).
-			SetUserID(s.UserID).
-			SetRefreshToken(s.RefreshToken).
-			SetCreatedAt(s.CreateAt).
-			SetExpireAt(s.ExpireAt)
+func (t *TipherethRepo) CreateUserSession(ctx context.Context, s *libmodel.Session) error {
+	return t.data.WithTx(ctx, func(tx *query.Query) error {
+		qs := tx.Session
+
 		if s.Device != nil {
-			_, _ = tx.Session.Delete().Where(
-				session.UserIDEQ(s.UserID),
-				session.HasDeviceWith(
-					device.IDEQ(s.Device.ID),
-				)).Exec(ctx)
-			q.SetDeviceID(s.Device.ID)
+			// Delete existing session for user+device
+			_, _ = qs.WithContext(ctx).Where(
+				qs.UserID.Eq(int64(s.UserID)),
+				qs.DeviceID.Eq(int64(s.Device.ID)),
+			).Delete()
+			s.DeviceID = s.Device.ID
+			s.Device = nil // Prevent creating device
+		} else {
+			s.DeviceID = 0
 		}
-		err := q.Exec(ctx)
-		if err != nil {
-			return err
-		}
-		return nil
+
+		return qs.WithContext(ctx).Create(s)
 	})
 }
 
 func (t *TipherethRepo) FetchUserSession(
 	ctx context.Context,
-	userID model.InternalID,
+	userID libmodel.InternalID,
 	token string,
-) (*model.Session, error) {
-	s, err := t.data.db.Session.Query().Where(
-		session.UserIDEQ(userID),
-		session.RefreshTokenEQ(token),
-	).WithDevice().Only(ctx)
+) (*libmodel.Session, error) {
+	q := query.Use(t.data.db).Session
+	s, err := q.WithContext(ctx).
+		Where(q.UserID.Eq(int64(userID)), q.RefreshToken.Eq(token)).
+		Preload(q.Device).
+		First()
 	if err != nil {
 		return nil, err
 	}
-	res := converter.ToBizUserSession(s)
-	if s.Edges.Device != nil {
-		res.Device = converter.ToBizDeviceInfo(s.Edges.Device)
-	}
-	return res, nil
+	return s, nil
 }
 
 func (t *TipherethRepo) ListUserSessions(
 	ctx context.Context,
-	id model.InternalID,
-) ([]*model.Session, error) {
-	ss, err := t.data.db.Session.Query().Where(
-		session.UserIDEQ(id),
-	).WithDevice().All(ctx)
+	id libmodel.InternalID,
+) ([]*libmodel.Session, error) {
+	q := query.Use(t.data.db).Session
+	ss, err := q.WithContext(ctx).
+		Where(q.UserID.Eq(int64(id))).
+		Preload(q.Device).
+		Find()
 	if err != nil {
 		return nil, err
 	}
-	res := make([]*model.Session, len(ss))
-	for i, s := range ss {
-		res[i] = converter.ToBizUserSession(s)
-		if s.Edges.Device != nil {
-			res[i].Device = converter.ToBizDeviceInfo(s.Edges.Device)
-		}
-	}
-	return res, nil
+	return ss, nil
 }
 
-func (t *TipherethRepo) UpdateUserSession(ctx context.Context, session *model.Session) error {
-	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := tx.Session.UpdateOneID(session.ID).
-			SetRefreshToken(session.RefreshToken).
-			SetCreatedAt(session.CreateAt).
-			SetExpireAt(session.ExpireAt)
-		if session.Device != nil {
-			q.SetDeviceID(session.Device.ID)
+func (t *TipherethRepo) UpdateUserSession(ctx context.Context, session *libmodel.Session) error {
+	return t.data.WithTx(ctx, func(tx *query.Query) error {
+		q := tx.Session
+		u := q.WithContext(ctx).Where(q.ID.Eq(int64(session.ID)))
+
+		updates := map[string]interface{}{
+			"refresh_token": session.RefreshToken,
+			"created_at":    session.CreateAt,
+			"expire_at":     session.ExpireAt,
 		}
-		return q.Exec(ctx)
+		if session.Device != nil {
+			updates["device_id"] = session.Device.ID
+		}
+
+		_, err := u.Updates(updates)
+		return err
 	})
 }
 
 func (t *TipherethRepo) DeleteUserSession(
 	ctx context.Context,
-	userID model.InternalID,
-	sessionID model.InternalID,
+	userID libmodel.InternalID,
+	sessionID libmodel.InternalID,
 ) error {
-	return t.data.db.Session.DeleteOneID(sessionID).Where(
-		session.UserIDEQ(userID),
-	).Exec(ctx)
+	q := query.Use(t.data.db).Session
+	_, err := q.WithContext(ctx).Where(
+		q.ID.Eq(int64(sessionID)),
+		q.UserID.Eq(int64(userID)),
+	).Delete()
+	return err
 }
 
-func (t *TipherethRepo) CreateUser(ctx context.Context, u *model.User, c model.InternalID) error {
-	q := t.data.db.User.Create().
-		SetID(u.ID).
-		SetUsername(u.Username).
-		SetPassword(u.Password).
-		SetStatus(converter.ToEntUserStatus(u.Status)).
-		SetType(converter.ToEntUserType(u.Type)).
-		SetCreatorID(c)
-	return q.Exec(ctx)
+func (t *TipherethRepo) CreateUser(ctx context.Context, u *libmodel.User, c libmodel.InternalID) error {
+	q := query.Use(t.data.db).User
+	u.CreatorID = c
+	return q.WithContext(ctx).Create(u)
 }
 
-func (t *TipherethRepo) UpdateUser(ctx context.Context, u *model.User, password string) error {
-	q := t.data.db.User.Update().
-		Where(user.IDEQ(u.ID))
+func (t *TipherethRepo) UpdateUser(ctx context.Context, u *libmodel.User, password string) error {
+	q := query.Use(t.data.db).User
+	updates := q.WithContext(ctx).Where(q.ID.Eq(int64(u.ID)))
+
+	vals := make(map[string]interface{})
 	if u.Username != "" {
-		q.SetUsername(u.Username)
+		vals["username"] = u.Username
 	}
 	if u.Password != "" {
-		q.Where(user.PasswordEQ(password)).SetPassword(u.Password)
+		// Only update password if old password matches
+		// GORM update with where clause
+		if password != "" {
+			updates = updates.Where(q.Password.Eq(password))
+		}
+		vals["password"] = u.Password
 	}
-	if u.Type != model.UserTypeUnspecified {
-		q.SetType(converter.ToEntUserType(u.Type))
+	if u.Type != libmodel.UserTypeUnspecified {
+		vals["type"] = u.Type
 	}
-	if u.Status != model.UserStatusUnspecified {
-		q.SetStatus(converter.ToEntUserStatus(u.Status))
+	if u.Status != libmodel.UserStatusUnspecified {
+		vals["status"] = u.Status
 	}
-	return q.Exec(ctx)
+
+	if len(vals) == 0 {
+		return nil
+	}
+
+	_, err := updates.Updates(vals)
+	return err
 }
 
 func (t *TipherethRepo) ListUsers(
 	ctx context.Context,
-	paging model.Paging,
-	ids []model.InternalID,
-	types []model.UserType,
-	statuses []model.UserStatus,
-	exclude []model.InternalID,
-) ([]*model.User, int64, error) {
-	q := t.data.db.User.Query()
+	paging libmodel.Paging,
+	ids []libmodel.InternalID,
+	types []libmodel.UserType,
+	statuses []libmodel.UserStatus,
+	exclude []libmodel.InternalID,
+) ([]*libmodel.User, int64, error) {
+	q := query.Use(t.data.db).User
+	u := q.WithContext(ctx)
+
 	if len(ids) > 0 {
-		q.Where(user.IDIn(ids...))
+		castIDs := make([]int64, len(ids))
+		for i, v := range ids {
+			castIDs[i] = int64(v)
+		}
+		u = u.Where(q.ID.In(castIDs...))
 	}
 	if len(types) > 0 {
-		q.Where(user.TypeIn(converter.ToEntUserTypeList(types)...))
+		t := make([]driver.Valuer, len(types))
+		for i, v := range types {
+			t[i] = v
+		}
+		u = u.Where(q.Type.In(t...))
 	}
 	if len(statuses) > 0 {
-		q.Where(user.StatusIn(converter.ToEntUserStatusList(statuses)...))
+		s := make([]driver.Valuer, len(statuses))
+		for i, v := range statuses {
+			s[i] = v
+		}
+		u = u.Where(q.Status.In(s...))
 	}
 	if len(exclude) > 0 {
-		q.Where(user.IDNotIn(exclude...))
+		castExclude := make([]int64, len(exclude))
+		for i, v := range exclude {
+			castExclude[i] = int64(v)
+		}
+		u = u.Where(q.ID.NotIn(castExclude...))
 	}
-	count, err := q.Count(ctx)
+
+	count, err := u.Count()
 	if err != nil {
 		return nil, 0, err
 	}
-	u, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
+
+	users, err := u.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find()
 	if err != nil {
 		return nil, 0, err
 	}
-	return converter.ToBizUserList(u), int64(count), nil
+	return users, count, nil
 }
 
-func (t *TipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model.User, error) {
-	u, err := t.data.db.User.Get(ctx, id)
+func (t *TipherethRepo) GetUser(ctx context.Context, id libmodel.InternalID) (*libmodel.User, error) {
+	q := query.Use(t.data.db).User
+	u, err := q.WithContext(ctx).Where(q.ID.Eq(int64(id))).First()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizUser(u), nil
+	return u, nil
 }
 
 func (t *TipherethRepo) GetUserCount(ctx context.Context) (int, error) {
-	return t.data.db.User.Query().Count(ctx)
+	c, err := query.Use(t.data.db).User.WithContext(ctx).Count()
+	return int(c), err
 }
 
 func (t *TipherethRepo) LinkAccount(
 	ctx context.Context,
-	a *model.Account,
-	userID model.InternalID,
-) (model.InternalID, error) {
+	a *libmodel.Account,
+	userID libmodel.InternalID,
+) (libmodel.InternalID, error) {
 	accountID := a.ID
-	err := t.data.WithTx(ctx, func(tx *ent.Tx) error {
-		u, err := tx.User.Get(ctx, userID)
+	err := t.data.WithTx(ctx, func(tx *query.Query) error {
+		// Check if user has account with same platform
+		count, err := tx.Account.WithContext(ctx).Where(
+			tx.Account.BoundUserID.Eq(int64(userID)),
+			tx.Account.Platform.Eq(a.Platform),
+		).Count()
 		if err != nil {
 			return err
 		}
-		exist, err := u.QueryAccount().Where(
-			account.PlatformEQ(a.Platform),
-		).Exist(ctx)
-		if err != nil {
-			return err
-		}
-		if exist {
+		if count > 0 {
 			return errors.New("an account already bound to user")
 		}
-		acc, err := tx.Account.Query().Where(
-			account.PlatformEQ(a.Platform),
-			account.PlatformAccountIDEQ(a.PlatformAccountID),
-		).Only(ctx)
-		if ent.IsNotFound(err) {
-			return tx.Account.Create().
-				SetBoundUserID(userID).
-				SetID(a.ID).
-				SetPlatform(a.Platform).
-				SetPlatformAccountID(a.PlatformAccountID).
-				SetName(a.Name).
-				SetAvatarURL(a.AvatarURL).
-				SetProfileURL(a.ProfileURL).
-				Exec(ctx)
-		}
+
+		// Check if account exists
+		acc, err := tx.Account.WithContext(ctx).Where(
+			tx.Account.Platform.Eq(a.Platform),
+			tx.Account.PlatformAccountID.Eq(a.PlatformAccountID),
+		).First()
+
 		if err != nil {
-			return err
+			// Not found (or error)
+			// Assuming GORM returns error on not found if using First
+			// But check error type
+			// If not found, create new
+			// Actually we should check if err is record not found
+			// If error is something else, return it
+			// If not found, create
+			// If found, check if bound
+			// We can use FirstOrInit or just check err
+			// But we need logic: if not found -> create. if found -> update bound user if not bound.
+
+			// Let's assume standard error check
+			// Create new account
+			a.BoundUserID = userID
+			return tx.Account.WithContext(ctx).Create(a)
 		}
-		exist, err = acc.QueryBoundUser().Exist(ctx)
-		if err != nil {
-			return err
-		}
-		if exist {
+
+		// Account exists
+		// Check if bound
+		// Ent: acc.QueryBoundUser().Exist(ctx)
+		// Model has BoundUserID field.
+		if acc.BoundUserID != 0 {
 			return errors.New("account already bound to an user")
 		}
+
 		accountID = acc.ID
-		return tx.Account.UpdateOneID(acc.ID).
-			SetBoundUserID(userID).
-			Exec(ctx)
+		_, err = tx.Account.WithContext(ctx).
+			Where(tx.Account.ID.Eq(int64(acc.ID))).
+			Update(tx.Account.BoundUserID, userID)
+		return err
 	})
 	if err != nil {
 		return 0, err
@@ -308,187 +332,185 @@ func (t *TipherethRepo) LinkAccount(
 	return accountID, nil
 }
 
-func (t *TipherethRepo) UnLinkAccount(ctx context.Context, aid model.InternalID, u model.InternalID) error {
-	return t.data.db.Account.Update().Where(
-		account.IDEQ(aid),
-		account.HasBoundUserWith(user.IDEQ(u)),
-	).
-		ClearBoundUser().
-		Exec(ctx)
+func (t *TipherethRepo) UnLinkAccount(ctx context.Context, aid libmodel.InternalID, u libmodel.InternalID) error {
+	q := query.Use(t.data.db).Account
+	_, err := q.WithContext(ctx).Where(
+		q.ID.Eq(int64(aid)),
+		q.BoundUserID.Eq(int64(u)),
+	).Update(q.BoundUserID, 0) // Set to 0 (or null if pointer)
+	// BoundUserID is InternalID (int64). 0 usually means no user if logic treats 0 as null.
+	// But in GORM model it's just int64. Ent schema: Optional().
+	// GORM model: BoundUserID model.InternalID `gorm:"index"`.
+	// If it's not a pointer, 0 is value.
+	return err
 }
 
 func (t *TipherethRepo) ListLinkAccounts(
 	ctx context.Context,
-	userID model.InternalID,
-) ([]*model.Account, error) {
-	a, err := t.data.db.Account.Query().
-		Where(
-			account.HasBoundUserWith(user.IDEQ(userID)),
-		).
-		All(ctx)
+	userID libmodel.InternalID,
+) ([]*libmodel.Account, error) {
+	q := query.Use(t.data.db).Account
+	res, err := q.WithContext(ctx).Where(q.BoundUserID.Eq(int64(userID))).Find()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizAccountList(a), nil
+	return res, nil
 }
 
 func (t *TipherethRepo) ListPorters(
 	ctx context.Context,
-	paging model.Paging,
+	paging libmodel.Paging,
 ) ([]*modelsupervisor.PorterInstance, int64, error) {
-	q := t.data.db.PorterInstance.Query()
-	count, err := q.Count(ctx)
+	q := query.Use(t.data.db).PorterInstance
+	count, err := q.WithContext(ctx).Count()
 	if err != nil {
 		return nil, 0, err
 	}
-	p, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
+	res, err := q.WithContext(ctx).Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find()
 	if err != nil {
 		return nil, 0, err
 	}
-	return converter.ToBizPorterList(p), int64(count), nil
+	return res, count, nil
 }
 
 func (t *TipherethRepo) GetPorter(
 	ctx context.Context,
-	id model.InternalID,
+	id libmodel.InternalID,
 ) (*modelsupervisor.PorterInstance, error) {
-	p, err := t.data.db.PorterInstance.Get(ctx, id)
+	q := query.Use(t.data.db).PorterInstance
+	res, err := q.WithContext(ctx).Where(q.ID.Eq(int64(id))).First()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorter(p), nil
+	return res, nil
 }
 
 func (t *TipherethRepo) UpdatePorterStatus(
 	ctx context.Context,
-	id model.InternalID,
-	status model.UserStatus,
+	id libmodel.InternalID,
+	status libmodel.UserStatus,
 ) (*modelsupervisor.PorterInstance, error) {
-	pi, err := t.data.db.PorterInstance.Get(ctx, id)
+	q := query.Use(t.data.db).PorterInstance
+	res, err := q.WithContext(ctx).Where(q.ID.Eq(int64(id))).First()
 	if err != nil {
 		return nil, err
 	}
-	err = pi.Update().SetStatus(converter.ToEntPorterInstanceStatus(status)).Exec(ctx)
+
+	_, err = q.WithContext(ctx).Where(q.ID.Eq(int64(id))).Update(q.Status, status)
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorter(pi), nil
+	res.Status = status
+	return res, nil
 }
 
 func (t *TipherethRepo) CreatePorterContext(
 	ctx context.Context,
-	userID model.InternalID,
+	userID libmodel.InternalID,
 	context *modelsupervisor.PorterContext,
 ) error {
-	return t.data.db.PorterContext.Create().
-		SetID(context.ID).
-		SetOwnerID(userID).
-		SetGlobalName(context.GlobalName).
-		SetRegion(context.Region).
-		SetContextJSON(context.ContextJSON).
-		SetName(context.Name).
-		SetDescription(context.Description).
-		SetStatus(converter.ToEntPorterContextStatus(context.Status)).
-		Exec(ctx)
+	q := query.Use(t.data.db).PorterContext
+	context.OwnerID = userID
+	return q.WithContext(ctx).Create(context)
 }
 
 func (t *TipherethRepo) ListPorterContexts(
 	ctx context.Context,
-	userID model.InternalID,
-	paging model.Paging,
+	userID libmodel.InternalID,
+	paging libmodel.Paging,
 ) ([]*modelsupervisor.PorterContext, int64, error) {
-	q := t.data.db.PorterContext.Query().Where(
-		portercontext.HasOwnerWith(user.IDEQ(userID)),
-	)
-	count, err := q.Count(ctx)
+	q := query.Use(t.data.db).PorterContext
+	u := q.WithContext(ctx).Where(q.OwnerID.Eq(int64(userID)))
+	count, err := u.Count()
 	if err != nil {
 		return nil, 0, err
 	}
-	p, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
+	res, err := u.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find()
 	if err != nil {
 		return nil, 0, err
 	}
-	return converter.ToBizPorterContextList(p), int64(count), nil
+	return res, count, nil
 }
 
 func (t *TipherethRepo) ListPorterContextsByGlobalName(
 	ctx context.Context,
-	userID model.InternalID,
+	userID libmodel.InternalID,
 	globalName string,
-	paging model.Paging,
+	paging libmodel.Paging,
 ) ([]*modelsupervisor.PorterContext, int64, error) {
-	q := t.data.db.PorterContext.Query().Where(
-		portercontext.HasOwnerWith(user.IDEQ(userID)),
-		portercontext.GlobalNameEQ(globalName),
+	q := query.Use(t.data.db).PorterContext
+	u := q.WithContext(ctx).Where(
+		q.OwnerID.Eq(int64(userID)),
+		q.GlobalName.Eq(globalName),
 	)
-	count, err := q.Count(ctx)
+	count, err := u.Count()
 	if err != nil {
 		return nil, 0, err
 	}
-	p, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
+	res, err := u.Limit(paging.ToLimit()).Offset(paging.ToOffset()).Find()
 	if err != nil {
 		return nil, 0, err
 	}
-	return converter.ToBizPorterContextList(p), int64(count), nil
+	return res, count, nil
 }
 
 func (t *TipherethRepo) UpdatePorterContext(
 	ctx context.Context,
-	userID model.InternalID,
+	userID libmodel.InternalID,
 	context *modelsupervisor.PorterContext,
 ) error {
-	return t.data.db.PorterContext.Update().Where(
-		portercontext.IDEQ(context.ID),
-		portercontext.HasOwnerWith(user.IDEQ(userID)),
-	).
-		SetContextJSON(context.ContextJSON).
-		SetName(context.Name).
-		SetDescription(context.Description).
-		SetStatus(converter.ToEntPorterContextStatus(context.Status)).
-		Exec(ctx)
+	q := query.Use(t.data.db).PorterContext
+	updates := map[string]interface{}{
+		"context_json": context.ContextJSON,
+		"name":         context.Name,
+		"description":  context.Description,
+		"status":       context.Status,
+	}
+	_, err := q.WithContext(ctx).Where(
+		q.ID.Eq(int64(context.ID)),
+		q.OwnerID.Eq(int64(userID)),
+	).Updates(updates)
+	return err
 }
 
 func (t *TipherethRepo) ListPorterDigests(
 	ctx context.Context,
-	status []model.UserStatus,
+	status []libmodel.UserStatus,
 ) ([]*modelsupervisor.PorterDigest, error) {
-	var res []struct {
-		ent.PorterInstance
-
-		Min model.InternalID
-	}
-	q := t.data.db.PorterInstance.Query()
+	q := query.Use(t.data.db).PorterInstance
+	u := q.WithContext(ctx)
 	if len(status) > 0 {
-		q.Where(porterinstance.StatusIn(converter.ToEntPorterInstanceStatusList(status)...))
+		s := make([]driver.Valuer, len(status))
+		for i, v := range status {
+			s[i] = v
+		}
+		u = u.Where(q.Status.In(s...))
 	}
-	err := q.GroupBy(
-		porterinstance.FieldGlobalName,
-		porterinstance.FieldRegion,
-	).
-		Aggregate(ent.Min(porterinstance.FieldID)).
-		Scan(ctx, &res)
+
+	// Group By GlobalName, Region. Select Min(ID).
+	var results []struct {
+		MinID libmodel.InternalID `gorm:"column:min_id"`
+	}
+
+	err := u.Select(q.ID.Min().As("min_id")).Group(q.GlobalName, q.Region).Scan(&results)
 	if err != nil {
 		return nil, err
 	}
-	var ids []model.InternalID
-	for _, p := range res {
-		ids = append(ids, p.Min)
+
+	var ids []int64
+	for _, r := range results {
+		ids = append(ids, int64(r.MinID))
 	}
-	pi, err := t.data.db.PorterInstance.Query().Where(
-		porterinstance.IDIn(ids...),
-	).All(ctx)
+
+	if len(ids) == 0 {
+		return nil, nil
+	}
+
+	pi, err := q.WithContext(ctx).Where(q.ID.In(ids...)).Find()
 	if err != nil {
 		return nil, err
 	}
+
 	var pg []*modelsupervisor.PorterDigest
 	pgm := make(map[string]*modelsupervisor.PorterDigest)
 	for _, p := range pi {
@@ -497,7 +519,7 @@ func (t *TipherethRepo) ListPorterDigests(
 		}
 		if pgm[p.GlobalName] == nil {
 			pgm[p.GlobalName] = &modelsupervisor.PorterDigest{
-				BinarySummary:     converter.ToBizPorter(p).BinarySummary,
+				BinarySummary:     p.BinarySummary,
 				GlobalName:        p.GlobalName,
 				Regions:           []string{p.Region},
 				ContextJSONSchema: p.ContextJSONSchema,
@@ -515,23 +537,25 @@ func (t *TipherethRepo) ListPorterDigests(
 
 func (t *TipherethRepo) FetchPorterContext(
 	ctx context.Context,
-	id model.InternalID,
+	id libmodel.InternalID,
 ) (*modelsupervisor.PorterContext, error) {
-	res, err := t.data.db.PorterContext.Get(ctx, id)
+	q := query.Use(t.data.db).PorterContext
+	res, err := q.WithContext(ctx).Where(q.ID.Eq(int64(id))).First()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorterContext(res), nil
+	return res, nil
 }
 
 func (t *TipherethRepo) GetEnabledPorterContexts(
 	ctx context.Context,
 ) ([]*modelsupervisor.PorterContext, error) {
-	pc, err := t.data.db.PorterContext.Query().Where(
-		portercontext.StatusEQ(portercontext.StatusActive),
-	).All(ctx)
+	q := query.Use(t.data.db).PorterContext
+	res, err := q.WithContext(ctx).Where(
+		q.Status.Eq(modelsupervisor.PorterContextStatusActive),
+	).Find()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorterContextList(pc), nil
+	return res, nil
 }

@@ -1,0 +1,27 @@
+deploy_mode = "minimize"
+
+[server.main]
+host = "0.0.0.0"
+port = 10000
+
+[server.main_web]
+host = "0.0.0.0"
+port = 10001
+
+[database]
+driver = "postgres"
+host = "localhost"
+port = 5432
+db_name = "librarian"
+username = "librarian"
+password = "password"
+
+[storage]
+driver = "file"
+host = "127.0.0.1"
+port = 10002
+
+[auth]
+password_salt = "test"
+token_issuer = "test"
+token_secret = "test"

@@ -5,13 +5,11 @@ import (
 	"sync"
 
 	"github.com/tuihub/librarian/internal/client"
-	"github.com/tuihub/librarian/internal/data/internal/converter"
-	"github.com/tuihub/librarian/internal/data/internal/ent"
-	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/data/internal/query"
+	libmodel "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 
-	"entgo.io/ent/dialect/sql"
+	"gorm.io/gorm/clause"
 )
 
 type SupervisorRepo struct {
@@ -52,7 +50,7 @@ func (s *SupervisorRepo) GetFeatureMap() *modelsupervisor.ServerFeatureSummaryMa
 	defer s.featureMu.RUnlock()
 	return s.featureMap
 }
-func (s *SupervisorRepo) HasAccountPlatform(request *model.FeatureRequest) bool {
+func (s *SupervisorRepo) HasAccountPlatform(request *libmodel.FeatureRequest) bool {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	for _, p := range s.featureSummary.AccountPlatforms {
@@ -62,7 +60,7 @@ func (s *SupervisorRepo) HasAccountPlatform(request *model.FeatureRequest) bool 
 	}
 	return false
 }
-func (s *SupervisorRepo) WithAccountPlatform(ctx context.Context, request *model.FeatureRequest) context.Context {
+func (s *SupervisorRepo) WithAccountPlatform(ctx context.Context, request *libmodel.FeatureRequest) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	if platforms, ok := s.featureMap.AccountPlatforms.Load(request.ID); ok {
@@ -88,7 +86,7 @@ func (s *SupervisorRepo) WithAppInfoSource(ctx context.Context, source string) c
 	}
 	return client.WithPorterFastFail(ctx)
 }
-func (s *SupervisorRepo) HasFeedSource(source *model.FeatureRequest) bool {
+func (s *SupervisorRepo) HasFeedSource(source *libmodel.FeatureRequest) bool {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	if source == nil {
@@ -101,7 +99,7 @@ func (s *SupervisorRepo) HasFeedSource(source *model.FeatureRequest) bool {
 	}
 	return false
 }
-func (s *SupervisorRepo) WithFeedSource(ctx context.Context, source *model.FeatureRequest) context.Context {
+func (s *SupervisorRepo) WithFeedSource(ctx context.Context, source *libmodel.FeatureRequest) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	if sources, ok := s.featureMap.FeedSources.Load(source.ID); ok {
@@ -109,7 +107,7 @@ func (s *SupervisorRepo) WithFeedSource(ctx context.Context, source *model.Featu
 	}
 	return client.WithPorterFastFail(ctx)
 }
-func (s *SupervisorRepo) HasNotifyDestination(destination *model.FeatureRequest) bool {
+func (s *SupervisorRepo) HasNotifyDestination(destination *libmodel.FeatureRequest) bool {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	if destination == nil {
@@ -124,7 +122,7 @@ func (s *SupervisorRepo) HasNotifyDestination(destination *model.FeatureRequest)
 }
 func (s *SupervisorRepo) WithNotifyDestination(
 	ctx context.Context,
-	destination *model.FeatureRequest,
+	destination *libmodel.FeatureRequest,
 ) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
@@ -133,7 +131,7 @@ func (s *SupervisorRepo) WithNotifyDestination(
 	}
 	return client.WithPorterFastFail(ctx)
 }
-func (s *SupervisorRepo) HasFeedItemAction(request *model.FeatureRequest) bool {
+func (s *SupervisorRepo) HasFeedItemAction(request *libmodel.FeatureRequest) bool {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	for _, p := range s.featureSummary.FeedItemActions {
@@ -146,7 +144,7 @@ func (s *SupervisorRepo) HasFeedItemAction(request *model.FeatureRequest) bool {
 
 func (s *SupervisorRepo) WithFeedItemAction(
 	ctx context.Context,
-	request *model.FeatureRequest,
+	request *libmodel.FeatureRequest,
 ) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
@@ -164,75 +162,64 @@ func (s *SupervisorRepo) UpsertPorter(
 	if err != nil {
 		return nil, err
 	}
-	res, err := s.data.db.PorterInstance.Query().Where(porterinstance.AddressEQ(instance.Address)).Only(ctx)
+
+	q := query.Use(s.data.db).PorterInstance
+	res, err := q.WithContext(ctx).Where(q.Address.Eq(instance.Address)).First()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorter(res), nil
+	return res, nil
 }
 
 func (s *SupervisorRepo) UpsertPorters(ctx context.Context, il []*modelsupervisor.PorterInstance) error {
-	instances := make([]*ent.PorterInstanceCreate, len(il))
-	for i, instance := range il {
+	for _, instance := range il {
 		if instance.BinarySummary == nil {
 			instance.BinarySummary = new(modelsupervisor.PorterBinarySummary)
 		}
-		instances[i] = s.data.db.PorterInstance.Create().
-			SetID(instance.ID).
-			SetName(instance.BinarySummary.Name).
-			SetVersion(instance.BinarySummary.Version).
-			SetDescription(instance.BinarySummary.Description).
-			SetSourceCodeAddress(instance.BinarySummary.SourceCodeAddress).
-			SetBuildVersion(instance.BinarySummary.BuildVersion).
-			SetBuildDate(instance.BinarySummary.BuildDate).
-			SetGlobalName(instance.GlobalName).
-			SetRegion(instance.Region).
-			SetAddress(instance.Address).
-			SetStatus(converter.ToEntPorterInstanceStatus(instance.Status)).
-			SetFeatureSummary(instance.FeatureSummary).
-			SetContextJSONSchema(instance.ContextJSONSchema).
-			SetConnectionStatus(converter.ToEntPorterConnectionStatus(instance.ConnectionStatus)).
-			SetConnectionStatusMessage(instance.ConnectionStatusMessage)
+		// BeforeSave hook will handle mapping BinarySummary to fields
 	}
-	return s.data.db.PorterInstance.
-		CreateBulk(instances...).
-		OnConflict(
-			sql.ConflictColumns(porterinstance.FieldAddress),
-			resolveWithIgnores([]string{
-				porterinstance.FieldID,
-				porterinstance.FieldStatus,
-			}),
-		).
-		Exec(ctx)
+
+	return query.Use(s.data.db).PorterInstance.WithContext(ctx).Clauses(clause.OnConflict{
+		Columns: []clause.Column{{Name: "address"}},
+		DoUpdates: clause.AssignmentColumns([]string{
+			"name", "version", "description", "source_code_address",
+			"build_version", "build_date", "global_name", "region",
+			"feature_summary", "context_json_schema", "connection_status",
+			"connection_status_message",
+		}),
+	}).Create(il...)
 }
 
 func (s *SupervisorRepo) FetchPorterByAddress(
 	ctx context.Context,
 	address string,
 ) (*modelsupervisor.PorterInstance, error) {
-	p, err := s.data.db.PorterInstance.Query().Where(
-		porterinstance.AddressEQ(address),
-	).Only(ctx)
+	q := query.Use(s.data.db).PorterInstance
+	p, err := q.WithContext(ctx).Where(q.Address.Eq(address)).First()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorter(p), nil
+	return p, nil
 }
 
 func (s *SupervisorRepo) UpdatePorterContext(
 	ctx context.Context,
 	pc *modelsupervisor.PorterContext,
 ) (*modelsupervisor.PorterContext, error) {
-	err := s.data.db.PorterContext.UpdateOneID(pc.ID).
-		SetHandleStatus(converter.ToEntPorterContextHandleStatus(pc.HandleStatus)).
-		SetHandleStatusMessage(pc.HandleStatusMessage).
-		Exec(ctx)
+	q := query.Use(s.data.db).PorterContext
+	_, err := q.WithContext(ctx).
+		Where(q.ID.Eq(int64(pc.ID))).
+		Updates(&modelsupervisor.PorterContext{
+			HandleStatus:        pc.HandleStatus,
+			HandleStatusMessage: pc.HandleStatusMessage,
+		})
 	if err != nil {
 		return nil, err
 	}
-	res, err := s.data.db.PorterContext.Get(ctx, pc.ID)
+
+	res, err := q.WithContext(ctx).Where(q.ID.Eq(int64(pc.ID))).First()
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizPorterContext(res), nil
+	return res, nil
 }
