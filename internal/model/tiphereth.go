@@ -138,7 +138,7 @@ type PullAccountInfo struct {
 type Session struct {
 	ID           InternalID `gorm:"primaryKey;autoIncrement:false"`
 	UserID       InternalID `gorm:"index:idx_session_user_id_device_id,priority:1"`
-	DeviceID     InternalID `gorm:"index:idx_session_user_id_device_id,priority:2"`
+	DeviceID     InternalID `gorm:"index:idx_session_user_id_device_id,priority:2;default:0"`
 	RefreshToken string     `gorm:"uniqueIndex"`
 	Device       *Device    `gorm:"foreignKey:DeviceID"`
 	User         *User      `gorm:"foreignKey:UserID"`

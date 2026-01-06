@@ -95,6 +95,8 @@ func (t *TipherethRepo) CreateUserSession(ctx context.Context, s *libmodel.Sessi
 			).Delete()
 			s.DeviceID = s.Device.ID
 			s.Device = nil // Prevent creating device
+		} else {
+			s.DeviceID = 0
 		}
 
 		return qs.WithContext(ctx).Create(s)
