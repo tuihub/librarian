@@ -32,7 +32,7 @@ require (
 	github.com/hashicorp/consul/api v1.33.0
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/invopop/jsonschema v0.13.0
-	github.com/jackc/pgx/v5 v5.8.0
+	github.com/jackc/pgx/v5 v5.9.2
 	github.com/johannesboyne/gofakes3 v0.0.0-20250916175020-ebf3e50324d3
 	github.com/mattn/go-sqlite3 v1.14.32
 	github.com/maypok86/otter/v2 v2.3.0
